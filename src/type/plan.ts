@@ -1,0 +1,75 @@
+import {
+  GOLD_PRICE,
+  PLATINUM_PRICE,
+  PROMOTE_PLUS_PRICE,
+  PROMOTE_PRICE,
+} from '@/global';
+
+export const plans = [
+  {
+    link: '/post-listing',
+    pkgColor: 'bg-secondary',
+    name: 'Free',
+    price: ['€ 0', '/month'],
+    price_number: 0,
+    description: 'Renewable monthly free of charge',
+    features: ['Post a Listing', 'Promote Listing', 'Boost Listing'],
+    button: 'Select Plan',
+  },
+  {
+    link: '/post-listing',
+    pkgColor: 'bg-promote',
+    name: 'Promote',
+    price: ['€ 10', 'per listing/month'],
+    price_number: PROMOTE_PRICE,
+    description: 'Renewable monthly promotion',
+    features: [
+      'Post a Listing',
+      'Promote Listing',
+      'Boost Listing Twice/month',
+    ],
+    button: 'Select Plan',
+  },
+  {
+    link: '/start-membership',
+    pkgColor: 'bg-promote_plus',
+    price_number: PROMOTE_PLUS_PRICE,
+    name: 'Promote +',
+    price: [`€ `, '/per point'],
+    description: 'Points-based promotion',
+    features: [
+      'Post a Listing',
+      'Promote Listing',
+      'Boost Listing Every 48 hours',
+    ],
+    button: 'Select Plan',
+  },
+  {
+    link: '/start-membership',
+    pkgColor: 'bg-gold',
+    name: 'Gold',
+    price_number: GOLD_PRICE,
+    price: [`€ `, '/per point'],
+    description: 'Points-based promotion',
+    features: [
+      'Post a Listing',
+      'Promote Listing',
+      'Boost Listing Every 24 hours',
+    ],
+    button: 'Select Plan',
+  },
+  {
+    link: '/start-membership',
+    pkgColor: 'bg-platinum',
+    name: 'Platinum',
+    price_number: PLATINUM_PRICE,
+    price: [`€ `, '/per point'],
+    description: 'Points-based promotion',
+    features: [
+      'Post a Listing',
+      'Promote Listing',
+      'Boost Listing Every 8 hours',
+    ],
+    button: 'Select Plan',
+  },
+];
