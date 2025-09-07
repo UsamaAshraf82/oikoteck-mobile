@@ -11,9 +11,10 @@ const appConfig: ExpoConfig = {
   newArchEnabled: true,
   ios: {
     supportsTablet: true,
+    bundleIdentifier: 'com.oikotext',
   },
   android: {
-    package: 'com.matrimonial.pk',
+    package: 'com.oikotext',
     adaptiveIcon: {
       foregroundImage: './assets/adaptive-icon.png',
       backgroundColor: '#ffffff',

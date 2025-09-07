@@ -25,13 +25,11 @@ const DistrictArea = ({ ref, ...props }: Props) => {
   const [text, setText] = useState('');
   const fetchingRef = useRef(false);
 
-  console.log(text);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
     enabled: open,
     queryKey: ['districts_area', text],
-    queryFn: async ({ pageParam = 1 }) => {
-      console.log('pageParam', pageParam);
+    queryFn: async ({ pageParam = 0 }) => {
       try {
         const res = (await Parse.Cloud.run('district_area', {
           input: text,
@@ -43,7 +41,6 @@ const DistrictArea = ({ ref, ...props }: Props) => {
         // console.log(res);
         return res;
       } catch (e) {
-        console.log('error', e);
         return { options: [], hasmore: false };
       }
     },
@@ -111,7 +108,7 @@ const DistrictArea = ({ ref, ...props }: Props) => {
             );
           }}
           onEndReached={() => {
-            console.log(!fetchingRef.current && hasNextPage, !fetchingRef.current, hasNextPage);
+
             if (!fetchingRef.current && hasNextPage) {
               fetchingRef.current = true;
               fetchNextPage().finally(() => {

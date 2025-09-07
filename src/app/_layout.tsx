@@ -1,3 +1,4 @@
+import { useFonts } from "expo-font";
 import { Slot, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
@@ -10,6 +11,13 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [ready, setReady] = useState(false);
+
+   const [fontsLoaded] = useFonts({
+    LufgaRegular: require("@/lufga/Lufga-Regular.ttf"),
+    LufgaMedium: require("./assets/fonts/Lufga-Medium.ttf"),
+    LufgaBold: require("./assets/fonts/Lufga-Bold.ttf"),
+  });
+
   const { user, refresh } = useUser();
 
   // const router = useRouter();
