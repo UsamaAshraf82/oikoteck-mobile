@@ -18,7 +18,7 @@ const appConfig: ExpoConfig = {
   android: {
     package: IS_DEV ? 'com.oikotext.dev' : 'com.oikotext',
     adaptiveIcon: {
-      foregroundImage: './assets/adaptive-icon.png',
+      foregroundImage: IS_DEV ? './assets/adaptive-icon-dev.png' : './assets/adaptive-icon.png',
       backgroundColor: '#ffffff',
     },
     edgeToEdgeEnabled: true,
@@ -34,10 +34,10 @@ const appConfig: ExpoConfig = {
     [
       'expo-splash-screen',
       {
-        image: './assets/adaptive-icon.png',
-        imageWidth: 200,
+        image: './assets/adaptive-text-icon.png',
+        imageWidth: 1024,
         resizeMode: 'contain',
-        backgroundColor: '#F63B3B',
+        backgroundColor: '#ffffff',
       },
     ],
     ['expo-font'],

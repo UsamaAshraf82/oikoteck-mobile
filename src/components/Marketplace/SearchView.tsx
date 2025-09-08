@@ -1,15 +1,22 @@
-import { GlobeHemisphereEastIcon, MagnifyingGlassIcon } from 'phosphor-react-native';
-import { Platform, TextInput, TouchableWithoutFeedback, View } from 'react-native';
+import { GlobeHemisphereEastIcon, MagnifyingGlassIcon, XIcon } from 'phosphor-react-native';
+import {
+  Platform,
+  TextInput,
+  TouchableNativeFeedback,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 
 type Props = {
   listing_type: 'Rental' | 'Sale';
   text: string;
   onPress: () => void;
+  onClear: () => void;
 };
 
-export const SearchView = ({ listing_type, text, onPress }: Props) => {
+export const SearchView = ({ listing_type, text, onPress,onClear }: Props) => {
   return (
-    <View className="border-o_light_gray mx-4 flex-row items-center justify-between rounded-full border px-2 py-4">
+    <View className="mx-4 flex-row items-center justify-between rounded-full border border-o_light_gray px-2 py-4">
       <TouchableWithoutFeedback onPress={onPress}>
         <View className="flex-row items-center">
           <GlobeHemisphereEastIcon />
@@ -20,7 +27,6 @@ export const SearchView = ({ listing_type, text, onPress }: Props) => {
               padding: Platform.OS === 'ios' ? 5 : 0,
               paddingLeft: 8,
             }}
-
             //     onChangeText={text => {
             //     //   props.setText(text);
             //     // }}
@@ -38,7 +44,13 @@ export const SearchView = ({ listing_type, text, onPress }: Props) => {
             onFocus={() => onPress()}
             //     style={styles.inputFieldStyle}
           />
-          <MagnifyingGlassIcon />
+          {!text ? (
+            <MagnifyingGlassIcon />
+          ) : (
+            <TouchableNativeFeedback onPress={onClear}>
+              <XIcon />
+            </TouchableNativeFeedback>
+          )}
         </View>
       </TouchableWithoutFeedback>
     </View>

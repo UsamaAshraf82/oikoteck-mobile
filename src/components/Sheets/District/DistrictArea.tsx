@@ -1,33 +1,39 @@
-import {
-  BottomSheetFlashList,
-  BottomSheetModal,
-  BottomSheetView,
-  TouchableWithoutFeedback,
-} from '@gorhom/bottom-sheet';
+import { FlashList } from '@shopify/flash-list';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import Parse from 'parse/react-native';
 import { GlobeHemisphereEastIcon, MagnifyingGlassIcon } from 'phosphor-react-native';
-import React, { useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Dimensions, Platform, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  ActivityIndicator,
+  Dimensions,
+  Platform,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
+import Modal from 'react-native-modal';
 import { stringify_area_district } from '~/lib/stringify_district_area';
+
 const { height } = Dimensions.get('window');
 
 type Props = {
-  ref: React.ForwardedRef<BottomSheetModal>;
+  visible: boolean;
+  onClose: () => void;
   onPress: (data: { district: string; area_1: string; area_2: string }) => void;
+  value?: string;
 };
 
-const DistrictArea = ({ ref, ...props }: Props) => {
-  // const {}
-
-  const [open, setIsOpen] = useState(false);
+const DistrictArea = ({ visible, onClose, value = '', onPress }: Props) => {
   const [text, setText] = useState('');
-  const fetchingRef = useRef(false);
 
+  useEffect(() => {
+    setText(value);
+  }, [value]);
 
+  // Query for districts/areas
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-    enabled: open,
+    enabled: visible,
     queryKey: ['districts_area', text],
     queryFn: async ({ pageParam = 0 }) => {
       try {
@@ -38,98 +44,116 @@ const DistrictArea = ({ ref, ...props }: Props) => {
           options: { district: string; area_1: string; area_2: string }[];
           hasmore: boolean;
         };
-        // console.log(res);
         return res;
-      } catch (e) {
+      } catch {
         return { options: [], hasmore: false };
       }
     },
-
-    staleTime: Infinity, // always "fresh"
-    // cacheTime: Infinity,   // never garbage collected
     getNextPageParam: (lastPage, _, lastPageParam) =>
       lastPage.hasmore ? lastPageParam + 1 : undefined,
     initialPageParam: 0,
+    staleTime: Infinity,
   });
 
-  const allOptions = useMemo(() => data?.pages.flatMap((page) => page.options) ?? [], [data]);
-
-  console.log(allOptions, data?.pages);
+  const allOptions = data?.pages.flatMap((page) => page.options) ?? [];
 
   return (
-    <BottomSheetModal
-      index={0}
-      enablePanDownToClose
-      ref={ref}
-      enableDynamicSizing={false}
-      enableContentPanningGesture={false}
-      handleIndicatorStyle={{ display: 'none' }}
-      backgroundStyle={{ borderRadius: 0 }}
-      onChange={(index) => setIsOpen(index >= 0)}
-      snapPoints={[height]}>
-      <BottomSheetView className="flex-1 py-2" style={{ minHeight: height }}>
+    <Modal
+      isVisible={visible}
+      onBackdropPress={onClose}
+      onSwipeComplete={onClose}
+      swipeDirection="down"
+    hardwareAccelerated
+      style={{ justifyContent: 'flex-end', margin: 0 }}
+      propagateSwipe>
+      <View
+        style={{
+          height: height * 0.9,
+          backgroundColor: 'white',
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          paddingVertical: 10,
+        }}>
+        {/* Handle bar */}
+        <View
+          style={{
+            alignSelf: 'center',
+            width: 40,
+            height: 4,
+            borderRadius: 2,
+            backgroundColor: '#ccc',
+            marginBottom: 10,
+          }}
+        />
+
         {/* Search bar */}
-        <View className="mx-4 flex-row items-center justify-between rounded-full border border-o_light_gray px-2 py-4">
-          <View className="flex-row items-center">
-            <GlobeHemisphereEastIcon />
-            <TextInput
-              style={{
-                flex: 1,
-                fontSize: 14,
-                padding: Platform.OS === 'ios' ? 5 : 0,
-                paddingLeft: 8,
-                width: '100%',
-              }}
-              value={text}
-              onChangeText={setText}
-              autoFocus
-            />
-            <MagnifyingGlassIcon />
-          </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            borderColor: '#ddd',
+            borderWidth: 1,
+            borderRadius: 30,
+            paddingHorizontal: 12,
+            marginHorizontal: 16,
+            paddingVertical: Platform.OS === 'ios' ? 10 : 0,
+          }}>
+          <GlobeHemisphereEastIcon />
+          <TextInput
+            style={{
+              flex: 1,
+              fontSize: 14,
+              paddingLeft: 8,
+              color: '#333',
+            }}
+            value={text}
+            onChangeText={setText}
+            placeholder="Search district or area"
+            autoFocus
+          />
+          <MagnifyingGlassIcon />
         </View>
 
-        {/* <ScrollView className='flex-1'> */}
         {/* FlashList with infinite scroll */}
-        <BottomSheetFlashList
-          className="w-full flex-1"
+        <FlashList
           data={allOptions}
-          estimatedItemSize={38} // ✅ improves performance
+          estimatedItemSize={38}
           keyExtractor={(item) => item.district + item.area_1 + item.area_2}
+          contentContainerStyle={{ paddingBottom: 40 }}
           renderItem={({ item }) => {
-            const text = stringify_area_district({
-              district: item.district,
-              area_1: item.area_1,
-              area_2: item.area_2,
-            });
+            const label = stringify_area_district(item);
             return (
-              <TouchableWithoutFeedback onPress={() => props.onPress(item)}>
-                <Text className="p-2 text-lg text-primary last:mb-0">{text}</Text>
-              </TouchableWithoutFeedback>
+              <TouchableOpacity
+                onPress={() => {
+                  onPress(item);
+                  onClose();
+                }}
+                style={{
+                  paddingVertical: 12,
+                  paddingHorizontal: 20,
+                  borderBottomWidth: 1,
+                  borderBottomColor: '#eee',
+                }}>
+                <Text style={{ fontSize: 16, color: '#333' }}>{label}</Text>
+              </TouchableOpacity>
             );
           }}
           onEndReached={() => {
-
-            if (!fetchingRef.current && hasNextPage) {
-              fetchingRef.current = true;
-              fetchNextPage().finally(() => {
-                fetchingRef.current = false;
-              });
+            if (hasNextPage && !isFetchingNextPage) {
+              fetchNextPage();
             }
           }}
           onEndReachedThreshold={0.5}
           ListFooterComponent={
             isFetchingNextPage ? (
-              <View className="py-4">
+              <View style={{ padding: 20 }}>
                 <ActivityIndicator size="large" />
               </View>
-            ) : (
-              <View className="py-4" />
-            )
+            ) : null
           }
         />
-        {/* </ScrollView> */}
-      </BottomSheetView>
-    </BottomSheetModal>
+      </View>
+    </Modal>
   );
 };
 

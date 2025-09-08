@@ -3,10 +3,10 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { FlashList } from '@shopify/flash-list';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useLocalSearchParams } from 'expo-router';
 import Parse from 'parse/react-native';
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
+import { stringify_area_district } from '~/lib/stringify_district_area';
 import { Property_Type } from '~/type/property';
 import { deviceWidth } from '~/utils/global';
 import PropertyCard from '../Cards/PropertyCard';
@@ -18,15 +18,23 @@ type Props = {
 };
 
 type filterType = {
-  district: string;
-  area_1: string;
-  area_2: string;
+  district: string | null;
+  area_1: string | null;
+  area_2: string | null;
 };
 
 const limit = 40;
 
 const MarketPlace = ({ listing_type }: Props) => {
-  const { district, area_1, area_2 } = useLocalSearchParams<filterType>();
+  // const params = useLocalSearchParams<filterType>();
+
+  const [districtModal,setDistrictModal] = useState(false)
+
+  const [{ district, area_1, area_2 }, setSearch] = useState<filterType>({
+    area_1: null,
+    area_2: null,
+    district: null,
+  });
 
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
@@ -142,6 +150,10 @@ const MarketPlace = ({ listing_type }: Props) => {
     initialPageParam: 0,
   });
 
+  const changeSearch = (filter: Partial<filterType>) => {
+    setSearch((i) => ({ ...i, ...filter }));
+  };
+
   console.log(data);
   const properties = useMemo(() => data?.pages.flatMap((page) => page.results) ?? [], [data]);
 
@@ -157,13 +169,15 @@ const MarketPlace = ({ listing_type }: Props) => {
         // style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
       >
         {/* <View className="mb-3 bg-white"> */}
-          <SearchView
-            listing_type={listing_type}
-            text=""
-            onPress={() => {
-              bottomSheetRef.current?.present();
-            }}
-          />
+        <SearchView
+          listing_type={listing_type}
+          text={stringify_area_district({ district, area_1, area_2 })}
+          onPress={() => {setDistrictModal(true)
+          }}
+          onClear={() => {
+            setSearch({ district: null, area_1: null, area_2: null });
+          }}
+        />
         {/* </View> */}
       </LinearGradient>
       <View className="flex-1 bg-[#EEF1F7]">
@@ -196,9 +210,13 @@ const MarketPlace = ({ listing_type }: Props) => {
       {/* <Text className="text-2xl">{listing_type}</Text> */}
 
       <DistrictArea
-        ref={bottomSheetRef}
-        onPress={() => {
-          bottomSheetRef.current?.dismiss();
+        visible={districtModal}
+        onClose={()=>{setDistrictModal(false)}}
+        value={stringify_area_district({ district, area_1, area_2 })}
+        onPress={(data) => {
+          changeSearch(data);
+          setDistrictModal(false)
+          // bottomSheetRef.current?.dismiss();
         }}
       />
 

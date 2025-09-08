@@ -106,21 +106,21 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
           <TouchableWithoutFeedback onPress={() => {}}>
             <View className="mt-2">
               <View className="flex-row items-center justify-between">
-                <View className="my-[5px] flex-row items-center">
-                  <Text className="text-sm font-bold text-secondary">
+                <View className=" flex-row items-baseline">
+                  <Text className="text-lg font-bold text-secondary">
                     {'€ ' + formatNumber(property.price)}
                   </Text>
                   {property.listing_for !== 'Sale' && (
-                    <Text className="text-sm text-o_light_gray">{''}/Month</Text>
+                    <Text className="text-xs text-o_light_gray">{' '}/ Month</Text>
                   )}
                 </View>
               </View>
 
-              <View className="mb-[5px] flex-row items-center justify-between">
+              <View className="flex-row items-center justify-between">
                 <Text className="text-base font-bold text-primary">{property.title}</Text>
               </View>
 
-              <Text className="mb-[10px] text-xs text-primary">
+              <Text className="text-xs text-primary">
                 {stringify_area_district({
                   district: property.district,
                   area_1: property.area_1,
