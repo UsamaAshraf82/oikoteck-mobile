@@ -1,4 +1,4 @@
-import { useFonts } from "expo-font";
+import { useFonts } from 'expo-font';
 import { Slot, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
@@ -12,10 +12,16 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [ready, setReady] = useState(false);
 
-   const [fontsLoaded] = useFonts({
-    LufgaRegular: require("@/lufga/Lufga-Regular.ttf"),
-    LufgaMedium: require("./assets/fonts/Lufga-Medium.ttf"),
-    LufgaBold: require("./assets/fonts/Lufga-Bold.ttf"),
+  const [fontsLoaded] = useFonts({
+    LufgaThin: require('@/lufga/LufgaThin.ttf'),
+    LufgaExtraLight: require('@/lufga/LufgaExtraLight.ttf'),
+    LufgaLight: require('@/lufga/LufgaLight.ttf'),
+    LufgaRegular: require('@/lufga/LufgaRegular.ttf'),
+    LufgaMedium: require('@/lufga/LufgaMedium.ttf'),
+    LufgaSemiBold: require('@/lufga/LufgaSemiBold.ttf'),
+    LufgaBold: require('@/lufga/LufgaBold.ttf'),
+    LufgaExtraBold: require('@/lufga/LufgaExtraBold.ttf'),
+    LufgaBlack: require('@/lufga/LufgaBlack.ttf'),
   });
 
   const { user, refresh } = useUser();
@@ -39,15 +45,19 @@ export default function RootLayout() {
     // }
   }, []);
 
-  // if (!ready) return <Slot />;
-  // if (user === undefined) return <Slot />;
-
   return (
     <Provider>
-      {ready ?
-      <Stack screenOptions={{ headerShown: false }} initialRouteName={'(tabs)'}>
-        <Stack.Screen name="(tabs)" />
-      </Stack >:<Slot/>}
+      <Screens fontsLoaded={fontsLoaded} ready={ready} />
     </Provider>
   );
 }
+
+const Screens = ({ ready, fontsLoaded }: { ready: boolean; fontsLoaded: boolean }) => {
+  if (!ready) return <Slot />;
+  if (!fontsLoaded) return <Slot />;
+  return (
+    <Stack screenOptions={{ headerShown: false }} initialRouteName={'(tabs)'}>
+      <Stack.Screen name="(tabs)" />
+    </Stack>
+  );
+};

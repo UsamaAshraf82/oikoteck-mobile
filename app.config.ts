@@ -1,7 +1,9 @@
 import { ExpoConfig } from 'expo/config';
 
+const IS_DEV = process.env.EXPO_PUBLIC_APP_VARIANT?.trim() == 'development';
+
 const appConfig: ExpoConfig = {
-  name: 'OikoTeck',
+  name: IS_DEV ? 'OikoTeck Dev' : 'OikoTeck',
   slug: 'oikoteck',
   version: '1.0.0',
   orientation: 'portrait',
@@ -11,10 +13,10 @@ const appConfig: ExpoConfig = {
   newArchEnabled: true,
   ios: {
     supportsTablet: true,
-    bundleIdentifier: 'com.oikotext',
+    bundleIdentifier: IS_DEV ? 'com.oikotext.dev' : 'com.oikotext',
   },
   android: {
-    package: 'com.oikotext',
+    package: IS_DEV ? 'com.oikotext.dev' : 'com.oikotext',
     adaptiveIcon: {
       foregroundImage: './assets/adaptive-icon.png',
       backgroundColor: '#ffffff',
@@ -36,6 +38,15 @@ const appConfig: ExpoConfig = {
         imageWidth: 200,
         resizeMode: 'contain',
         backgroundColor: '#F63B3B',
+      },
+    ],
+    ['expo-font'],
+    [
+      'expo-build-properties',
+      {
+        android: {
+          ndkVersion: '26.3.11579264',
+        },
       },
     ],
   ],
