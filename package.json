@@ -2,12 +2,12 @@
   "name": "my-expo-app",
   "version": "1.0.0",
   "scripts": {
-    "start": "set EXPO_PUBLIC_APP_VARIANT=development&& expo start",
+    "start": "set EXPO_PUBLIC_APP_VARIANT=development&& expo start  --dev-client",
     "android": "set EXPO_PUBLIC_APP_VARIANT=development&& expo prebuild && expo run:android",
     "prebuild": "set EXPO_PUBLIC_APP_VARIANT=development&& expo prebuild ",
     "ios": "expo run:ios",
     "build:android": "set NODE_ENV=production&&expo prebuild && cd android && gradlew bundleRelease",
-    "install:release": "set EXPO_PUBLIC_APP_VARIANT=production&&set NODE_ENV=production&& expo prebuild && cd android && gradlew installRelease"
+    "install:release": "set NODE_ENV=production&& expo prebuild && cd android && gradlew installRelease"
   },
   "dependencies": {
     "@gorhom/bottom-sheet": "^5.2.6",

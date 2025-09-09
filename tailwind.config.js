@@ -21,6 +21,19 @@ module.exports = {
         o_light_gray: '#7D7D7D',
         o_gray: { 200: '#8D95A5' },
       },
+      fontFamily: {
+        sans: [
+          'LufgaThin', // font-thin
+          'LufgaExtraLight', // font-extralight
+          'LufgaLight', // font-light
+          'LufgaRegular', // font-normal
+          'LufgaMedium', // font-medium
+          'LufgaSemiBold', // font-semibold
+          'LufgaBold', // font-bold
+          'LufgaExtraBold', // font-extrabold
+          'LufgaBlack', // font-black
+        ],
+      },
     },
   },
   plugins: [],

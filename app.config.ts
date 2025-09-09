@@ -35,8 +35,8 @@ const appConfig: ExpoConfig = {
       'expo-splash-screen',
       {
         image: './assets/adaptive-text-icon.png',
-        imageWidth: 1024,
-        resizeMode: 'contain',
+        imageWidth: 200,
+        // resizeMode: 'contain',
         backgroundColor: '#ffffff',
       },
     ],

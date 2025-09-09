@@ -7,6 +7,7 @@ import useUser from '~/store/useUser';
 import { ParseInit } from '~/utils/Parse';
 import '../../global.css';
 
+
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -24,7 +25,7 @@ export default function RootLayout() {
     LufgaBlack: require('@/lufga/LufgaBlack.ttf'),
   });
 
-  const { user, refresh } = useUser();
+  const { refresh } = useUser();
 
   // const router = useRouter();
 

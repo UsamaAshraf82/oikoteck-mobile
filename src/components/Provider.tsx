@@ -1,7 +1,7 @@
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { PropsWithChildren, useEffect, useState } from 'react';
-import { Keyboard, KeyboardAvoidingView, Platform } from 'react-native';
+import { Keyboard, KeyboardAvoidingView } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {
   initialWindowMetrics,
@@ -34,12 +34,12 @@ const Provider = ({ children }: PropsWithChildren) => {
 const KeyboardAvoidingViewP = ({ children }: PropsWithChildren) => {
   const isKeyboardVisible = useKeyboardVisible();
 
-  if (Platform.OS === 'ios') {
-    return children;
-  }
+  // if (Platform.OS === 'ios') {
+  //   return children;
+  // }
 
   return (
-    <KeyboardAvoidingView enabled={isKeyboardVisible} behavior={'height'} style={{ flex: 1 }}>
+    <KeyboardAvoidingView   style={{ flex: 1 }}>
       {children}
     </KeyboardAvoidingView>
   );

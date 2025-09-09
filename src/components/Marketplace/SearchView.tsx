@@ -14,7 +14,7 @@ type Props = {
   onClear: () => void;
 };
 
-export const SearchView = ({ listing_type, text, onPress,onClear }: Props) => {
+export const SearchView = ({ listing_type, text, onPress, onClear }: Props) => {
   return (
     <View className="mx-4 flex-row items-center justify-between rounded-full border border-o_light_gray px-2 py-4">
       <TouchableWithoutFeedback onPress={onPress}>
