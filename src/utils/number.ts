@@ -1,5 +1,5 @@
 // utils/formatNumber.ts
-export function formatNumber(value: number | string, locale = 'en-US') {
+export function thoasandseprator(value: number | string, locale = 'en-US') {
   const n = Number(value);
   if (Number.isNaN(n)) return String(value);
   // Preferred: Intl

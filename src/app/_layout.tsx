@@ -3,10 +3,10 @@ import { Slot, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
 import Provider from '~/components/Provider';
+import Select from '~/components/Sheets/Select';
 import useUser from '~/store/useUser';
 import { ParseInit } from '~/utils/Parse';
 import '../../global.css';
-
 
 SplashScreen.preventAutoHideAsync();
 
@@ -49,6 +49,7 @@ export default function RootLayout() {
   return (
     <Provider>
       <Screens fontsLoaded={fontsLoaded} ready={ready} />
+      <Select />
     </Provider>
   );
 }

@@ -1,21 +1,21 @@
 import { FlashList } from '@shopify/flash-list';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import Parse from 'parse/react-native';
-import { GlobeHemisphereEastIcon, MagnifyingGlassIcon } from 'phosphor-react-native';
+import { GlobeHemisphereEastIcon, XIcon } from 'phosphor-react-native';
 import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
-  Dimensions,
   Platform,
   Text,
+  TouchableNativeFeedback,
   TouchableOpacity,
   View,
 } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
 import { stringify_area_district } from '~/lib/stringify_district_area';
-
-const { height } = Dimensions.get('window');
+import { cn } from '~/lib/utils';
+import { deviceHeight } from '~/utils/global';
 
 type Props = {
   visible: boolean;
@@ -63,55 +63,47 @@ const DistrictArea = ({ visible, onClose, value = '', onPress }: Props) => {
       onBackdropPress={onClose}
       onSwipeComplete={onClose}
       swipeDirection="down"
-    hardwareAccelerated
+      hardwareAccelerated
       style={{ justifyContent: 'flex-end', margin: 0 }}
       propagateSwipe>
       <View
+        className="rounded-t-[20px] bg-white py-4 "
         style={{
-          height: height * 0.9,
-          backgroundColor: 'white',
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
-          paddingVertical: 10,
+          height: deviceHeight * 0.9,
         }}>
         {/* Handle bar */}
-        <View
-          style={{
-            alignSelf: 'center',
-            width: 40,
-            height: 4,
-            borderRadius: 2,
-            backgroundColor: '#ccc',
-            marginBottom: 10,
-          }}
-        />
+        <View className="mb-3 h-1 w-10 self-center rounded-sm bg-[#ccc]" />
 
         {/* Search bar */}
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            borderColor: '#ddd',
-            borderWidth: 1,
-            borderRadius: 30,
-            paddingHorizontal: 12,
-            marginHorizontal: 16,
-            paddingVertical: Platform.OS === 'ios' ? 10 : 0,
-          }}>
-          <GlobeHemisphereEastIcon />
-          <TextInput
+        <View className="flex-row items-center justify-between">
+          <View
             style={{
-              flex: 1,
-              fontSize: 14,
-              paddingLeft: 8,
-              color: '#333',
-            }}
-            value={text}
-            onChangeText={setText}
-            placeholder="Search district or area"
-            autoFocus
-          />
-          <MagnifyingGlassIcon />
+              flexDirection: 'row',
+              alignItems: 'center',
+              borderColor: '#ddd',
+              borderWidth: 1,
+              borderRadius: 30,
+              paddingHorizontal: 12,
+              marginHorizontal: 16,
+              paddingVertical: Platform.OS === 'ios' ? 10 : 0,
+            }}>
+            <GlobeHemisphereEastIcon />
+            <TextInput
+              style={{
+                flex: 1,
+                fontSize: 14,
+                paddingLeft: 8,
+                color: '#333',
+              }}
+              value={text}
+              onChangeText={setText}
+              placeholder="Search district or area"
+              autoFocus
+            />
+          </View>
+          <TouchableNativeFeedback onPress={onClose}>
+            <XIcon />
+          </TouchableNativeFeedback>
         </View>
 
         {/* FlashList with infinite scroll */}
@@ -128,13 +120,16 @@ const DistrictArea = ({ visible, onClose, value = '', onPress }: Props) => {
                   onPress(item);
                   onClose();
                 }}
+                className=""
                 style={{
                   paddingVertical: 12,
                   paddingHorizontal: 20,
                   borderBottomWidth: 1,
                   borderBottomColor: '#eee',
                 }}>
-                <Text style={{ fontSize: 16, color: '#333' }}>{label}</Text>
+                <Text className={cn('text-primary ', { 'text-secondary': value === label })}>
+                  {label}
+                </Text>
               </TouchableOpacity>
             );
           }}

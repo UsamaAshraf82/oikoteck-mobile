@@ -9,7 +9,7 @@ import { cn } from '~/lib/utils';
 import { Property_Type } from '~/type/property';
 import { cloudfront } from '~/utils/cloudfront';
 import { deviceWidth } from '~/utils/global';
-import { formatNumber } from '~/utils/number';
+import { thoasandseprator } from '~/utils/number';
 import tailwind from '~/utils/tailwind';
 
 const wide = deviceWidth - 16 * 2;
@@ -108,7 +108,7 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
               <View className="flex-row items-center justify-between">
                 <View className=" flex-row items-baseline">
                   <Text className="text-lg font-bold text-secondary">
-                    {'€ ' + formatNumber(property.price)}
+                    {'€ ' + thoasandseprator(property.price)}
                   </Text>
                   {property.listing_for !== 'Sale' && (
                     <Text className="text-xs text-o_light_gray">{' '}/ Month</Text>

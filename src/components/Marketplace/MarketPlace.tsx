@@ -253,12 +253,12 @@ const MarketPlace = ({ listing_type }: Props) => {
         }}
         value={stringified_area}
         onPress={(data) => {
-          changeSearch(data);
           setDistrictModal(false);
-          // bottomSheetRef.current?.dismiss();
+          changeSearch(data);
         }}
       />
       <FilterModal
+      listing_type={listing_type}
         visible={filtersModal}
         onClose={() => {
           setFiltersModal(false);
@@ -266,8 +266,7 @@ const MarketPlace = ({ listing_type }: Props) => {
         value={search}
         onPress={(data) => {
           changeSearch(data);
-          setDistrictModal(false);
-          // bottomSheetRef.current?.dismiss();
+          setFiltersModal(false);
         }}
       />
 
