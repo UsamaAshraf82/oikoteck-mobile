@@ -45,7 +45,7 @@ const appConfig: ExpoConfig = {
       'expo-build-properties',
       {
         android: {
-          ndkVersion: '26.3.11579264',
+          // ndkVersion: '26.3.11579264',
         },
       },
     ],

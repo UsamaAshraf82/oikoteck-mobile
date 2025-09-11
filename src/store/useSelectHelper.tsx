@@ -5,6 +5,7 @@ type Options<T> = { label: string; value: T };
 
 type Select<T> = {
   label: string;
+  value?: T;
   onClose?: () => void;
   onPress?: (data: Options<T>) => void;
   options: Options<T>[];

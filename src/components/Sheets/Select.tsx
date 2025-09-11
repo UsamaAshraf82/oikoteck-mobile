@@ -1,16 +1,18 @@
+import { CheckCircleIcon } from 'phosphor-react-native';
 import React from 'react';
 import { Text, TouchableNativeFeedback, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
+import { isDeepEqual } from 'remeda';
 import useSelect from '~/store/useSelectHelper';
 import { deviceHeight } from '~/utils/global';
-
+import tailwind from '~/utils/tailwind';
 const Select = () => {
   const { value } = useSelect();
 
   if (value === null) return null;
 
-  console.log(value);
+  console.log(value.value);
   return (
     <Modal
       isVisible={value !== null}
@@ -34,8 +36,9 @@ const Select = () => {
         <ScrollView>
           {value.options.map((item) => (
             <TouchableNativeFeedback key={item.label} onPress={() => value.onPress?.(item)}>
-              <View className="py-2 ">
+              <View className="py-2 flex-row justify-between ">
                 <Text className="text-lg font-medium text-primary">{item.label}</Text>
+                {isDeepEqual(item.value, value.value) &&<CheckCircleIcon size={25} color={tailwind.theme.colors.secondary} weight='fill' />}
               </View>
             </TouchableNativeFeedback>
           ))}
