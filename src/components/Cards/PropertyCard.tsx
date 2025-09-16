@@ -1,7 +1,6 @@
 import { TouchableWithoutFeedback } from '@gorhom/bottom-sheet';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import { BathtubIcon, BedIcon } from 'phosphor-react-native';
 import { Text, View } from 'react-native';
 import Animated, { interpolate, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
@@ -12,6 +11,9 @@ import { cloudfront } from '~/utils/cloudfront';
 import { deviceWidth } from '~/utils/global';
 import { thoasandseprator } from '~/utils/number';
 import tailwind from '~/utils/tailwind';
+import BathIcon from '../SVG/Bath';
+import BedIcon from '../SVG/Bed';
+import SizeIcon from '../SVG/Size';
 
 const wide = deviceWidth - 16 * 2;
 const height = wide / 1.2;
@@ -109,56 +111,65 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
           </FavoriteButtonContainer> */}
             </View>
 
-              <View className="mt-2">
-                <View className="flex-row items-center justify-between">
-                  <View className=" flex-row items-baseline">
-                    <Text className="text-lg font-bold text-secondary">
-                      {'€ ' + thoasandseprator(property.price)}
-                    </Text>
-                    {property.listing_for !== 'Sale' && (
-                      <Text className="text-xs text-o_light_gray"> / Month</Text>
-                    )}
-                  </View>
-                </View>
-
-                <View className="flex-row items-center justify-between">
-                  <Text className="text-base font-bold text-primary">{property.title}</Text>
-                </View>
-
-                <Text className="text-xs text-primary">
-                  {stringify_area_district({
-                    district: property.district,
-                    area_1: property.area_1,
-                    area_2: property.area_2,
-                  })}
-                </Text>
-
-                <View className="mt-1 flex-row items-center justify-start">
-                  <View style={{ marginRight: 15, flexDirection: 'row', alignItems: 'center' }}>
-                    <BedIcon size={20} color={tailwind.theme.colors.o_light_gray} />
-                    <Text className="ml-1 mr-0 text-sm text-o_light_gray">
-                      {property.bedrooms} beds
-                    </Text>
-                  </View>
-                  <View style={{ marginRight: 15, flexDirection: 'row', alignItems: 'center' }}>
-                    <BathtubIcon size={20} color={tailwind.theme.colors.o_light_gray} />
-                    <Text className="ml-1 mr-0 text-sm text-o_light_gray">
-                      {property.bedrooms} beds
-                    </Text>
-                  </View>
-                  <View style={{ marginRight: 15, flexDirection: 'row', alignItems: 'center' }}>
-                    <BathtubIcon size={20} color={tailwind.theme.colors.o_light_gray} />
-                    <Text className="ml-1 mr-0 text-sm text-o_light_gray">{property.size} m²</Text>
-                  </View>
-                  {/* {property.property_type === 'Commercial' ? (
-                <InfoItem icon={Images.door} text={property.bedrooms + ' beds'} />
-              ) : (
-                <InfoItem icon={Images.bed} text={property.bedrooms + ' beds'} />
-              )}
-              <InfoItem icon={Images.bath} text={property.bathrooms + ' baths'} />
-              <InfoItem icon={Images.area} text={property.size} size={'size'} /> */}
+            <View className="mt-2">
+              <View className="flex-row items-center justify-between">
+                <View className=" flex-row items-baseline">
+                  <Text className="text-lg font-bold text-secondary">
+                    {'€ ' + thoasandseprator(property.price)}
+                  </Text>
+                  {property.listing_for !== 'Sale' && (
+                    <Text className="text-xs text-o_light_gray"> / Month</Text>
+                  )}
                 </View>
               </View>
+
+              <View className="flex-row items-center justify-between">
+                <Text className="text-base font-bold text-primary">{property.title}</Text>
+              </View>
+
+              <Text className="text-xs text-primary">
+                {stringify_area_district({
+                  district: property.district,
+                  area_1: property.area_1,
+                  area_2: property.area_2,
+                })}
+              </Text>
+
+              <View className="mt-1 flex-row items-center justify-start">
+                <View className="mr-4 flex-row items-center">
+                  <BedIcon
+                    height={17}
+                    width={17}
+                    color={tailwind.theme.colors.o_light_gray}
+                    className="text-o_light_gray"
+                  />
+                  <Text className="ml-1 mr-0 text-sm text-o_light_gray">
+                    {property.bedrooms} beds
+                  </Text>
+                </View>
+                <View className="mr-4 flex-row items-center">
+                  <BathIcon
+                    height={17}
+                    width={17}
+                    color={tailwind.theme.colors.o_light_gray}
+                    className="text-o_light_gray"
+                  />
+                  <Text className="ml-1 mr-0 text-sm text-o_light_gray">
+                    {property.bedrooms} beds
+                  </Text>
+                </View>
+                <View className="mr-4 flex-row items-center  text-o_light_gray">
+                  <SizeIcon
+                    height={18}
+                    width={18}
+                    color={tailwind.theme.colors.o_light_gray}
+                    className="text-o_light_gray"
+                  />
+                  <Text className="ml-1 mr-0 text-sm text-o_light_gray">{property.size} m²</Text>
+                </View>
+
+              </View>
+            </View>
           </View>
         </View>
       </TouchableWithoutFeedback>

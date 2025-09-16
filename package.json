@@ -1,5 +1,5 @@
 {
-  "name": "my-expo-app",
+  "name": "oikoteck",
   "version": "1.0.0",
   "scripts": {
     "start": "set EXPO_PUBLIC_APP_VARIANT=development&& expo start  --dev-client",
@@ -29,7 +29,7 @@
     "expo-linking": "~7.1.7",
     "expo-router": "^5.1.6",
     "expo-splash-screen": "^0.30.10",
-    "expo-status-bar": "^2.2.3",
+    "expo-status-bar": "~2.2.3",
     "expo-system-ui": "~5.0.11",
     "lucide-react-native": "^0.542.0",
     "luxon": "^3.7.2",
@@ -42,6 +42,7 @@
     "react-native-css-interop": "^0.1.22",
     "react-native-gesture-handler": "~2.24.0",
     "react-native-get-random-values": "^1.11.0",
+    "react-native-maps": "1.20.1",
     "react-native-modal": "14.0.0-rc.1",
     "react-native-reanimated": "~3.17.4",
     "react-native-reanimated-carousel": "^4.0.3",
@@ -80,5 +81,5 @@
   },
   "main": "index.ts",
   "private": true,
-  "packageManager": "pnpm@10.15.1+sha512.34e538c329b5553014ca8e8f4535997f96180a1d0f614339357449935350d924e22f8614682191264ec33d1462ac21561aff97f6bb18065351c162c7e8f6de67"
+  "packageManager": "pnpm@10.16.1+sha512.0e155aa2629db8672b49e8475da6226aa4bdea85fdcdfdc15350874946d4f3c91faaf64cbdc4a5d1ab8002f473d5c3fcedcd197989cf0390f9badd3c04678706"
 }

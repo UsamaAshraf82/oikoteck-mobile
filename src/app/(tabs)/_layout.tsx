@@ -29,6 +29,9 @@ export default function TabsLayout() {
         tabBarItemStyle: {
           borderColor: tailwind.theme.colors.white,
         },
+        // tabBarButton: (props) => (
+        //   <Pressable android_ripple={{ color: tailwind.theme.colors.secondary }}  />{p}</Pressable>
+        // ),
       }}>
       <Tabs.Screen
         name="rent"

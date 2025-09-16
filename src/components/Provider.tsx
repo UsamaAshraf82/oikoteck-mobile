@@ -1,7 +1,7 @@
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { PropsWithChildren, useEffect, useState } from 'react';
-import { Keyboard, KeyboardAvoidingView } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { PropsWithChildren } from 'react';
+import { KeyboardAvoidingView, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {
   initialWindowMetrics,
@@ -17,56 +17,20 @@ const Provider = ({ children }: PropsWithChildren) => {
   return (
     <QueryClientProvider client={queryClient}>
       <GestureHandlerRootView>
-        <BottomSheetModalProvider>
+        <View className="flex-1 bg-white text-black">
+          <StatusBar style="dark" animated networkActivityIndicatorVisible />
           <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-            <SafeAreaView edges={['top', 'left', 'right']} className="flex-1">
-              <KeyboardAvoidingViewP>
-                {children}
-                {/* c</BottomSheetModalProvider> */}
-              </KeyboardAvoidingViewP>
+            <SafeAreaView edges={['top', 'left', 'right', 'bottom']} className="flex-1">
+              <KeyboardAvoidingView className="flex-1">{children}</KeyboardAvoidingView>
             </SafeAreaView>
           </SafeAreaProvider>
-        </BottomSheetModalProvider>
+        </View>
       </GestureHandlerRootView>
     </QueryClientProvider>
   );
 };
-const KeyboardAvoidingViewP = ({ children }: PropsWithChildren) => {
-  const isKeyboardVisible = useKeyboardVisible();
-
-  // if (Platform.OS === 'ios') {
-  //   return children;
-  // }
-
-  return (
-    <KeyboardAvoidingView   style={{ flex: 1 }}>
-      {children}
-    </KeyboardAvoidingView>
-  );
-};
+// const KeyboardAvoidingViewP = ({ children }: PropsWithChildren) => {
+//   return <KeyboardAvoidingView style={{ flex: 1 }}>{children}</KeyboardAvoidingView>;
+// };
 
 export default Provider;
-
-const useKeyboardVisible = () => {
-  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
-
-  const handleKeyboardShow = () => {
-    setIsKeyboardVisible(true);
-  };
-
-  const handleKeyboardHide = () => {
-    setIsKeyboardVisible(false);
-  };
-
-  useEffect(() => {
-    const showSubscription = Keyboard.addListener('keyboardDidShow', handleKeyboardShow);
-    const hideSubscription = Keyboard.addListener('keyboardDidHide', handleKeyboardHide);
-
-    return () => {
-      showSubscription.remove();
-      hideSubscription.remove();
-    };
-  }, []);
-
-  return isKeyboardVisible;
-};

@@ -4,6 +4,7 @@ import { CalendarIcon } from 'phosphor-react-native';
 import React, { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 import { cn } from '~/lib/utils';
+import tailwind from '~/utils/tailwind';
 import PressableView from '../HOC/PressableView';
 
 type Props = {
@@ -33,9 +34,9 @@ const DatePicker: React.FC<Props> = ({
   const [date, setDate] = useState<Date | null>(value);
   const [visible, setVisible] = useState(false);
 
-  useEffect(()=>{
-    setDate(value)
-  },[value])
+  useEffect(() => {
+    setDate(value);
+  }, [value]);
 
   const handleChange = (_event: any, selectedDate?: Date) => {
     setVisible(false);
@@ -48,11 +49,16 @@ const DatePicker: React.FC<Props> = ({
   return (
     <View className="flex-1">
       <PressableView onPress={() => setVisible(true)} className={className}>
-        <View className='px-2 flex-1 w-full justify-between items-center flex-row '>
+        <View className="w-full flex-1 flex-row items-center justify-between px-2 ">
           <Text className={cn('text-left', textClassName)}>
             <DateText date={date} mode={mode} placeholder={placeholder} />
           </Text>
-          <CalendarIcon />
+          <CalendarIcon
+            color={tailwind.theme.colors.primary}
+            weight="duotone"
+            duotoneColor={tailwind.theme.colors.primary}
+            duotoneOpacity={0.4}
+          />
         </View>
       </PressableView>
 

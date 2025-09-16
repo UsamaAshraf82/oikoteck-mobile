@@ -12,7 +12,14 @@ import { DateTime } from 'luxon';
 import Parse from 'parse/react-native';
 import { FadersHorizontalIcon, SortAscendingIcon, XCircleIcon } from 'phosphor-react-native';
 import { useMemo, useState } from 'react';
-import { ActivityIndicator, ScrollView, Text, TouchableWithoutFeedback, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Pressable,
+  ScrollView,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import { stringify_area_district } from '~/lib/stringify_district_area';
 import useSelect from '~/store/useSelectHelper';
 import { Property_Type } from '~/type/property';
@@ -380,7 +387,6 @@ const MarketPlace = ({ listing_type }: Props) => {
     return filter;
   }, [sort, search]);
 
-
   return (
     <View className="flex-1 bg-white ">
       <View className="bg-white">
@@ -402,7 +408,7 @@ const MarketPlace = ({ listing_type }: Props) => {
           }}
         />
         {hasFilters ? (
-          <ScrollView horizontal className="mx-4  py-1">
+          <ScrollView horizontal key="filter" className="mx-4  py-1">
             {filters.map((i) => (
               <TouchableWithoutFeedback key={i.filter} onPress={i.onPress}>
                 <View className="mr-2 h-10 flex-1 flex-row items-center justify-center rounded-2xl border border-[#E2E4E8] bg-white  px-3 py-2 ">
@@ -414,21 +420,22 @@ const MarketPlace = ({ listing_type }: Props) => {
             ))}
           </ScrollView>
         ) : (
-          <ScrollView horizontal className="mx-4 py-2">
+          <ScrollView horizontal key="district" className="mx-4 py-2">
             {district_images.map((i) => (
-              <TouchableWithoutFeedback
+              <Pressable
                 key={i.district}
-                onPress={() => changeSearch({ district: i.district })}>
-                <View className="mr-2  flex-1 flex-row items-center justify-center rounded-2xl border border-[#E2E4E8] bg-white px-1  py-2 ">
-                  <Image
-                    contentFit="cover"
-                    source={i.image}
-                    style={{ width: 70, height: 50, borderRadius: 16 }}
-                  />
+                shouldRasterizeIOS
+                android_ripple={{ color: '#E2E4E8' }}
+                className="mr-2 active:bg-black/20  flex-1 flex-row  items-center justify-center rounded-2xl border border-[#E2E4E8] bg-white px-1  py-2 "
+                onPress={() => changeSearch({ district: i.url })}>
+                <Image
+                  contentFit="cover"
+                  source={i.image}
+                  style={{ width: 70, height: 50, borderRadius: 8 }}
+                />
 
-                  <Text className="mx-2">{i.district}</Text>
-                </View>
-              </TouchableWithoutFeedback>
+                <Text className="mx-2">{i.district}</Text>
+              </Pressable>
             ))}
           </ScrollView>
         )}

@@ -1,12 +1,28 @@
 import { useQuery } from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { DateTime } from 'luxon';
 import Parse from 'parse/react-native';
-import { ArrowLeftIcon, GlobeHemisphereWestIcon, SquaresFourIcon } from 'phosphor-react-native';
+import {
+  ArrowLeftIcon,
+  CalendarIcon,
+  CouchIcon,
+  GlobeHemisphereWestIcon,
+  HouseLineIcon,
+  MapPinIcon,
+  SquaresFourIcon,
+  StairsIcon,
+} from 'phosphor-react-native';
 import { ScrollView, Text, TouchableWithoutFeedback, View } from 'react-native';
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import Animated, { interpolate, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
+import Grid from '~/components/HOC/Grid';
+import BathIcon from '~/components/SVG/Bath';
+import BedIcon from '~/components/SVG/Bed';
+import SizeIcon from '~/components/SVG/Size';
 import { stringify_area_district } from '~/lib/stringify_district_area';
+import { cn } from '~/lib/utils';
 import { Property_Type } from '~/type/property';
 import { cloudfront } from '~/utils/cloudfront';
 import { deviceWidth } from '~/utils/global';
@@ -34,11 +50,9 @@ export default function Index() {
   if (!property) {
     return null;
   }
-  console.log(property);
-
   return (
     <ScrollView>
-      <View className="flex-1 ">
+      <View className="flex-1 bg-white">
         <View className="relative h-[380px]">
           <Carousel
             data={property.images}
@@ -87,7 +101,9 @@ export default function Index() {
         <View className="p-4">
           <View className="flex-row items-baseline ">
             <Text className="text-2xl font-bold text-secondary">€ {property.price}</Text>
-           {property.listing_for === 'Rental' && <Text className="text-sm font-medium text-[#8D95A5]">/Month</Text>}
+            {property.listing_for === 'Rental' && (
+              <Text className="text-sm font-medium text-[#8D95A5]">/Month</Text>
+            )}
           </View>
           <Text className="mt-2 text-xl font-bold text-primary">{property.title}</Text>
           <View className="mt-3 flex-row items-center">
@@ -113,6 +129,127 @@ export default function Index() {
               </Text>
             </View>
           )}
+          {property.exact_location && (
+            <>
+              <View className="mt-2" />
+              <View className="flex-col rounded-2xl bg-[#f4f4f6] p-3 text-primary">
+                <Text>Street Address</Text>
+                <View className="mt-2 flex-row items-center gap-2">
+                  <MapPinIcon size={20} />
+                  <Text className="text-[15px] font-medium">{property.address}</Text>
+                </View>
+              </View>
+            </>
+          )}
+          <View className="mt-2" />
+          <Grid cols={2} gap={2}>
+            {[
+              {
+                icon:
+                  property.property_type === 'Commercial' ? (
+                    <BedIcon width={18} height={18} />
+                  ) : (
+                    <BedIcon width={18} height={18} />
+                  ),
+                heading: 'Bedrooms',
+                className: '',
+                detail: property.property_type === 'Land' ? 'N/A' : property.bedrooms,
+              },
+              {
+                icon: <BathIcon width={18} height={18} />,
+                heading: 'Bathrooms',
+                detail: property.property_type === 'Land' ? 'N/A' : property.bathrooms,
+              },
+              {
+                icon: <SizeIcon width={18} height={18} />,
+                heading: property.property_type === 'Land' ? 'Plot Size' : 'Size',
+                detail: property.size + ' m²',
+              },
+              {
+                heading: 'Type',
+                icon: <HouseLineIcon size={20} />,
+
+                detail: property.property_type,
+              },
+              {
+                heading: 'Floor No',
+                icon: <StairsIcon size={20} />,
+                className: property.property_type === 'Land' ? 'hidden' : '',
+                detail: property.floor === 0 ? 'Ground' : property.floor,
+              },
+              {
+                heading: 'Listing Date',
+                icon: <CalendarIcon size={20} />,
+                detail: new Date(property.createdAt).toLocaleDateString('en-GB'),
+              },
+              {
+                heading: 'Furnished',
+                icon: <CouchIcon size={20} />,
+                detail: property.furnished ? 'Yes' : 'No',
+              },
+            ].map((i, j) => (
+              <View
+                key={i.heading}
+                className={cn('flex-col rounded-2xl bg-[#f4f4f6] p-3 text-primary', i.className)}>
+                <Text>{i.heading}</Text>
+                <View className="mt-2 flex-row items-center gap-2">
+                  {i.icon}
+                  <Text className="text-[15px] font-medium">{i.detail}</Text>
+                </View>
+              </View>
+            ))}
+          </Grid>
+          <View className="mt-2" />
+          <Text>{property.description}</Text>
+          <View className="mt-5" />
+          <View className="flex-col gap-1">
+            <Text className="text-2xl font-semibold">Home Details</Text>
+            {property.special_feature.map((i) => (
+              <Text key={i}>• {i}</Text>
+            ))}
+            <Text>
+              • {property.listing_for === 'Rental' ? 'Earliest Move-in' : 'Earliest Sale'} :{' '}
+              {property.move_in_date instanceof Date
+                ? DateTime.fromJSDate(property.move_in_date).toLocaleString(DateTime.DATE_SHORT, {
+                    locale: 'en-GB',
+                  })
+                : DateTime.fromISO(property.move_in_date.iso).toLocaleString(DateTime.DATE_SHORT, {
+                    locale: 'en-GB',
+                  })}
+            </Text>
+            {!!property?.heating && property?.heating !== 'None' && (
+              <Text>• {property?.heating}</Text>
+            )}
+            {!!property.heating_expense && (
+              <Text>• Heating expenses : € {property.heating_expense}</Text>
+            )}
+            {!!property.energy_class && <Text>• Energy : {property.energy_class}</Text>}
+            {!!property.construction_year && (
+              <Text>• Construction year : {property.construction_year || ''}</Text>
+            )}
+            {!!property.floor && <Text>• Floor : {property.floor || ''}</Text>}
+            {!!property.property_oriantation && (
+              <Text>• Orientation : {property.property_oriantation || ''} </Text>
+            )}
+            {!!property.plot_size && <Text>• Plot Size : {property.plot_size || ''} m²</Text>}
+          </View>
+          <View className="mt-5" />
+          <View className="flex-col gap-1">
+            <Text className="text-2xl font-semibold">Payment Methods</Text>
+            <Text>
+              • {property.payment_frequency === 1
+                ? 'Monthly Payments'
+                : `Payment every ${property.payment_frequency} Months`}
+            </Text>
+            <Text>
+              • {property.deposit}-{property.deposit === 1 ? 'Month' : 'Months'} Security Deposit
+            </Text>
+          </View>
+          <View className="flex-col gap-1">
+            <Text className="text-2xl font-semibold">Neighborhood Overview</Text>
+           <MapView provider={PROVIDER_GOOGLE} />
+          </View>
+          <View className="mt-5" />
         </View>
       </View>
     </ScrollView>

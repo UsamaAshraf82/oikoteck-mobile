@@ -1,6 +1,7 @@
 import { useFonts } from 'expo-font';
 import { Slot, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
+import * as SystemUI from 'expo-system-ui';
 import { useEffect, useState } from 'react';
 import Provider from '~/components/Provider';
 import Select from '~/components/Sheets/Select';
@@ -34,6 +35,8 @@ export default function RootLayout() {
       try {
         await ParseInit();
         await refresh();
+        const sysyem = await SystemUI.getBackgroundColorAsync();
+        console.log(sysyem);
         await SplashScreen.hideAsync();
         setReady(true);
       } catch (e) {
