@@ -32,7 +32,7 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withDecay,
-  withSpring
+  withSpring,
 } from 'react-native-reanimated';
 import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
 import Grid from '~/components/HOC/Grid';
@@ -152,16 +152,29 @@ export default function Index() {
               onPress={() => setVisible(false)}>
               <XIcon size={20} color="white" />
             </TouchableOpacity>
-            <View className="absolute bottom-2 h-24 left-0 right-0 flex-row justify-center">
-              <ScrollView horizontal>
-                {property.images.map((item) => {
+            <View className="absolute bottom-2 left-0 right-0 h-24 flex-row justify-center">
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ alignItems: 'center', paddingHorizontal: 4 }}>
+                {property.images.map((item, index) => {
                   const { src: transformed, lazy } = cloudfront(item, true);
+
                   return (
-                    <Pressable onPress={() => setVisible(true)} className="px-1">
+                    <Pressable
+                      key={index}
+                      onPress={() => {
+                        carouselRef.current?.scrollTo({ index, animated: true });
+                      }}
+                      style={{ marginHorizontal: 4 }}>
                       <Image
-                        contentFit="contain"
+                        contentFit="contain" // keep aspect ratio
                         placeholderContentFit="contain"
-                        style={{ height: 100 }}
+                        style={{
+                          width: 90,
+                          height: 90,
+                          borderRadius: 6,
+                        }}
                         source={transformed}
                         placeholder={lazy}
                       />
@@ -482,7 +495,7 @@ function ZoomableImage({
     })
     .activeOffsetY([-9999, 9999]); // disables vertical drag
 
-  const composed = Gesture.Exclusive(doubleTap, Gesture.Simultaneous(pinch, pan))
+  const composed = Gesture.Exclusive(doubleTap, Gesture.Simultaneous(pinch, pan));
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [
