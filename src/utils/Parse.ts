@@ -1,6 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Parseini from 'parse/react-native';
-import { Platform } from 'react-native';
 
 let _Parse: typeof Parseini | null = null;
 
@@ -10,14 +9,12 @@ export const ParseInit = async () => {
   Parseini.serverURL = process.env.EXPO_PUBLIC_PARSE_API_ADDRESS;
   Parseini.setAsyncStorage(AsyncStorage);
 
-  const Installation = new Parseini.Installation();
-  Installation.set('deviceType',Platform.OS);
+  // const Installation = new Parseini.Installation();
+  // Installation.set('deviceType', Platform.OS);
 
-  console.log(Installation)
-
-  try {
-    await Installation.save();
-  } catch {}
+  // try {
+  //   await Installation.save();
+  // } catch {}
 
   _Parse = Parseini;
 

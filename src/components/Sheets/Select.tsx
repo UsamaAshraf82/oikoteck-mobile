@@ -12,7 +12,6 @@ const Select = () => {
 
   if (value === null) return null;
 
-  console.log(value.value);
   return (
     <Modal
       isVisible={value !== null}

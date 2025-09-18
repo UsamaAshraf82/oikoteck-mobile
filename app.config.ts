@@ -21,6 +21,7 @@ const appConfig: ExpoConfig = {
     config: {
       googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
     },
+    googleServicesFile: './GoogleService-Info.plist',
   },
   android: {
     package: IS_DEV ? 'com.oikoteck.dev' : 'com.oikoteck.app',
@@ -34,6 +35,7 @@ const appConfig: ExpoConfig = {
         apiKey: process.env.GOOGLE_MAPS_API_KEY,
       },
     },
+    googleServicesFile: './google-services.json',
   },
   extra: {
     appId: process.env.EXPO_PUBLIC_APP_ID,

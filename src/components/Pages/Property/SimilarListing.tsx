@@ -26,7 +26,6 @@ const SimilarListing = ({ property }: { property: Property_Type }) => {
     initialData: null,
   });
 
-  console.log(data);
 
   if (data === null) {
     return;

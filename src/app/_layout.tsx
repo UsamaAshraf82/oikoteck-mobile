@@ -1,3 +1,4 @@
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { useFonts } from 'expo-font';
 import { Slot, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -5,10 +6,16 @@ import * as SystemUI from 'expo-system-ui';
 import { useEffect, useState } from 'react';
 import Provider from '~/components/Provider';
 import Select from '~/components/Sheets/Select';
+import { ToastContainer } from '~/components/ToastContainer';
 import useUser from '~/store/useUser';
 import { ParseInit } from '~/utils/Parse';
 import '../../global.css';
 
+GoogleSignin.configure({
+  webClientId: '49942846746-4eooga0osnghuh58hic4fkahh128k28g.apps.googleusercontent.com', // from Google Cloud Console
+  offlineAccess: true, // so you can also get refresh tokens if needed
+  scopes: ['profile', 'email'],
+});
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -35,8 +42,7 @@ export default function RootLayout() {
       try {
         await ParseInit();
         await refresh();
-        const sysyem = await SystemUI.getBackgroundColorAsync();
-        console.log(sysyem);
+        await SystemUI.setBackgroundColorAsync('#fff');
         await SplashScreen.hideAsync();
         setReady(true);
       } catch (e) {
@@ -51,8 +57,10 @@ export default function RootLayout() {
 
   return (
     <Provider>
+
       <Screens fontsLoaded={fontsLoaded} ready={ready} />
       <Select />
+     <ToastContainer />
     </Provider>
   );
 }
