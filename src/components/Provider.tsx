@@ -21,7 +21,7 @@ const Provider = ({ children }: PropsWithChildren) => {
           <StatusBar style="dark" animated networkActivityIndicatorVisible />
           <SafeAreaProvider initialMetrics={initialWindowMetrics}>
             <SafeAreaView edges={['top', 'left', 'right', 'bottom']} className="flex-1">
-              <KeyboardAvoidingView className="flex-1">{children}</KeyboardAvoidingView>
+              <KeyboardAvoidingView className="flex-1"><View className="flex-1 bg-white">{children}</View></KeyboardAvoidingView>
             </SafeAreaView>
           </SafeAreaProvider>
         </View>

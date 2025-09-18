@@ -69,12 +69,12 @@ export default function TabsLayout() {
           tabBarIcon: ({ color }) => <UserIcon color={color} />,
         }}
       />
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="property/[id]"
         options={{
           href: null,
         }}
-      />
+      /> */}
     </Tabs>
   );
 }

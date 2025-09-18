@@ -8,9 +8,9 @@ import { Property_Type } from '~/type/property';
 import { deviceHeight } from '~/utils/global';
 import { numberminify, thoasandseprator } from '~/utils/number';
 import { property_category } from '~/utils/property';
-import Checkbox from '../Elements/Checkbox';
-import DatePicker from '../Elements/DatePicker';
-import PressableView from '../HOC/PressableView';
+import Checkbox from '../../Elements/Checkbox';
+import DatePicker from '../../Elements/DatePicker';
+import PressableView from '../../HOC/PressableView';
 
 export type filterType = {
   district: string | null;

@@ -13,19 +13,19 @@ import Parse from 'parse/react-native';
 import { FadersHorizontalIcon, SortAscendingIcon, XCircleIcon } from 'phosphor-react-native';
 import { useMemo, useState } from 'react';
 import {
-  ActivityIndicator,
-  Pressable,
-  ScrollView,
-  Text,
-  TouchableWithoutFeedback,
-  View,
+    ActivityIndicator,
+    Pressable,
+    ScrollView,
+    Text,
+    TouchableWithoutFeedback,
+    View,
 } from 'react-native';
 import { stringify_area_district } from '~/lib/stringify_district_area';
 import useSelect from '~/store/useSelectHelper';
 import { Property_Type } from '~/type/property';
 import { deviceWidth } from '~/utils/global';
-import PropertyCard from '../Cards/PropertyCard';
-import DistrictArea from '../Sheets/District/DistrictArea';
+import PropertyCard from '../../Cards/PropertyCard';
+import DistrictArea from '../../Sheets/District/DistrictArea';
 import FilterModal, { filterType } from './FilterModal';
 import { SearchView } from './SearchView';
 import { HomeTopBar } from './TopBar';

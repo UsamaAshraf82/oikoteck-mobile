@@ -12,6 +12,7 @@ const appConfig: ExpoConfig = {
   userInterfaceStyle: 'light',
   newArchEnabled: true,
   ios: {
+    usesAppleSignIn: true,
     supportsTablet: true,
     bundleIdentifier: IS_DEV ? 'com.oikoteck.dev' : 'com.oikoteck.app',
     infoPlist: {
@@ -55,13 +56,16 @@ const appConfig: ExpoConfig = {
     ],
     ['expo-font'],
     [
-      'expo-build-properties',
+      'react-native-fbsdk-next',
       {
-        android: {
-          // ndkVersion: '26.3.11579264',
-        },
+        appID: '511062105081745',
+        clientToken: '1692dc2e9451677cc7cfb8097f498f0b',
+        displayName: 'Oikoteck',
+        scheme: 'fb511062105081745',
       },
     ],
+    ["@react-native-google-signin/google-signin"],
+    ["expo-apple-authentication"]
   ],
 
   experiments: {

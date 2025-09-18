@@ -61,8 +61,10 @@ const Screens = ({ ready, fontsLoaded }: { ready: boolean; fontsLoaded: boolean 
   if (!ready) return <Slot />;
   if (!fontsLoaded) return <Slot />;
   return (
-    <Stack screenOptions={{ headerShown: false }} initialRouteName={'(tabs)'}>
+    <Stack screenOptions={{ headerShown: false, animation: 'fade' }} initialRouteName={'(tabs)'}>
       <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="property/[id]" />
+      <Stack.Screen name="login" />
     </Stack>
   );
 };

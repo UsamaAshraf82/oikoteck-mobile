@@ -167,7 +167,6 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
                   />
                   <Text className="ml-1 mr-0 text-sm text-o_light_gray">{property.size} m²</Text>
                 </View>
-
               </View>
             </View>
           </View>

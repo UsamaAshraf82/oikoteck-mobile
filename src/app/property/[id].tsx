@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { DateTime } from 'luxon';
 import Parse from 'parse/react-native';
@@ -36,6 +37,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
 import Grid from '~/components/HOC/Grid';
+import SimilarListing from '~/components/Pages/Property/SimilarListing';
 import BathIcon from '~/components/SVG/Bath';
 import BedIcon from '~/components/SVG/Bed';
 import SizeIcon from '~/components/SVG/Size';
@@ -70,60 +72,6 @@ export default function Index() {
   if (!property) {
     return null;
   }
-
-  console.log(progress.value);
-
-  // return (
-  //   <View className="flex-1 bg-black/30">
-  //     <View className="relative">
-  //       <Carousel
-  //         data={property.images}
-  //         loop={false}
-  //         pagingEnabled={true}
-  //         snapEnabled={true}
-  //         width={deviceWidth}
-  //         // height={deviceHeight / 2}
-  //         style={{ width: '100%', height: '100%' }}
-  //         onProgressChange={(_, absoluteProgress) => {
-  //           console.log(absoluteProgress);
-  //           progress.value = absoluteProgress;
-  //         }}
-  //         onConfigurePanGesture={(g: { enabled: (arg0: boolean) => any }) => {
-  //           'worklet';
-  //           g.enabled(false);
-  //         }}
-  //         renderItem={({ item }) => {
-  //           const { src: transformed, lazy } = cloudfront(item, true);
-
-  //           return (
-  //             <TouchableWithoutFeedback>
-  //               <Image
-  //                 contentFit="contain"
-  //                 placeholderContentFit="contain"
-  //                 style={{ width: deviceWidth, height: '100%' }}
-  //                 source={transformed}
-  //                 placeholder={lazy}
-  //               />
-  //             </TouchableWithoutFeedback>
-  //           );
-  //         }}
-  //       />
-  //       <View className="absolute left-4 top-4">
-  //         <TouchableWithoutFeedback
-  //           onPress={() => {
-  //             router.back();
-  //           }}>
-  //           <ArrowLeftIcon size={20} color="white" />
-  //         </TouchableWithoutFeedback>
-  //       </View>
-  //       <View className="absolute bottom-2 left-0 right-0 flex-row justify-center">
-  //         {property.images.map((_, index) => {
-  //           return <Dot key={index} index={index} progress={progress} />;
-  //         })}
-  //       </View>
-  //     </View>
-  //   </View>
-  // );
 
   return (
     <>
@@ -199,18 +147,21 @@ export default function Index() {
               // height={deviceHeight / 2}
               style={{ width: '100%', height: '100%' }}
               onProgressChange={(_, absoluteProgress) => {
-                console.log(absoluteProgress);
                 progress.value = absoluteProgress;
               }}
               onConfigurePanGesture={(g: { enabled: (arg0: boolean) => any }) => {
                 'worklet';
                 g.enabled(false);
               }}
-              renderItem={({ item }) => {
+              renderItem={({ item, index }) => {
                 const { src: transformed, lazy } = cloudfront(item, true, '800x800');
 
                 return (
-                  <Pressable onPress={() => setVisible(true)}>
+                  <Pressable
+                    onPress={() => {
+                      setStartIndex(index);
+                      setVisible(true);
+                    }}>
                     <Image
                       contentFit="cover"
                       placeholderContentFit="cover"
@@ -337,10 +288,10 @@ export default function Index() {
                 </View>
               ))}
             </Grid>
-            <View className="mt-2" />
-            <Text>{property.description}</Text>
+            <View className="mt-4" />
+            <Text className='text-base'>{property.description}</Text>
             <View className="mt-5" />
-            <View className="flex-col gap-1">
+            <View className="flex-col gap-3">
               <Text className="text-2xl font-semibold">Home Details</Text>
               {property.special_feature.map((i) => (
                 <Text key={i}>• {i}</Text>
@@ -375,7 +326,7 @@ export default function Index() {
               {!!property.plot_size && <Text>• Plot Size : {property.plot_size || ''} m²</Text>}
             </View>
             <View className="mt-5" />
-            <View className="flex-col gap-1">
+            <View className="flex-col gap-3">
               <Text className="text-2xl font-semibold">Payment Methods</Text>
               <Text>
                 •{' '}
@@ -387,10 +338,9 @@ export default function Index() {
                 • {property.deposit}-{property.deposit === 1 ? 'Month' : 'Months'} Security Deposit
               </Text>
             </View>
-
             <View className="mt-5" />
             <View className="flex-col gap-1">
-              <Text className="text-2xl font-semibold">Neighborhood Overview</Text>
+              <Text className="text-2xl mb-4 font-semibold">Neighborhood Overview</Text>
               <View className="h-96">
                 <MapView
                   provider={PROVIDER_GOOGLE}
@@ -425,6 +375,10 @@ export default function Index() {
               </View>
             </View>
           </View>
+            <LinearGradient colors={['#fff', '#EEF1F7']} className="pb-1">
+              <View className="mt-5" />
+            </LinearGradient>
+            <SimilarListing property={property} />
         </View>
       </ScrollView>
     </>
