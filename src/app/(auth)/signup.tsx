@@ -1,0 +1,182 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Link, useRouter } from 'expo-router';
+import Parse from 'parse/react-native';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { ScrollView, Text, View } from 'react-native';
+import { z } from 'zod';
+import { ControlledTextInput } from '~/components/Elements/TextInput';
+import KeyboardAvoidingView from '~/components/HOC/KeyboardAvoidingView';
+import PressableView from '~/components/HOC/PressableView';
+import SocialSignin from '~/components/Pages/Auth/SocialSignin';
+import { useToast } from '~/store/useToast';
+import useUser from '~/store/useUser';
+export default function Login() {
+  const { addToast } = useToast();
+  const router = useRouter();
+  const { login, user } = useUser();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignupTypes>({ resolver: zodResolver(SignupSchema) });
+
+  const onSubmit = async (data: SignupTypes) => {
+    const data_email = data.email.toLowerCase().trim();
+    const Query = new Parse.Query('_User');
+    Query.equalTo('username', data_email);
+    const email = await Query.count();
+
+    if (email === 0) {
+      router.push({
+        pathname: '/signup2email',
+        params: { email: data_email, password: data.password },
+      });
+    } else {
+      addToast({
+        header: 'Registered Account',
+        message: 'Account already exists, please click on log in.',
+      });
+      // setEmailExist(true)
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      router.push('/rent');
+    } else {
+      router.push('/signup2email');
+    }
+  }, [user]);
+
+  const onError = () => {
+    // Collect first error message and show as toast
+    // const errorsArray = Object.values(errors);
+
+    Object.values(errors).forEach((err) => {
+      if (err?.message) {
+        addToast({
+          type: 'error',
+          header: 'Validation Error',
+          message: err.message,
+        });
+      }
+    });
+    // if (firstError?.message) {
+    //   // Toast.show({
+    //   //   type: "error",
+    //   //   text1: "Validation Error",
+    //   //   text2: firstError.message,
+    //   // });
+    // }
+  };
+
+  return (
+    <View className="flex-1">
+      <KeyboardAvoidingView>
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 24 }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}>
+          <View className="mb-14 flex-1 flex-col items-center justify-center">
+            <Text className="mt-20 text-center text-3xl font-semibold">
+              Let's create your free account!
+            </Text>
+            <Text className="mt-2">
+              Already have an account?{' '}
+              <Link href="signup" className="text-secondary">
+                Sign In
+              </Link>
+            </Text>
+
+            <SocialSignin />
+            <Text className="my-14 text-sm text-[#575775]">
+              - - - - - - - - - - - or sign up with email - - - - - - - - - - -
+            </Text>
+            <View className="w-full flex-col gap-2">
+              <ControlledTextInput
+                control={control}
+                name="email"
+                label="Email Address"
+                autoComplete="email"
+                keyboardType="email-address"
+                placeholder="Enter your email address"
+              />
+              <ControlledTextInput
+                control={control}
+                name="password"
+                label="Password"
+                autoComplete="new-password"
+                secureTextEntry
+                placeholder="Create your password"
+              />
+              <ControlledTextInput
+                control={control}
+                name="confirmPassword"
+                label="Password"
+                autoComplete="new-password"
+                secureTextEntry
+                placeholder="Retype your password"
+              />
+
+            </View>
+            {/* <Text className="mb-1 mt-2 text-left text-sm ">
+              By clicking Sign Up you agree and accepts OikoTeck's{' '}
+              <Link href={'/privacy-policy'} className="text-secondary">
+                Privacy Policy
+              </Link>{' '}
+              and{' '}
+              <Link href={'/terms-conditions'} className="text-secondary">
+                Terms & Conditions
+              </Link>
+              .
+            </Text> */}
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+      <View className="bg-white px-6 py-4">
+        <PressableView
+          onPress={handleSubmit(onSubmit, onError)}
+          className="h-14 w-full flex-row items-center justify-center rounded-full  bg-secondary">
+          <Text className="text-[15px] font-bold text-white">Sign up</Text>
+        </PressableView>
+      </View>
+    </View>
+  );
+}
+
+const SignupSchema = z
+  .object({
+    email: z
+      .email({
+        error: 'Must be a valid email address.',
+      })
+      .min(1, { message: 'Email is Required' }),
+    password: z
+      .string({ error: 'Password is required' })
+
+      .min(8, {
+        message:
+          'Please enter a valid password that is at least 8 characters long, and includes at least one number and one upper-case letter.',
+      })
+      .regex(/[A-Z]/g, {
+        message:
+          'Please enter a valid password that is at least 8 characters long, and includes at least one number and one upper-case letter.',
+      })
+      .regex(/[a-z]/g, {
+        message:
+          'Please enter a valid password that is at least 8 characters long, and includes at least one number and one upper-case letter.',
+      })
+      .regex(/[0-9]/g, {
+        message:
+          'Please enter a valid password that is at least 8 characters long, and includes at least one number and one upper-case letter.',
+      }),
+    confirmPassword: z.string({
+      error: 'Please re-type your password.',
+    }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Your passwords do not match.',
+    path: ['confirmPassword'],
+  });
+type SignupTypes = z.infer<typeof SignupSchema>;

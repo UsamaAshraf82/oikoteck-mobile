@@ -13,12 +13,12 @@ import Parse from 'parse/react-native';
 import { FadersHorizontalIcon, SortAscendingIcon, XCircleIcon } from 'phosphor-react-native';
 import { useMemo, useState } from 'react';
 import {
-    ActivityIndicator,
-    Pressable,
-    ScrollView,
-    Text,
-    TouchableWithoutFeedback,
-    View,
+  ActivityIndicator,
+  Pressable,
+  ScrollView,
+  Text,
+  TouchableWithoutFeedback,
+  View,
 } from 'react-native';
 import { stringify_area_district } from '~/lib/stringify_district_area';
 import useSelect from '~/store/useSelectHelper';
@@ -55,7 +55,7 @@ type ListItem = Property_Type | HeadingItem;
 
 const MarketPlace = ({ listing_type }: Props) => {
   // const params = useLocalSearchParams<filterType>();
-  const { open: openSelect } = useSelect();
+  const {  openSelect } = useSelect();
 
   const [districtModal, setDistrictModal] = useState(false);
   const [filtersModal, setFiltersModal] = useState(false);

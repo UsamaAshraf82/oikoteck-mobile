@@ -16,7 +16,7 @@ export default function TabsLayout() {
       detachInactiveScreens
       screenOptions={{
         lazy: true,
-
+        tabBarHideOnKeyboard: true,
         tabBarStyle: {
           backgroundColor: tailwind.theme.colors.white, // slate-800
         },

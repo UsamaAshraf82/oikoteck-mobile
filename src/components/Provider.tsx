@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StatusBar } from 'expo-status-bar';
 import { PropsWithChildren } from 'react';
-import { KeyboardAvoidingView, View } from 'react-native';
+import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {
   initialWindowMetrics,
@@ -21,7 +21,7 @@ const Provider = ({ children }: PropsWithChildren) => {
           <StatusBar style="dark" animated networkActivityIndicatorVisible />
           <SafeAreaProvider initialMetrics={initialWindowMetrics}>
             <SafeAreaView edges={['top', 'left', 'right', 'bottom']} className="flex-1">
-              <KeyboardAvoidingView className="flex-1"><View className="flex-1 bg-white">{children}</View></KeyboardAvoidingView>
+              <View className="flex-1 bg-white">{children}</View>
             </SafeAreaView>
           </SafeAreaProvider>
         </View>
@@ -29,8 +29,6 @@ const Provider = ({ children }: PropsWithChildren) => {
     </QueryClientProvider>
   );
 };
-// const KeyboardAvoidingViewP = ({ children }: PropsWithChildren) => {
-//   return <KeyboardAvoidingView style={{ flex: 1 }}>{children}</KeyboardAvoidingView>;
-// };
+
 
 export default Provider;

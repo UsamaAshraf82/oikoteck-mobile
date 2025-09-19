@@ -41,7 +41,7 @@ type Props = {
 const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) => {
   const [filter, setFilters] = useState<filterType>(value);
   // const [dropdownFilter, setDropDownFilter] = useState<filterType>(value);
-  const { open: openSelect } = useSelect();
+  const { openSelect } = useSelect();
   const changeSearch = (filter: Partial<filterType>) => {
     setFilters((i) => ({ ...i, ...filter }));
   };
@@ -49,7 +49,6 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
   useEffect(() => {
     setFilters(value);
   }, [value]);
-
 
   return (
     <Modal
@@ -431,7 +430,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                 <Text className="text-lg font-medium text-primary">Keywords</Text>
                 <View>
                   <TextInput
-                    className="mt-2 h-12 w-full px-3 rounded-lg border border-gray-200 py-3"
+                    className="mt-2 h-12 w-full rounded-lg border border-gray-200 px-3 py-3"
                     placeholder="Pool Gym Solar Panel etc."
                     value={filter.keywords || undefined}
                     onChangeText={(text) => changeSearch({ keywords: text })}

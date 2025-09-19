@@ -1,64 +1,35 @@
-import React from "react";
-import { Dimensions, Text, View } from "react-native";
+import { Link } from 'expo-router';
+import React from 'react';
+import { Dimensions, Pressable, Text, View } from 'react-native';
+import useUser from '~/store/useUser';
 
-const PAGE_WIDTH = Dimensions.get("window").width;
-const PAGE_HEIGHT = Dimensions.get("window").height;
+const PAGE_WIDTH = Dimensions.get('window').width;
+const PAGE_HEIGHT = Dimensions.get('window').height;
 const Rental = () => {
-  // const [data, setData] = React.useState<{ src: string; blurhash: string }[]>(
-  //   []
-  // );
-
-  // useEffect(() => {
-  //   const getData = async () => {
-  //     const searchParams = new URLSearchParams();
-  //     searchParams.set("query", "girl");
-  //     searchParams.set(
-  //       "client_id",
-  //       "XRACyM6i07yewDJvrzcY3a5QhK8TV4K3-GR4QmKZk5c"
-  //     );
-  //     searchParams.set("orientation", "portrait");
-  //     searchParams.set("count", "30");
-
-  //     const response = await fetch(
-  //       `https://api.unsplash.com/photos/random?${searchParams.toString()}`
-  //     );
-  //     const data: unsplashType[] = await response.json();
-
-
-
-  //     setData(
-  //       data.map((item) => ({
-  //         src: item.urls.regular,
-  //         blurhash: item.blur_hash,
-  //       }))
-  //     );
-  //   };
-  //   getData();
-  // }, []);
-
-  // const animationStyle: TAnimationStyle = React.useCallback((value: number) => {
-  //   "worklet";
-
-  //   const zIndex = Math.round(interpolate(value, [-1, 0, 1], [10, 20, 30]));
-  //   const scale = interpolate(value, [-1, 0, 1], [1.25, 1, 0.25]);
-  //   const opacity = interpolate(value, [-0.75, 0, 1], [0, 1, 0]);
-
-  //   return {
-  //     transform: [{ scale }],
-  //     zIndex,
-  //     opacity,
-  //   };
-  // }, []);
+  const { user, logout } = useUser();
 
   return (
     <View
       id="carousel-component"
       // dataSet={{ kind: "custom-animations", name: "tinder" }}
     >
-      <Text>hello</Text>
+      {user && (
+        <Pressable
+          onPress={logout}
+          className="mx-6 mt-4 items-center justify-center rounded-md bg-secondary py-3">
+          <Text className="text-lg font-semibold text-white">Logout</Text>
+        </Pressable>
+      )}
+      {!user && (
+        <Link
+          href="/login"
+          // onPress={logout}
+          className="mx-6 mt-4 items-center justify-center rounded-md bg-secondary py-3 text-center">
+          <Text className="text-center text-lg font-semibold text-white">Login</Text>
+        </Link>
+      )}
     </View>
   );
 };
-
 
 export default Rental;

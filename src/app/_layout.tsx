@@ -17,6 +17,7 @@ GoogleSignin.configure({
   scopes: ['profile', 'email'],
 });
 SplashScreen.preventAutoHideAsync();
+ SystemUI.setBackgroundColorAsync('#fff');
 
 export default function RootLayout() {
   const [ready, setReady] = useState(false);
@@ -42,7 +43,6 @@ export default function RootLayout() {
       try {
         await ParseInit();
         await refresh();
-        await SystemUI.setBackgroundColorAsync('#fff');
         await SplashScreen.hideAsync();
         setReady(true);
       } catch (e) {
@@ -73,6 +73,7 @@ const Screens = ({ ready, fontsLoaded }: { ready: boolean; fontsLoaded: boolean 
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="property/[id]" />
       <Stack.Screen name="login" />
+      <Stack.Screen name="signup" />
     </Stack>
   );
 };
