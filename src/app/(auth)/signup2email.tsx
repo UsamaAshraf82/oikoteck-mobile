@@ -1,7 +1,7 @@
 import agent from '@/assets/svg/agent.svg';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Image } from 'expo-image';
-import { Link, useRouter } from 'expo-router';
+import { Link, useLocalSearchParams, useRouter } from 'expo-router';
 import { CheckCircleIcon, UserIcon } from 'phosphor-react-native';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -14,6 +14,7 @@ import Grid from '~/components/HOC/Grid';
 import KeyboardAvoidingView from '~/components/HOC/KeyboardAvoidingView';
 import PressableView from '~/components/HOC/PressableView';
 import { cn } from '~/lib/utils';
+import useActivityIndicator from '~/store/useActivityIndicator';
 import useSelect from '~/store/useSelectHelper';
 import { useToast } from '~/store/useToast';
 import useUser from '~/store/useUser';
@@ -22,8 +23,11 @@ import tailwind from '~/utils/tailwind';
 export default function Login() {
   const { addToast } = useToast();
   const { openSelect } = useSelect();
+  const { startActivity, stopActivity } = useActivityIndicator();
+
+  const local: { email: string; password: string } = useLocalSearchParams();
   const router = useRouter();
-  const { user } = useUser();
+  const { user, signup } = useUser();
   const {
     control,
     setValue,
@@ -46,8 +50,16 @@ export default function Login() {
     },
   });
 
-  const onSubmit = (data: SignupTypes) => {
-    // login(data.email, data.password);
+  useEffect(() => {
+    if (!local.email || !local.password) {
+      router.replace('/signup');
+    }
+  }, []);
+
+  const onSubmit = async (data: SignupTypes) => {
+    startActivity();
+    await signup({ ...data, email: local.email, password: local.password });
+    stopActivity();
   };
 
   useEffect(() => {
@@ -57,11 +69,6 @@ export default function Login() {
   }, [user]);
 
   const onError = () => {
-    // Collect first error message and show as toast
-    // const errorsArray = Object.values(errors);
-
-    console.log('errors', errors, watch());
-
     Object.values(errors).forEach((err) => {
       if (err?.message) {
         addToast({
@@ -71,13 +78,6 @@ export default function Login() {
         });
       }
     });
-    // if (firstError?.message) {
-    //   // Toast.show({
-    //   //   type: "error",
-    //   //   text1: "Validation Error",
-    //   //   text2: firstError.message,
-    //   // });
-    // }
   };
 
   return (
@@ -153,7 +153,6 @@ export default function Login() {
                     name="company_name"
                     label="Registered Company Name"
                     placeholder="Registered Company Name"
-
                   />
                   <ControlledTextInput
                     control={control}

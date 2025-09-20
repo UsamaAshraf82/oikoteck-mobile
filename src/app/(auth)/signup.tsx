@@ -9,12 +9,14 @@ import { ControlledTextInput } from '~/components/Elements/TextInput';
 import KeyboardAvoidingView from '~/components/HOC/KeyboardAvoidingView';
 import PressableView from '~/components/HOC/PressableView';
 import SocialSignin from '~/components/Pages/Auth/SocialSignin';
+import useActivityIndicator from '~/store/useActivityIndicator';
 import { useToast } from '~/store/useToast';
 import useUser from '~/store/useUser';
 export default function Login() {
   const { addToast } = useToast();
   const router = useRouter();
-  const { login, user } = useUser();
+  const { startActivity, stopActivity } = useActivityIndicator();
+  const { user } = useUser();
   const {
     control,
     handleSubmit,
@@ -22,6 +24,7 @@ export default function Login() {
   } = useForm<SignupTypes>({ resolver: zodResolver(SignupSchema) });
 
   const onSubmit = async (data: SignupTypes) => {
+    startActivity();
     const data_email = data.email.toLowerCase().trim();
     const Query = new Parse.Query('_User');
     Query.equalTo('username', data_email);
@@ -37,15 +40,13 @@ export default function Login() {
         header: 'Registered Account',
         message: 'Account already exists, please click on log in.',
       });
-      // setEmailExist(true)
     }
+    stopActivity();
   };
 
   useEffect(() => {
     if (user) {
       router.push('/rent');
-    } else {
-      router.push('/signup2email');
     }
   }, [user]);
 
@@ -84,7 +85,7 @@ export default function Login() {
             </Text>
             <Text className="mt-2">
               Already have an account?{' '}
-              <Link href="signup" className="text-secondary">
+              <Link href="/login" className="text-secondary">
                 Sign In
               </Link>
             </Text>
@@ -118,7 +119,6 @@ export default function Login() {
                 secureTextEntry
                 placeholder="Retype your password"
               />
-
             </View>
             {/* <Text className="mb-1 mt-2 text-left text-sm ">
               By clicking Sign Up you agree and accepts OikoTeck's{' '}
@@ -148,10 +148,12 @@ export default function Login() {
 const SignupSchema = z
   .object({
     email: z
-      .email({
-        error: 'Must be a valid email address.',
-      })
-      .min(1, { message: 'Email is Required' }),
+      .string()
+      .toLowerCase()
+      .trim()
+      .min(1, { message: 'Email is required' })
+      .pipe(z.email('Must be a valid email address.')),
+
     password: z
       .string({ error: 'Password is required' })
 

@@ -29,13 +29,7 @@ export function withController<TFieldValues extends FieldValues, P>(
             onBlur,
           };
 
-          // If the component supports onChangeText (TextInput)
-          if ('onChangeText' in props) {
-            propsForInput.onChangeText = onChange;
-          } else {
-            // For Checkbox or cu0stom components
-            propsForInput.onChange = onChange;
-          }
+            propsForInput.getValue = onChange;
 
           return <InputComponent {...propsForInput} />;
         }}

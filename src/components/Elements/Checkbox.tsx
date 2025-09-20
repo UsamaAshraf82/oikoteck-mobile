@@ -6,10 +6,11 @@ import { withController } from '../HOC/withController';
 type Props = {
   value?: boolean | null;
   onChange?: (value: boolean) => void;
+  getValue?: (value: boolean) => void;
   label?: React.ReactNode;
 };
 
-const Checkbox: React.FC<Props> = ({ label, value, onChange }) => {
+const Checkbox: React.FC<Props> = ({ label, value, onChange ,getValue}) => {
   const [isChecked, setChecked] = useState<boolean>(!!value);
 
   useEffect(() => {
@@ -19,6 +20,7 @@ const Checkbox: React.FC<Props> = ({ label, value, onChange }) => {
   const handleChange = (val: boolean) => {
     setChecked(val);
     onChange?.(val); // notify parent (react-hook-form if controlled)
+    getValue?.(val); // notify parent (react-hook-form if controlled)
   };
   return (
     <View className="mt-1 flex-row items-center justify-between">

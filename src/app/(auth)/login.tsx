@@ -8,12 +8,14 @@ import { ControlledTextInput } from '~/components/Elements/TextInput';
 import KeyboardAvoidingView from '~/components/HOC/KeyboardAvoidingView';
 import PressableView from '~/components/HOC/PressableView';
 import SocialSignin from '~/components/Pages/Auth/SocialSignin';
+import useActivityIndicator from '~/store/useActivityIndicator';
 import { useToast } from '~/store/useToast';
 import useUser from '~/store/useUser';
 
 export default function Login() {
   const { addToast } = useToast();
   const router = useRouter();
+  const { startActivity, stopActivity } = useActivityIndicator();
   const { login, user } = useUser();
   const {
     control,
@@ -21,8 +23,10 @@ export default function Login() {
     formState: { errors },
   } = useForm<SignInValues>({ resolver: zodResolver(SignInSchema) });
 
-  const onSubmit = (data: SignInValues) => {
-    login(data.email, data.password);
+  const onSubmit = async (data: SignInValues) => {
+    startActivity();
+    await login(data.email, data.password);
+    stopActivity();
   };
 
   useEffect(() => {
@@ -95,10 +99,11 @@ export default function Login() {
                 placeholder="Enter your password"
               />
             </View>
-
-            <Link href="reset-password" className="mt-2 text-right text-sm text-secondary">
+            {/* <View className="w-full flex-row justify-end"> */}
+            <Link href="reset-password" className="mt-2 w-full text-right text-sm text-secondary">
               Forgot Password?
             </Link>
+            {/* </View> */}
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -117,12 +122,11 @@ export default function Login() {
 
 const SignInSchema = z.object({
   email: z
-    .email({
-      error: 'Must be a valid email address.',
-    })
-    .min(1, {
-      message: 'Email is required',
-    }),
+    .string()
+    .toLowerCase()
+    .trim()
+    .min(1, { message: 'Email is required' })
+    .pipe(z.email('Must be a valid email address.')),
 
   password: z.string({ error: 'Password is required' }).min(1, {
     message: 'Password is required',

@@ -19,4 +19,10 @@ export type User_Type = {
   plat_credits: number;
   social_signup?: boolean;
   rsPass?: string;
+
+  vat: string;
+  company_name: string;
+  terms: boolean;
+  privacy: boolean;
+  share_consent: boolean;
 };

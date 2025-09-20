@@ -7,8 +7,25 @@ import { useToast } from './useToast';
 type Store = {
   user: Parse.User<User_Type> | null | undefined;
   setUser: (user: Parse.User<User_Type> | null) => void;
-  login: (email: string, password: string) => void;
-  signup: (email: string, password: string) => void;
+  login: (email: string, password: string) => Promise<void>;
+  signup: (data: {
+    firstName: string;
+    lastName: string;
+    phone: string;
+    country?: {
+      ISO: string;
+      Country: string;
+      Code: number;
+    };
+    userType: string;
+    vat?: string;
+    company_name?: string;
+    terms: boolean;
+    privacy: boolean;
+    share_consent: boolean;
+    email: string;
+    password: string;
+  }) => Promise<void>;
   refresh: () => Promise<void>;
   logout: () => Promise<void>;
 };
@@ -34,21 +51,63 @@ const useUser = create<Store>()((set) => ({
       });
     }
   },
-  signup: async (_email, password) => {
-    // Example Parse login
-    const email = _email.toLowerCase().trim();
+  signup: async (data) => {
+    try {
+      const email = data.email.toLowerCase().trim();
 
-    const newUser: Parse.User<User_Type> = new Parse.User();
-    newUser.set('email', email);
-    newUser.set('username', email);
-    newUser.setPassword(password);
-    const user = (await newUser.signUp()) as Parse.User<User_Type>;
+      const newUser: Parse.User<User_Type> = new Parse.User();
 
-    if (user.attributes.sessionToken) {
-      await AsyncStorage.setItem('session_token', user.attributes.sessionToken);
+      newUser.set('username', email.toLowerCase());
+      newUser.set('email', email.toLowerCase());
+      newUser.set('first_name', data.firstName);
+      newUser.set('phone', data.phone);
+      newUser.set('last_name', data.lastName);
+      newUser.set('country_code', data.country?.Code);
+      newUser.set('country', data.country?.Country);
+      newUser.set('country_iso', data.country?.ISO);
+      newUser.set('user_type', data.userType as User_Type['user_type']);
+      newUser.set('vat', data.vat);
+      newUser.set('company_name', data.company_name);
+      newUser.set('terms', data.terms);
+      newUser.set('privacy', data.privacy);
+      newUser.set('share_consent', data.share_consent);
+      newUser.set('social_signup', false);
+
+      newUser.setPassword(data.password);
+
+      const user = (await newUser.signUp()) as Parse.User<User_Type>;
+
+      useToast.getState().addToast({
+        type: 'success',
+        header: 'Account Validation',
+        message: 'Check your email to validate your account ',
+      });
+
+      await fetch(process.env.EXPO_PUBLIC_SITE_ADDRESS + '/emails', {
+        method: 'POST',
+        body: JSON.stringify({ email: 'account_validation', id: user.id }),
+      });
+
+      await fetch(process.env.EXPO_PUBLIC_SITE_ADDRESS + '/emails', {
+        method: 'POST',
+        body: JSON.stringify({
+          email: 'account_greetings',
+          id: user?.id,
+        }),
+      });
+
+      if (user.attributes.sessionToken) {
+        await AsyncStorage.setItem('session_token', user.attributes.sessionToken);
+      }
+
+      set({ user });
+    } catch (e) {
+      useToast.getState().addToast({
+        type: 'error',
+        header: 'Sign up Error',
+        message: 'Internal Server Error',
+      });
     }
-
-    set({ user });
   },
   refresh: async () => {
     const session_id = await AsyncStorage.getItem('session_token');

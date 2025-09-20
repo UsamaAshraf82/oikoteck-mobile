@@ -6,8 +6,9 @@ import { withController } from '../HOC/withController';
 
 type Props = TextBaseInput['props'] & {
   label?: string;
+  getValue?: (text: string) => void;
 };
-const TextInput = ({ label, className, secureTextEntry, ...props }: Props) => {
+const TextInput = ({ label, className, secureTextEntry,getValue, ...props }: Props) => {
   const [secureTextEntryHack, setSecureTextEntryHack] = useState(secureTextEntry);
 
   return (
@@ -18,6 +19,10 @@ const TextInput = ({ label, className, secureTextEntry, ...props }: Props) => {
           {...props}
           className={cn('rounded-2xl border border-[#C6CAD2] bg-white px-3 py-3', className)}
           secureTextEntry={secureTextEntryHack}
+          onChangeText={(text) => {
+            getValue?.(text);
+            props.onChangeText?.(text);
+          }}
         />
         {secureTextEntry && (
           <View className="absolute  right-3 top-1/2 -translate-y-1/2">

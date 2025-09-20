@@ -4,11 +4,14 @@ import { Slot, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import * as SystemUI from 'expo-system-ui';
 import { useEffect, useState } from 'react';
+import { ActivityIndicator as ActivityIndicatorInternal, Modal, View } from 'react-native';
 import Provider from '~/components/Provider';
 import Select from '~/components/Sheets/Select';
 import { ToastContainer } from '~/components/ToastContainer';
+import useActivityIndicator from '~/store/useActivityIndicator';
 import useUser from '~/store/useUser';
 import { ParseInit } from '~/utils/Parse';
+import tailwind from '~/utils/tailwind';
 import '../../global.css';
 
 GoogleSignin.configure({
@@ -17,7 +20,7 @@ GoogleSignin.configure({
   scopes: ['profile', 'email'],
 });
 SplashScreen.preventAutoHideAsync();
- SystemUI.setBackgroundColorAsync('#fff');
+SystemUI.setBackgroundColorAsync('#fff');
 
 export default function RootLayout() {
   const [ready, setReady] = useState(false);
@@ -57,23 +60,41 @@ export default function RootLayout() {
 
   return (
     <Provider>
-
       <Screens fontsLoaded={fontsLoaded} ready={ready} />
       <Select />
-     <ToastContainer />
+      <ActivityIndicator />
+      <ToastContainer />
     </Provider>
   );
 }
 
 const Screens = ({ ready, fontsLoaded }: { ready: boolean; fontsLoaded: boolean }) => {
+  const { user } = useUser();
   if (!ready) return <Slot />;
   if (!fontsLoaded) return <Slot />;
   return (
-    <Stack screenOptions={{ headerShown: false, animation: 'fade' }} initialRouteName={'(tabs)'}>
+    <Stack screenOptions={{ headerShown: false, animation: 'fade' }}>
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="property/[id]" />
-      <Stack.Screen name="login" />
-      <Stack.Screen name="signup" />
+      <Stack.Protected guard={!user}>
+        <Stack.Screen name="(auth)" />
+      </Stack.Protected>
     </Stack>
+  );
+};
+
+const ActivityIndicator = () => {
+  const { isInActivity } = useActivityIndicator();
+  // if (!isInActivity) return null;
+  return (
+    <Modal transparent visible={isInActivity} animationType="fade">
+      <View className="flex-1 items-center justify-center bg-white/30">
+        <ActivityIndicatorInternal
+          size="large"
+          style={{ transform: [{ scale: 2 }] }}
+          color={tailwind.theme.colors.secondary}
+        />
+      </View>
+    </Modal>
   );
 };
