@@ -1,9 +1,0 @@
-<resources>
-  <string name="app_name">OikoTeck Dev</string>
-  <string name="expo_system_ui_user_interface_style" translatable="false">light</string>
-  <string name="expo_splash_screen_resize_mode" translatable="false">contain</string>
-  <string name="expo_splash_screen_status_bar_translucent" translatable="false">false</string>
-  <string name="facebook_app_id">511062105081745</string>
-  <string name="facebook_client_token">1692dc2e9451677cc7cfb8097f498f0b</string>
-  <string name="fb_login_protocol_scheme">fb511062105081745</string>
-</resources>
