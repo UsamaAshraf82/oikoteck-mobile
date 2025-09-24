@@ -9,6 +9,7 @@ type Select<T> = {
   onClose?: () => void;
   onPress?: (data: Options<T>) => void;
   options: Options<T>[];
+  useFlatList?: boolean;
 };
 
 type AnySelect = Select<string | number | boolean | null | Record<string, unknown>>;

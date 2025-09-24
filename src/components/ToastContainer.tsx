@@ -9,7 +9,7 @@ export const ToastContainer = () => {
 
   return (
     <View
-      className="absolute left-[16px] top-4 z-[9999] flex-col items-center gap-2 bg-black/5"
+      className="absolute left-[16px] top-4 z-[999999] flex-col items-center gap-2 bg-black/5"
       pointerEvents="box-none">
       {toasts.map((toast, i) => (
         <Animated.View

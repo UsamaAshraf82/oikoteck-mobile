@@ -169,6 +169,7 @@ export default function Login() {
                   <TouchableWithoutFeedback
                     onPress={() => {
                       openSelect({
+                        useFlatList: true,
                         label: 'Select Country',
                         options: flags.map((i) => ({
                           label: (

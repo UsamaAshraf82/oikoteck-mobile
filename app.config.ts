@@ -1,7 +1,6 @@
 import { ExpoConfig } from 'expo/config';
-
+import 'tsx/cjs';
 const IS_DEV = process.env.EXPO_PUBLIC_APP_VARIANT?.trim() == 'development';
-
 const appConfig: ExpoConfig = {
   name: IS_DEV ? 'OikoTeck Dev' : 'OikoTeck',
   slug: 'oikoteck',
@@ -36,6 +35,22 @@ const appConfig: ExpoConfig = {
       },
     },
     googleServicesFile: './google-services.json',
+    // intentFilters:[
+    //   {
+    //     action: 'android.intent.action.VIEW',
+    //     data: [
+    //       {
+    //         scheme: 'https',
+    //       },
+    //       {
+    //         scheme: 'http',
+    //       },
+    //       {
+    //         scheme: 'geo',
+    //       },
+    //     ],
+    //   },
+    // ]
   },
   extra: {
     appId: process.env.EXPO_PUBLIC_APP_ID,
@@ -66,8 +81,9 @@ const appConfig: ExpoConfig = {
         scheme: 'fb511062105081745',
       },
     ],
-    ["@react-native-google-signin/google-signin"],
-    ["expo-apple-authentication"]
+    ['@react-native-google-signin/google-signin'],
+    ['expo-apple-authentication'],
+    ['./plugins/withSchemes.ts'  ],
   ],
 
   experiments: {
