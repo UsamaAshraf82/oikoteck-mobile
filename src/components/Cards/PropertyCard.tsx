@@ -1,7 +1,6 @@
-import { TouchableWithoutFeedback } from '@gorhom/bottom-sheet';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import { Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import Animated, { interpolate, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
 import { stringify_area_district } from '~/lib/stringify_district_area';
@@ -23,8 +22,9 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
   const router = useRouter();
   return (
     <View className="mb-3 ml-4">
-      <TouchableWithoutFeedback
+      <Pressable
         onPress={() => {
+          console.log('pressed')
           router.push(`/property/${property.objectId}`);
         }}>
         <View
@@ -171,7 +171,7 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
             </View>
           </View>
         </View>
-      </TouchableWithoutFeedback>
+      </Pressable>
     </View>
   );
 };

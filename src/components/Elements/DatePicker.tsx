@@ -6,6 +6,7 @@ import { Text, View } from 'react-native';
 import { cn } from '~/lib/utils';
 import tailwind from '~/utils/tailwind';
 import PressableView from '../HOC/PressableView';
+import { withController } from '../HOC/withController';
 
 type Props = {
   value?: Date | null;
@@ -19,6 +20,8 @@ type Props = {
   className?: string;
   textClassName?: string;
   placeholder?: string;
+
+  withForm?: boolean;
 };
 
 const DatePicker: React.FC<Props> = ({
@@ -30,6 +33,8 @@ const DatePicker: React.FC<Props> = ({
   textClassName,
   placeholder = 'Select Date',
   mode = 'date',
+  withForm,
+  label,
 }) => {
   const [date, setDate] = useState<Date | null>(value);
   const [visible, setVisible] = useState(false);
@@ -45,6 +50,42 @@ const DatePicker: React.FC<Props> = ({
       onChange?.(selectedDate);
     }
   };
+
+  if (withForm) {
+    return (
+      <View className="w-full  flex-col ">
+        {label && <Text className="text-[13px] font-medium text-primary">{label}</Text>}
+        <View className="relative mt-2">
+          <PressableView
+            onPress={() => setVisible(true)}
+            className={cn('mt-2 h-12 rounded-2xl  border border-[#C6CAD2]  bg-white ', className)}>
+            <View className="w-full flex-1 flex-row items-center justify-between px-2">
+              <Text className={cn('text-left ', textClassName)}>
+                <DateText date={date} mode={mode} placeholder={placeholder} />
+              </Text>
+              <CalendarIcon
+                color={tailwind.theme.colors.primary}
+                weight="duotone"
+                duotoneColor={tailwind.theme.colors.primary}
+                duotoneOpacity={0.4}
+              />
+            </View>
+          </PressableView>
+
+          {visible && (
+            <DateTimePicker
+              value={date ?? new Date()}
+              mode={mode}
+              display="default"
+              minimumDate={minDate}
+              maximumDate={maxDate}
+              onChange={handleChange}
+            />
+          )}
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View className="flex-1">
@@ -77,6 +118,8 @@ const DatePicker: React.FC<Props> = ({
 };
 
 export default DatePicker;
+
+export const ControlledDatePicker = withController<any, Props>(DatePicker);
 
 type DateTextProps = {
   date: Date | null;

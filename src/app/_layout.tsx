@@ -59,12 +59,14 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <Provider>
-      <Screens fontsLoaded={fontsLoaded} ready={ready} />
-      <Select />
-      <ActivityIndicator />
-      <ToastContainer />
-    </Provider>
+    <>
+      <Provider>
+        <Screens fontsLoaded={fontsLoaded} ready={ready} />
+        <Select />
+        <ActivityIndicator />
+        <ToastContainer />
+      </Provider>
+    </>
   );
 }
 

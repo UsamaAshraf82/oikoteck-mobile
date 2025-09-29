@@ -51,9 +51,6 @@ export default function Login() {
   }, [user]);
 
   const onError = () => {
-    // Collect first error message and show as toast
-    // const errorsArray = Object.values(errors);
-
     Object.values(errors).forEach((err) => {
       if (err?.message) {
         addToast({
@@ -63,13 +60,6 @@ export default function Login() {
         });
       }
     });
-    // if (firstError?.message) {
-    //   // Toast.show({
-    //   //   type: "error",
-    //   //   text1: "Validation Error",
-    //   //   text2: firstError.message,
-    //   // });
-    // }
   };
 
   return (

@@ -197,7 +197,7 @@ export default function Login() {
                     </View>
                   </TouchableWithoutFeedback>
                 </View>
-                <View className="w-3/5">
+                <View className="w-3/5 pr-1">
                   <ControlledTextInput
                     control={control}
                     name="phone"

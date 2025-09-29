@@ -3,37 +3,37 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { DateTime } from 'luxon';
 import {
-    ArrowLeftIcon,
-    CalendarIcon,
-    ChatCircleIcon,
-    CouchIcon,
-    FileTextIcon,
-    GlobeHemisphereWestIcon,
-    HouseLineIcon,
-    MapPinIcon,
-    SquaresFourIcon,
-    StairsIcon,
-    XIcon,
+  ArrowLeftIcon,
+  CalendarIcon,
+  ChatCircleIcon,
+  CouchIcon,
+  FileTextIcon,
+  GlobeHemisphereWestIcon,
+  HouseLineIcon,
+  MapPinIcon,
+  SquaresFourIcon,
+  StairsIcon,
+  XIcon,
 } from 'phosphor-react-native';
 import { useRef, useState } from 'react';
 import {
-    Modal,
-    Pressable,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-    TouchableWithoutFeedback,
-    View,
+  Modal,
+  Pressable,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
 } from 'react-native';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import MapView, { Circle, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import Animated, {
-    interpolate,
-    SharedValue,
-    useAnimatedStyle,
-    useSharedValue,
-    withDecay,
-    withSpring,
+  interpolate,
+  SharedValue,
+  useAnimatedStyle,
+  useSharedValue,
+  withDecay,
+  withSpring,
 } from 'react-native-reanimated';
 import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
 import Grid from '~/components/HOC/Grid';
@@ -49,6 +49,7 @@ import { cloudfront } from '~/utils/cloudfront';
 import { deviceHeight, deviceWidth } from '~/utils/global';
 import tailwind from '~/utils/tailwind';
 import ContactOwner from './ContactOwner';
+import SubmitOffer from './SubmitOffer';
 export default function PropertyDetails({ property }: { property: Property_Type }) {
   const router = useRouter();
   const progress = useSharedValue(0);
@@ -60,6 +61,9 @@ export default function PropertyDetails({ property }: { property: Property_Type 
 
   return (
     <View className="relative flex-1">
+      {SubmitOfferVisible && (
+        <SubmitOffer property={property} onClose={() => setSubmitOfferVisible(false)} />
+      )}
       <ContactOwner
         property={property}
         visible={contactOwnerVisible}

@@ -22,6 +22,8 @@ import { Property_Type } from '~/type/property';
 import { User_Type } from '~/type/user';
 import { deviceHeight } from '~/utils/global';
 import tailwind from '~/utils/tailwind';
+import RequestTour from './RequestTour';
+import SendMessage from './SendMessage';
 export type filterType = {
   district: string | null;
   area_1: string | null;
@@ -49,6 +51,8 @@ type Props = {
 const ContactOwner = ({ property, onClose, visible }: Props) => {
   const [phone, setPhone] = useState(false);
   const [email, setEmail] = useState(false);
+  const [message, setMessage] = useState(false);
+  const [request_tour, setrequest_tour] = useState(false);
   const owner = normalizeOwner(property.owner);
   const { addToast } = useToast();
 
@@ -80,8 +84,12 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
         style={{
           maxHeight: deviceHeight * 0.9,
         }}>
-        <PhoneNumberModal visible={phone} onClose={() => setPhone(false)} owner={owner} />
-        <EmailModal visible={email} onClose={() => setEmail(false)} owner={owner} />
+        {phone && (
+          <PhoneNumberModal visible={phone} onClose={() => setPhone(false)} owner={owner} />
+        )}
+        {email && <EmailModal visible={email} onClose={() => setEmail(false)} owner={owner} />}
+        {message && <SendMessage  onClose={() => setMessage(false)} property={property} />}
+        {request_tour && <RequestTour  onClose={() => setrequest_tour(false)} property={property} />}
         <View className="mb-3 h-1 w-10 self-center rounded-sm bg-[#ccc]" />
         <View className="flex-row items-center justify-between">
           <Text className="text-2xl font-bold text-primary">Contact Owner</Text>
@@ -150,13 +158,21 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
                 <WhatsappLogoIcon color="white" size={20} />
               </View>
             </PressableView>
-            <PressableView className="h-16 w-full rounded-full bg-secondary">
+            <PressableView
+              onPress={() => {
+                setMessage(true);
+              }}
+              className="h-16 w-full rounded-full bg-secondary">
               <View className="h-full w-full flex-row items-center justify-center gap-3">
                 <Text className="text-sm font-semibold text-white">Send a Message</Text>
                 <ChatTeardropIcon color="white" size={20} />
               </View>
             </PressableView>
-            <PressableView className="h-16 w-full rounded-full border border-primary">
+            <PressableView
+              onPress={() => {
+                setrequest_tour(true);
+              }}
+              className="h-16 w-full rounded-full border border-primary">
               <View className="h-full w-full flex-row items-center justify-center gap-3">
                 <Text className="text-sm font-semibold text-primary">Request a tour</Text>
                 <HouseLineIcon color={tailwind.theme.colors.primary} size={20} />

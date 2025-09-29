@@ -1,53 +1,43 @@
 // components/ToastContainer.tsx
 import React from 'react';
-import { Animated, StyleSheet, Text, View } from 'react-native';
+import { Animated, Text, View } from 'react-native';
+import ReactNativeModal from 'react-native-modal';
 import { useToast } from '~/store/useToast';
 import { deviceWidth } from '~/utils/global';
 
 export const ToastContainer = () => {
   const { toasts } = useToast();
 
-  return (
-    <View
-      className="absolute left-[16px] top-4 z-[999999] flex-col items-center gap-2 bg-black/5"
-      pointerEvents="box-none">
-      {toasts.map((toast, i) => (
-        <Animated.View
-          key={toast.id}
-          className={'rounded-md border-l-8  border-r-8 bg-white px-3 py-2'}
-          style={[
-            { width: deviceWidth - 32 },
+  if (toasts.length === 0) return null;
 
-            toast.type === 'success' && { borderColor: '#4caf50' },
-            toast.type === 'error' && { borderColor: '#f44336' },
-            toast.type === 'info' && { borderColor: '#333' },
-          ]}>
-          <Text className="text-left text-lg font-semibold text-secondary">{toast.header}</Text>
-          <Text className="text-left  text-primary">{toast.message}</Text>
-        </Animated.View>
-      ))}
-    </View>
+  return (
+    <ReactNativeModal
+      isVisible={true}
+      animationIn="fadeInDown"
+      animationOut="fadeOutUp"
+      backdropOpacity={0}
+      coverScreen
+      hasBackdrop={false}
+      statusBarTranslucent
+      presentationStyle="overFullScreen"
+      style={{ margin: 0, justifyContent: 'flex-start', alignItems: 'center' }}>
+      <View className="mt-12 w-full flex-col items-center gap-2" pointerEvents="box-none">
+        {toasts.map((toast, i) => (
+          <Animated.View
+            key={toast.id}
+            className={'rounded-md elevation-sm border-l-8  border-r-8 bg-white px-3 py-2'}
+            style={[
+              { width: deviceWidth - 32 },
+
+              toast.type === 'success' && { borderColor: '#4caf50' },
+              toast.type === 'error' && { borderColor: '#f44336' },
+              toast.type === 'info' && { borderColor: '#333' },
+            ]}>
+            <Text className="text-left text-lg font-semibold text-secondary">{toast.header}</Text>
+            <Text className="text-left  text-primary">{toast.message}</Text>
+          </Animated.View>
+        ))}
+      </View>
+    </ReactNativeModal>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    position: 'absolute',
-    top: 50,
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-    zIndex: 9999,
-  },
-  toast: {
-    position: 'absolute',
-    width: '80%',
-    padding: 12,
-    borderRadius: 8,
-    backgroundColor: '#333',
-    shadowColor: '#000',
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 5,
-  },
-});

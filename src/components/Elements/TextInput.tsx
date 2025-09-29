@@ -8,7 +8,7 @@ type Props = TextBaseInput['props'] & {
   label?: string;
   getValue?: (text: string) => void;
 };
-const TextInput = ({ label, className, secureTextEntry,getValue, ...props }: Props) => {
+const TextInput = ({ label, className, secureTextEntry, getValue, ...props }: Props) => {
   const [secureTextEntryHack, setSecureTextEntryHack] = useState(secureTextEntry);
 
   return (

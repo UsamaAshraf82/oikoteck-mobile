@@ -1,32 +1,33 @@
-// import { delete_cookie, get_cookie } from '@/actions/cookie';
 import { create } from 'zustand';
 
-type Options<T> = { label: React.ReactNode; value: T };
+export type Option = {
+  label: React.ReactNode;
+  value: string | number | boolean | null | Record<string, unknown>;
+};
 
-type Select<T> = {
+type Select = {
   label: string;
-  value?: T;
+  value?: Option['value'];
   onClose?: () => void;
-  onPress?: (data: Options<T>) => void;
-  options: Options<T>[];
+  onPress?: (data: Option) => void;
+  options: Option[];
   useFlatList?: boolean;
 };
 
-type AnySelect = Select<string | number | boolean | null | Record<string, unknown>>;
-
 type Store = {
-  opened: AnySelect | null;
-  openSelect: (value: AnySelect | null) => void;
+  opened: Select | null;
+  openSelect: (value: Select | null) => void;
 };
 
 const useSelect = create<Store>()((set) => ({
   opened: null,
-  openSelect: (p: AnySelect | null) => {
+  openSelect: (p: Select | null) => {
     if (p === null) {
       set({ opened: null });
       return;
     }
-    const wrapped: AnySelect = {
+
+    const wrapped: Select = {
       ...p,
       onClose: () => {
         set({ opened: null });
@@ -37,6 +38,7 @@ const useSelect = create<Store>()((set) => ({
         p.onPress?.(data);
       },
     };
+
     set({ opened: wrapped });
   },
 }));
