@@ -55,7 +55,7 @@ const SocialSignin = () => {
       </PressableView>
       <PressableView
         onPress={() => {
-          console.log('google');
+          console.log('facebook');
           // startSignInFlow()
         }}
         className="mt-4 h-12 w-full  rounded-full bg-white">
@@ -67,7 +67,7 @@ const SocialSignin = () => {
       {Platform.OS === 'ios' && (
         <PressableView
           onPress={() => {
-            console.log('google');
+            console.log('apple');
             // startSignInFlow()
           }}
           className="mt-4 h-12 w-full  rounded-full bg-white">

@@ -24,7 +24,6 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
     <View className="mb-3 ml-4">
       <Pressable
         onPress={() => {
-          console.log('pressed')
           router.push(`/property/${property.objectId}`);
         }}>
         <View

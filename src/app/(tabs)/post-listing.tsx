@@ -1,64 +1,61 @@
-import React from "react";
-import { Dimensions, Text, View } from "react-native";
-
-const PAGE_WIDTH = Dimensions.get("window").width;
-const PAGE_HEIGHT = Dimensions.get("window").height;
-const Rental = () => {
-  // const [data, setData] = React.useState<{ src: string; blurhash: string }[]>(
-  //   []
-  // );
-
-  // useEffect(() => {
-  //   const getData = async () => {
-  //     const searchParams = new URLSearchParams();
-  //     searchParams.set("query", "girl");
-  //     searchParams.set(
-  //       "client_id",
-  //       "XRACyM6i07yewDJvrzcY3a5QhK8TV4K3-GR4QmKZk5c"
-  //     );
-  //     searchParams.set("orientation", "portrait");
-  //     searchParams.set("count", "30");
-
-  //     const response = await fetch(
-  //       `https://api.unsplash.com/photos/random?${searchParams.toString()}`
-  //     );
-  //     const data: unsplashType[] = await response.json();
-
-
-
-  //     setData(
-  //       data.map((item) => ({
-  //         src: item.urls.regular,
-  //         blurhash: item.blur_hash,
-  //       }))
-  //     );
-  //   };
-  //   getData();
-  // }, []);
-
-  // const animationStyle: TAnimationStyle = React.useCallback((value: number) => {
-  //   "worklet";
-
-  //   const zIndex = Math.round(interpolate(value, [-1, 0, 1], [10, 20, 30]));
-  //   const scale = interpolate(value, [-1, 0, 1], [1.25, 1, 0.25]);
-  //   const opacity = interpolate(value, [-0.75, 0, 1], [0, 1, 0]);
-
-  //   return {
-  //     transform: [{ scale }],
-  //     zIndex,
-  //     opacity,
-  //   };
-  // }, []);
-
+import PostLisitngIcon from '@/assets/svg/post-listing.svg';
+import { Image } from 'expo-image';
+import { useRouter } from 'expo-router';
+import React from 'react';
+import { Text, View } from 'react-native';
+import PressableView from '~/components/HOC/PressableView';
+const PostListing = () => {
+  const router = useRouter();
   return (
-    <View
-      id="carousel-component"
-      // dataSet={{ kind: "custom-animations", name: "tinder" }}
-    >
-      <Text>hello</Text>
+    <View className="h-full flex-col">
+      <View className="flex-1 " style={{ maxHeight: '50%' }}>
+        <Image
+          source={PostLisitngIcon}
+          contentFit="contain"
+          style={{ width: '100%', height: '100%' }}
+        />
+      </View>
+      <View className=" flex-1 grow  px-6 ">
+        <Text className="text-3xl font-bold">Post a listing</Text>
+        <Text className="my-1 mb-4 text-[15px] text-[#575775]">
+          Post a listing on OikoTeck in just 3 simple and easy steps, and enjoy hassle free property
+          management
+        </Text>
+        <View className="relative flex-col gap-4">
+          {['Add your Property details', 'Upload property images', 'And you’re done!!!'].map(
+            (i, j) => (
+              <View key={j} className="my-1 flex-row items-center">
+                <View
+                  className="mr-2 h-10 w-10 items-center justify-center rounded-full bg-white"
+                  style={{
+                    shadowColor: 'rgba(87, 87, 117, 0.25)',
+                    shadowOffset: { width: 0, height: 4 },
+                    shadowOpacity: 1,
+                    shadowRadius: 8,
+                    elevation: 4, // Android support
+                  }}>
+                  <Text className="text-base text-primary">{j + 1}</Text>
+                </View>
+                <Text>{i}</Text>
+              </View>
+            )
+          )}
+          <View className="absolute left-5 z-[-1] h-full w-0.5 overflow-hidden py-2">
+            <View className="h-full bg-[#ACACB9]" />
+          </View>
+        </View>
+      </View>
+      <View className="px-4">
+        <PressableView
+          onPress={() => {router.push('/property/new')}}
+          className="mb-2 h-14 w-full flex-row items-center justify-center rounded-full bg-primary">
+          <View>
+            <Text className="text-white">Post my Listing</Text>
+          </View>
+        </PressableView>
+      </View>
     </View>
   );
 };
 
-
-export default Rental;
+export default PostListing;

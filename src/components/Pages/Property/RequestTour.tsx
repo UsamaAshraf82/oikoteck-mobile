@@ -153,7 +153,7 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
               <ControlledTextInput
                 control={control}
                 name="firstName"
-                multiline={true}
+
                 label="First Name"
                 placeholder="Enter First Name"
                 className=""
@@ -161,7 +161,6 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
               <ControlledTextInput
                 control={control}
                 name="lastName"
-                multiline={true}
                 label="Last Name"
                 placeholder="Enter Last Name"
               />
@@ -214,7 +213,7 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
             <ControlledTextInput
               control={control}
               name="email"
-              multiline={true}
+
               label="Email Address"
               placeholder="Enter your email address"
             />

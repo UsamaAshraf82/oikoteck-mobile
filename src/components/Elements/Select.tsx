@@ -1,6 +1,5 @@
 import { Text, TouchableWithoutFeedback, View } from 'react-native';
 import useSelect, { Option } from '~/store/useSelectHelper';
-import { withController } from '../HOC/withController';
 
 type Props = {
   options: Option[];
@@ -8,9 +7,10 @@ type Props = {
   label?: string;
   title?: string;
   onChange?: (value: Option | null) => void;
+  placeholder?: string;
 };
 
-const Select = ({ options, value, label, title, onChange }: Props) => {
+const Select = ({ options, value, label, title, onChange, placeholder }: Props) => {
   const { openSelect } = useSelect();
 
   return (
@@ -28,7 +28,11 @@ const Select = ({ options, value, label, title, onChange }: Props) => {
             });
           }}>
           <View className="mt-2 rounded-2xl border border-[#C6CAD2] bg-white px-2 py-3">
-            <Text>{value?.label}</Text>
+            {value?.label ? (
+              <Text className="text-sm text-primary">{value?.label}</Text>
+            ) : (
+              <Text className="text-sm text-gray-500">{placeholder || ''}</Text>
+            )}
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -37,5 +41,3 @@ const Select = ({ options, value, label, title, onChange }: Props) => {
 };
 
 export default Select;
-
-export const ControlledTextSelect = withController<any, Props>(Select);

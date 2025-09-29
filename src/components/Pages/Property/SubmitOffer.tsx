@@ -126,7 +126,6 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
   };
 
   const onError = () => {
-    console.log(errors);
     Object.values(errors).forEach((err) => {
       if (err?.message) {
         addToast({
@@ -178,7 +177,6 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
                 <ControlledTextInput
                   control={control}
                   name="price"
-                  multiline={true}
                   label="Your Offer"
                   placeholder="Enter Last Name"
                 />

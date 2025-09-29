@@ -64,9 +64,7 @@ const Select = () => {
         ) : (
           <ScrollView>
             {value.options.map((item, i) => {
-              if (i === 0) {
-                console.log(item.value, value.value, isDeepEqual(item.value, value.value));
-              }
+
               return (
                 <TouchableNativeFeedback key={i} onPress={() => value.onPress?.(item)}>
                   <View className="flex-row justify-between py-2 ">
