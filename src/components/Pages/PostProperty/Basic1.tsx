@@ -1,11 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CheckCircleIcon } from 'phosphor-react-native';
 import { useForm } from 'react-hook-form';
-import { Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import z from 'zod';
 import Select from '~/components/Elements/Select';
 import { ControlledTextInput } from '~/components/Elements/TextInput';
 import Grid from '~/components/HOC/Grid';
+import KeyboardAvoidingView from '~/components/HOC/KeyboardAvoidingView';
 import PressableView from '~/components/HOC/PressableView';
 import { cn } from '~/lib/utils';
 import tailwind from '~/utils/tailwind';
@@ -16,7 +17,7 @@ export default function Basic1({ data, onSubmit }: Props) {
   const {
     control,
     setValue,
-
+    getValues,
     watch,
     formState: { errors },
   } = useForm<Basic1Values>({
@@ -28,8 +29,9 @@ export default function Basic1({ data, onSubmit }: Props) {
       <View className="flex-1">
         <Text className="text-2xl font-bold">Basic Information 🏠</Text>
         <Text className="text-[15px] text-[#575775]">Tell us about your property</Text>
-        <View className="flex-col gap-2">
-          <View>
+       <KeyboardAvoidingView>
+          <ScrollView contentContainerClassName="mt-5 flex-grow flex-col gap-4 pb-28">
+            <View>
             <Text className="my-3">Listing Type</Text>
             <Grid gap={2} cols={2}>
               <PressableView
@@ -106,10 +108,24 @@ export default function Basic1({ data, onSubmit }: Props) {
               setValue('property_category', value?.value as Basic1Values['property_category'])
             }
           />
-        </View>
+          <Select
+          options={Basic1Schema.shape.property_oriantation.unwrap().options.map((i) => ({ label: i, value: i }))}
+              label="Property Oriantation"
+            placeholder="Select Property Oriantation"
+            value={{ label: watch('property_oriantation'), value: watch('property_oriantation') || null }}
+            onChange={(value) =>
+              setValue('property_oriantation', value?.value as Basic1Values['property_oriantation'])
+            }
+          />
+        </ScrollView>
+        </KeyboardAvoidingView>
       </View>
       <View className="absolute bottom-0 left-0 right-0   px-5 py-4">
-        <PressableView className="h-12 items-center justify-center rounded-full bg-secondary">
+        <PressableView
+          onPress={() => {
+            onSubmit(getValues());
+          }}
+          className="h-12 items-center justify-center rounded-full bg-secondary">
           <Text className="text-lg font-bold text-white">Continue</Text>
         </PressableView>
       </View>
@@ -172,6 +188,10 @@ export const Basic1Schema = z.object({
       message: 'Property Category is Required.',
     }
   ),
+      property_oriantation: z
+      .enum(['North-Facing', 'South-Facing', 'East-Facing', 'West-Facing', ''])
+      .optional(),
+
 });
 
 export type Basic1Values = z.infer<typeof Basic1Schema>;

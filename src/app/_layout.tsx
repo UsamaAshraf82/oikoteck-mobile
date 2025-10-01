@@ -6,6 +6,7 @@ import * as SystemUI from 'expo-system-ui';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator as ActivityIndicatorInternal, Modal, View } from 'react-native';
 import Provider from '~/components/Provider';
+import ModalContainer from '~/components/Sheets/Modal';
 import Select from '~/components/Sheets/Select';
 import { ToastContainer } from '~/components/ToastContainer';
 import useActivityIndicator from '~/store/useActivityIndicator';
@@ -62,6 +63,7 @@ export default function RootLayout() {
     <>
       <Provider>
         <Screens fontsLoaded={fontsLoaded} ready={ready} />
+        <ModalContainer />
         <Select />
         <ActivityIndicator />
         <ToastContainer />

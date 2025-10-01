@@ -1,6 +1,7 @@
 import { Checkbox as ExpoCheckbox } from 'expo-checkbox';
 import React, { useEffect, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
+import { cn } from '~/lib/utils';
 import tailwind from '~/utils/tailwind';
 import { withController } from '../HOC/withController';
 type Props = {
@@ -8,9 +9,10 @@ type Props = {
   onChange?: (value: boolean) => void;
   getValue?: (value: boolean) => void;
   label?: React.ReactNode;
+  labelClassName?: string;
 };
 
-const Checkbox: React.FC<Props> = ({ label, value, onChange ,getValue}) => {
+const Checkbox: React.FC<Props> = ({ label, value, onChange ,getValue,labelClassName}) => {
   const [isChecked, setChecked] = useState<boolean>(!!value);
 
   useEffect(() => {
@@ -24,7 +26,7 @@ const Checkbox: React.FC<Props> = ({ label, value, onChange ,getValue}) => {
   };
   return (
     <View className="mt-1 flex-row items-center justify-between">
-      <Text className="text-base flex-shrink ml-2">{label}</Text>
+      <Text className={cn("text-base flex-shrink ml-2", labelClassName)}>{label}</Text>
       <Pressable onPress={() => handleChange(!isChecked)}>
         <ExpoCheckbox
           value={isChecked}

@@ -1,3 +1,4 @@
+import { CaretDownIcon } from 'phosphor-react-native';
 import { Text, TouchableWithoutFeedback, View } from 'react-native';
 import useSelect, { Option } from '~/store/useSelectHelper';
 
@@ -15,8 +16,8 @@ const Select = ({ options, value, label, title, onChange, placeholder }: Props) 
 
   return (
     <View className="w-full  flex-col ">
-      {label && <Text className="text-[13px] font-medium text-primary">{label}</Text>}
-      <View className="relative mt-2">
+      {label && <Text className="mb-2 text-[13px] font-medium text-primary">{label}</Text>}
+      <View className="relative">
         <TouchableWithoutFeedback
           onPress={() => {
             openSelect({
@@ -27,12 +28,13 @@ const Select = ({ options, value, label, title, onChange, placeholder }: Props) 
               onPress: (value) => onChange?.(value),
             });
           }}>
-          <View className="mt-2 rounded-2xl border border-[#C6CAD2] bg-white px-2 py-3">
+          <View className=" flex-row items-center justify-between rounded-2xl border border-[#C6CAD2] bg-white px-2 py-3 text-primary">
             {value?.label ? (
               <Text className="text-sm text-primary">{value?.label}</Text>
             ) : (
               <Text className="text-sm text-gray-500">{placeholder || ''}</Text>
             )}
+            <CaretDownIcon size={20} />
           </View>
         </TouchableWithoutFeedback>
       </View>
