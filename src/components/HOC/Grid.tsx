@@ -5,9 +5,10 @@ type GridProps = {
   cols?: number; // number of columns (like grid-cols-x)
   gap?: number; // spacing between items (like gap-x)
   children: ReactNode;
+  className?: string;
 };
 
-export default function Grid({ cols = 2, gap = 2, children }: GridProps) {
+export default function Grid({ cols = 2, gap = 2, children,className }: GridProps) {
   return (
     <View
       style={{
@@ -15,6 +16,7 @@ export default function Grid({ cols = 2, gap = 2, children }: GridProps) {
         flexWrap: "wrap",
         margin: -gap *2, // cancel outer spacing
       }}
+      className={className}
     >
       {React.Children.map(children, (child) => (
         <View

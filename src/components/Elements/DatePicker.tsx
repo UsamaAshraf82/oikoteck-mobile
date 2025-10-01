@@ -54,15 +54,21 @@ const DatePicker: React.FC<Props> = ({
   if (withForm) {
     return (
       <View className="w-full  flex-col ">
-        {label && <Text className="text-[13px] font-medium text-primary">{label}</Text>}
-        <View className="relative mt-2">
+        {label && <Text className="text-[13px] mb-2 font-medium text-primary">{label}</Text>}
+        <View className="relative">
           <PressableView
             onPress={() => setVisible(true)}
-            className={cn('mt-2 h-12 rounded-2xl  border border-[#C6CAD2]  bg-white ', className)}>
+            className={cn(' h-12 rounded-2xl  border border-[#C6CAD2]  bg-white ', className)}>
             <View className="w-full flex-1 flex-row items-center justify-between px-2">
-              <Text className={cn('text-left ', textClassName)}>
-                <DateText date={date} mode={mode} placeholder={placeholder} />
-              </Text>
+              {date ? (
+                <Text className={cn('text-left text-sm', textClassName)}>
+                  <DateText date={date} mode={mode} placeholder={placeholder} />
+                </Text>
+              ) : (
+                <Text className={cn('text-left text-sm text-gray-500', textClassName)}>
+                  <DateText date={date} mode={mode} placeholder={placeholder} />
+                </Text>
+              )}
               <CalendarIcon
                 color={tailwind.theme.colors.primary}
                 weight="duotone"
@@ -91,9 +97,15 @@ const DatePicker: React.FC<Props> = ({
     <View className="flex-1">
       <PressableView onPress={() => setVisible(true)} className={className}>
         <View className="w-full flex-1 flex-row items-center justify-between px-2 ">
-          <Text className={cn('text-left', textClassName)}>
-            <DateText date={date} mode={mode} placeholder={placeholder} />
-          </Text>
+          {date ? (
+            <Text className={cn('text-left text-sm', textClassName)}>
+              <DateText date={date} mode={mode} placeholder={placeholder} />
+            </Text>
+          ) : (
+            <Text className={cn('text-left text-sm text-gray-500', textClassName)}>
+              <DateText date={date} mode={mode} placeholder={placeholder} />
+            </Text>
+          )}
           <CalendarIcon
             color={tailwind.theme.colors.primary}
             weight="duotone"

@@ -373,12 +373,12 @@ export default function PropertyDetails({ property }: { property: Property_Type 
           <SimilarListing property={property} />
         </View>
       </ScrollView>
-      <View className="absolute bottom-0 mt-5 w-full flex-row items-center justify-around bg-white py-2">
+      <Grid cols={2} className='my-2 px-3' >
         <PressableView
           onPress={() => {
             setSubmitOfferVisible(true);
           }}
-          className="h-12 w-[45%] items-center justify-center rounded-full border border-primary ">
+          className="h-12  items-center justify-center rounded-full border border-primary ">
           <View className="flex-row items-center  gap-2">
             <FileTextIcon color={tailwind.theme.colors.primary} />
             <Text className="text-primary">Submit Offer</Text>
@@ -388,13 +388,13 @@ export default function PropertyDetails({ property }: { property: Property_Type 
           onPress={() => {
             setContactOwnerVisible(true);
           }}
-          className="h-12 w-[45%] items-center justify-center rounded-full border border-secondary bg-secondary px-4">
+          className="h-12  items-center justify-center rounded-full border border-secondary bg-secondary">
           <View className="flex-row items-center gap-2">
             <ChatCircleIcon color="#fff" />
             <Text className="text-white">Contact Owner</Text>
           </View>
         </PressableView>
-      </View>
+      </Grid>
     </View>
   );
 }

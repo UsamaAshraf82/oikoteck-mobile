@@ -51,7 +51,7 @@ export default function Basic3({ data, extra_data, onSubmit }: Props) {
                 ].map((i) => ({ label: i, value: i }))}
                 label="Security Deposit (Months)"
                 value={{
-                  label: watch('deposit'),
+                  label: level_of_finish(watch('deposit')),
                   value: watch('deposit') || null,
                 }}
                 placeholder="Choose Options"
@@ -65,15 +65,15 @@ export default function Basic3({ data, extra_data, onSubmit }: Props) {
                 options={[
                   1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
                   24,
-                ].map((i) => ({ label: i + ' month', value: i }))}
+                ].map((i) => ({ label: i, value: i }))}
                 label="Payment Frequency (Months)"
                 value={{
-                  label: watch('payment_frequency'),
-                  value: watch('payment_frequency') || null,
+                  label: level_of_finish(watch('deposit')),
+                  value: watch('deposit') || null,
                 }}
                 placeholder="Select frequency"
                 onChange={(value) => {
-                  setValue('payment_frequency', value?.value as Basic3Values['payment_frequency']);
+                  setValue('deposit', value?.value as Basic3Values['deposit']);
                 }}
               />
             )}
@@ -138,6 +138,7 @@ export const Basic3Schema = z
       })
       .min(1, 'Price is Required.'),
 
+    floor: z.number({}).optional(),
     deposit: z.number({
       message: 'Security Deposit (Months) is Required.',
     }),

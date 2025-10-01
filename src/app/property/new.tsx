@@ -14,20 +14,17 @@ export default function Index() {
     basic: {
       listing_for: 'Rental',
       property_type: 'Residential',
-      property_category: 'Detached House',
     },
     basic2: {
       property_type: 'Residential',
       // property_category: 'Detached House',
-      furnished:false,
+      furnished: false,
       bedrooms: 1,
       bathrooms: 1,
-      floor:0,
-      special_feature:[]
+      floor: 0,
+      special_feature: [],
     },
-    basic3: {
-
-    }
+    basic3: {payment_frequency:1,deposit:1,level_of_finish:3},
   });
 
   switch (tab) {
@@ -60,8 +57,7 @@ export default function Index() {
         <Basic3
           data={data.basic3}
           extra_data={{
-            property_type: data.basic.property_type!,
-            property_category: data.basic.property_category!,
+            listing_for: data.basic.listing_for!,
           }}
           onSubmit={(data) => {
             setData((i) => ({ ...i, basic3: data }));
