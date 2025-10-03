@@ -20,6 +20,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
+import AppText from '~/components/Elements/AppText';
 import { stringify_area_district } from '~/lib/stringify_district_area';
 import useSelect from '~/store/useSelectHelper';
 import { Property_Type } from '~/type/property';
@@ -413,7 +414,7 @@ const MarketPlace = ({ listing_type }: Props) => {
               <TouchableWithoutFeedback key={i.filter} onPress={i.onPress}>
                 <View className="mr-2 h-10 flex-1 flex-row items-center justify-center rounded-2xl border border-[#E2E4E8] bg-white  px-3 py-2 ">
                   {i.iconFirst ? i.icon : null}
-                  <Text className="mx-2 bg-white text-sm text-primary">{i.filter}</Text>
+                  <AppText className="mx-2 bg-white text-sm text-primary" >{i.filter}</AppText>
                   {i.iconFirst ? null : i.icon}
                 </View>
               </TouchableWithoutFeedback>
@@ -434,7 +435,7 @@ const MarketPlace = ({ listing_type }: Props) => {
                   style={{ width: 70, height: 50, borderRadius: 8 }}
                 />
 
-                <Text className="mx-2">{i.district}</Text>
+                <AppText className="mx-2" >{i.district}</AppText>
               </Pressable>
             ))}
           </ScrollView>

@@ -1,4 +1,3 @@
-import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { DateTime } from 'luxon';
@@ -36,6 +35,8 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
+import AppText from '~/components/Elements/AppText';
+import AWSImage from '~/components/Elements/AWSImage';
 import Grid from '~/components/HOC/Grid';
 import PressableView from '~/components/HOC/PressableView';
 import SimilarListing from '~/components/Pages/Property/SimilarListing';
@@ -45,7 +46,6 @@ import SizeIcon from '~/components/SVG/Size';
 import { stringify_area_district } from '~/lib/stringify_district_area';
 import { cn } from '~/lib/utils';
 import { Property_Type } from '~/type/property';
-import { cloudfront } from '~/utils/cloudfront';
 import { deviceHeight, deviceWidth } from '~/utils/global';
 import tailwind from '~/utils/tailwind';
 import ContactOwner from './ContactOwner';
@@ -80,9 +80,8 @@ export default function PropertyDetails({ property }: { property: Property_Type 
               height={deviceHeight}
               defaultIndex={startIndex}
               renderItem={({ item }) => {
-                const { src: transformed, lazy } = cloudfront(item, true);
 
-                return <ZoomableImage transformed={transformed} lazy={lazy} />;
+                return <ZoomableImage src={item} />;
               }}
             />
 
@@ -99,7 +98,6 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={{ alignItems: 'center', paddingHorizontal: 4 }}>
                 {property.images.map((item, index) => {
-                  const { src: transformed, lazy } = cloudfront(item, true);
 
                   return (
                     <Pressable
@@ -108,7 +106,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                         carouselRef.current?.scrollTo({ index, animated: true });
                       }}
                       style={{ marginHorizontal: 4 }}>
-                      <Image
+                      <AWSImage
                         contentFit="contain" // keep aspect ratio
                         placeholderContentFit="contain"
                         style={{
@@ -116,8 +114,8 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                           height: 90,
                           borderRadius: 6,
                         }}
-                        source={transformed}
-                        placeholder={lazy}
+                        size='800x800'
+                        src={item}
                       />
                     </Pressable>
                   );
@@ -146,7 +144,6 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                 g.enabled(false);
               }}
               renderItem={({ item, index }) => {
-                const { src: transformed, lazy } = cloudfront(item, true, '800x800');
 
                 return (
                   <Pressable
@@ -154,12 +151,14 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                       setStartIndex(index);
                       setLightBoxVisible(true);
                     }}>
-                    <Image
+                    <AWSImage
                       contentFit="cover"
                       placeholderContentFit="cover"
                       style={{ width: deviceWidth, height: '100%' }}
-                      source={transformed}
-                      placeholder={lazy}
+                      src={item}
+                      fitin={true}
+                      size='800x800'
+                      // placeholder={lazy}
                     />
                   </Pressable>
                 );
@@ -181,12 +180,12 @@ export default function PropertyDetails({ property }: { property: Property_Type 
           </View>
           <View className="p-4">
             <View className="flex-row items-baseline ">
-              <Text className="text-2xl font-bold text-secondary">€ {property.price}</Text>
+              <AppText className="text-2xl font-bold text-secondary" >€ {property.price}</AppText>
               {property.listing_for === 'Rental' && (
-                <Text className="text-sm font-medium text-[#8D95A5]">/Month</Text>
+                <AppText className="text-sm font-medium text-[#8D95A5]" >/Month</AppText>
               )}
             </View>
-            <Text className="mt-2 text-xl font-bold text-primary">{property.title}</Text>
+            <AppText className="mt-2 text-xl font-bold text-primary" >{property.title}</AppText>
             <View className="mt-3 flex-row items-center">
               <GlobeHemisphereWestIcon
                 color={tailwind.theme.colors.primary}
@@ -217,7 +216,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                   <Text>Street Address</Text>
                   <View className="mt-2 flex-row items-center gap-2">
                     <MapPinIcon size={20} />
-                    <Text className="text-[15px] font-medium">{property.address}</Text>
+                    <AppText className="text-[15px] font-medium" >{property.address}</AppText>
                   </View>
                 </View>
               </>
@@ -275,18 +274,18 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                   <Text>{i.heading}</Text>
                   <View className="mt-2 flex-row items-center gap-2">
                     {i.icon}
-                    <Text className="text-[15px] font-medium">{i.detail}</Text>
+                    <AppText className="text-[15px] font-medium" >{i.detail}</AppText>
                   </View>
                 </View>
               ))}
             </Grid>
             <View className="mt-4" />
-            <Text className="text-base">{property.description}</Text>
+            <AppText className="text-base" >{property.description}</AppText>
             <View className="mt-5" />
             <View className="flex-col gap-3">
-              <Text className="text-2xl font-semibold">Home Details</Text>
+              <AppText className="text-2xl font-semibold" >Home Details</AppText>
               {property.special_feature.map((i) => (
-                <Text key={i}>• {i}</Text>
+                <AppText key={i} >• {i}</AppText>
               ))}
               <Text>
                 • {property.listing_for === 'Rental' ? 'Earliest Move-in' : 'Earliest Sale'} :{' '}
@@ -319,7 +318,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
             </View>
             <View className="mt-5" />
             <View className="flex-col gap-3">
-              <Text className="text-2xl font-semibold">Payment Methods</Text>
+              <AppText className="text-2xl font-semibold" >Payment Methods</AppText>
               <Text>
                 •{' '}
                 {property.payment_frequency === 1
@@ -332,7 +331,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
             </View>
             <View className="mt-5" />
             <View className="flex-col gap-1">
-              <Text className="mb-4 text-2xl font-semibold">Neighborhood Overview</Text>
+              <AppText className="mb-4 text-2xl font-semibold" >Neighborhood Overview</AppText>
               <View className="h-96">
                 <MapView
                   provider={PROVIDER_GOOGLE}
@@ -381,7 +380,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
           className="h-12  items-center justify-center rounded-full border border-primary ">
           <View className="flex-row items-center  gap-2">
             <FileTextIcon color={tailwind.theme.colors.primary} />
-            <Text className="text-primary">Submit Offer</Text>
+            <AppText className="text-primary" >Submit Offer</AppText>
           </View>
         </PressableView>
         <PressableView
@@ -391,7 +390,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
           className="h-12  items-center justify-center rounded-full border border-secondary bg-secondary">
           <View className="flex-row items-center gap-2">
             <ChatCircleIcon color="#fff" />
-            <Text className="text-white">Contact Owner</Text>
+            <AppText className="text-white" >Contact Owner</AppText>
           </View>
         </PressableView>
       </Grid>
@@ -422,15 +421,13 @@ function Dot({ index, progress }: { index: number; progress: SharedValue<number>
   return <Animated.View style={[animatedStyle]} className="mx-1 h-2 w-2 rounded-full bg-white" />;
 }
 
-const AnimatedImage = Animated.createAnimatedComponent(Image);
+const AnimatedImage = Animated.createAnimatedComponent(AWSImage);
 
 function ZoomableImage({
-  transformed,
-  lazy,
+  src,
   onSwipeDown,
 }: {
-  transformed: string;
-  lazy: string;
+  src:string
   onSwipeDown?: () => void;
 }) {
   const scale = useSharedValue(1);
@@ -479,8 +476,7 @@ function ZoomableImage({
         contentFit="contain"
         placeholderContentFit="contain"
         // style={{ width: deviceWidth, height: '100%' }}
-        source={transformed}
-        placeholder={lazy}
+        src={src}
         style={[{ width: '100%', height: '100%' }, animatedStyle]}
       />
     </GestureDetector>

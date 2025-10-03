@@ -1,9 +1,10 @@
 // components/ToastContainer.tsx
 import React from 'react';
-import { Animated, Text, View } from 'react-native';
+import { Animated, View } from 'react-native';
 import ReactNativeModal from 'react-native-modal';
 import { useToast } from '~/store/useToast';
 import { deviceWidth } from '~/utils/global';
+import AppText from './Elements/AppText';
 
 export const ToastContainer = () => {
   const { toasts } = useToast();
@@ -33,8 +34,8 @@ export const ToastContainer = () => {
               toast.type === 'error' && { borderColor: '#f44336' },
               toast.type === 'info' && { borderColor: '#333' },
             ]}>
-            <Text className="text-left text-lg font-semibold text-secondary">{toast.header}</Text>
-            <Text className="text-left  text-primary">{toast.message}</Text>
+            <AppText className="text-left text-lg font-semibold text-secondary">{toast.header}</AppText>
+            <AppText className="text-left  text-primary">{toast.message}</AppText>
           </Animated.View>
         ))}
       </View>

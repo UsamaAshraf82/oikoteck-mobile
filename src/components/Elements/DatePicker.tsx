@@ -7,6 +7,7 @@ import { cn } from '~/lib/utils';
 import tailwind from '~/utils/tailwind';
 import PressableView from '../HOC/PressableView';
 import { withController } from '../HOC/withController';
+import AppText from './AppText';
 
 type Props = {
   value?: Date | null;
@@ -54,7 +55,7 @@ const DatePicker: React.FC<Props> = ({
   if (withForm) {
     return (
       <View className="w-full  flex-col ">
-        {label && <Text className="text-[13px] mb-2 font-medium text-primary">{label}</Text>}
+        {label && <AppText className="text-[13px] mb-2 font-medium text-primary" >{label}</AppText>}
         <View className="relative">
           <PressableView
             onPress={() => setVisible(true)}

@@ -1,7 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import z from 'zod';
+import AppText from '~/components/Elements/AppText';
 import { ControlledDatePicker } from '~/components/Elements/DatePicker';
 import Select from '~/components/Elements/Select';
 import { ControlledTextInput } from '~/components/Elements/TextInput';
@@ -33,8 +34,8 @@ export default function Basic3({ data, extra_data, onSubmit }: Props) {
   return (
     <View className="flex-1 bg-white px-5 pt-5">
       <View className="flex-1">
-        <Text className="text-2xl font-bold">Property details 🏠 (Cont..)</Text>
-        <Text className="text-[15px] text-[#575775]">Add your pricing details</Text>
+        <AppText className="text-2xl font-bold">Property details 🏠 (Cont..)</AppText>
+        <AppText className="text-[15px] text-[#575775]">Add your pricing details</AppText>
         <KeyboardAvoidingView>
           <ScrollView contentContainerClassName="mt-5 flex-grow flex-col gap-6 pb-28">
             <ControlledTextInput
@@ -114,7 +115,7 @@ export default function Basic3({ data, extra_data, onSubmit }: Props) {
             onSubmit(getValues());
           }}
           className="h-12 items-center justify-center rounded-full bg-secondary">
-          <Text className="text-lg font-bold text-white">Continue</Text>
+          <AppText className="text-lg font-bold text-white">Continue</AppText>
         </PressableView>
       </View>
     </View>

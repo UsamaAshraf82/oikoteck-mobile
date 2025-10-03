@@ -1,13 +1,14 @@
 import { FlashList } from '@shopify/flash-list';
 import { CheckCircleIcon } from 'phosphor-react-native';
 import React from 'react';
-import { Text, TouchableNativeFeedback, View } from 'react-native';
+import { TouchableNativeFeedback, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
 import { isDeepEqual } from 'remeda';
 import useSelect from '~/store/useSelectHelper';
 import { deviceHeight } from '~/utils/global';
 import tailwind from '~/utils/tailwind';
+import AppText from '../Elements/AppText';
 const Select = () => {
   const { opened: value } = useSelect();
 
@@ -30,7 +31,7 @@ const Select = () => {
         }}>
         <View className="mb-3 h-1 w-10 self-center rounded-sm bg-[#ccc]" />
         <View className="flex-row items-center justify-center">
-          <Text className="text-xl font-semibold">{value.label}</Text>
+          <AppText className="text-xl font-semibold">{value.label}</AppText>
         </View>
         {value.useFlatList ? (
           <View style={{ height: deviceHeight * 0.9 - 80 }} className=" w-full">
@@ -44,7 +45,7 @@ const Select = () => {
                   <TouchableNativeFeedback onPress={() => value.onPress?.(item)}>
                     <View className="flex-row justify-between py-2 ">
                       {typeof item.label === 'string' ? (
-                        <Text className="text-lg font-medium text-primary">{item.label}</Text>
+                        <AppText className="text-lg font-medium text-primary">{item.label}</AppText>
                       ) : React.isValidElement(item.label) ? (
                         item.label
                       ) : null}
@@ -64,12 +65,11 @@ const Select = () => {
         ) : (
           <ScrollView>
             {value.options.map((item, i) => {
-
               return (
                 <TouchableNativeFeedback key={i} onPress={() => value.onPress?.(item)}>
                   <View className="flex-row justify-between py-2 ">
                     {typeof item.label === 'string' ? (
-                      <Text className="text-lg font-medium text-primary">{item.label}</Text>
+                      <AppText className="text-lg font-medium text-primary">{item.label}</AppText>
                     ) : React.isValidElement(item.label) ? (
                       item.label
                     ) : null}

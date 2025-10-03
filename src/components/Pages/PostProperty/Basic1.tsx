@@ -3,12 +3,14 @@ import { CheckCircleIcon } from 'phosphor-react-native';
 import { useForm } from 'react-hook-form';
 import { ScrollView, Text, View } from 'react-native';
 import z from 'zod';
+import AppText from '~/components/Elements/AppText';
 import Select from '~/components/Elements/Select';
 import { ControlledTextInput } from '~/components/Elements/TextInput';
 import Grid from '~/components/HOC/Grid';
 import KeyboardAvoidingView from '~/components/HOC/KeyboardAvoidingView';
 import PressableView from '~/components/HOC/PressableView';
 import { cn } from '~/lib/utils';
+import { property_category } from '~/utils/property';
 import tailwind from '~/utils/tailwind';
 
 type Props = { data: Partial<Basic1Values>; onSubmit: (data: Basic1Values) => void };
@@ -27,12 +29,12 @@ export default function Basic1({ data, onSubmit }: Props) {
   return (
     <View className="flex-1 bg-white px-5 pt-5">
       <View className="flex-1">
-        <Text className="text-2xl font-bold">Basic Information 🏠</Text>
-        <Text className="text-[15px] text-[#575775]">Tell us about your property</Text>
+        <AppText className="text-2xl font-bold" >Basic Information 🏠</AppText>
+        <AppText className="text-[15px] text-[#575775]" >Tell us about your property</AppText>
        <KeyboardAvoidingView>
           <ScrollView contentContainerClassName="mt-5 flex-grow flex-col gap-4 pb-28">
             <View>
-            <Text className="my-3">Listing Type</Text>
+            <AppText className="my-3" >Listing Type</AppText>
             <Grid gap={2} cols={2}>
               <PressableView
                 onPress={() => {
@@ -126,7 +128,7 @@ export default function Basic1({ data, onSubmit }: Props) {
             onSubmit(getValues());
           }}
           className="h-12 items-center justify-center rounded-full bg-secondary">
-          <Text className="text-lg font-bold text-white">Continue</Text>
+          <AppText className="text-lg font-bold text-white" >Continue</AppText>
         </PressableView>
       </View>
     </View>
@@ -195,92 +197,3 @@ export const Basic1Schema = z.object({
 });
 
 export type Basic1Values = z.infer<typeof Basic1Schema>;
-
-export function property_category(property_type: string | null, withAny = false) {
-  let category: string[] = [];
-  switch (property_type) {
-    case 'Residential':
-      category = [
-        'Apartment',
-        'Flat',
-        'Studio',
-        'Maisonette',
-        'Detached House',
-        'Villa',
-        'Building',
-        'Chalet',
-      ];
-      break;
-    case 'Commercial':
-      category = ['Office', 'Store', 'Warehouse', 'Industrial Space', 'Hotel', 'Business Building'];
-      break;
-    case 'Land':
-      category = [
-        'Residential Use',
-        'Commercial Use',
-        'Industrial Use',
-        'Agricultural Use',
-        'Recreational Use',
-        'Unincorporated Use',
-      ];
-      break;
-    default:
-      category = [];
-      break;
-  }
-  if (withAny) {
-    category.push('Any');
-  }
-  return category;
-}
-
-export function level_of_finish(level_of_finish?: number) {
-  switch (level_of_finish) {
-    case 1:
-      return '1 (Poor-end)';
-    case 2:
-      return '2 (Low-end)';
-    case 3:
-      return '3 (Medium-end)';
-    case 4:
-      return '4 (High-end)';
-    case 5:
-      return '5 (Luxury-end)';
-    default:
-      return '';
-  }
-}
-
-export const special_feature = (property_type: 'Residential' | 'Commercial' | 'Land') => {
-  if (property_type === 'Land') {
-    return [
-      'Power access',
-      'Water access',
-      'Drainage access',
-      'Sanitary access',
-      'Landscaping surface',
-      'Hard surface',
-      'Soil surface',
-    ];
-  }
-  return [
-    'Parking Spot',
-    'Elevator',
-    'Secure door',
-    'Alarm',
-    'Storage Space',
-    'Fireplace',
-    'Balcony',
-    'Internal Staircase',
-    'Swimming pool',
-    'Playroom',
-    'Attic',
-    'Solar water heating',
-    'Pets Welcome',
-    'Renovated',
-    'Luxurious',
-    'Unfinished',
-    'Under Construction',
-    'Neoclassical',
-  ];
-};

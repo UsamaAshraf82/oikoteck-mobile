@@ -13,6 +13,7 @@
     "@aws-sdk/client-s3": "^3.899.0",
     "@aws-sdk/credential-providers": "^3.899.0",
     "@aws-sdk/lib-storage": "^3.900.0",
+    "@aws-sdk/s3-request-presigner": "^3.901.0",
     "@expo/config-plugins": "~10.1.2",
     "@gorhom/bottom-sheet": "^5.2.6",
     "@hookform/resolvers": "^5.2.1",
@@ -73,6 +74,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.28.3",
+    "@babel/plugin-transform-class-static-block": "^7.28.3",
     "@babel/plugin-transform-react-jsx": "^7.27.1",
     "@sentry/cli": "^2.52.0",
     "@types/luxon": "^3.7.1",

@@ -3,6 +3,7 @@ import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { Text, View } from 'react-native';
+import AppText from '~/components/Elements/AppText';
 import PressableView from '~/components/HOC/PressableView';
 const PostListing = () => {
   const router = useRouter();
@@ -16,7 +17,7 @@ const PostListing = () => {
         />
       </View>
       <View className=" flex-1 grow  px-6 ">
-        <Text className="text-3xl font-bold">Post a listing</Text>
+        <AppText className="text-3xl font-bold" >Post a listing</AppText>
         <Text className="my-1 mb-4 text-[15px] text-[#575775]">
           Post a listing on OikoTeck in just 3 simple and easy steps, and enjoy hassle free property
           management
@@ -34,7 +35,7 @@ const PostListing = () => {
                     shadowRadius: 8,
                     elevation: 4, // Android support
                   }}>
-                  <Text className="text-base text-primary">{j + 1}</Text>
+                  <AppText className="text-base text-primary" >{j + 1}</AppText>
                 </View>
                 <Text>{i}</Text>
               </View>
@@ -50,7 +51,7 @@ const PostListing = () => {
           onPress={() => {router.push('/property/new')}}
           className="mb-2 h-14 w-full flex-row items-center justify-center rounded-full bg-primary">
           <View>
-            <Text className="text-white">Post my Listing</Text>
+            <AppText className="text-white" >Post my Listing</AppText>
           </View>
         </PressableView>
       </View>

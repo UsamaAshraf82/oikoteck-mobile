@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { z } from 'zod';
+import AppText from '~/components/Elements/AppText';
 import { ControlledDatePicker } from '~/components/Elements/DatePicker';
 import { flags, RenderFlagWithCode } from '~/components/Elements/Flags';
 import Select from '~/components/Elements/Select';
@@ -113,7 +114,7 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
 
         {/* Title + Close */}
         <View className="flex-row items-center justify-between">
-          <Text className="text-2xl font-bold text-primary">Request a Tour</Text>
+          <AppText className="text-2xl font-bold text-primary" >Request a Tour</AppText>
           <TouchableNativeFeedback onPress={onClose}>
             <XIcon />
           </TouchableNativeFeedback>
@@ -165,7 +166,7 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
                 placeholder="Enter Last Name"
               />
             </Grid>
-            <Text className="-mb-2">Phone Number</Text>
+            <AppText className="-mb-2" >Phone Number</AppText>
             <View className="flex-row items-center gap-0.5">
               <View className="w-2/5 ">
                 <TouchableWithoutFeedback
@@ -251,7 +252,7 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
             onPress={handleSubmit(onSubmit, onError)}
             className="h-12 rounded-full border border-secondary bg-secondary">
             <View>
-              <Text className="text-white">Request Tour</Text>
+              <AppText className="text-white" >Request Tour</AppText>
             </View>
           </PressableView>
         </Grid>

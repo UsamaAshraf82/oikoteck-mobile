@@ -1,8 +1,9 @@
 import { EyeClosedIcon, EyeIcon } from 'phosphor-react-native';
 import { useState } from 'react';
-import { Text, TextInput as TextBaseInput, TouchableOpacity, View } from 'react-native';
+import { TextInput as TextBaseInput, TouchableOpacity, View } from 'react-native';
 import { cn } from '~/lib/utils';
 import { withController } from '../HOC/withController';
+import AppText from './AppText';
 
 type Props = TextBaseInput['props'] & {
   label?: string;
@@ -13,7 +14,7 @@ const TextInput = ({ label, className, secureTextEntry, getValue, ...props }: Pr
 
   return (
     <View className="w-full  flex-col ">
-      {label && <Text className="text-[13px] font-medium text-primary">{label}</Text>}
+      {label && <AppText className="text-[13px] font-medium text-primary" >{label}</AppText>}
       <View className="relative mt-2">
         <TextBaseInput
           {...props}

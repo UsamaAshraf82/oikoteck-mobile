@@ -1,7 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import Parse from 'parse/react-native';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import PropertyCard from '~/components/Cards/PropertyCard';
+import AppText from '~/components/Elements/AppText';
 import { Property_Type } from '~/type/property';
 
 const SimilarListing = ({ property }: { property: Property_Type }) => {
@@ -32,7 +33,7 @@ const SimilarListing = ({ property }: { property: Property_Type }) => {
   }
   return (
     <View className="flex-col pb-5 gap-1 bg-[#eef1f7]">
-      <Text className="text-2xl ml-4 mb-4 font-semibold">Similar Listing</Text>
+      <AppText className="text-2xl ml-4 mb-4 font-semibold" >Similar Listing</AppText>
       <ScrollView horizontal>
         <View className="flex-1 flex-row flex-nowrap">
           {data.map((i) => (

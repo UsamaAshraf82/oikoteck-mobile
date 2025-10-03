@@ -1,4 +1,3 @@
-import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { Pressable, Text, View } from 'react-native';
 import Animated, { interpolate, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
@@ -6,10 +5,11 @@ import Carousel from 'react-native-reanimated-carousel';
 import { stringify_area_district } from '~/lib/stringify_district_area';
 import { cn } from '~/lib/utils';
 import { Property_Type } from '~/type/property';
-import { cloudfront } from '~/utils/cloudfront';
 import { deviceWidth } from '~/utils/global';
 import { thoasandseprator } from '~/utils/number';
 import tailwind from '~/utils/tailwind';
+import AppText from '../Elements/AppText';
+import AWSImage from '../Elements/AWSImage';
 import BathIcon from '../SVG/Bath';
 import BedIcon from '../SVG/Bed';
 import SizeIcon from '../SVG/Size';
@@ -49,16 +49,14 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
                   g.enabled(false);
                 }}
                 // onProgressChange={progress}
-                renderItem={({ item, index }) => {
-                  const { src: transformed, lazy } = cloudfront(item, true, '800x800');
-
+                renderItem={({ item }) => {
                   return (
-                    <Image
+                    <AWSImage
                       contentFit="cover"
                       placeholderContentFit="cover"
                       style={{ width: wide, height: '100%' }}
-                      source={transformed}
-                      placeholder={lazy}
+                      src={item}
+                      size="800x800"
                     />
                   );
                 }}
@@ -81,7 +79,7 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
                     'bg-platinum': property.plan == 'Platinum',
                   }
                 )}>
-                <Text className="text-xs text-white">{property.plan}</Text>
+                <AppText className="text-xs text-white">{property.plan}</AppText>
               </View>
 
               {/* <MyCarousel
@@ -113,17 +111,17 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
             <View className="mt-2">
               <View className="flex-row items-center justify-between">
                 <View className=" flex-row items-baseline">
-                  <Text className="text-lg font-bold text-secondary">
+                  <Text className="font-bold text-lg text-secondary">
                     {'€ ' + thoasandseprator(property.price)}
                   </Text>
                   {property.listing_for !== 'Sale' && (
-                    <Text className="text-xs text-o_light_gray"> / Month</Text>
+                    <AppText className="text-xs text-o_light_gray"> / Month</AppText>
                   )}
                 </View>
               </View>
 
               <View className="flex-row items-center justify-between">
-                <Text className="text-base font-bold text-primary">{property.title}</Text>
+                <AppText className="font-bold text-base text-primary">{property.title}</AppText>
               </View>
 
               <Text className="text-xs text-primary">
@@ -164,7 +162,9 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
                     color={tailwind.theme.colors.o_light_gray}
                     className="text-o_light_gray"
                   />
-                  <Text className="ml-1 mr-0 text-sm text-o_light_gray">{property.size} m²</Text>
+                  <AppText className="ml-1 mr-0 text-sm text-o_light_gray">
+                    {property.size} m²
+                  </AppText>
                 </View>
               </View>
             </View>

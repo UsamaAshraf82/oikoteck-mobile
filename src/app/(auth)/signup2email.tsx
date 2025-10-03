@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { ScrollView, Text, TouchableWithoutFeedback, View } from 'react-native';
 import { z } from 'zod';
+import AppText from '~/components/Elements/AppText';
 import { ControlledCheckBox } from '~/components/Elements/Checkbox';
 import { flags, RenderFlagWithCode } from '~/components/Elements/Flags';
 import { ControlledTextInput } from '~/components/Elements/TextInput';
@@ -88,11 +89,11 @@ export default function Login() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
           <View className="mb-14 flex-1 flex-col  justify-center">
-            <Text className="mt-5 text-left text-3xl font-semibold">Setup your profile ✍️</Text>
-            <Text className="mt-2">Enter the details below to finish setting up your profile</Text>
+            <AppText className="mt-5 text-left text-3xl font-semibold" >Setup your profile ✍️</AppText>
+            <AppText className="mt-2" >Enter the details below to finish setting up your profile</AppText>
             <View className="mt-5 w-full flex-col gap-2">
               <View className="flex-col gap-2">
-                <Text className="font-medium">Register As</Text>
+                <AppText className="font-medium" >Register As</AppText>
                 <Grid cols={2} gap={2}>
                   {[
                     {
@@ -163,7 +164,7 @@ export default function Login() {
                 </>
               )}
 
-              <Text className="-mb-2">Phone Number</Text>
+              <AppText className="-mb-2" >Phone Number</AppText>
               <View className="flex-row items-center gap-0.5">
                 <View className="w-2/5 ">
                   <TouchableWithoutFeedback
@@ -257,7 +258,7 @@ export default function Login() {
         <PressableView
           onPress={handleSubmit(onSubmit, onError)}
           className="h-14 w-full flex-row items-center justify-center rounded-full  bg-secondary">
-          <Text className="text-[15px] font-bold text-white">Sign up</Text>
+          <AppText className="text-[15px] font-bold text-white" >Sign up</AppText>
         </PressableView>
       </View>
     </View>

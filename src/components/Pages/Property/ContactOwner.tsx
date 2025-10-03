@@ -15,6 +15,7 @@ import {
 import React, { useState } from 'react';
 import { Text, TouchableNativeFeedback, View } from 'react-native';
 import Modal from 'react-native-modal';
+import AppText from '~/components/Elements/AppText';
 import PressableView from '~/components/HOC/PressableView';
 import { cn } from '~/lib/utils';
 import { useToast } from '~/store/useToast';
@@ -92,7 +93,7 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
         {request_tour && <RequestTour  onClose={() => setrequest_tour(false)} property={property} />}
         <View className="mb-3 h-1 w-10 self-center rounded-sm bg-[#ccc]" />
         <View className="flex-row items-center justify-between">
-          <Text className="text-2xl font-bold text-primary">Contact Owner</Text>
+          <AppText className="text-2xl font-bold text-primary" >Contact Owner</AppText>
           <TouchableNativeFeedback onPress={onClose}>
             <XIcon />
           </TouchableNativeFeedback>
@@ -136,7 +137,7 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
                   }}
                   className="h-6 rounded-full bg-[#E2E4E8]">
                   <View className="px-2 py-1">
-                    <Text className="text-xs">Show Phone Number</Text>
+                    <AppText className="text-xs" >Show Phone Number</AppText>
                   </View>
                 </PressableView>
                 <PressableView
@@ -145,7 +146,7 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
                   }}
                   className="h-6 rounded-full bg-[#E2E4E8]">
                   <View className="px-2  py-1">
-                    <Text className="text-xs">Show Email Address</Text>
+                    <AppText className="text-xs" >Show Email Address</AppText>
                   </View>
                 </PressableView>
               </View>
@@ -154,7 +155,7 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
           <View className="mt-8 flex-col items-center gap-4">
             <PressableView onPress={openWhatsApp} className="h-16 w-full rounded-full bg-primary">
               <View className="h-full w-full flex-row items-center justify-center gap-3">
-                <Text className="text-sm font-semibold text-white">Chat On WhatsApp</Text>
+                <AppText className="text-sm font-semibold text-white" >Chat On WhatsApp</AppText>
                 <WhatsappLogoIcon color="white" size={20} />
               </View>
             </PressableView>
@@ -164,7 +165,7 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
               }}
               className="h-16 w-full rounded-full bg-secondary">
               <View className="h-full w-full flex-row items-center justify-center gap-3">
-                <Text className="text-sm font-semibold text-white">Send a Message</Text>
+                <AppText className="text-sm font-semibold text-white" >Send a Message</AppText>
                 <ChatTeardropIcon color="white" size={20} />
               </View>
             </PressableView>
@@ -174,7 +175,7 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
               }}
               className="h-16 w-full rounded-full border border-primary">
               <View className="h-full w-full flex-row items-center justify-center gap-3">
-                <Text className="text-sm font-semibold text-primary">Request a tour</Text>
+                <AppText className="text-sm font-semibold text-primary" >Request a tour</AppText>
                 <HouseLineIcon color={tailwind.theme.colors.primary} size={20} />
               </View>
             </PressableView>
@@ -236,13 +237,13 @@ const PhoneNumberModal = ({
         }}>
         <View className="mb-3 h-1 w-10 self-center rounded-sm bg-[#ccc]" />
         <View className="flex-row items-center justify-between">
-          <Text className="text-2xl font-bold text-primary">Phone Number</Text>
+          <AppText className="text-2xl font-bold text-primary" >Phone Number</AppText>
           <TouchableNativeFeedback onPress={onClose}>
             <XIcon />
           </TouchableNativeFeedback>
         </View>
         <View style={{ maxHeight: deviceHeight * 0.775 }}>
-          <Text className="text-base text-primary">Property owner’s phone number</Text>
+          <AppText className="text-base text-primary" >Property owner’s phone number</AppText>
           <View className="mt-4 flex-row items-center justify-center rounded-3xl bg-[#8D95A51A] py-4">
             <Text className="text-center text-2xl font-bold text-primary">
               +{owner.country_code} {owner.phone}
@@ -254,7 +255,7 @@ const PhoneNumberModal = ({
               className="h-16 w-full rounded-full border border-primary">
               <View className="h-full w-full flex-row items-center justify-center gap-3">
                 <PhoneCallIcon color={tailwind.theme.colors.primary} size={20} />
-                <Text className="text-sm font-semibold text-primary">Call Now</Text>
+                <AppText className="text-sm font-semibold text-primary" >Call Now</AppText>
               </View>
             </PressableView>
           </View>
@@ -301,15 +302,15 @@ const EmailModal = ({
         }}>
         <View className="mb-3 h-1 w-10 self-center rounded-sm bg-[#ccc]" />
         <View className="flex-row items-center justify-between">
-          <Text className="text-2xl font-bold text-primary">Email address</Text>
+          <AppText className="text-2xl font-bold text-primary" >Email address</AppText>
           <TouchableNativeFeedback onPress={onClose}>
             <XIcon />
           </TouchableNativeFeedback>
         </View>
         <View style={{ maxHeight: deviceHeight * 0.775 }}>
-          <Text className="text-base text-primary">Property owner’s email address</Text>
+          <AppText className="text-base text-primary" >Property owner’s email address</AppText>
           <View className="mt-4 flex-row items-center justify-center rounded-3xl bg-[#8D95A51A] py-4">
-            <Text className="text-center text-2xl font-bold text-primary">{owner.username}</Text>
+            <AppText className="text-center text-2xl font-bold text-primary" >{owner.username}</AppText>
           </View>
           <View className="mt-4 flex-col items-center gap-4">
             <PressableView
@@ -317,7 +318,7 @@ const EmailModal = ({
               className="h-16 w-full rounded-full border border-primary">
               <View className="h-full w-full flex-row items-center justify-center gap-3">
                 <EnvelopeIcon color={tailwind.theme.colors.primary} size={20} />
-                <Text className="text-sm font-semibold text-primary">Send Email</Text>
+                <AppText className="text-sm font-semibold text-primary" >Send Email</AppText>
               </View>
             </PressableView>
           </View>

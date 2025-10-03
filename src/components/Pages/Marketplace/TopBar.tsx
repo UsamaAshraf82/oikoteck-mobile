@@ -1,6 +1,7 @@
 import { Link } from 'expo-router';
 import { SquaresFourIcon, UserIcon } from 'phosphor-react-native';
 import { Text, TouchableWithoutFeedback, View } from 'react-native';
+import AppText from '~/components/Elements/AppText';
 import useUser from '~/store/useUser';
 import tailwind from '~/utils/tailwind';
 
@@ -14,7 +15,7 @@ export const HomeTopBar = ({ openFilters }: { openFilters: () => void }) => {
             <UserIcon color={tailwind.theme.colors.o_light_gray} size={20} />
           </View>
           <View>
-            <Text className="text-sm text-o_gray-200">Welcome Back!</Text>
+            <AppText className="text-sm text-o_gray-200" >Welcome Back!</AppText>
             <Text className="mt-1 text-base font-bold text-primary">
               {user ? `${user.attributes.first_name} ${user.attributes.last_name}` : ''}
             </Text>
@@ -31,7 +32,7 @@ export const HomeTopBar = ({ openFilters }: { openFilters: () => void }) => {
                 router.push(`/property/${property.objectId}`);
               }}> */}
               <Link href={'/login'} >
-                <Text className="text-sm font-semibold text-primary">Login/Register</Text>
+                <AppText className="text-sm font-semibold text-primary" >Login/Register</AppText>
               </Link>
             {/* </TouchableWithoutFeedback> */}
           </View>

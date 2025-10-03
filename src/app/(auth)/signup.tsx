@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { ScrollView, Text, View } from 'react-native';
 import { z } from 'zod';
+import AppText from '~/components/Elements/AppText';
 import { ControlledTextInput } from '~/components/Elements/TextInput';
 import KeyboardAvoidingView from '~/components/HOC/KeyboardAvoidingView';
 import PressableView from '~/components/HOC/PressableView';
@@ -128,7 +129,7 @@ export default function Login() {
         <PressableView
           onPress={handleSubmit(onSubmit, onError)}
           className="h-14 w-full flex-row items-center justify-center rounded-full  bg-secondary">
-          <Text className="text-[15px] font-bold text-white">Sign up</Text>
+          <AppText className="text-[15px] font-bold text-white" >Sign up</AppText>
         </PressableView>
       </View>
     </View>

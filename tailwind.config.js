@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./src/**/*{js,ts,tsx}'],
+  content: ['./src/**/*.{js,ts,jsx,tsx}'],
 
   presets: [require('nativewind/preset')],
   theme: {
@@ -22,17 +22,16 @@ module.exports = {
         o_gray: { 200: '#8D95A5' },
       },
       fontFamily: {
-        sans: [
-          'LufgaThin', // font-thin
-          'LufgaExtraLight', // font-extralight
-          'LufgaLight', // font-light
-          'LufgaRegular', // font-normal
-          'LufgaMedium', // font-medium
-          'LufgaSemiBold', // font-semibold
-          'LufgaBold', // font-bold
-          'LufgaExtraBold', // font-extrabold
-          'LufgaBlack', // font-black
-        ],
+        sans: ['LufgaRegular', 'sans-serif'],
+        thin: ['LufgaThin'],
+        extralight: ['LufgaExtraLight'],
+        light: ['LufgaLight'],
+        normal: ['LufgaRegular'],
+        medium: ['LufgaMedium'],
+        semibold: ['LufgaSemiBold'],
+        bold: ['LufgaBold'],
+        extrabold: ['LufgaExtraBold'],
+        black: ['LufgaBlack'],
       },
     },
   },

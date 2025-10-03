@@ -1,6 +1,7 @@
 import { Link } from 'expo-router';
 import React from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
+import AppText from '~/components/Elements/AppText';
 import useUser from '~/store/useUser';
 
 const Rental = () => {
@@ -13,7 +14,7 @@ const Rental = () => {
           <Pressable
             onPress={logout}
             className="mx-6 mt-4 items-center justify-center rounded-md bg-secondary py-3">
-            <Text className="text-lg font-semibold text-white">Logout</Text>
+            <AppText className="text-lg font-semibold text-white" >Logout</AppText>
           </Pressable>
         </>
       )}
@@ -22,7 +23,7 @@ const Rental = () => {
           href="/login"
           // onPress={logout}
           className="mx-6 mt-4 items-center justify-center rounded-md bg-secondary py-3 text-center">
-          <Text className="text-center text-lg font-semibold text-white">Login</Text>
+          <AppText className="text-center text-lg font-semibold text-white" >Login</AppText>
         </Link>
       )}
     </View>

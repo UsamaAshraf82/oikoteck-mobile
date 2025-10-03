@@ -2,6 +2,7 @@ import { XIcon } from 'phosphor-react-native';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, Text, TextInput, TouchableNativeFeedback, View } from 'react-native';
 import Modal from 'react-native-modal';
+import AppText from '~/components/Elements/AppText';
 import { cn } from '~/lib/utils';
 import useSelect from '~/store/useSelectHelper';
 import { Property_Type } from '~/type/property';
@@ -67,7 +68,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
         <View className="mb-3 h-1 w-10 self-center rounded-sm bg-[#ccc]" />
         <View className="flex-1">
           <View className="flex-row items-center justify-between">
-            <Text className="text-2xl font-bold text-primary">Filters</Text>
+            <AppText className="text-2xl font-bold text-primary" >Filters</AppText>
             <TouchableNativeFeedback onPress={onClose}>
               <XIcon />
             </TouchableNativeFeedback>
@@ -80,7 +81,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
               showsVerticalScrollIndicator={false}>
               {/* Price Range */}
               <View className="mt-4">
-                <Text className="text-lg font-medium text-primary">Price Range</Text>
+                <AppText className="text-lg font-medium text-primary" >Price Range</AppText>
                 <View className="mt-2 flex-row items-center justify-between">
                   <PressableView
                     onPress={() => {
@@ -127,7 +128,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                       </Text>
                     )}
                   </PressableView>
-                  <Text className="mx-1 text-4xl"> - </Text>
+                  <AppText className="mx-1 text-4xl" > - </AppText>
                   <PressableView
                     className="h-10  flex-1 items-center  justify-center rounded-xl border border-gray-200"
                     onPress={() => {
@@ -175,7 +176,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
               </View>
               {/* Size */}
               <View className="mt-4">
-                <Text className="text-lg font-medium text-primary">Size</Text>
+                <AppText className="text-lg font-medium text-primary" >Size</AppText>
                 <View className="mt-2 flex-row items-center justify-between">
                   <PressableView
                     onPress={() => {
@@ -201,7 +202,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                     className="h-10  flex-1 items-center  justify-center rounded-xl border border-gray-200">
                     <Text>{filter.minSize ? numberminify(filter.minSize) + ' m²' : 'No Min'}</Text>
                   </PressableView>
-                  <Text className="mx-1 text-4xl"> - </Text>
+                  <AppText className="mx-1 text-4xl" > - </AppText>
                   <PressableView
                     className="h-10  flex-1 items-center  justify-center rounded-xl border border-gray-200"
                     onPress={() => {
@@ -230,7 +231,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
               </View>
               {/* Bedrooms */}
               <View className="mt-4">
-                <Text className="text-lg font-medium text-primary">Bedrooms (R) / Rooms (C)</Text>
+                <AppText className="text-lg font-medium text-primary" >Bedrooms (R) / Rooms (C)</AppText>
                 <View className="mt-2 flex-row items-center justify-between">
                   {[
                     { label: 'Any', value: null },
@@ -303,7 +304,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
               </View>
               {/* Bathrooms */}
               <View className="mt-4">
-                <Text className="text-lg font-medium text-primary">Bathrooms</Text>
+                <AppText className="text-lg font-medium text-primary" >Bathrooms</AppText>
                 <View className="mt-2 flex-row items-center justify-between">
                   {[
                     { label: 'Any', value: null },
@@ -376,7 +377,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
               </View>
               {/* Furnished */}
               <View className="mt-4">
-                <Text className="text-lg font-medium text-primary">Furnished</Text>
+                <AppText className="text-lg font-medium text-primary" >Furnished</AppText>
                 <View className="mt-2 flex-row items-center justify-between rounded-lg bg-[#F6F8FA] p-2">
                   {[
                     { label: 'Any', value: null },
@@ -405,7 +406,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
               {/* Date Range */}
               <View>
                 <View className="mt-4">
-                  <Text className="text-lg font-medium text-primary">Min. Move-in Date</Text>
+                  <AppText className="text-lg font-medium text-primary" >Min. Move-in Date</AppText>
                   <View className="mt-2 flex-row items-center justify-between">
                     <DatePicker
                       className="h-10 flex-1 items-center justify-center  rounded-xl border border-gray-200 "
@@ -415,7 +416,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                   </View>
                 </View>
                 <View className="mt-4">
-                  <Text className="text-lg font-medium text-primary">Max. Move-in Date</Text>
+                  <AppText className="text-lg font-medium text-primary" >Max. Move-in Date</AppText>
                   <View className="mt-2 flex-row items-center justify-between">
                     <DatePicker
                       className="h-10 flex-1 items-center justify-center  rounded-xl border border-gray-200 "
@@ -427,7 +428,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
               </View>
               {/* Keywords */}
               <View className="mt-4">
-                <Text className="text-lg font-medium text-primary">Keywords</Text>
+                <AppText className="text-lg font-medium text-primary" >Keywords</AppText>
                 <View>
                   <TextInput
                     className="mt-2 h-12 w-full rounded-lg border border-gray-200 px-3 py-3"
@@ -439,7 +440,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
               </View>
               {/* Property Type */}
               <View className="mt-4">
-                <Text className="text-lg font-medium text-primary">Property Type</Text>
+                <AppText className="text-lg font-medium text-primary" >Property Type</AppText>
                 <View className="mt-2">
                   {[
                     { label: 'Residential (R)', value: 'Residential' },
@@ -462,7 +463,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
               </View>
               {/* Property Category */}
               <View className="mt-4">
-                <Text className="text-lg font-medium text-primary">Property Category</Text>
+                <AppText className="text-lg font-medium text-primary" >Property Category</AppText>
                 <View className="mt-2">
                   {property_category(filter.property_type, true).map((item) => (
                     <Checkbox
@@ -503,14 +504,14 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                   property_category: null,
                 });
               }}>
-              <Text className="text-primary">Reset All</Text>
+              <AppText className="text-primary" >Reset All</AppText>
             </PressableView>
             <PressableView
               className="ml0.5 h-10 flex-1 overflow-hidden rounded-full border border-gray-200 bg-secondary"
               onPress={() => {
                 onPress(filter);
               }}>
-              <Text className="text-white">Apply Filter</Text>
+              <AppText className="text-white" >Apply Filter</AppText>
             </PressableView>
           </View>
         </View>

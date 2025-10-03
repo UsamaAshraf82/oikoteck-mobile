@@ -59,6 +59,8 @@ export default function RootLayout() {
     // }
   }, []);
 
+  console.log(fontsLoaded)
+
   return (
     <>
       <Provider>

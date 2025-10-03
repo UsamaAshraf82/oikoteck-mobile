@@ -2,8 +2,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useRouter } from 'expo-router';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { z } from 'zod';
+import AppText from '~/components/Elements/AppText';
 import { ControlledTextInput } from '~/components/Elements/TextInput';
 import KeyboardAvoidingView from '~/components/HOC/KeyboardAvoidingView';
 import PressableView from '~/components/HOC/PressableView';
@@ -66,19 +67,19 @@ export default function Login() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
           <View className="mb-20 flex-1 flex-col items-center justify-center">
-            <Text className="mt-20 text-center text-3xl font-semibold">
+            <AppText className="mt-20 text-center text-3xl font-semibold">
               Sign in to your account!
-            </Text>
-            <Text className="mt-2">
+            </AppText>
+            <AppText className="mt-2">
               Don&apos;t have an account?{' '}
               <Link href="signup" className="text-secondary">
                 Sign up
               </Link>
-            </Text>
+            </AppText>
 
             <SocialSignin />
 
-            <Text className="my-14 text-sm text-[#575775]">- - - or sign in with email - - -</Text>
+            <AppText className="my-14 text-sm text-[#575775]">- - - or sign in with email - - -</AppText>
 
             {/* Inputs */}
             <View className="w-full flex-col gap-2">
@@ -113,7 +114,7 @@ export default function Login() {
         <PressableView
           onPress={handleSubmit(onSubmit, onError)}
           className="h-14 w-full flex-row items-center justify-center rounded-full bg-secondary">
-          <Text className="text-[15px] font-bold text-white">Sign in</Text>
+          <AppText className="text-[15px] font-bold text-white">Sign in</AppText>
         </PressableView>
       </View>
     </View>

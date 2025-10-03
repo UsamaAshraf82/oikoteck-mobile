@@ -8,7 +8,8 @@ import {
   statusCodes,
 } from '@react-native-google-signin/google-signin';
 import { Image } from 'expo-image';
-import { Platform, Text, View } from 'react-native';
+import { Platform, View } from 'react-native';
+import AppText from '~/components/Elements/AppText';
 import PressableView from '~/components/HOC/PressableView';
 const SocialSignin = () => {
   const startSignInFlow = async () => {
@@ -50,7 +51,7 @@ const SocialSignin = () => {
         className="mt-4 h-12 w-full  rounded-full bg-white">
         <View className="flex-row items-center justify-center gap-3">
           <Image source={google} style={{ width: 20, height: 20 }} />
-          <Text className="text-sm font-medium text-primary">Continue with Google</Text>
+          <AppText className="text-sm font-medium text-primary" >Continue with Google</AppText>
         </View>
       </PressableView>
       <PressableView
@@ -61,7 +62,7 @@ const SocialSignin = () => {
         className="mt-4 h-12 w-full  rounded-full bg-white">
         <View className="flex-row items-center justify-center gap-3">
           <Image source={facebook} style={{ width: 20, height: 20 }} />
-          <Text className="text-sm font-medium text-primary">Continue with Facebook</Text>
+          <AppText className="text-sm font-medium text-primary" >Continue with Facebook</AppText>
         </View>
       </PressableView>
       {Platform.OS === 'ios' && (
@@ -73,7 +74,7 @@ const SocialSignin = () => {
           className="mt-4 h-12 w-full  rounded-full bg-white">
           <View className="flex-row items-center justify-center gap-3">
             <Image source={apple} style={{ width: 20, height: 20 }} />
-            <Text className="text-sm font-medium text-primary">Continue with Apple</Text>
+            <AppText className="text-sm font-medium text-primary" >Continue with Apple</AppText>
           </View>
         </PressableView>
       )}

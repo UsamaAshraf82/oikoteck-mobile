@@ -9,6 +9,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { ScrollView, Text, TouchableNativeFeedback, View } from 'react-native';
 import Modal from 'react-native-modal';
 import { z } from 'zod';
+import AppText from '~/components/Elements/AppText';
 import { flags, RenderFlagWithCode } from '~/components/Elements/Flags';
 import TextInput, { ControlledTextInput } from '~/components/Elements/TextInput';
 import Grid from '~/components/HOC/Grid';
@@ -154,7 +155,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
         <View className="mb-3 h-1 w-10 self-center rounded-sm bg-[#ccc]" />
         <View className="flex-row items-center justify-between">
           <View className="flex-col">
-            <Text className="text-2xl font-bold text-primary">Submit Offer</Text>
+            <AppText className="text-2xl font-bold text-primary" >Submit Offer</AppText>
             <Text className="mt-0 text-base text-primary">
               Submit an Offer to the property owner
             </Text>
@@ -206,7 +207,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
                   placeholder="Enter Last Name"
                 />
               </Grid>
-              <Text className="-mb-2">Phone Number</Text>
+              <AppText className="-mb-2" >Phone Number</AppText>
               <View className="flex-row items-center gap-0.5">
                 <View className="w-2/5 ">
                   <TouchableWithoutFeedback
@@ -285,7 +286,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
                 onPress={handleSubmit(onSubmit, onError)}
                 className="h-12 rounded-full border border-secondary bg-secondary">
                 <View>
-                  <Text className="text-white">Send Message</Text>
+                  <AppText className="text-white" >Send Message</AppText>
                 </View>
               </PressableView>
             </Grid>

@@ -1,110 +1,190 @@
+import { CompleteMultipartUploadCommandOutput } from '@aws-sdk/client-s3';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { ScrollView, Text, View } from 'react-native';
+import { Image } from 'expo-image';
+import * as ImagePicker from 'expo-image-picker';
+import { Link } from 'expo-router';
+import { ImagesIcon, ImageSquareIcon, TrashIcon } from 'phosphor-react-native';
+import { useEffect } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
+import { ActivityIndicator, ScrollView, TouchableHighlight, View } from 'react-native';
 import z from 'zod';
-import { ControlledDatePicker } from '~/components/Elements/DatePicker';
-import Select from '~/components/Elements/Select';
-import { ControlledTextInput } from '~/components/Elements/TextInput';
+import AppText from '~/components/Elements/AppText';
+import AWSImage from '~/components/Elements/AWSImage';
+import Checkbox from '~/components/Elements/Checkbox';
+import Grid from '~/components/HOC/Grid';
 import KeyboardAvoidingView from '~/components/HOC/KeyboardAvoidingView';
 import PressableView from '~/components/HOC/PressableView';
+import { useToast } from '~/store/useToast';
+import { resizeImages } from '~/utils/property';
+import tailwind from '~/utils/tailwind';
+import uploadFile from '~/utils/upload-file';
 import { Basic1Values } from './Basic1';
-
 type Props = {
-  data: Partial<Basic3Values>;
-  onSubmit: (data: Basic3Values) => void;
+  data: Partial<PropertyGalleryTypes>;
+  onSubmit: (data: PropertyGalleryTypes) => void;
   extra_data: {
     listing_for: Basic1Values['listing_for'];
   };
 };
 
-export default function Basic3({ data, extra_data, onSubmit }: Props) {
+export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
   const {
     control,
     setValue,
     getValues,
     watch,
     formState: { errors },
-  } = useForm<Basic3Values>({
-    resolver: zodResolver(Basic3Schema) as any,
+  } = useForm<PropertyGalleryTypes>({
+    resolver: zodResolver(PropertyGallerySchema) as any,
     defaultValues: { ...data, ...extra_data },
   });
 
-  console.log(watch());
+  const { fields: files, remove } = useFieldArray({
+    control,
+    name: 'files',
+  });
+
+  // const files = useWatch({ control, name: 'files' });
+
+  useEffect(() => {
+    if (!files) return;
+
+    files.forEach((f, idx) => {
+      if (f?.isUploading && f.file && typeof (f.file as any).then === 'function') {
+        (f.file as Promise<any>)
+          .then((uploaded) => {
+            setValue(
+              'files',
+              getValues('files').map((x, i) =>
+                i === idx
+                  ? {
+                      ...x,
+                      isUploading: false,
+                      url: uploaded?.Key, // S3 returns { Location, Bucket, Key, ETag }
+                      file: undefined, // clear the promise once done
+                    }
+                  : x
+              ),
+              { shouldValidate: true }
+            );
+          })
+          .catch((err) => {
+            setValue(
+              'files',
+              getValues('files').map((x, i) =>
+                i === idx ? { ...x, isUploading: false, error: 'Upload failed' } : x
+              ),
+              { shouldValidate: true }
+            );
+          });
+      }
+    });
+  }, [files, setValue, getValues]);
+
   return (
     <View className="flex-1 bg-white px-5 pt-5">
       <View className="flex-1">
-        <Text className="text-2xl font-bold">Property details 🏠 (Cont..)</Text>
-        <Text className="text-[15px] text-[#575775]">Add your pricing details</Text>
+        <AppText className="font-bold text-2xl">Property Gallery 📸</AppText>
+        <AppText className="text-[15px] text-[#575775]">Upload pictures of your property</AppText>
+
+        <View className="-ml-2 mt-4">
+          <AppText className="ml-2 text-sm text-[#575775]">
+            Do you want to overlay your company logo on all pictures for this listing? You can upload the logo in <Link href="settings" className='text-secondary'>settings</Link>
+          </AppText>
+          <Checkbox label="Add Overlay Logo" />
+        </View>
+        <PressableView
+          onPress={async () => {
+            try {
+              let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ['images'],
+                allowsMultipleSelection: true,
+                quality: 1,
+                orderedSelection: true,
+              });
+
+              if (!result.canceled) {
+                const images = await resizeImages(result.assets, 3000);
+
+                const newFiles = images.map((img) => ({
+                  isUploading: true,
+                  temp: img.uri, // keep local uri for preview
+                  file: uploadFile({ file: img.base64!, name: 'image' }), // Promise<...>
+                }));
+
+                setValue('files', [...getValues('files'), ...newFiles], {
+                  shouldValidate: true,
+                });
+
+                // for (let index = 0; index < images.length; index++) {
+                //   const element = images[index];
+
+                //   const i = uploadFile({ file: element.base64, name: 's' });
+                //   // console.log(i);
+
+                //   setValue('files', [{ isUploading: true, file: i }]);
+                // }
+              }
+            } catch (e) {
+              // console.error(e);
+            }
+          }}
+          className="mt-5 h-16 items-center justify-center rounded-3xl border border-dashed border-secondary bg-primary/10">
+          <View className="w-full flex-row items-center justify-between px-4">
+            <AppText className="text-lg text-primary">Upload Images</AppText>
+            <ImageSquareIcon />
+          </View>
+        </PressableView>
+        <AppText className="mt-5 font-medium">Images ({files.length})</AppText>
+
         <KeyboardAvoidingView>
           <ScrollView contentContainerClassName="mt-5 flex-grow flex-col gap-6 pb-28">
-            <ControlledTextInput
-              control={control}
-              name="price"
-              keyboardType="number-pad"
-              label={watch('listing_for') === 'Rental' ? 'Rent/Month' : 'Price'}
-            />
-            {watch('listing_for') === 'Rental' && (
-              <Select
-                options={[
-                  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
-                  24,
-                ].map((i) => ({ label: i, value: i }))}
-                label="Security Deposit (Months)"
-                value={{
-                  label: level_of_finish(watch('deposit')),
-                  value: watch('deposit') || null,
-                }}
-                placeholder="Choose Options"
-                onChange={(value) => {
-                  setValue('deposit', value?.value as Basic3Values['deposit']);
-                }}
-              />
+            {files.length === 0 ? (
+              <View className="flex-1 items-center justify-center">
+                <ImagesIcon size={100} weight="light" color="#ACACB9" />
+                <AppText className="font-medium text-sm">No Images at the moment...</AppText>
+              </View>
+            ) : (
+              <Grid>
+                {files.map((file, index) => (
+                  <View
+                    className="relative aspect-square w-full rounded-lg bg-black/10"
+                    key={file.id}>
+                    {file.isUploading ? (
+                      <>
+                        <Image
+                          source={file.temp}
+                          contentFit="contain"
+                          style={{ width: '100%', height: '100%' }}
+                        />
+                        <View className="absolute bottom-0 left-0  right-0 top-0 flex-row items-center justify-center bg-black/50">
+                          <ActivityIndicator
+                            size={'large'}
+                            color={tailwind.theme.colors.secondary}
+                          />
+                        </View>
+                      </>
+                    ) : (
+                      <>
+                        <AWSImage
+                          src={file.url!}
+                          placeholderContentFit="contain"
+                          contentFit="contain"
+                          style={{ width: '100%', height: '100%' }}
+                        />
+                        <TouchableHighlight
+                          onPress={() => remove(index)}
+                          className="absolute right-1 top-1 flex-row  items-center justify-center  rounded-full bg-black/50 p-2">
+                          <View>
+                            <TrashIcon size={15} color={tailwind.theme.colors.white} />
+                          </View>
+                        </TouchableHighlight>
+                      </>
+                    )}
+                  </View>
+                ))}
+              </Grid>
             )}
-            {watch('listing_for') === 'Rental' && (
-              <Select
-                options={[
-                  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
-                  24,
-                ].map((i) => ({ label: i, value: i }))}
-                label="Payment Frequency (Months)"
-                value={{
-                  label: level_of_finish(watch('deposit')),
-                  value: watch('deposit') || null,
-                }}
-                placeholder="Select frequency"
-                onChange={(value) => {
-                  setValue('deposit', value?.value as Basic3Values['deposit']);
-                }}
-              />
-            )}
-            <ControlledDatePicker
-              control={control}
-              name="move_in_date"
-              label={
-                watch('listing_for') === 'Rental' ? 'Earliest Move in Date' : 'Earliest Sale Date'
-              }
-              withForm
-            />
-            <Select
-              options={Basic3Schema.shape.contact_method.options.map((i) => ({
-                label: i,
-                value: i,
-              }))}
-              label="Displayed Contact Method"
-              value={{
-                label: watch('contact_method'),
-                value: watch('contact_method') || null,
-              }}
-              placeholder="Select Contact Method"
-              onChange={(value) => {
-                setValue('contact_method', value?.value as Basic3Values['contact_method']);
-              }}
-            />
-            <ControlledTextInput
-              control={control}
-              name="reference_number"
-              label="Reference Number"
-            />
           </ScrollView>
         </KeyboardAvoidingView>
       </View>
@@ -114,152 +194,39 @@ export default function Basic3({ data, extra_data, onSubmit }: Props) {
             onSubmit(getValues());
           }}
           className="h-12 items-center justify-center rounded-full bg-secondary">
-          <Text className="text-lg font-bold text-white">Continue</Text>
+          <AppText className="font-bold text-lg text-white">Continue</AppText>
         </PressableView>
       </View>
     </View>
   );
 }
 
-export const Basic3Schema = z
-  .object({
-    listing_for: z.enum(['Rental', 'Sale'], {
-      message: 'Listing For is Required.',
-    }),
+export const PropertyGallerySchema = z.object({
+  agent_icon: z.boolean(),
 
-    contact_method: z.enum(['Phone', 'Email', 'Both'], {
-      message: 'Contact Method is Required.',
-    }),
-    move_in_date: z.string(),
-
-    price: z
-      .number({
-        message: 'Price is Required.',
+  files: z
+    .array(
+      z.object({
+        url: z.string().optional(), // final uploaded S3 URL
+        temp: z.string().optional(), // local temp URI (expo-image-picker, etc.)
+        isUploading: z.boolean().optional(),
+        file: z.custom<Promise<CompleteMultipartUploadCommandOutput>>().optional(),
       })
-      .min(1, 'Price is Required.'),
-
-    floor: z.number({}).optional(),
-    deposit: z.number({
-      message: 'Security Deposit (Months) is Required.',
-    }),
-    // .min(1, "Security Deposit (Months) is Required."),
-    payment_frequency: z.number({
-      message: 'Payment Frequency (Months) is Required.',
-    }),
-    // .min(1, "Payment Frequency (Months) is Required."),
-    level_of_finish: z
-      .number({
-        message: 'Level of Finish is Required.',
-      })
-      .optional(),
-    // .min(1, "Level of Finish is Required."),
-    reference_number: z.string({}).optional(),
-  })
-  .superRefine((data, ctx) => {
-    if (!data.move_in_date) {
-      if (data.listing_for === 'Rental') {
-        ctx.addIssue({
-          code: 'custom',
-          path: ['move_in_date'],
-          message: 'Earliest Move-in Date is Required',
+    )
+    .min(1, { message: 'At least One Image is Required' })
+    .superRefine((data, ctx) => {
+      if (data.length > 20) {
+        useToast.getState().addToast({
+          header: 'Image Limit',
+          message: 'You cannot upload more than 20 images per listing',
         });
-      } else {
         ctx.addIssue({
           code: 'custom',
-          path: ['move_in_date'],
-          message: 'Earliest Sale Date is Required',
+          path: ['files'],
+          message: 'You cannot upload more than 20 images per listing',
         });
       }
-    }
-  });
+    }),
+});
 
-export type Basic3Values = z.infer<typeof Basic3Schema>;
-
-export function property_category(property_type: string | null, withAny = false) {
-  let category: string[] = [];
-  switch (property_type) {
-    case 'Residential':
-      category = [
-        'Apartment',
-        'Flat',
-        'Studio',
-        'Maisonette',
-        'Detached House',
-        'Villa',
-        'Building',
-        'Chalet',
-      ];
-      break;
-    case 'Commercial':
-      category = ['Office', 'Store', 'Warehouse', 'Industrial Space', 'Hotel', 'Business Building'];
-      break;
-    case 'Land':
-      category = [
-        'Residential Use',
-        'Commercial Use',
-        'Industrial Use',
-        'Agricultural Use',
-        'Recreational Use',
-        'Unincorporated Use',
-      ];
-      break;
-    default:
-      category = [];
-      break;
-  }
-  if (withAny) {
-    category.push('Any');
-  }
-  return category;
-}
-
-export function level_of_finish(level_of_finish?: number) {
-  switch (level_of_finish) {
-    case 1:
-      return '1 (Poor-end)';
-    case 2:
-      return '2 (Low-end)';
-    case 3:
-      return '3 (Medium-end)';
-    case 4:
-      return '4 (High-end)';
-    case 5:
-      return '5 (Luxury-end)';
-    default:
-      return '';
-  }
-}
-
-export const special_feature = (property_type: 'Residential' | 'Commercial' | 'Land') => {
-  if (property_type === 'Land') {
-    return [
-      'Power access',
-      'Water access',
-      'Drainage access',
-      'Sanitary access',
-      'Landscaping surface',
-      'Hard surface',
-      'Soil surface',
-    ];
-  }
-  return [
-    'Parking Spot',
-    'Elevator',
-    'Secure door',
-    'Alarm',
-    'Storage Space',
-    'Fireplace',
-    'Balcony',
-    'Internal Staircase',
-    'Swimming pool',
-    'Playroom',
-    'Attic',
-    'Solar water heating',
-    'Pets Welcome',
-    'Renovated',
-    'Luxurious',
-    'Unfinished',
-    'Under Construction',
-    'Neoclassical',
-  ];
-};
+export type PropertyGalleryTypes = z.infer<typeof PropertyGallerySchema>;
