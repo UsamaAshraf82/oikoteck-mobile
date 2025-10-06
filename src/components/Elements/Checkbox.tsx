@@ -27,7 +27,7 @@ const Checkbox: React.FC<Props> = ({ label, value, onChange ,getValue,labelClass
   };
   return (
     <View className="mt-1 flex-row items-center justify-between">
-      <AppText className={cn("text-base flex-shrink ml-2", labelClassName)} >{label}</AppText>
+      <AppText className={cn("text-base flex-shrink", labelClassName)} >{label}</AppText>
       <Pressable onPress={() => handleChange(!isChecked)}>
         <ExpoCheckbox
           value={isChecked}

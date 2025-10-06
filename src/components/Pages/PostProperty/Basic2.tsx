@@ -251,7 +251,8 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
               <View className="flex-col gap-2">
                 {special_feature(watch('property_type')).map((i) => (
                   <Checkbox
-                    labelClassName="text-sm align-middle"
+
+                    labelClassName="text-sm align-middle ml-2"
                     key={i}
                     label={i}
                     value={watch('special_feature').includes(i)}

@@ -451,6 +451,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                     <Checkbox
                       label={item.label}
                       key={item.label}
+                      labelClassName='ml-2'
                       value={filter.property_type === item.value}
                       onChange={() =>
                         changeSearch({
@@ -469,6 +470,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                     <Checkbox
                       label={item === null ? 'Any' : item}
                       key={item}
+                          labelClassName='ml-2'
                       value={filter.property_category === item}
                       onChange={() =>
                         changeSearch({

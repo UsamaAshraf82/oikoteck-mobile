@@ -1,19 +1,20 @@
-import { useState } from 'react';
-import { View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { BackHandler, View } from 'react-native';
 import Basic1, { Basic1Values } from '~/components/Pages/PostProperty/Basic1';
 import Basic2, { Basic2Values } from '~/components/Pages/PostProperty/Basic2';
 import Basic3, { Basic3Values } from '~/components/Pages/PostProperty/Basic3';
+import LocationInfo, { LocationInfoTypes } from '~/components/Pages/PostProperty/LocationInfo';
 import PropertyGallery, {
   PropertyGalleryTypes,
 } from '~/components/Pages/PostProperty/PropertyGallery';
 export default function Index() {
-  const [tab, setTab] = useState(3);
-
+  const [tab, setTab] = useState(4);
   const [data, setData] = useState<{
     basic: Partial<Basic1Values>;
     basic2: Partial<Basic2Values>;
     basic3: Partial<Basic3Values>;
     gallery: Partial<PropertyGalleryTypes>;
+    location: Partial<LocationInfoTypes>;
   }>({
     basic: {
       listing_for: 'Rental',
@@ -21,7 +22,6 @@ export default function Index() {
     },
     basic2: {
       property_type: 'Residential',
-      // property_category: 'Detached House',
       furnished: false,
       bedrooms: 1,
       bathrooms: 1,
@@ -29,8 +29,27 @@ export default function Index() {
       special_feature: [],
     },
     basic3: { payment_frequency: 1, deposit: 1, level_of_finish: 3 },
-    gallery: { files: [] },
+    gallery: { files: [], agent_icon: false },
+    location: {exact_location:false, },
   });
+
+    useEffect(() => {
+    const backAction = () => {
+      if (tab > 0) {
+        setTab((prev) => prev - 1); // go to previous step
+        return true; // prevent default behavior
+      }
+      return false; // allow default (exit / navigate back) if already at first step
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, [tab]);
+
 
   switch (tab) {
     case 0:
@@ -70,19 +89,6 @@ export default function Index() {
           }}
         />
       );
-    // case 3:
-    //   return (
-    //     <Basic3
-    //       data={data.basic3}
-    //       extra_data={{
-    //         listing_for: data.basic.listing_for!,
-    //       }}
-    //       onSubmit={(data) => {
-    //         setData((i) => ({ ...i, basic3: data }));
-    //         setTab(3);
-    //       }}
-    //     />
-    //   );
     case 3:
       return (
         <PropertyGallery
@@ -92,7 +98,20 @@ export default function Index() {
           }}
           onSubmit={(data) => {
             setData((i) => ({ ...i, gallery: data }));
-            // setTab(2);
+            setTab(4);
+          }}
+        />
+      );
+    case 4:
+      return (
+        <LocationInfo
+          data={data.location}
+          // extra_data={{
+          //   listing_for: data.basic.listing_for!,
+          // }}
+          onSubmit={(data) => {
+            setData((i) => ({ ...i, location: data }));
+            setTab(5);
           }}
         />
       );

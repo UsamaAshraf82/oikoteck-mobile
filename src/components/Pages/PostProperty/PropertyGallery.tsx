@@ -10,7 +10,7 @@ import { ActivityIndicator, ScrollView, TouchableHighlight, View } from 'react-n
 import z from 'zod';
 import AppText from '~/components/Elements/AppText';
 import AWSImage from '~/components/Elements/AWSImage';
-import Checkbox from '~/components/Elements/Checkbox';
+import { ControlledCheckBox } from '~/components/Elements/Checkbox';
 import Grid from '~/components/HOC/Grid';
 import KeyboardAvoidingView from '~/components/HOC/KeyboardAvoidingView';
 import PressableView from '~/components/HOC/PressableView';
@@ -87,11 +87,11 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
         <AppText className="font-bold text-2xl">Property Gallery 📸</AppText>
         <AppText className="text-[15px] text-[#575775]">Upload pictures of your property</AppText>
 
-        <View className="-ml-2 mt-4">
-          <AppText className="ml-2 text-sm text-[#575775]">
+        <View className=" mt-4">
+          <AppText className="text-sm text-[#575775]">
             Do you want to overlay your company logo on all pictures for this listing? You can upload the logo in <Link href="settings" className='text-secondary'>settings</Link>
           </AppText>
-          <Checkbox label="Add Overlay Logo" />
+          <ControlledCheckBox name="agent_icon" control={control} label="Add Overlay Logo" />
         </View>
         <PressableView
           onPress={async () => {
