@@ -36,7 +36,8 @@ export default function Basic3({ data, extra_data, onSubmit }: Props) {
         <AppText className="text-2xl font-bold">Property details 🏠 (Cont..)</AppText>
         <AppText className="text-[15px] text-[#575775]">Add your pricing details</AppText>
         <KeyboardAvoidingView>
-          <ScrollView contentContainerClassName="mt-5 flex-grow flex-col gap-6 pb-28">
+          <ScrollView contentContainerClassName="mt-5 flex-grow flex-col gap-6 pb-28" showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}>
             <ControlledTextInput
               control={control}
               name="price"

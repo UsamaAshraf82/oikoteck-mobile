@@ -94,7 +94,8 @@ export default function PropertyDetails({ property }: { property: Property_Type 
             <View className="absolute bottom-2 left-0 right-0 h-24 flex-row justify-center">
               <ScrollView
                 horizontal
-                showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
                 contentContainerStyle={{ alignItems: 'center', paddingHorizontal: 4 }}>
                 {property.images.map((item, index) => {
 
@@ -124,7 +125,8 @@ export default function PropertyDetails({ property }: { property: Property_Type 
           </GestureHandlerRootView>
         </Modal>
       </View>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}>
         <View className="mb-10 flex-1 bg-white">
           <View className="relative h-[380px]">
             <Carousel

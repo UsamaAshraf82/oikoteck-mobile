@@ -87,7 +87,8 @@ export default function Login() {
         <ScrollView
           contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 24 }}
           keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}>
+          showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}>
           <View className="mb-14 flex-1 flex-col  justify-center">
             <AppText className="mt-5 text-left text-3xl font-semibold" >Setup your profile ✍️</AppText>
             <AppText className="mt-2" >Enter the details below to finish setting up your profile</AppText>

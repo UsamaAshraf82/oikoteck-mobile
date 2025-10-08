@@ -20,7 +20,8 @@ export default function PostListingS({ extraData, onSubmit }: Props) {
           Confirm your details and publish your listing
         </AppText>
         <KeyboardAvoidingView>
-          <ScrollView contentContainerClassName="mt-5 flex-grow flex-col gap-4 pb-28">
+          <ScrollView contentContainerClassName="mt-5 flex-grow flex-col gap-4 pb-28" showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}>
             <AppText className="font-semibold text-lg">Service Plan Terms</AppText>
             <WebView />
             <Checkbox label="I, Walid Smith, understand and agree to the “Service Plan Terms” above associated with this purchase, the Terms and Conditions, and the Privacy Policy." />

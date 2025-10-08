@@ -34,7 +34,8 @@ const SimilarListing = ({ property }: { property: Property_Type }) => {
   return (
     <View className="flex-col pb-5 gap-1 bg-[#eef1f7]">
       <AppText className="text-2xl ml-4 mb-4 font-semibold" >Similar Listing</AppText>
-      <ScrollView horizontal>
+      <ScrollView horizontal showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}>
         <View className="flex-1 flex-row flex-nowrap">
           {data.map((i) => (
             <PropertyCard property={i} key={i.objectId} />

@@ -36,7 +36,8 @@ export default function LocationInfo({ data, onSubmit }: Props) {
         <AppText className="font-bold text-2xl">Location details 📍</AppText>
         <AppText className="text-[15px] text-[#575775]">Set your property location</AppText>
         <KeyboardAvoidingView>
-          <ScrollView contentContainerClassName="mt-5 flex-grow flex-col gap-4 pb-28">
+          <ScrollView contentContainerClassName="mt-5 flex-grow flex-col gap-4 pb-28" showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}>
             <Select
               label="District"
               onPress={() => {

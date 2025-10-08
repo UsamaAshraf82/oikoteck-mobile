@@ -1,58 +1,55 @@
-import { GlobeHemisphereEastIcon, MagnifyingGlassIcon, XIcon } from 'phosphor-react-native';
-import {
-  Platform,
-  TextInput,
-  TouchableNativeFeedback,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import { FunnelSimpleIcon, GlobeHemisphereEastIcon, XIcon } from 'phosphor-react-native';
+import { Platform, TouchableWithoutFeedback, View } from 'react-native';
+import AppText from '~/components/Elements/AppText';
+import tailwind from '~/utils/tailwind';
 
 type Props = {
   listing_type: 'Rental' | 'Sale';
   text: string;
   onPress: () => void;
+  onFilter: () => void;
   onClear: () => void;
 };
 
-export const SearchView = ({ listing_type, text, onPress, onClear }: Props) => {
+export const SearchView = ({ listing_type, text, onPress, onClear, onFilter }: Props) => {
   return (
-    <View className="mx-4 flex-row items-center justify-between rounded-full border border-o_light_gray px-2 py-4">
-      <TouchableWithoutFeedback onPress={onPress}>
-        <View className="flex-row items-center">
-          <GlobeHemisphereEastIcon />
-          <TextInput
-            style={{
-              flex: 1,
-              fontSize: 14,
-              padding: Platform.OS === 'ios' ? 5 : 0,
-              paddingLeft: 8,
-            }}
-            //     onChangeText={text => {
-            //     //   props.setText(text);
-            //     // }}
-            readOnly
-            value={text}
-            placeholder={
-              listing_type === 'Sale'
-                ? 'Where are you buying in Greece?'
-                : 'Where are you renting in Greece?'
-            }
-            //     // placeholderTextColor={Colors.input_placeholder_color}
-            //     //    placeholderTextColor={'red'}
-            //     autoCapitalize="none"
-            //     keyboardType={'default'}
-            onFocus={() => onPress()}
-            //     style={styles.inputFieldStyle}
-          />
-          {!text ? (
-            <MagnifyingGlassIcon />
-          ) : (
-            <TouchableNativeFeedback onPress={onClear}>
+    <View className="mx-4 flex-row items-center justify-between overflow-hidden rounded-full border border-o_light_gray px-2 py-1">
+      <View className="shrink flex-row items-center">
+        <TouchableWithoutFeedback onPress={onPress}>
+          <View className="flex-row items-center">
+            <GlobeHemisphereEastIcon />
+            <AppText
+              style={{
+                flex: 1,
+                fontSize: 14,
+                padding: Platform.OS === 'ios' ? 5 : 0,
+                paddingLeft: 8,
+                color: text ? '#000' : '#999',
+              }}>
+              {text ||
+                (listing_type === 'Sale'
+                  ? 'Where are you buying in Greece?'
+                  : 'Where are you renting in Greece?')}
+            </AppText>
+          </View>
+        </TouchableWithoutFeedback>
+      </View>
+
+      <View className="w-10 grow">
+        {!text ? (
+          <TouchableWithoutFeedback onPress={onFilter}>
+            <View className="p-2">
+              <FunnelSimpleIcon color={tailwind.theme.colors.o_light_gray} />
+            </View>
+          </TouchableWithoutFeedback>
+        ) : (
+          <TouchableWithoutFeedback onPress={onClear}>
+            <View className="p-2">
               <XIcon />
-            </TouchableNativeFeedback>
-          )}
-        </View>
-      </TouchableWithoutFeedback>
+            </View>
+          </TouchableWithoutFeedback>
+        )}
+      </View>
     </View>
   );
 };

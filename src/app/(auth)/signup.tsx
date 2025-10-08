@@ -69,7 +69,8 @@ export default function Login() {
         <ScrollView
           contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 24 }}
           keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}>
+       showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}>
           <View className="mb-14 flex-1 flex-col items-center justify-center">
             <AppText className="mt-20 text-center text-3xl font-semibold">
               Let's create your free account!

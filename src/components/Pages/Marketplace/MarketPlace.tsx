@@ -17,7 +17,7 @@ import {
   Pressable,
   ScrollView,
   TouchableWithoutFeedback,
-  View
+  View,
 } from 'react-native';
 import AppText from '~/components/Elements/AppText';
 import { stringify_area_district } from '~/lib/stringify_district_area';
@@ -55,7 +55,7 @@ type ListItem = Property_Type | HeadingItem;
 
 const MarketPlace = ({ listing_type }: Props) => {
   // const params = useLocalSearchParams<filterType>();
-  const {  openSelect } = useSelect();
+  const { openSelect } = useSelect();
 
   const [districtModal, setDistrictModal] = useState(false);
   const [filtersModal, setFiltersModal] = useState(false);
@@ -390,11 +390,7 @@ const MarketPlace = ({ listing_type }: Props) => {
   return (
     <View className="flex-1 bg-white ">
       <View className="bg-white">
-        <HomeTopBar
-          openFilters={() => {
-            setFiltersModal(true);
-          }}
-        />
+        <HomeTopBar />
       </View>
       <LinearGradient colors={['#fff', '#EEF1F7']} className="pb-1">
         <SearchView
@@ -403,38 +399,47 @@ const MarketPlace = ({ listing_type }: Props) => {
           onPress={() => {
             setDistrictModal(true);
           }}
+          onFilter={() => {
+            setFiltersModal(true);
+          }}
           onClear={() => {
             changeSearch({ district: null, area_1: null, area_2: null });
           }}
         />
         {hasFilters ? (
-          <ScrollView horizontal key="filter" className="mx-4  py-1">
+          <ScrollView horizontal key="filter" className="mx-4  py-1" showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}>
             {filters.map((i) => (
               <TouchableWithoutFeedback key={i.filter} onPress={i.onPress}>
                 <View className="mr-2 h-10 flex-1 flex-row items-center justify-center rounded-2xl border border-[#E2E4E8] bg-white  px-3 py-2 ">
                   {i.iconFirst ? i.icon : null}
-                  <AppText className="mx-2 bg-white text-sm text-primary" >{i.filter}</AppText>
+                  <AppText className="mx-2 bg-white text-sm text-primary">{i.filter}</AppText>
                   {i.iconFirst ? null : i.icon}
                 </View>
               </TouchableWithoutFeedback>
             ))}
           </ScrollView>
         ) : (
-          <ScrollView horizontal key="district" className="mx-4 py-2">
+          <ScrollView
+            horizontal
+            key="district"
+            className="mx-4 py-2"
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}>
             {district_images.map((i) => (
               <Pressable
                 key={i.district}
                 shouldRasterizeIOS
                 android_ripple={{ color: '#E2E4E8' }}
-                className="mr-2 active:bg-black/20  flex-1 flex-row  items-center justify-center rounded-2xl border border-[#E2E4E8] bg-white px-1  py-2 "
+                className="mr-2 flex-1  flex-col items-center  justify-center gap-2 rounded-2xl border border-[#E2E4E8] bg-white px-1  pb-2 pt-1 active:bg-black/20 "
                 onPress={() => changeSearch({ district: i.url })}>
                 <Image
                   contentFit="cover"
                   source={i.image}
-                  style={{ width: 70, height: 50, borderRadius: 8 }}
+                  style={{ width: 90, height: 90, borderRadius: 13 }}
                 />
 
-                <AppText className="mx-2" >{i.district}</AppText>
+                <AppText className="mx-2">{i.district}</AppText>
               </Pressable>
             ))}
           </ScrollView>
@@ -453,7 +458,7 @@ const MarketPlace = ({ listing_type }: Props) => {
             }
             return (
               <View className="px-4 py-6">
-                <AppText className="text-lg font-semibold text-gray-800">
+                <AppText className="font-semibold text-lg text-gray-800">
                   Similar Listings According to Your Criteria
                 </AppText>
               </View>

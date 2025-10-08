@@ -32,7 +32,8 @@ export default function PaymentInfo({ data, onSubmit }: Props) {
           Select your option plan and setup payments
         </AppText>
         <KeyboardAvoidingView>
-          <ScrollView contentContainerClassName="mt-5 flex-grow flex-col gap-4 pb-28">
+          <ScrollView contentContainerClassName="mt-5 flex-grow flex-col gap-4 pb-28" showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}>
             <AppText className="font-semibold text-lg">OikoTeck Service Plan</AppText>
             <AppText className="text-sm text-[#575775]">
               Click on a service name to view more details

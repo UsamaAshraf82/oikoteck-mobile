@@ -111,7 +111,8 @@ const SendMessage = ({ onClose, property }: SendOfferModalType) => {
         </View>
 
         <View style={{ maxHeight: deviceHeight * 0.9 }}>
-          <ScrollView>
+          <ScrollView showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}>
             <AppText className="mt-5 text-base text-primary">
               Send a message to the property owner
             </AppText>

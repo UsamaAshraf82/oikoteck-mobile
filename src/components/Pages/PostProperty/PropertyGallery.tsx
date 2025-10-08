@@ -138,7 +138,8 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
         <AppText className="mt-5 font-medium">Images ({files.length})</AppText>
 
         <KeyboardAvoidingView>
-          <ScrollView contentContainerClassName="mt-5 flex-grow flex-col gap-6 pb-28">
+          <ScrollView contentContainerClassName="mt-5 flex-grow flex-col gap-6 pb-28" showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}>
             {files.length === 0 ? (
               <View className="flex-1 items-center justify-center">
                 <ImagesIcon size={100} weight="light" color="#ACACB9" />

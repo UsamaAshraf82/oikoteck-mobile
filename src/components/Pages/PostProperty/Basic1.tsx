@@ -32,7 +32,8 @@ export default function Basic1({ data, onSubmit }: Props) {
         <AppText className="text-2xl font-bold" >Basic Information 🏠</AppText>
         <AppText className="text-[15px] text-[#575775]" >Tell us about your property</AppText>
        <KeyboardAvoidingView>
-          <ScrollView contentContainerClassName="mt-5 flex-grow flex-col gap-4 pb-28">
+          <ScrollView contentContainerClassName="mt-5 flex-grow flex-col gap-4 pb-28" showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}>
             <View>
             <AppText className="my-3" >Listing Type</AppText>
             <Grid gap={2} cols={2}>

@@ -166,7 +166,8 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
         </View>
 
         <View style={{ maxHeight: deviceHeight * 0.9 }}>
-          <ScrollView>
+          <ScrollView showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}>
             <View className="mt-5 flex-col gap-2">
               <Grid cols={2} gap={2}>
                 <TextInput

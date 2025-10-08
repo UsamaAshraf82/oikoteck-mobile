@@ -63,7 +63,8 @@ const Select = () => {
             />
           </View>
         ) : (
-          <ScrollView>
+          <ScrollView showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}>
             {value.options.map((item, i) => {
               return (
                 <TouchableNativeFeedback key={i} onPress={() => value.onPress?.(item)}>

@@ -46,7 +46,8 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
           Tell us more about your property in details
         </AppText>
         <KeyboardAvoidingView>
-          <ScrollView contentContainerClassName="mt-5 flex-grow flex-col gap-4 pb-28">
+          <ScrollView contentContainerClassName="mt-5 flex-grow flex-col gap-4 pb-28" showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}>
             <View className="flex-row justify-between">
               <AppText className="text-sm font-medium">No. of Bedrooms</AppText>
               <View className="flex-row items-center justify-between">

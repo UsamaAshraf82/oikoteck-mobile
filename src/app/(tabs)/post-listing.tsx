@@ -17,7 +17,7 @@ const PostListing = () => {
         />
       </View>
       <View className=" flex-1 grow  px-6 ">
-        <AppText className="font-bold text-3xl text-primary">Post a listing</AppText>
+        <AppText className="font-bold text-3xl text-primary" style={{ fontFamily: 'LufgaBold' }}>Post a listing</AppText>
         <AppText className="my-1 mb-4 text-[15px] text-[#575775]">
           Post a listing on OikoTeck in just 3 simple and easy steps, and enjoy hassle free property
           management

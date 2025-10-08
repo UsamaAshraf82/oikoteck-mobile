@@ -78,7 +78,8 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
               className=""
               keyboardShouldPersistTaps="handled"
               keyboardDismissMode="on-drag"
-              showsVerticalScrollIndicator={false}>
+             showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}>
               {/* Price Range */}
               <View className="mt-4">
                 <AppText className="text-lg font-medium text-primary" >Price Range</AppText>

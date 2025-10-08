@@ -119,7 +119,8 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
           </TouchableNativeFeedback>
         </View>
 
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}>
           <AppText className="mt-1 text-base text-primary">
             Send a property tour request to the property owner
           </AppText>
