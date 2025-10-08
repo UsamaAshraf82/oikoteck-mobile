@@ -5,13 +5,13 @@ import { GlobeHemisphereEastIcon, XIcon } from 'phosphor-react-native';
 import React, { useEffect, useState } from 'react';
 import {
   Platform,
-  Text,
   TouchableNativeFeedback,
   TouchableOpacity,
   View
 } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
+import AppText from '~/components/Elements/AppText';
 import { cn } from '~/lib/utils';
 import { deviceHeight } from '~/utils/global';
 
@@ -40,7 +40,6 @@ const District = ({ visible, onClose, value = '', onPress }: Props) => {
           pageParam,
         })) as string []
 
-        console.log(res)
         return res;
       } catch {
         return []
@@ -122,9 +121,9 @@ const District = ({ visible, onClose, value = '', onPress }: Props) => {
                   borderBottomWidth: 1,
                   borderBottomColor: '#eee',
                 }}>
-                <Text className={cn('text-primary ', { 'text-secondary': value === item })}>
+                <AppText className={cn('text-primary ', { 'text-secondary': value === item })}>
                   {item}
-                </Text>
+                </AppText>
               </TouchableOpacity>
             );
           }}

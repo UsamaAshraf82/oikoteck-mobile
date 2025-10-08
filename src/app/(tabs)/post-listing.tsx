@@ -2,7 +2,7 @@ import PostLisitngIcon from '@/assets/svg/post-listing.svg';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import AppText from '~/components/Elements/AppText';
 import PressableView from '~/components/HOC/PressableView';
 const PostListing = () => {
@@ -17,11 +17,11 @@ const PostListing = () => {
         />
       </View>
       <View className=" flex-1 grow  px-6 ">
-        <AppText className="text-3xl font-bold" >Post a listing</AppText>
-        <Text className="my-1 mb-4 text-[15px] text-[#575775]">
+        <AppText className="font-bold text-3xl text-primary">Post a listing</AppText>
+        <AppText className="my-1 mb-4 text-[15px] text-[#575775]">
           Post a listing on OikoTeck in just 3 simple and easy steps, and enjoy hassle free property
           management
-        </Text>
+        </AppText>
         <View className="relative flex-col gap-4">
           {['Add your Property details', 'Upload property images', 'And you’re done!!!'].map(
             (i, j) => (
@@ -35,9 +35,9 @@ const PostListing = () => {
                     shadowRadius: 8,
                     elevation: 4, // Android support
                   }}>
-                  <AppText className="text-base text-primary" >{j + 1}</AppText>
+                  <AppText className="text-base text-primary">{j + 1}</AppText>
                 </View>
-                <Text>{i}</Text>
+                <AppText>{i}</AppText>
               </View>
             )
           )}
@@ -48,10 +48,12 @@ const PostListing = () => {
       </View>
       <View className="px-4">
         <PressableView
-          onPress={() => {router.push('/property/new')}}
+          onPress={() => {
+            router.push('/property/new');
+          }}
           className="mb-2 h-14 w-full flex-row items-center justify-center rounded-full bg-primary">
           <View>
-            <AppText className="text-white" >Post my Listing</AppText>
+            <AppText className="text-white">Post my Listing</AppText>
           </View>
         </PressableView>
       </View>

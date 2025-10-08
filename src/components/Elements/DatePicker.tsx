@@ -2,7 +2,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { DateTime } from 'luxon';
 import { CalendarIcon } from 'phosphor-react-native';
 import React, { useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import { cn } from '~/lib/utils';
 import tailwind from '~/utils/tailwind';
 import PressableView from '../HOC/PressableView';
@@ -62,13 +62,13 @@ const DatePicker: React.FC<Props> = ({
             className={cn(' h-12 rounded-2xl  border border-[#C6CAD2]  bg-white ', className)}>
             <View className="w-full flex-1 flex-row items-center justify-between px-2">
               {date ? (
-                <Text className={cn('text-left text-sm', textClassName)}>
+                <AppText className={cn('text-left text-sm', textClassName)}>
                   <DateText date={date} mode={mode} placeholder={placeholder} />
-                </Text>
+                </AppText>
               ) : (
-                <Text className={cn('text-left text-sm text-gray-500', textClassName)}>
+                <AppText className={cn('text-left text-sm text-gray-500', textClassName)}>
                   <DateText date={date} mode={mode} placeholder={placeholder} />
-                </Text>
+                </AppText>
               )}
               <CalendarIcon
                 color={tailwind.theme.colors.primary}
@@ -99,13 +99,13 @@ const DatePicker: React.FC<Props> = ({
       <PressableView onPress={() => setVisible(true)} className={className}>
         <View className="w-full flex-1 flex-row items-center justify-between px-2 ">
           {date ? (
-            <Text className={cn('text-left text-sm', textClassName)}>
+            <AppText className={cn('text-left text-sm', textClassName)}>
               <DateText date={date} mode={mode} placeholder={placeholder} />
-            </Text>
+            </AppText>
           ) : (
-            <Text className={cn('text-left text-sm text-gray-500', textClassName)}>
+            <AppText className={cn('text-left text-sm text-gray-500', textClassName)}>
               <DateText date={date} mode={mode} placeholder={placeholder} />
-            </Text>
+            </AppText>
           )}
           <CalendarIcon
             color={tailwind.theme.colors.primary}

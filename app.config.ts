@@ -83,7 +83,7 @@ const appConfig: ExpoConfig = {
     ],
     ['@react-native-google-signin/google-signin'],
     ['expo-apple-authentication'],
-    ['./plugins/withSchemes.ts'  ],
+    // ['@stripe/stripe-react-native'],
   ],
 
   experiments: {

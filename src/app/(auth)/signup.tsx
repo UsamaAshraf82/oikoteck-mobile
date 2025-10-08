@@ -3,7 +3,7 @@ import { Link, useRouter } from 'expo-router';
 import Parse from 'parse/react-native';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { z } from 'zod';
 import AppText from '~/components/Elements/AppText';
 import { ControlledTextInput } from '~/components/Elements/TextInput';
@@ -71,20 +71,20 @@ export default function Login() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
           <View className="mb-14 flex-1 flex-col items-center justify-center">
-            <Text className="mt-20 text-center text-3xl font-semibold">
+            <AppText className="mt-20 text-center text-3xl font-semibold">
               Let's create your free account!
-            </Text>
-            <Text className="mt-2">
+            </AppText>
+            <AppText className="mt-2">
               Already have an account?{' '}
               <Link href="/login" className="text-secondary">
                 Sign In
               </Link>
-            </Text>
+            </AppText>
 
             <SocialSignin />
-            <Text className="my-14 text-sm text-[#575775]">
+            <AppText className="my-14 text-sm text-[#575775]">
               - - - - - - - - - - - or sign up with email - - - - - - - - - - -
-            </Text>
+            </AppText>
             <View className="w-full flex-col gap-2">
               <ControlledTextInput
                 control={control}
@@ -111,17 +111,6 @@ export default function Login() {
                 placeholder="Retype your password"
               />
             </View>
-            {/* <Text className="mb-1 mt-2 text-left text-sm ">
-              By clicking Sign Up you agree and accepts OikoTeck's{' '}
-              <Link href={'/privacy-policy'} className="text-secondary">
-                Privacy Policy
-              </Link>{' '}
-              and{' '}
-              <Link href={'/terms-conditions'} className="text-secondary">
-                Terms & Conditions
-              </Link>
-              .
-            </Text> */}
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

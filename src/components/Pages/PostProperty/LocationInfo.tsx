@@ -1,8 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { ScrollView, View } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 import z from 'zod';
 import AppText from '~/components/Elements/AppText';
 import { ControlledCheckBox } from '~/components/Elements/Checkbox';
@@ -13,7 +13,6 @@ import PressableView from '~/components/HOC/PressableView';
 import Area from '~/components/Sheets/District/Areas';
 import District from '~/components/Sheets/District/District';
 import { stringify_area_district } from '~/lib/stringify_district_area';
-import tailwind from '~/utils/tailwind';
 
 type Props = { data: Partial<LocationInfoTypes>; onSubmit: (data: LocationInfoTypes) => void };
 
@@ -30,6 +29,7 @@ export default function LocationInfo({ data, onSubmit }: Props) {
     resolver: zodResolver(LocationInfoSchema),
     defaultValues: data,
   });
+  const marker = useWatch({ control, name: 'marker' });
   return (
     <View className="flex-1 bg-white px-5 pt-5">
       <View className="flex-1">
@@ -80,21 +80,22 @@ export default function LocationInfo({ data, onSubmit }: Props) {
               your property.
             </AppText>
             <MapView
-              provider={PROVIDER_GOOGLE}
-              region={{
-                latitude: watch('marker')?.lat || 0,
-                longitude: watch('marker')?.lng || 0,
+            style={{flex:1}}
+              initialRegion={{
+                latitude: marker?.lat || 0,
+                longitude: marker?.lng || 0,
                 latitudeDelta: 0.05,
-
                 longitudeDelta: 0.05,
-              }}
-              style={{ flex: 1 }}>
+              }}>
               <Marker
-                coordinate={{
-                  latitude: watch('marker')?.lat || 0,
-                  longitude: watch('marker')?.lng || 0,
-                }}
-                pinColor={tailwind.theme.colors.secondary}
+                draggable
+                coordinate={{ latitude: marker?.lat || 0, longitude: marker?.lng || 0 }}
+                onDragEnd={(e) =>
+                  setValue('marker', {
+                    lat: e.nativeEvent.coordinate.latitude,
+                    lng: e.nativeEvent.coordinate.longitude,
+                  })
+                }
               />
             </MapView>
           </ScrollView>

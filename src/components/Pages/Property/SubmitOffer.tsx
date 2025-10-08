@@ -6,7 +6,7 @@ import { Link } from 'expo-router';
 import Parse from 'parse/react-native';
 import { XIcon } from 'phosphor-react-native';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { ScrollView, Text, TouchableNativeFeedback, View } from 'react-native';
+import { ScrollView, TouchableNativeFeedback, View } from 'react-native';
 import Modal from 'react-native-modal';
 import { z } from 'zod';
 import AppText from '~/components/Elements/AppText';
@@ -156,9 +156,9 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
         <View className="flex-row items-center justify-between">
           <View className="flex-col">
             <AppText className="text-2xl font-bold text-primary" >Submit Offer</AppText>
-            <Text className="mt-0 text-base text-primary">
+            <AppText className="mt-0 text-base text-primary">
               Submit an Offer to the property owner
-            </Text>
+            </AppText>
           </View>
           <TouchableNativeFeedback onPress={onClose}>
             <XIcon />
@@ -182,14 +182,14 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
                   placeholder="Enter Last Name"
                 />
               </Grid>
-              <Text className="mt-0 text-xs text-primary">
+              <AppText className="mt-0 text-xs text-primary">
                 Your offer must not be more than 20% less than the asking price
-              </Text>
+              </AppText>
             </View>
             <View className="flex-col gap-2">
-              <Text className="mb-3 mt-5 text-xl font-semibold text-primary">
+              <AppText className="mb-3 mt-5 text-xl font-semibold text-primary">
                 How can we get back to you?
-              </Text>
+              </AppText>
               <Grid cols={2} gap={2}>
                 <ControlledTextInput
                   control={control}
@@ -220,9 +220,9 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
                             <View className="w-11/12 flex-row items-center justify-between">
                               <View className="flex-row gap-2">
                                 {i.flag}
-                                <Text>{i.Country}</Text>
+                                <AppText>{i.Country}</AppText>
                               </View>
-                              <Text>+{i.Code}</Text>
+                              <AppText>+{i.Code}</AppText>
                             </View>
                           ),
                           value: { Code: i.Code, Country: i.Country, ISO: i.ISO },
@@ -261,7 +261,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
               />
             </View>
             <View className="mt-5">
-              <Text className="px-3 text-center text-sm">
+              <AppText className="px-3 text-center text-sm">
                 By contacting the property owner, you agree and accepts OikoTeck's{' '}
                 <Link href={'/privacy-policy'} className="text-secondary underline">
                   Privacy Policy
@@ -271,7 +271,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
                   Terms & Conditions
                 </Link>
                 .
-              </Text>
+              </AppText>
             </View>
             <View className="mt-5" />
             <Grid cols={2} gap={2}>
@@ -279,7 +279,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
                 onPress={onClose}
                 className="h-12 rounded-full border border-[#C6CAD2]">
                 <View>
-                  <Text>Cancel</Text>
+                  <AppText>Cancel</AppText>
                 </View>
               </PressableView>
               <PressableView

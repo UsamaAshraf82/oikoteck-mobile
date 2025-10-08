@@ -30,7 +30,6 @@ export default function Basic3({ data, extra_data, onSubmit }: Props) {
     defaultValues: { ...data, ...extra_data },
   });
 
-  console.log(watch());
   return (
     <View className="flex-1 bg-white px-5 pt-5">
       <View className="flex-1">

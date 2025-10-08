@@ -5,7 +5,7 @@ import { Link, useLocalSearchParams, useRouter } from 'expo-router';
 import { CheckCircleIcon, UserIcon } from 'phosphor-react-native';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { ScrollView, Text, TouchableWithoutFeedback, View } from 'react-native';
+import { ScrollView, TouchableWithoutFeedback, View } from 'react-native';
 import { z } from 'zod';
 import AppText from '~/components/Elements/AppText';
 import { ControlledCheckBox } from '~/components/Elements/Checkbox';
@@ -118,7 +118,7 @@ export default function Login() {
                           }
                         )}>
                         {item.icon}
-                        <Text>{item.label}</Text>
+                        <AppText>{item.label}</AppText>
                         {item.value === watch('userType') && (
                           <View className="absolute right-2 top-2">
                             <CheckCircleIcon
@@ -177,9 +177,9 @@ export default function Login() {
                             <View className="w-11/12 flex-row items-center justify-between">
                               <View className="flex-row gap-2">
                                 {i.flag}
-                                <Text>{i.Country}</Text>
+                                <AppText>{i.Country}</AppText>
                               </View>
-                              <Text>+{i.Code}</Text>
+                              <AppText>+{i.Code}</AppText>
                             </View>
                           ),
                           value: { Code: i.Code, Country: i.Country, ISO: i.ISO },

@@ -23,7 +23,7 @@ function base64ToUint8Array(base64: string): Uint8Array {
 }
 
 const uploadFile = async (file: { file: string; name: string }) => {
-  const blob = base64ToUint8Array(file.file) //'image/webp');
+  const blob = base64ToUint8Array(file.file); //'image/webp');
 
   const params: PutObjectCommandInput = {
     Bucket: 'oikoteck1',
@@ -37,10 +37,7 @@ const uploadFile = async (file: { file: string; name: string }) => {
     params: params,
   });
 
-  console.log(5);
-
   const uploaded = await upload.done();
-  console.log(6);
 
   return uploaded;
 };

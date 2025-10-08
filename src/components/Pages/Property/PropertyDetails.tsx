@@ -19,10 +19,9 @@ import {
   Modal,
   Pressable,
   ScrollView,
-  Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  View,
+  View
 } from 'react-native';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import MapView, { Circle, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
@@ -193,27 +192,27 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                 duotoneOpacity={0.9}
                 weight="duotone"
               />
-              <Text className="ml-2 text-sm font-medium text-primary">
+              <AppText className="ml-2 text-sm font-medium text-primary">
                 {stringify_area_district({
                   district: property.district,
                   area_1: property.area_1,
                   area_2: property.area_2,
                 })}
-              </Text>
+              </AppText>
             </View>
             {property.reference_number && (
               <View className="mt-3 flex-row items-center">
                 <SquaresFourIcon color={tailwind.theme.colors.primary} />
-                <Text className="ml-2 text-sm font-medium text-primary">
+                <AppText className="ml-2 text-sm font-medium text-primary">
                   {property.reference_number}
-                </Text>
+                </AppText>
               </View>
             )}
             {property.exact_location && (
               <>
                 <View className="mt-2" />
                 <View className="flex-col rounded-2xl bg-[#f4f4f6] p-3 text-primary">
-                  <Text>Street Address</Text>
+                  <AppText>Street Address</AppText>
                   <View className="mt-2 flex-row items-center gap-2">
                     <MapPinIcon size={20} />
                     <AppText className="text-[15px] font-medium" >{property.address}</AppText>
@@ -271,7 +270,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                 <View
                   key={i.heading}
                   className={cn('flex-col rounded-2xl bg-[#f4f4f6] p-3 text-primary', i.className)}>
-                  <Text>{i.heading}</Text>
+                  <AppText>{i.heading}</AppText>
                   <View className="mt-2 flex-row items-center gap-2">
                     {i.icon}
                     <AppText className="text-[15px] font-medium" >{i.detail}</AppText>
@@ -287,7 +286,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
               {property.special_feature.map((i) => (
                 <AppText key={i} >• {i}</AppText>
               ))}
-              <Text>
+              <AppText>
                 • {property.listing_for === 'Rental' ? 'Earliest Move-in' : 'Earliest Sale'} :{' '}
                 {property.move_in_date instanceof Date
                   ? DateTime.fromJSDate(property.move_in_date).toLocaleString(DateTime.DATE_SHORT, {
@@ -299,35 +298,35 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                         locale: 'en-GB',
                       }
                     )}
-              </Text>
+              </AppText>
               {!!property?.heating && property?.heating !== 'None' && (
-                <Text>• {property?.heating}</Text>
+                <AppText>• {property?.heating}</AppText>
               )}
               {!!property.heating_expense && (
-                <Text>• Heating expenses : € {property.heating_expense}</Text>
+                <AppText>• Heating expenses : € {property.heating_expense}</AppText>
               )}
-              {!!property.energy_class && <Text>• Energy : {property.energy_class}</Text>}
+              {!!property.energy_class && <AppText>• Energy : {property.energy_class}</AppText>}
               {!!property.construction_year && (
-                <Text>• Construction year : {property.construction_year || ''}</Text>
+                <AppText>• Construction year : {property.construction_year || ''}</AppText>
               )}
-              {!!property.floor && <Text>• Floor : {property.floor || ''}</Text>}
+              {!!property.floor && <AppText>• Floor : {property.floor || ''}</AppText>}
               {!!property.property_oriantation && (
-                <Text>• Orientation : {property.property_oriantation || ''} </Text>
+                <AppText>• Orientation : {property.property_oriantation || ''} </AppText>
               )}
-              {!!property.plot_size && <Text>• Plot Size : {property.plot_size || ''} m²</Text>}
+              {!!property.plot_size && <AppText>• Plot Size : {property.plot_size || ''} m²</AppText>}
             </View>
             <View className="mt-5" />
             <View className="flex-col gap-3">
               <AppText className="text-2xl font-semibold" >Payment Methods</AppText>
-              <Text>
+              <AppText>
                 •{' '}
                 {property.payment_frequency === 1
                   ? 'Monthly Payments'
                   : `Payment every ${property.payment_frequency} Months`}
-              </Text>
-              <Text>
+              </AppText>
+              <AppText>
                 • {property.deposit}-{property.deposit === 1 ? 'Month' : 'Months'} Security Deposit
-              </Text>
+              </AppText>
             </View>
             <View className="mt-5" />
             <View className="flex-col gap-1">

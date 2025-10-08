@@ -4,8 +4,7 @@ import google from '@/assets/svg/google.svg';
 import {
   GoogleSignin,
   isErrorWithCode,
-  isSuccessResponse,
-  statusCodes,
+  statusCodes
 } from '@react-native-google-signin/google-signin';
 import { Image } from 'expo-image';
 import { Platform, View } from 'react-native';
@@ -16,15 +15,8 @@ const SocialSignin = () => {
     try {
       await GoogleSignin.hasPlayServices();
       const response = await GoogleSignin.signIn();
-      // console.log('response', response);
-      if (isSuccessResponse(response)) {
-        // console.log('response', response);
-        // setState({ userInfo: response.data });
-      } else {
-        // sign in was cancelled by user
-      }
+
     } catch (error) {
-      // console.log(error);
       if (isErrorWithCode(error)) {
         switch (error.code) {
           case statusCodes.IN_PROGRESS:
@@ -45,7 +37,6 @@ const SocialSignin = () => {
     <View className="w-full">
       <PressableView
         onPress={() => {
-          console.log('google');
           // startSignInFlow()
         }}
         className="mt-4 h-12 w-full  rounded-full bg-white">
@@ -56,7 +47,6 @@ const SocialSignin = () => {
       </PressableView>
       <PressableView
         onPress={() => {
-          console.log('facebook');
           // startSignInFlow()
         }}
         className="mt-4 h-12 w-full  rounded-full bg-white">
@@ -68,7 +58,6 @@ const SocialSignin = () => {
       {Platform.OS === 'ios' && (
         <PressableView
           onPress={() => {
-            console.log('apple');
             // startSignInFlow()
           }}
           className="mt-4 h-12 w-full  rounded-full bg-white">

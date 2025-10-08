@@ -6,7 +6,6 @@ import { deviceHeight } from '~/utils/global';
 const Select = () => {
   const { opened: value } = useModal();
 
-console.log(value)
 
   if (value === null) return null;
 

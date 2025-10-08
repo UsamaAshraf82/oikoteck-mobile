@@ -11,14 +11,22 @@ type Props = {
   getValue?: (value: boolean) => void;
   label?: React.ReactNode;
   labelClassName?: string;
+  labelLast?: boolean;
 };
 
-const Checkbox: React.FC<Props> = ({ label, value, onChange ,getValue,labelClassName}) => {
+const Checkbox: React.FC<Props> = ({
+  label,
+  value,
+  onChange,
+  getValue,
+  labelClassName,
+  labelLast,
+}) => {
   const [isChecked, setChecked] = useState<boolean>(!!value);
 
   useEffect(() => {
     setChecked(!!value);
-  }, [value]);
+  }, [value, isChecked !== value]);
 
   const handleChange = (val: boolean) => {
     setChecked(val);
@@ -26,8 +34,11 @@ const Checkbox: React.FC<Props> = ({ label, value, onChange ,getValue,labelClass
     getValue?.(val); // notify parent (react-hook-form if controlled)
   };
   return (
-    <View className="mt-1 flex-row items-center justify-between">
-      <AppText className={cn("text-base flex-shrink", labelClassName)} >{label}</AppText>
+    <View
+      className={cn('mt-1 flex-row items-center justify-between', { 'justify-start': labelLast })}>
+      {!labelLast && (
+        <AppText className={cn('flex-shrink text-base', labelClassName)}>{label}</AppText>
+      )}
       <Pressable onPress={() => handleChange(!isChecked)}>
         <ExpoCheckbox
           value={isChecked}
@@ -35,11 +46,13 @@ const Checkbox: React.FC<Props> = ({ label, value, onChange ,getValue,labelClass
           color={tailwind.theme.colors.secondary}
         />
       </Pressable>
+      {labelLast && (
+        <AppText className={cn('ml-2 flex-shrink text-base', labelClassName)}>{label}</AppText>
+      )}
     </View>
   );
 };
 
 export default Checkbox;
-
 
 export const ControlledCheckBox = withController<any, Props>(Checkbox);

@@ -7,10 +7,9 @@ import { XIcon } from 'phosphor-react-native';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import {
   ScrollView,
-  Text,
   TouchableNativeFeedback,
   TouchableWithoutFeedback,
-  View,
+  View
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { z } from 'zod';
@@ -121,9 +120,9 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
         </View>
 
         <ScrollView>
-          <Text className="mt-1 text-base text-primary">
+          <AppText className="mt-1 text-base text-primary">
             Send a property tour request to the property owner
-          </Text>
+          </AppText>
           <View className="mt-5 flex-col gap-2">
             <Select
               options={Tour1Schema.shape.tour_type.options.map((i) => ({ label: i, value: i }))}
@@ -147,9 +146,9 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
               value={{ label: watch('tour_time'), value: watch('tour_time') }}
               onChange={(value) => setValue('tour_time', value?.value as Tour1Type['tour_time'])}
             />
-            <Text className="mb-3 mt-5 text-xl font-semibold text-primary">
+            <AppText className="mb-3 mt-5 text-xl font-semibold text-primary">
               How can we get back to you?
-            </Text>
+            </AppText>
             <Grid cols={2} gap={2}>
               <ControlledTextInput
                 control={control}
@@ -179,9 +178,9 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
                           <View className="w-11/12 flex-row items-center justify-between">
                             <View className="flex-row gap-2">
                               {i.flag}
-                              <Text>{i.Country}</Text>
+                              <AppText>{i.Country}</AppText>
                             </View>
-                            <Text>+{i.Code}</Text>
+                            <AppText>+{i.Code}</AppText>
                           </View>
                         ),
                         value: { Code: i.Code, Country: i.Country, ISO: i.ISO },
@@ -227,7 +226,7 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
             />
           </View>
           <View className="mt-5">
-            <Text className="px-3 text-center text-sm">
+            <AppText className="px-3 text-center text-sm">
               By contacting the property owner, you agree and accepts OikoTeck's{' '}
               <Link href={'/privacy-policy'} className="text-secondary underline">
                 Privacy Policy
@@ -237,7 +236,7 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
                 Terms & Conditions
               </Link>
               .
-            </Text>
+            </AppText>
           </View>
         </ScrollView>
 
@@ -245,7 +244,7 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
         <Grid cols={2} gap={2}>
           <PressableView onPress={onClose} className="h-12 rounded-full border border-[#C6CAD2]">
             <View>
-              <Text>Cancel</Text>
+              <AppText>Cancel</AppText>
             </View>
           </PressableView>
           <PressableView

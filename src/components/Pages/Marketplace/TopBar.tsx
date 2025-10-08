@@ -1,6 +1,6 @@
 import { Link } from 'expo-router';
 import { SquaresFourIcon, UserIcon } from 'phosphor-react-native';
-import { Text, TouchableWithoutFeedback, View } from 'react-native';
+import { TouchableWithoutFeedback, View } from 'react-native';
 import AppText from '~/components/Elements/AppText';
 import useUser from '~/store/useUser';
 import tailwind from '~/utils/tailwind';
@@ -16,9 +16,9 @@ export const HomeTopBar = ({ openFilters }: { openFilters: () => void }) => {
           </View>
           <View>
             <AppText className="text-sm text-o_gray-200" >Welcome Back!</AppText>
-            <Text className="mt-1 text-base font-bold text-primary">
+            <AppText className="mt-1 text-base font-bold text-primary">
               {user ? `${user.attributes.first_name} ${user.attributes.last_name}` : ''}
-            </Text>
+            </AppText>
           </View>
         </View>
       ) : (

@@ -4,6 +4,8 @@ import Basic1, { Basic1Values } from '~/components/Pages/PostProperty/Basic1';
 import Basic2, { Basic2Values } from '~/components/Pages/PostProperty/Basic2';
 import Basic3, { Basic3Values } from '~/components/Pages/PostProperty/Basic3';
 import LocationInfo, { LocationInfoTypes } from '~/components/Pages/PostProperty/LocationInfo';
+import PaymentInfo, { PaymentInfoTypes } from '~/components/Pages/PostProperty/PaymentInfo';
+import PostListingS from '~/components/Pages/PostProperty/PostListingS';
 import PropertyGallery, {
   PropertyGalleryTypes,
 } from '~/components/Pages/PostProperty/PropertyGallery';
@@ -15,6 +17,7 @@ export default function Index() {
     basic3: Partial<Basic3Values>;
     gallery: Partial<PropertyGalleryTypes>;
     location: Partial<LocationInfoTypes>;
+    payment: Partial<PaymentInfoTypes>;
   }>({
     basic: {
       listing_for: 'Rental',
@@ -30,10 +33,11 @@ export default function Index() {
     },
     basic3: { payment_frequency: 1, deposit: 1, level_of_finish: 3 },
     gallery: { files: [], agent_icon: false },
-    location: {exact_location:false, },
+    location: { exact_location: false },
+    payment: {},
   });
 
-    useEffect(() => {
+  useEffect(() => {
     const backAction = () => {
       if (tab > 0) {
         setTab((prev) => prev - 1); // go to previous step
@@ -42,14 +46,10 @@ export default function Index() {
       return false; // allow default (exit / navigate back) if already at first step
     };
 
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
 
     return () => backHandler.remove();
   }, [tab]);
-
 
   switch (tab) {
     case 0:
@@ -112,6 +112,31 @@ export default function Index() {
           onSubmit={(data) => {
             setData((i) => ({ ...i, location: data }));
             setTab(5);
+          }}
+        />
+      );
+    case 5:
+      return (
+        <PaymentInfo
+          data={data.payment}
+          // extra_data={{
+          //   listing_for: data.basic.listing_for!,
+          // }}
+          onSubmit={(data) => {
+            setData((i) => ({ ...i, payment: data }));
+            setTab(6);
+          }}
+        />
+      );
+    case 6:
+      return (
+        <PostListingS
+          extraData={{
+            plan: data.payment.plan!,
+          }}
+          onSubmit={() => {
+            // setData((i) => ({ ...i, payment: data }));
+            setTab(7);
           }}
         />
       );

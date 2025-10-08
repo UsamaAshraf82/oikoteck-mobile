@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CheckCircleIcon } from 'phosphor-react-native';
 import { useForm } from 'react-hook-form';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import z from 'zod';
 import AppText from '~/components/Elements/AppText';
 import Select from '~/components/Elements/Select';
@@ -44,12 +44,12 @@ export default function Basic1({ data, onSubmit }: Props) {
                   'border-secondary bg-secondary/10': watch('listing_for') === 'Rental',
                 })}>
                 <View className="w-full flex-row items-center justify-between px-4 py-3">
-                  <Text
+                  <AppText
                     className={cn({
                       'text-secondary ': watch('listing_for') === 'Rental',
                     })}>
                     Rental
-                  </Text>
+                  </AppText>
                   {watch('listing_for') === 'Rental' && (
                     <CheckCircleIcon weight="fill" color={tailwind.theme.colors.secondary} />
                   )}
@@ -63,12 +63,12 @@ export default function Basic1({ data, onSubmit }: Props) {
                   'border-secondary bg-secondary/10': watch('listing_for') === 'Sale',
                 })}>
                 <View className="w-full flex-row items-center justify-between px-4 py-3">
-                  <Text
+                  <AppText
                     className={cn({
                       'text-secondary ': watch('listing_for') === 'Sale',
                     })}>
                     Sale
-                  </Text>
+                  </AppText>
                   {watch('listing_for') === 'Sale' && (
                     <CheckCircleIcon weight="fill" color={tailwind.theme.colors.secondary} />
                   )}

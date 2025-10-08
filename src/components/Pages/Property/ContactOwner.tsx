@@ -13,7 +13,7 @@ import {
   XIcon,
 } from 'phosphor-react-native';
 import React, { useState } from 'react';
-import { Text, TouchableNativeFeedback, View } from 'react-native';
+import { TouchableNativeFeedback, View } from 'react-native';
 import Modal from 'react-native-modal';
 import AppText from '~/components/Elements/AppText';
 import PressableView from '~/components/HOC/PressableView';
@@ -99,18 +99,18 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
           </TouchableNativeFeedback>
         </View>
         <View style={{ maxHeight: deviceHeight * 0.775 }}>
-          <Text className="text-base text-primary">
+          <AppText className="text-base text-primary">
             Select your preferred way to contact the property owner
-          </Text>
+          </AppText>
           <View className="mt-4 flex-row items-center">
             <View className="h-16 w-16 flex-row items-center justify-center rounded-full bg-[#E2E4E8]">
               <UserIcon />
             </View>
             <View className="gap- ml-4 flex-1 flex-col">
               <View className="flex-row gap-2">
-                <Text className="text-xl font-semibold">
+                <AppText className="text-xl font-semibold">
                   {owner.first_name} {owner.last_name}
-                </Text>
+                </AppText>
                 <View
                   className={cn('flex-row items-center gap-2 rounded-full px-2 py-px', {
                     'bg-[#0E6DF1]/15 ': owner.user_type === 'agent',
@@ -121,13 +121,13 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
                   ) : (
                     <UserIcon size={14} />
                   )}
-                  <Text
+                  <AppText
                     className={cn('text-xs', {
                       ' text-[#0E6DF1]': owner.user_type === 'agent',
                       ' text-[#5412A1]': owner.user_type !== 'agent',
                     })}>
                     {owner.user_type === 'agent' ? 'Broker' : 'Homeowner'}
-                  </Text>
+                  </AppText>
                 </View>
               </View>
               <View className="my-1 flex-row gap-2">
@@ -181,7 +181,7 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
             </PressableView>
           </View>
           <View className="mt-5">
-            <Text className="px-4 text-center text-sm">
+            <AppText className="px-4 text-center text-sm">
               By contacting the property owner, you agree and accepts OikoTeck's{' '}
               <Link href={'/privacy-policy'} className="text-secondary underline">
                 Privacy Policy
@@ -191,7 +191,7 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
                 Terms & Conditions
               </Link>
               .
-            </Text>
+            </AppText>
           </View>
         </View>
       </View>
@@ -245,9 +245,9 @@ const PhoneNumberModal = ({
         <View style={{ maxHeight: deviceHeight * 0.775 }}>
           <AppText className="text-base text-primary" >Property owner’s phone number</AppText>
           <View className="mt-4 flex-row items-center justify-center rounded-3xl bg-[#8D95A51A] py-4">
-            <Text className="text-center text-2xl font-bold text-primary">
+            <AppText className="text-center text-2xl font-bold text-primary">
               +{owner.country_code} {owner.phone}
-            </Text>
+            </AppText>
           </View>
           <View className="mt-4 flex-col items-center gap-4">
             <PressableView
@@ -260,7 +260,7 @@ const PhoneNumberModal = ({
             </PressableView>
           </View>
           <View className="mt-5">
-            <Text className="px-4 text-center text-sm">
+            <AppText className="px-4 text-center text-sm">
               By contacting the property owner, you agree and accepts OikoTeck's{' '}
               <Link href={'/privacy-policy'} className="text-secondary underline">
                 Privacy Policy
@@ -270,7 +270,7 @@ const PhoneNumberModal = ({
                 Terms & Conditions
               </Link>
               .
-            </Text>
+            </AppText>
           </View>
         </View>
       </View>
@@ -323,7 +323,7 @@ const EmailModal = ({
             </PressableView>
           </View>
           <View className="mt-5">
-            <Text className="px-4 text-center text-sm">
+            <AppText className="px-4 text-center text-sm">
               By contacting the property owner, you agree and accepts OikoTeck's{' '}
               <Link href={'/privacy-policy'} className="text-secondary underline">
                 Privacy Policy
@@ -333,7 +333,7 @@ const EmailModal = ({
                 Terms & Conditions
               </Link>
               .
-            </Text>
+            </AppText>
           </View>
         </View>
       </View>

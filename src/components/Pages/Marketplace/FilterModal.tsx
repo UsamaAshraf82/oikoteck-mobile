@@ -1,6 +1,6 @@
 import { XIcon } from 'phosphor-react-native';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, Text, TextInput, TouchableNativeFeedback, View } from 'react-native';
+import { ScrollView, TextInput, TouchableNativeFeedback, View } from 'react-native';
 import Modal from 'react-native-modal';
 import AppText from '~/components/Elements/AppText';
 import { cn } from '~/lib/utils';
@@ -119,13 +119,13 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                     }}
                     className="h-10  flex-1 items-center  justify-center rounded-xl border border-gray-200">
                     {listing_type === 'Sale' ? (
-                      <Text>
+                      <AppText>
                         {filter.minPrice ? '€ ' + numberminify(filter.minPrice) : 'No Min'}
-                      </Text>
+                      </AppText>
                     ) : (
-                      <Text>
+                      <AppText>
                         {filter.minPrice ? '€ ' + thoasandseprator(filter.minPrice) : 'No Min'}
-                      </Text>
+                      </AppText>
                     )}
                   </PressableView>
                   <AppText className="mx-1 text-4xl" > - </AppText>
@@ -163,13 +163,13 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                       });
                     }}>
                     {listing_type === 'Sale' ? (
-                      <Text>
+                      <AppText>
                         {filter.maxPrice ? '€ ' + numberminify(filter.maxPrice) : 'No Max'}
-                      </Text>
+                      </AppText>
                     ) : (
-                      <Text>
+                      <AppText>
                         {filter.maxPrice ? '€ ' + thoasandseprator(filter.maxPrice) : 'No Max'}
-                      </Text>
+                      </AppText>
                     )}
                   </PressableView>
                 </View>
@@ -200,7 +200,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                       });
                     }}
                     className="h-10  flex-1 items-center  justify-center rounded-xl border border-gray-200">
-                    <Text>{filter.minSize ? numberminify(filter.minSize) + ' m²' : 'No Min'}</Text>
+                    <AppText>{filter.minSize ? numberminify(filter.minSize) + ' m²' : 'No Min'}</AppText>
                   </PressableView>
                   <AppText className="mx-1 text-4xl" > - </AppText>
                   <PressableView
@@ -225,7 +225,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                         },
                       });
                     }}>
-                    <Text>{filter.maxSize ? numberminify(filter.maxSize) + ' m²' : 'No Max'}</Text>
+                    <AppText>{filter.maxSize ? numberminify(filter.maxSize) + ' m²' : 'No Max'}</AppText>
                   </PressableView>
                 </View>
               </View>
@@ -252,12 +252,12 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                               'border-secondary bg-secondary/10 ': filter.bedroom === item.value,
                             }
                           )}>
-                          <Text
+                          <AppText
                             className={cn({
                               ' text-secondary': filter.bedroom === item.value,
                             })}>
                             {item.label}
-                          </Text>
+                          </AppText>
                         </PressableView>
                       );
                     }
@@ -272,12 +272,12 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                               'border-secondary bg-secondary/10 ': filter.bedroom === item.value,
                             }
                           )}>
-                          <Text
+                          <AppText
                             className={cn({
                               ' text-secondary': filter.bedroom === item.value,
                             })}>
                             {item.label}
-                          </Text>
+                          </AppText>
                         </PressableView>
                       );
                     }
@@ -291,12 +291,12 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                             'border-secondary bg-secondary/10 ': filter.bedroom === item.value,
                           }
                         )}>
-                        <Text
+                        <AppText
                           className={cn({
                             ' text-secondary': filter.bedroom === item.value,
                           })}>
                           {item.label}
-                        </Text>
+                        </AppText>
                       </PressableView>
                     );
                   })}
@@ -325,12 +325,12 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                               'border-secondary bg-secondary/10 ': filter.bathroom === item.value,
                             }
                           )}>
-                          <Text
+                          <AppText
                             className={cn({
                               ' text-secondary': filter.bathroom === item.value,
                             })}>
                             {item.label}
-                          </Text>
+                          </AppText>
                         </PressableView>
                       );
                     }
@@ -345,12 +345,12 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                               'border-secondary bg-secondary/10 ': filter.bathroom === item.value,
                             }
                           )}>
-                          <Text
+                          <AppText
                             className={cn({
                               ' text-secondary': filter.bathroom === item.value,
                             })}>
                             {item.label}
-                          </Text>
+                          </AppText>
                         </PressableView>
                       );
                     }
@@ -364,12 +364,12 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                             'border-secondary bg-secondary/10 ': filter.bathroom === item.value,
                           }
                         )}>
-                        <Text
+                        <AppText
                           className={cn({
                             ' text-secondary': filter.bathroom === item.value,
                           })}>
                           {item.label}
-                        </Text>
+                        </AppText>
                       </PressableView>
                     );
                   })}
@@ -391,12 +391,12 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                         className={cn('h-10 flex-1 items-center   justify-center rounded-lg ', {
                           'border border-gray-200 bg-white': filter.furnished === item.value,
                         })}>
-                        <Text
+                        <AppText
                           className={cn('text-[#868C98]', {
                             'text-primary': filter.furnished === item.value,
                           })}>
                           {item.label}
-                        </Text>
+                        </AppText>
                       </PressableView>
                     );
                   })}

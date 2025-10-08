@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import Animated, { interpolate, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
 import { stringify_area_district } from '~/lib/stringify_district_area';
@@ -111,9 +111,9 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
             <View className="mt-2">
               <View className="flex-row items-center justify-between">
                 <View className=" flex-row items-baseline">
-                  <Text className="font-bold text-lg text-secondary">
+                  <AppText className="font-bold text-lg text-secondary">
                     {'€ ' + thoasandseprator(property.price)}
-                  </Text>
+                  </AppText>
                   {property.listing_for !== 'Sale' && (
                     <AppText className="text-xs text-o_light_gray"> / Month</AppText>
                   )}
@@ -124,13 +124,13 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
                 <AppText className="font-bold text-base text-primary">{property.title}</AppText>
               </View>
 
-              <Text className="text-xs text-primary">
+              <AppText className="text-xs text-primary">
                 {stringify_area_district({
                   district: property.district,
                   area_1: property.area_1,
                   area_2: property.area_2,
                 })}
-              </Text>
+              </AppText>
 
               <View className="mt-1 flex-row items-center justify-start">
                 <View className="mr-4 flex-row items-center">
@@ -140,9 +140,9 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
                     color={tailwind.theme.colors.o_light_gray}
                     className="text-o_light_gray"
                   />
-                  <Text className="ml-1 mr-0 text-sm text-o_light_gray">
+                  <AppText className="ml-1 mr-0 text-sm text-o_light_gray">
                     {property.bedrooms} beds
-                  </Text>
+                  </AppText>
                 </View>
                 <View className="mr-4 flex-row items-center">
                   <BathIcon
@@ -151,9 +151,9 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
                     color={tailwind.theme.colors.o_light_gray}
                     className="text-o_light_gray"
                   />
-                  <Text className="ml-1 mr-0 text-sm text-o_light_gray">
+                  <AppText className="ml-1 mr-0 text-sm text-o_light_gray">
                     {property.bedrooms} beds
-                  </Text>
+                  </AppText>
                 </View>
                 <View className="mr-4 flex-row items-center  text-o_light_gray">
                   <SizeIcon

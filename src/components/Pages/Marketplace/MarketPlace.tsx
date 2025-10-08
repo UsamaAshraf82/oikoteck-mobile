@@ -16,9 +16,8 @@ import {
   ActivityIndicator,
   Pressable,
   ScrollView,
-  Text,
   TouchableWithoutFeedback,
-  View,
+  View
 } from 'react-native';
 import AppText from '~/components/Elements/AppText';
 import { stringify_area_district } from '~/lib/stringify_district_area';
@@ -454,9 +453,9 @@ const MarketPlace = ({ listing_type }: Props) => {
             }
             return (
               <View className="px-4 py-6">
-                <Text className="text-lg font-semibold text-gray-800">
+                <AppText className="text-lg font-semibold text-gray-800">
                   Similar Listings According to Your Criteria
-                </Text>
+                </AppText>
               </View>
             );
           }}

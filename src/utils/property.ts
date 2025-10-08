@@ -1,4 +1,4 @@
-import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
+import { ImageManipulator, ImageResult, SaveFormat } from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
 
 export function property_category(property_type: string | null, withAny = false) {
@@ -91,9 +91,8 @@ export const special_feature = (property_type: 'Residential' | 'Commercial' | 'L
 };
 
 export async function resizeImages(assets: ImagePicker.ImagePickerAsset[], size: number) {
-  const results: { uri: string; width: number; height: number,base64: string }[] = [];
+  const results: ImageResult[] = [];
 
-  console.log(results);
   for (const asset of assets) {
     const uri = asset.uri;
     const origW = asset.width;
@@ -114,7 +113,7 @@ export async function resizeImages(assets: ImagePicker.ImagePickerAsset[], size:
     // ctx.
     // Render transformations
     const imageRef = await ctx.renderAsync();
-    console.log(3);
+
 
     // Save with compression & format options
     const saved = await imageRef.saveAsync({

@@ -1,5 +1,6 @@
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { useFonts } from 'expo-font';
+import { StripeProvider } from '@stripe/stripe-react-native';
+import { getLoadedFonts, useFonts } from 'expo-font';
 import { Slot, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import * as SystemUI from 'expo-system-ui';
@@ -26,7 +27,7 @@ SystemUI.setBackgroundColorAsync('#fff');
 export default function RootLayout() {
   const [ready, setReady] = useState(false);
 
-  const [fontsLoaded] = useFonts({
+  const [fontsLoaded, fontError] = useFonts({
     LufgaThin: require('@/lufga/LufgaThin.ttf'),
     LufgaExtraLight: require('@/lufga/LufgaExtraLight.ttf'),
     LufgaLight: require('@/lufga/LufgaLight.ttf'),
@@ -59,10 +60,10 @@ export default function RootLayout() {
     // }
   }, []);
 
-  console.log(fontsLoaded)
+  console.log('fontsLoaded', fontsLoaded, fontError, getLoadedFonts());
 
   return (
-    <>
+    <StripeProvider publishableKey="pk_test_51PSK7VP5GmAB6WhMTNNCySQpZwOVzUV3T7DJA6W25VrCnxom0KAJ3osQyZR6qXb2GZtO6oP8m33SI4pIoeV913Pf00RBNgWjCl">
       <Provider>
         <Screens fontsLoaded={fontsLoaded} ready={ready} />
         <ModalContainer />
@@ -70,7 +71,7 @@ export default function RootLayout() {
         <ActivityIndicator />
         <ToastContainer />
       </Provider>
-    </>
+    </StripeProvider>
   );
 }
 

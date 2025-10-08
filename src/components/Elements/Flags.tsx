@@ -226,7 +226,8 @@ import ZA from 'country-flag-icons/3x2/ZA.svg';
 import ZM from 'country-flag-icons/3x2/ZM.svg';
 import ZW from 'country-flag-icons/3x2/ZW.svg';
 import { Image } from 'expo-image';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
+import AppText from './AppText';
 
 // type flag = { Country?: string; Code?: number; ISO?: string } | undefined;
 
@@ -255,9 +256,9 @@ export const RenderFlagWithCode = ({ISO}:{ISO:string}) => {
     <View className="w-full flex-row items-center justify-between">
       <View className="flex-row gap-1">
         {flag.flag}
-        <Text>{flag.Country}</Text>
+        <AppText>{flag.Country}</AppText>
       </View>
-      <Text>+{flag.Code}</Text>
+      <AppText>+{flag.Code}</AppText>
     </View>
   );
 };

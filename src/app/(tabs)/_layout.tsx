@@ -28,7 +28,11 @@ export default function TabsLayout() {
         // tabBarShowLabel: false,
         tabBarItemStyle: {
           borderColor: tailwind.theme.colors.white,
+
         },
+        tabBarLabelStyle:{
+          fontFamily: 'LufgaRegular',
+        }
         // tabBarButton: (props) => (
         //   <Pressable android_ripple={{ color: tailwind.theme.colors.secondary }}  />{p}</Pressable>
         // ),
@@ -52,6 +56,7 @@ export default function TabsLayout() {
         name="post-listing"
         options={{
           tabBarLabel: 'Post Listing',
+
           tabBarIcon: ({ color }) => <PlusCircleIcon color={color} />,
         }}
       />

@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CheckCircleIcon, InfoIcon, MinusIcon, PlusIcon } from 'phosphor-react-native';
 import { useForm } from 'react-hook-form';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import z from 'zod';
 import AppText from '~/components/Elements/AppText';
 import Checkbox from '~/components/Elements/Checkbox';
@@ -38,14 +38,13 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
     defaultValues: { ...data, ...extra_data },
   });
 
-  console.log(watch());
   return (
     <View className="flex-1 bg-white px-5 pt-5">
       <View className="flex-1">
         <AppText className="text-2xl font-bold">Property details 🏠</AppText>
-        <Text className="text-[15px] text-[#575775]">
+        <AppText className="text-[15px] text-[#575775]">
           Tell us more about your property in details
-        </Text>
+        </AppText>
         <KeyboardAvoidingView>
           <ScrollView contentContainerClassName="mt-5 flex-grow flex-col gap-4 pb-28">
             <View className="flex-row justify-between">
@@ -104,12 +103,12 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
                   })}
                   onPress={() => setValue('furnished', true)}>
                   <View className="w-full flex-row items-center justify-between px-4 py-3">
-                    <Text
+                    <AppText
                       className={cn({
                         'text-secondary ': watch('furnished') === true,
                       })}>
                       Yes
-                    </Text>
+                    </AppText>
                     {watch('furnished') === true && (
                       <CheckCircleIcon weight="fill" color={tailwind.theme.colors.secondary} />
                     )}
@@ -121,12 +120,12 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
                   })}
                   onPress={() => setValue('furnished', false)}>
                   <View className="w-full flex-row items-center justify-between px-4 py-3">
-                    <Text
+                    <AppText
                       className={cn({
                         'text-secondary ': watch('furnished') === false,
                       })}>
                       No
-                    </Text>
+                    </AppText>
                     {watch('furnished') === false && (
                       <CheckCircleIcon weight="fill" color={tailwind.theme.colors.secondary} />
                     )}
@@ -151,36 +150,36 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
                 openModal({
                   modal: (
                     <View className="flex-col">
-                      <Text>
+                      <AppText>
                         OikoTeck will not display level of finish to users in the marketplace
-                      </Text>
+                      </AppText>
                       <View className="mt-2 flex flex-col gap-2">
-                        <Text>Below are some level of finish examples:</Text>
+                        <AppText>Below are some level of finish examples:</AppText>
                         <AppText className="text-lg font-bold">Poor end</AppText>
-                        <Text>
+                        <AppText>
                           Laminate countertops, vinyl flooring, basic fixtures, thin paint, basic
                           appliances.
-                        </Text>
+                        </AppText>
                         <AppText className="text-lg font-bold">Low end</AppText>
-                        <Text>
+                        <AppText>
                           Basic tile, laminate wood flooring, standard stainless steel appliances,
                           mid-range cabinetry.
-                        </Text>
+                        </AppText>
                         <AppText className="text-lg font-bold">Medium end</AppText>
-                        <Text>
+                        <AppText>
                           Granite countertops, hardwood flooring, quality fixtures, upgraded
                           appliances, solid wood cabinetry.
-                        </Text>
+                        </AppText>
                         <AppText className="text-lg font-bold">High end</AppText>
-                        <Text>
+                        <AppText>
                           Marble countertops, custom-designed cabinetry, high-end appliances,
                           designer tile, solid wood flooring, unique lighting fixtures.
-                        </Text>
+                        </AppText>
                         <AppText className="text-lg font-bold">Luxury end</AppText>
-                        <Text>
+                        <AppText>
                           Rare stone countertops, bespoke cabinetry, top-of-the-line appliances,
                           handcrafted elements, integrated smart home technology, designer fixtures
-                        </Text>
+                        </AppText>
                       </View>
                     </View>
                   ),
@@ -190,9 +189,9 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
               className="h-16 rounded-2xl bg-[#E8BA3033]">
               <View className="mx-5 flex-row  gap-2 py-2">
                 <InfoIcon size={18} />
-                <Text className="mr-4 w-fit text-sm text-primary">
+                <AppText className="mr-4 w-fit text-sm text-primary">
                   OikoTeck will not display level of finish to users in the marketplace
-                </Text>
+                </AppText>
               </View>
             </PressableView>
             <View className="flex-row justify-between">

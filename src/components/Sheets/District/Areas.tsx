@@ -6,13 +6,13 @@ import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Platform,
-  Text,
   TouchableNativeFeedback,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
+import AppText from '~/components/Elements/AppText';
 import { stringify_area_district } from '~/lib/stringify_district_area';
 import { cn } from '~/lib/utils';
 import { deviceHeight } from '~/utils/global';
@@ -129,9 +129,9 @@ const Area = ({ visible, onClose, district, value = '', onPress }: Props) => {
                   borderBottomWidth: 1,
                   borderBottomColor: '#eee',
                 }}>
-                <Text className={cn('text-primary ', { 'text-secondary': value === label })}>
+                <AppText className={cn('text-primary ', { 'text-secondary': value === label })}>
                   {label}
-                </Text>
+                </AppText>
               </TouchableOpacity>
             );
           }}
