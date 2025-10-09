@@ -78,6 +78,7 @@
     "@babel/plugin-transform-class-static-block": "^7.28.3",
     "@babel/plugin-transform-react-jsx": "^7.27.1",
     "@sentry/cli": "^2.52.0",
+    "@tanstack/eslint-plugin-query": "^5.91.0",
     "@types/luxon": "^3.7.1",
     "@types/react": "~19.0.14",
     "@types/slug": "^5.0.9",

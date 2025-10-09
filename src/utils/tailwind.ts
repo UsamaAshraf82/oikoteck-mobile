@@ -18,6 +18,8 @@ const tailwind = resolveConfig(tailwindConfig) as ReturnType<typeof resolveConfi
       deleted: string;
       rejected: string;
       o_light_gray: string;
+      agent:string;
+      individual:string;
     };
   };
 };

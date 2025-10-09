@@ -113,8 +113,8 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
                 </AppText>
                 <View
                   className={cn('flex-row items-center gap-2 rounded-full px-2 py-px', {
-                    'bg-[#0E6DF1]/15 ': owner.user_type === 'agent',
-                    'bg-[#5412A1]/15 ': owner.user_type !== 'agent',
+                    'bg-agent/15 ': owner.user_type === 'agent',
+                    'bg-individual/15 ': owner.user_type !== 'agent',
                   })}>
                   {owner.user_type === 'agent' ? (
                     <Image source={agent} style={{ width: 14, height: 14 }} />
@@ -123,8 +123,8 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
                   )}
                   <AppText
                     className={cn('text-xs', {
-                      ' text-[#0E6DF1]': owner.user_type === 'agent',
-                      ' text-[#5412A1]': owner.user_type !== 'agent',
+                      ' text-agent': owner.user_type === 'agent',
+                      ' text-individual': owner.user_type !== 'agent',
                     })}>
                     {owner.user_type === 'agent' ? 'Broker' : 'Homeowner'}
                   </AppText>

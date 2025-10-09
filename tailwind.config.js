@@ -8,10 +8,15 @@ module.exports = {
       colors: {
         primary: '#192234',
         secondary: '#82065e',
+
         promote: '#5412a1',
         promote_plus: '#398be9',
         gold: '#e6c623',
         platinum: '#ff9c46',
+
+        agent:'#0E6DF1',
+        individual:'#5412A1',
+
         pending: '#ee932b',
         active: '#28a477',
         expired: '#5412a1',
