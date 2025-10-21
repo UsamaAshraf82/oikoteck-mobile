@@ -5,12 +5,7 @@ import { Link } from 'expo-router';
 import Parse from 'parse/react-native';
 import { XIcon } from 'phosphor-react-native';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import {
-  ScrollView,
-  TouchableNativeFeedback,
-  TouchableWithoutFeedback,
-  View
-} from 'react-native';
+import { ScrollView, TouchableNativeFeedback, TouchableWithoutFeedback, View } from 'react-native';
 import Modal from 'react-native-modal';
 import { z } from 'zod';
 import AppText from '~/components/Elements/AppText';
@@ -20,6 +15,7 @@ import Select from '~/components/Elements/Select';
 import { ControlledTextInput } from '~/components/Elements/TextInput';
 import Grid from '~/components/HOC/Grid';
 import PressableView from '~/components/HOC/PressableView';
+import useActivityIndicator from '~/store/useActivityIndicator';
 import useSelect from '~/store/useSelectHelper';
 import { useToast } from '~/store/useToast';
 import useUser from '~/store/useUser';
@@ -34,6 +30,7 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
   const { user } = useUser();
   const { addToast } = useToast();
   const { openSelect } = useSelect();
+  const { startActivity, stopActivity } = useActivityIndicator();
 
   const {
     control,
@@ -58,6 +55,7 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
   });
 
   const onSubmit: SubmitHandler<Tour1Type> = async (data) => {
+    startActivity();
     const myNewObject = new Parse.Object('Tours');
     myNewObject.set('Property', {
       __type: 'Pointer',
@@ -82,6 +80,8 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
     myNewObject.set('read', false);
 
     await myNewObject.save();
+    stopActivity();
+    onClose();
   };
 
   const onError = () => {
@@ -113,14 +113,13 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
 
         {/* Title + Close */}
         <View className="flex-row items-center justify-between">
-          <AppText className="text-2xl font-bold text-primary" >Request a Tour</AppText>
+          <AppText className="font-bold text-2xl text-primary">Request a Tour</AppText>
           <TouchableNativeFeedback onPress={onClose}>
             <XIcon />
           </TouchableNativeFeedback>
         </View>
 
-        <ScrollView showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}>
+        <ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>
           <AppText className="mt-1 text-base text-primary">
             Send a property tour request to the property owner
           </AppText>
@@ -147,14 +146,13 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
               value={{ label: watch('tour_time'), value: watch('tour_time') }}
               onChange={(value) => setValue('tour_time', value?.value as Tour1Type['tour_time'])}
             />
-            <AppText className="mb-3 mt-5 text-xl font-semibold text-primary">
+            <AppText className="mb-3 mt-5 font-semibold text-xl text-primary">
               How can we get back to you?
             </AppText>
             <Grid cols={2} gap={2}>
               <ControlledTextInput
                 control={control}
                 name="firstName"
-
                 label="First Name"
                 placeholder="Enter First Name"
                 className=""
@@ -166,7 +164,7 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
                 placeholder="Enter Last Name"
               />
             </Grid>
-            <AppText className="-mb-2" >Phone Number</AppText>
+            <AppText className="-mb-2">Phone Number</AppText>
             <View className="flex-row items-center gap-0.5">
               <View className="w-2/5 ">
                 <TouchableWithoutFeedback
@@ -214,7 +212,6 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
             <ControlledTextInput
               control={control}
               name="email"
-
               label="Email Address"
               placeholder="Enter your email address"
             />
@@ -252,7 +249,7 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
             onPress={handleSubmit(onSubmit, onError)}
             className="h-12 rounded-full border border-secondary bg-secondary">
             <View>
-              <AppText className="text-white" >Request Tour</AppText>
+              <AppText className="text-white">Request Tour</AppText>
             </View>
           </PressableView>
         </Grid>

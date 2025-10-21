@@ -28,11 +28,12 @@ export default function TabsLayout() {
         // tabBarShowLabel: false,
         tabBarItemStyle: {
           borderColor: tailwind.theme.colors.white,
-
         },
-        tabBarLabelStyle:{
+        tabBarLabelStyle: {
           fontFamily: 'LufgaRegular',
-        }
+          fontSize: 12,
+          flexWrap: 'nowrap',
+        },
         // tabBarButton: (props) => (
         //   <Pressable android_ripple={{ color: tailwind.theme.colors.secondary }}  />{p}</Pressable>
         // ),

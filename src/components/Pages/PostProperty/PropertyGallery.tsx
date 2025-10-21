@@ -32,7 +32,7 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
     control,
     setValue,
     getValues,
-    watch,
+    handleSubmit,
     formState: { errors },
   } = useForm<PropertyGalleryTypes>({
     resolver: zodResolver(PropertyGallerySchema) as any,
@@ -43,6 +43,21 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
     control,
     name: 'files',
   });
+
+  const onSubmitInternal = async (data: PropertyGalleryTypes) => {
+    onSubmit(data);
+  };
+  const onError = () => {
+    Object.values(errors).forEach((err) => {
+      if (err?.message) {
+        useToast.getState().addToast({
+          type: 'error',
+          header: 'Validation Error',
+          message: err.message!,
+        });
+      }
+    });
+  };
 
   // const files = useWatch({ control, name: 'files' });
 
@@ -89,7 +104,11 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
 
         <View className=" mt-4">
           <AppText className="text-sm text-[#575775]">
-            Do you want to overlay your company logo on all pictures for this listing? You can upload the logo in <Link href="settings" className='text-secondary'>settings</Link>
+            Do you want to overlay your company logo on all pictures for this listing? You can
+            upload the logo in{' '}
+            <Link href="settings" className="text-secondary">
+              settings
+            </Link>
           </AppText>
           <ControlledCheckBox name="agent_icon" control={control} label="Add Overlay Logo" />
         </View>
@@ -138,7 +157,9 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
         <AppText className="mt-5 font-medium">Images ({files.length})</AppText>
 
         <KeyboardAvoidingView>
-          <ScrollView contentContainerClassName="mt-5 flex-grow flex-col gap-6 pb-28" showsVerticalScrollIndicator={false}
+          <ScrollView
+            contentContainerClassName="mt-5 flex-grow flex-col gap-6 pb-28"
+            showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}>
             {files.length === 0 ? (
               <View className="flex-1 items-center justify-center">
@@ -191,9 +212,7 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
       </View>
       <View className="absolute bottom-0 left-0 right-0   px-5 py-4">
         <PressableView
-          onPress={() => {
-            onSubmit(getValues());
-          }}
+          onPress={handleSubmit(onSubmitInternal, onError)}
           className="h-12 items-center justify-center rounded-full bg-secondary">
           <AppText className="font-bold text-lg text-white">Continue</AppText>
         </PressableView>

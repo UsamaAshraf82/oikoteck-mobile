@@ -16,6 +16,12 @@ const appConfig: ExpoConfig = {
     bundleIdentifier: IS_DEV ? 'com.oikoteck.dev' : 'com.oikoteck.app',
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
+      NSCameraUsageDescription:
+        'This app uses the camera to allow users to take and upload property photos.',
+      NSPhotoLibraryUsageDescription:
+        'This app needs photo library access so users can select images from their gallery.',
+      NSLocationWhenInUseUsageDescription:
+        'This app uses your location to improve map and property accuracy.',
     },
     config: {
       googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,

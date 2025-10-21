@@ -12,9 +12,10 @@ import KeyboardAvoidingView from '~/components/HOC/KeyboardAvoidingView';
 import PressableView from '~/components/HOC/PressableView';
 import { cn } from '~/lib/utils';
 import useModal from '~/store/useModalHelper';
+import { useToast } from '~/store/useToast';
 import { level_of_finish, special_feature } from '~/utils/property';
 import tailwind from '~/utils/tailwind';
-import { Basic1Values, } from './Basic1';
+import { Basic1Values } from './Basic1';
 
 type Props = {
   data: Partial<Basic2Values>;
@@ -26,11 +27,12 @@ type Props = {
 };
 
 export default function Basic2({ data, extra_data, onSubmit }: Props) {
+  const { addToast } = useToast();
   const { openModal } = useModal();
   const {
     control,
     setValue,
-    getValues,
+    handleSubmit,
     watch,
     formState: { errors },
   } = useForm<Basic2Values>({
@@ -38,25 +40,42 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
     defaultValues: { ...data, ...extra_data },
   });
 
+  const onSubmitInternal = async (data: Basic2Values) => {
+    onSubmit(data);
+  };
+  const onError = () => {
+    Object.values(errors).forEach((err) => {
+      if (err?.message) {
+        addToast({
+          type: 'error',
+          header: 'Validation Error',
+          message: err.message,
+        });
+      }
+    });
+  };
+
   return (
     <View className="flex-1 bg-white px-5 pt-5">
       <View className="flex-1">
-        <AppText className="text-2xl font-bold">Property details 🏠</AppText>
+        <AppText className="font-bold text-2xl">Property details 🏠</AppText>
         <AppText className="text-[15px] text-[#575775]">
           Tell us more about your property in details
         </AppText>
         <KeyboardAvoidingView>
-          <ScrollView contentContainerClassName="mt-5 flex-grow flex-col gap-4 pb-28" showsVerticalScrollIndicator={false}
+          <ScrollView
+            contentContainerClassName="mt-5 flex-grow flex-col gap-4 pb-28"
+            showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}>
             <View className="flex-row justify-between">
-              <AppText className="text-sm font-medium">No. of Bedrooms</AppText>
+              <AppText className="font-medium text-sm">No. of Bedrooms</AppText>
               <View className="flex-row items-center justify-between">
                 <PressableView
                   className=" size-6 rounded-full border"
                   onPress={() => setValue('bedrooms', watch('bedrooms') - 1)}>
                   <MinusIcon size={14} />
                 </PressableView>
-                <AppText className="px-2 text-xl font-semibold">{watch('bedrooms')}</AppText>
+                <AppText className="px-2 font-semibold text-xl">{watch('bedrooms')}</AppText>
                 <PressableView
                   className="size-6 rounded-full border"
                   onPress={() => setValue('bedrooms', watch('bedrooms') + 1)}>
@@ -65,14 +84,14 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
               </View>
             </View>
             <View className="flex-row justify-between">
-              <AppText className="text-sm font-medium">No. of Bathrooms</AppText>
+              <AppText className="font-medium text-sm">No. of Bathrooms</AppText>
               <View className="flex-row items-center justify-between">
                 <PressableView
                   className="size-6 rounded-full border"
                   onPress={() => setValue('bathrooms', watch('bathrooms') - 1)}>
                   <MinusIcon size={14} />
                 </PressableView>
-                <AppText className="px-2 text-xl font-semibold">{watch('bathrooms')}</AppText>
+                <AppText className="px-2 font-semibold text-xl">{watch('bathrooms')}</AppText>
                 <PressableView
                   className="size-6 rounded-full border"
                   onPress={() => setValue('bathrooms', watch('bathrooms') + 1)}>
@@ -96,7 +115,7 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
               />
             )}
             <View className="flex-col justify-between">
-              <AppText className="mb-2 text-sm font-medium">Furnished</AppText>
+              <AppText className="mb-2 font-medium text-sm">Furnished</AppText>
               <Grid>
                 <PressableView
                   className={cn('h-12 rounded-2xl border border-[#C6CAD2] bg-white', {
@@ -156,27 +175,27 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
                       </AppText>
                       <View className="mt-2 flex flex-col gap-2">
                         <AppText>Below are some level of finish examples:</AppText>
-                        <AppText className="text-lg font-bold">Poor end</AppText>
+                        <AppText className="font-bold text-lg">Poor end</AppText>
                         <AppText>
                           Laminate countertops, vinyl flooring, basic fixtures, thin paint, basic
                           appliances.
                         </AppText>
-                        <AppText className="text-lg font-bold">Low end</AppText>
+                        <AppText className="font-bold text-lg">Low end</AppText>
                         <AppText>
                           Basic tile, laminate wood flooring, standard stainless steel appliances,
                           mid-range cabinetry.
                         </AppText>
-                        <AppText className="text-lg font-bold">Medium end</AppText>
+                        <AppText className="font-bold text-lg">Medium end</AppText>
                         <AppText>
                           Granite countertops, hardwood flooring, quality fixtures, upgraded
                           appliances, solid wood cabinetry.
                         </AppText>
-                        <AppText className="text-lg font-bold">High end</AppText>
+                        <AppText className="font-bold text-lg">High end</AppText>
                         <AppText>
                           Marble countertops, custom-designed cabinetry, high-end appliances,
                           designer tile, solid wood flooring, unique lighting fixtures.
                         </AppText>
-                        <AppText className="text-lg font-bold">Luxury end</AppText>
+                        <AppText className="font-bold text-lg">Luxury end</AppText>
                         <AppText>
                           Rare stone countertops, bespoke cabinetry, top-of-the-line appliances,
                           handcrafted elements, integrated smart home technology, designer fixtures
@@ -196,14 +215,14 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
               </View>
             </PressableView>
             <View className="flex-row justify-between">
-              <AppText className="text-sm font-medium">Floor</AppText>
+              <AppText className="font-medium text-sm">Floor</AppText>
               <View className="flex-row items-center justify-between gap-1">
                 <PressableView
                   className="wl size-6 rounded-full border"
                   onPress={() => setValue('floor', (watch('floor') || 0) - 1)}>
                   <MinusIcon size={14} />
                 </PressableView>
-                <AppText className="px-2 text-xl font-semibold">{watch('floor')}</AppText>
+                <AppText className="px-2 font-semibold text-xl">{watch('floor')}</AppText>
                 <PressableView
                   className="size-6 rounded-full border"
                   onPress={() => setValue('floor', (watch('floor') || 0) + 1)}>
@@ -247,11 +266,10 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
               }}
             />
             <View>
-              <AppText className="mb-2 text-sm font-medium">Special Features</AppText>
+              <AppText className="mb-2 font-medium text-sm">Special Features</AppText>
               <View className="flex-col gap-2">
                 {special_feature(watch('property_type')).map((i) => (
                   <Checkbox
-
                     labelClassName="text-sm align-middle ml-2"
                     key={i}
                     label={i}
@@ -265,11 +283,9 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
       </View>
       <View className="absolute bottom-0 left-0 right-0   px-5 py-4">
         <PressableView
-          onPress={() => {
-            onSubmit(getValues());
-          }}
+          onPress={handleSubmit(onSubmitInternal, onError)}
           className="h-12 items-center justify-center rounded-full bg-secondary">
-          <AppText className="text-lg font-bold text-white">Continue</AppText>
+          <AppText className="font-bold text-lg text-white">Continue</AppText>
         </PressableView>
       </View>
     </View>

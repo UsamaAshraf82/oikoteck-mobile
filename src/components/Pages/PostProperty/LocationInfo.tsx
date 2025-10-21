@@ -13,22 +13,40 @@ import PressableView from '~/components/HOC/PressableView';
 import Area from '~/components/Sheets/District/Areas';
 import District from '~/components/Sheets/District/District';
 import { stringify_area_district } from '~/lib/stringify_district_area';
+import { useToast } from '~/store/useToast';
 
 type Props = { data: Partial<LocationInfoTypes>; onSubmit: (data: LocationInfoTypes) => void };
 
 export default function LocationInfo({ data, onSubmit }: Props) {
+  const { addToast } = useToast();
   const [district, setDistrict] = useState(false);
   const [area, setArea] = useState(false);
   const {
     control,
     setValue,
-    getValues,
+    handleSubmit,
     watch,
     formState: { errors },
   } = useForm<LocationInfoTypes>({
     resolver: zodResolver(LocationInfoSchema),
     defaultValues: data,
   });
+
+  const onSubmitInternal = async (data: LocationInfoTypes) => {
+    onSubmit(data);
+  };
+  const onError = () => {
+    Object.values(errors).forEach((err) => {
+      if (err?.message) {
+        addToast({
+          type: 'error',
+          header: 'Validation Error',
+          message: err.message,
+        });
+      }
+    });
+  };
+
   const marker = useWatch({ control, name: 'marker' });
   return (
     <View className="flex-1 bg-white px-5 pt-5">
@@ -36,7 +54,9 @@ export default function LocationInfo({ data, onSubmit }: Props) {
         <AppText className="font-bold text-2xl">Location details 📍</AppText>
         <AppText className="text-[15px] text-[#575775]">Set your property location</AppText>
         <KeyboardAvoidingView>
-          <ScrollView contentContainerClassName="mt-5 flex-grow flex-col gap-4 pb-28" showsVerticalScrollIndicator={false}
+          <ScrollView
+            contentContainerClassName="mt-5 flex-grow flex-col gap-4 pb-28"
+            showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}>
             <Select
               label="District"
@@ -81,7 +101,7 @@ export default function LocationInfo({ data, onSubmit }: Props) {
               your property.
             </AppText>
             <MapView
-            style={{flex:1}}
+              style={{ flex: 1 }}
               initialRegion={{
                 latitude: marker?.lat || 0,
                 longitude: marker?.lng || 0,
@@ -104,9 +124,7 @@ export default function LocationInfo({ data, onSubmit }: Props) {
       </View>
       <View className="absolute bottom-0 left-0 right-0   px-5 py-4">
         <PressableView
-          onPress={() => {
-            onSubmit(getValues());
-          }}
+          onPress={handleSubmit(onSubmitInternal, onError)}
           className="h-12 items-center justify-center rounded-full bg-secondary">
           <AppText className="font-bold text-lg text-white">Continue</AppText>
         </PressableView>

@@ -1,12 +1,11 @@
 'use client';
 
-import { TouchableWithoutFeedback } from '@gorhom/bottom-sheet';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link } from 'expo-router';
 import Parse from 'parse/react-native';
 import { XIcon } from 'phosphor-react-native';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { ScrollView, TouchableNativeFeedback, View } from 'react-native';
+import { ScrollView, TouchableNativeFeedback, TouchableWithoutFeedback, View } from 'react-native';
 import Modal from 'react-native-modal';
 import { z } from 'zod';
 import AppText from '~/components/Elements/AppText';
@@ -14,6 +13,7 @@ import { flags, RenderFlagWithCode } from '~/components/Elements/Flags';
 import TextInput, { ControlledTextInput } from '~/components/Elements/TextInput';
 import Grid from '~/components/HOC/Grid';
 import PressableView from '~/components/HOC/PressableView';
+import useActivityIndicator from '~/store/useActivityIndicator';
 import useSelect from '~/store/useSelectHelper';
 import { useToast } from '~/store/useToast';
 import useUser from '~/store/useUser';
@@ -28,6 +28,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
   const { user } = useUser();
   const { addToast } = useToast();
   const { openSelect } = useSelect();
+  const { startActivity, stopActivity } = useActivityIndicator();
 
   const p20 = property.price * 0.8;
 
@@ -99,6 +100,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
 
     //   return;
     // }
+    startActivity();
     const myNewObject = new Parse.Object('Offers');
     myNewObject.set('Property', {
       __type: 'Pointer',
@@ -123,6 +125,8 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
       header: 'Offer submission',
       message: 'Your offer is now submitted. Listing owner will contact you soon',
     });
+    onClose();
+    stopActivity();
     onClose();
   };
 
@@ -155,7 +159,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
         <View className="mb-3 h-1 w-10 self-center rounded-sm bg-[#ccc]" />
         <View className="flex-row items-center justify-between">
           <View className="flex-col">
-            <AppText className="text-2xl font-bold text-primary" >Submit Offer</AppText>
+            <AppText className="font-bold text-2xl text-primary">Submit Offer</AppText>
             <AppText className="mt-0 text-base text-primary">
               Submit an Offer to the property owner
             </AppText>
@@ -166,8 +170,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
         </View>
 
         <View style={{ maxHeight: deviceHeight * 0.9 }}>
-          <ScrollView showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}>
+          <ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>
             <View className="mt-5 flex-col gap-2">
               <Grid cols={2} gap={2}>
                 <TextInput
@@ -188,7 +191,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
               </AppText>
             </View>
             <View className="flex-col gap-2">
-              <AppText className="mb-3 mt-5 text-xl font-semibold text-primary">
+              <AppText className="mb-3 mt-5 font-semibold text-xl text-primary">
                 How can we get back to you?
               </AppText>
               <Grid cols={2} gap={2}>
@@ -208,7 +211,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
                   placeholder="Enter Last Name"
                 />
               </Grid>
-              <AppText className="-mb-2" >Phone Number</AppText>
+              <AppText className="-mb-2">Phone Number</AppText>
               <View className="flex-row items-center gap-0.5">
                 <View className="w-2/5 ">
                   <TouchableWithoutFeedback
@@ -287,7 +290,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
                 onPress={handleSubmit(onSubmit, onError)}
                 className="h-12 rounded-full border border-secondary bg-secondary">
                 <View>
-                  <AppText className="text-white" >Send Message</AppText>
+                  <AppText className="text-white">Send Message</AppText>
                 </View>
               </PressableView>
             </Grid>

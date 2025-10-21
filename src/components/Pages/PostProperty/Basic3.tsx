@@ -8,6 +8,7 @@ import Select from '~/components/Elements/Select';
 import { ControlledTextInput } from '~/components/Elements/TextInput';
 import KeyboardAvoidingView from '~/components/HOC/KeyboardAvoidingView';
 import PressableView from '~/components/HOC/PressableView';
+import { useToast } from '~/store/useToast';
 import { Basic1Values } from './Basic1';
 
 type Props = {
@@ -19,10 +20,11 @@ type Props = {
 };
 
 export default function Basic3({ data, extra_data, onSubmit }: Props) {
+  const { addToast } = useToast();
   const {
     control,
     setValue,
-    getValues,
+    handleSubmit,
     watch,
     formState: { errors },
   } = useForm<Basic3Values>({
@@ -30,13 +32,30 @@ export default function Basic3({ data, extra_data, onSubmit }: Props) {
     defaultValues: { ...data, ...extra_data },
   });
 
+  const onSubmitInternal = async (data: Basic3Values) => {
+    onSubmit(data);
+  };
+  const onError = () => {
+    Object.values(errors).forEach((err) => {
+      if (err?.message) {
+        addToast({
+          type: 'error',
+          header: 'Validation Error',
+          message: err.message,
+        });
+      }
+    });
+  };
+
   return (
     <View className="flex-1 bg-white px-5 pt-5">
       <View className="flex-1">
-        <AppText className="text-2xl font-bold">Property details 🏠 (Cont..)</AppText>
+        <AppText className="font-bold text-2xl">Property details 🏠 (Cont..)</AppText>
         <AppText className="text-[15px] text-[#575775]">Add your pricing details</AppText>
         <KeyboardAvoidingView>
-          <ScrollView contentContainerClassName="mt-5 flex-grow flex-col gap-6 pb-28" showsVerticalScrollIndicator={false}
+          <ScrollView
+            contentContainerClassName="mt-5 flex-grow flex-col gap-6 pb-28"
+            showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}>
             <ControlledTextInput
               control={control}
@@ -111,11 +130,9 @@ export default function Basic3({ data, extra_data, onSubmit }: Props) {
       </View>
       <View className="absolute bottom-0 left-0 right-0   px-5 py-4">
         <PressableView
-          onPress={() => {
-            onSubmit(getValues());
-          }}
+          onPress={handleSubmit(onSubmitInternal, onError)}
           className="h-12 items-center justify-center rounded-full bg-secondary">
-          <AppText className="text-lg font-bold text-white">Continue</AppText>
+          <AppText className="font-bold text-lg text-white">Continue</AppText>
         </PressableView>
       </View>
     </View>
@@ -174,92 +191,3 @@ export const Basic3Schema = z
   });
 
 export type Basic3Values = z.infer<typeof Basic3Schema>;
-
-export function property_category(property_type: string | null, withAny = false) {
-  let category: string[] = [];
-  switch (property_type) {
-    case 'Residential':
-      category = [
-        'Apartment',
-        'Flat',
-        'Studio',
-        'Maisonette',
-        'Detached House',
-        'Villa',
-        'Building',
-        'Chalet',
-      ];
-      break;
-    case 'Commercial':
-      category = ['Office', 'Store', 'Warehouse', 'Industrial Space', 'Hotel', 'Business Building'];
-      break;
-    case 'Land':
-      category = [
-        'Residential Use',
-        'Commercial Use',
-        'Industrial Use',
-        'Agricultural Use',
-        'Recreational Use',
-        'Unincorporated Use',
-      ];
-      break;
-    default:
-      category = [];
-      break;
-  }
-  if (withAny) {
-    category.push('Any');
-  }
-  return category;
-}
-
-export function level_of_finish(level_of_finish?: number) {
-  switch (level_of_finish) {
-    case 1:
-      return '1 (Poor-end)';
-    case 2:
-      return '2 (Low-end)';
-    case 3:
-      return '3 (Medium-end)';
-    case 4:
-      return '4 (High-end)';
-    case 5:
-      return '5 (Luxury-end)';
-    default:
-      return '';
-  }
-}
-
-export const special_feature = (property_type: 'Residential' | 'Commercial' | 'Land') => {
-  if (property_type === 'Land') {
-    return [
-      'Power access',
-      'Water access',
-      'Drainage access',
-      'Sanitary access',
-      'Landscaping surface',
-      'Hard surface',
-      'Soil surface',
-    ];
-  }
-  return [
-    'Parking Spot',
-    'Elevator',
-    'Secure door',
-    'Alarm',
-    'Storage Space',
-    'Fireplace',
-    'Balcony',
-    'Internal Staircase',
-    'Swimming pool',
-    'Playroom',
-    'Attic',
-    'Solar water heating',
-    'Pets Welcome',
-    'Renovated',
-    'Luxurious',
-    'Unfinished',
-    'Under Construction',
-    'Neoclassical',
-  ];
-};

@@ -57,11 +57,6 @@ export default function Login() {
     }
   }, []);
 
-  const onSubmit = async (data: SignupTypes) => {
-    startActivity();
-    await signup({ ...data, email: local.email, password: local.password });
-    stopActivity();
-  };
 
   useEffect(() => {
     if (user) {
@@ -69,6 +64,11 @@ export default function Login() {
     }
   }, [user]);
 
+  const onSubmit = async (data: SignupTypes) => {
+    startActivity();
+    await signup({ ...data, email: local.email, password: local.password });
+    stopActivity();
+  };
   const onError = () => {
     Object.values(errors).forEach((err) => {
       if (err?.message) {
