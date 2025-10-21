@@ -16,6 +16,10 @@ const appConfig: ExpoConfig = {
     bundleIdentifier: IS_DEV ? 'com.oikoteck.dev' : 'com.oikoteck.app',
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
+      NSLocationWhenInUseUsageDescription:
+        'This app uses your location to show nearby properties and improve map accuracy.',
+      NSCameraUsageDescription:
+        'This app uses the camera to allow users to take or upload property photos.',
     },
     config: {
       googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
@@ -61,6 +65,7 @@ const appConfig: ExpoConfig = {
     },
   },
   plugins: [
+    'expo-build-properties',
     'expo-router',
     [
       'expo-splash-screen',

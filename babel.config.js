@@ -4,7 +4,7 @@ module.exports = function (api) {
     presets: ['babel-preset-expo', 'nativewind/babel'],
     plugins: [
       '@babel/plugin-transform-class-static-block',
-      'react-native-reanimated/plugin', // always last
+      'react-native-worklets/plugin', // always last
     ],
   };
 };
