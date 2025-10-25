@@ -247,7 +247,7 @@ import AppText from './AppText';
 // // };
 // // export default FlagSelector;
 
-export const RenderFlagWithCode = ({ISO}:{ISO:string}) => {
+export const RenderFlagWithCode = ({ ISO }: { ISO: string }) => {
   const flag = flags.find((i) => ISO === i.ISO);
 
   if (!flag) return null;
@@ -256,7 +256,7 @@ export const RenderFlagWithCode = ({ISO}:{ISO:string}) => {
     <View className="w-full flex-row items-center justify-between">
       <View className="flex-row gap-1">
         {flag.flag}
-        <AppText>{flag.Country}</AppText>
+        <AppText>{flag.ISO}</AppText>
       </View>
       <AppText>+{flag.Code}</AppText>
     </View>

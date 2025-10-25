@@ -13,6 +13,7 @@ import { flags, RenderFlagWithCode } from '~/components/Elements/Flags';
 import { ControlledTextInput } from '~/components/Elements/TextInput';
 import Grid from '~/components/HOC/Grid';
 import PressableView from '~/components/HOC/PressableView';
+import { emailsAddress } from '~/global';
 import useActivityIndicator from '~/store/useActivityIndicator';
 import useSelect from '~/store/useSelectHelper';
 import { useToast } from '~/store/useToast';
@@ -72,10 +73,21 @@ const SendMessage = ({ onClose, property }: SendOfferModalType) => {
 
     await myNewObject.save();
     stopActivity();
-    // addToast({
-    //   heading: 'Message submission',
-    //   message: 'Your message is now sent. Listing owner will contact you soon',
-    // });
+    addToast({
+      header: 'Message submission',
+      message: 'Your message is now sent. Listing owner will contact you soon',
+    });
+        await fetch(emailsAddress, {
+      method: 'POST',
+     body: JSON.stringify({
+        email: 'message_owner',
+        id: property.objectId,
+        sender: data.firstName + ' ' + data.lastName,
+        message: data.message,
+        email_address: data.email.toLowerCase(),
+        phone_number: data.country.Code + ' ' + data.phone,
+      }),
+    });
     onClose();
   };
 

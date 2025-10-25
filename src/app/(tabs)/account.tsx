@@ -7,22 +7,18 @@ import Parse from 'parse/react-native';
 import {
   BriefcaseIcon,
   CaretRightIcon,
-  GiftIcon,
   HandIcon,
   HandshakeIcon,
   HeartIcon,
   HouseLineIcon,
   KeyIcon,
-  LightbulbIcon,
   PasswordIcon,
-  ShareFatIcon,
   ShieldWarningIcon,
   SignOutIcon,
   UserCircleIcon,
   UserIcon,
-  WarehouseIcon,
+  WarehouseIcon
 } from 'phosphor-react-native';
-import React from 'react';
 import { ScrollView, TouchableWithoutFeedback, View } from 'react-native';
 import AppText from '~/components/Elements/AppText';
 import Grid from '~/components/HOC/Grid';
@@ -52,16 +48,16 @@ const Rental = () => {
     initialData: { rental: 0, sale: 0 },
   });
 
-  console.log('User data:', data);
-
   return (
     <View className="flex-1 bg-white px-3 pt-3">
-      <View className="mb-6 flex-row items-center justify-between">
-        <AppText className="font-semibold text-2xl">My Account</AppText>
-        <View className="rounded-full border border-primary px-4 py-2">
-          <AppText className="font-semibold text-xs">Edit Profile</AppText>
+      {user && (
+        <View className="mb-6 flex-row items-center justify-between">
+          <AppText className="font-semibold text-2xl">My Account</AppText>
+          <Link href={'/edit-profile'} className="rounded-full border border-primary px-4 py-2">
+            <AppText className="font-semibold text-xs">Edit Profile</AppText>
+          </Link>
         </View>
-      </View>
+      )}
 
       <ScrollView className="mb-6">
         {user ? (
@@ -179,13 +175,13 @@ const Rental = () => {
           <View>
             {(user
               ? [
-                  { icon: <WarehouseIcon />, label: 'My Properties', path: 'invite' },
-                  { icon: <HandIcon />, label: 'Services', path: 'feedback' },
-                  { icon: <GiftIcon />, label: 'Share promo code', path: 'terms-conditions' },
-                  { icon: <HeartIcon />, label: 'My Favorites', path: 'privacy-policy' },
-                  { icon: <PasswordIcon />, label: 'Change Password', path: 'service-plan-terms' },
+                  { icon: <WarehouseIcon />, label: 'My Properties', path: 'properties' },
+                  { icon: <HandIcon />, label: 'Services', path: 'services' },
+                  // { icon: <GiftIcon />, label: 'Share promo code', path: 'terms-conditions' },
+                  { icon: <HeartIcon />, label: 'My Favorites', path: 'favorities' },
+                  { icon: <PasswordIcon />, label: 'Change Password', path: 'change-password' },
                 ]
-              : [{ icon: <HandIcon />, label: 'Services', path: 'feedback' }]
+              : [{ icon: <HandIcon />, label: 'Services', path: 'services' }]
             ).map((item, index, arr) => (
               <Link href={item.path} key={item.label}>
                 <View
@@ -205,8 +201,8 @@ const Rental = () => {
           </View>
           <View>
             {[
-              { icon: <ShareFatIcon />, label: 'Invite Friends', path: 'invite' },
-              { icon: <LightbulbIcon />, label: 'Give Feedback', path: 'feedback' },
+              // { icon: <ShareFatIcon />, label: 'Invite Friends', path: 'invite' },
+              // { icon: <LightbulbIcon />, label: 'Give Feedback', path: 'feedback' },
               { icon: <BriefcaseIcon />, label: 'Terms and Conditions', path: 'terms-conditions' },
               { icon: <ShieldWarningIcon />, label: 'Privacy Policy', path: 'privacy-policy' },
               { icon: <HandshakeIcon />, label: 'Service Plan Terms', path: 'service-plan-terms' },

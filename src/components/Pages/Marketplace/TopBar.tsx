@@ -11,7 +11,6 @@ import tailwind from '~/utils/tailwind';
 export const HomeTopBar = () => {
   const router = useRouter();
   const { user } = useUser();
-  console.log(user);
   return (
     <View className="flex-row items-center justify-between p-4">
       <Image source={Logo} style={{ minHeight: 36, minWidth: 122 }} contentFit="contain" />
@@ -23,7 +22,7 @@ export const HomeTopBar = () => {
           className="h-10   rounded-full bg-[#ebeaec]">
           <View className="flex-row items-center justify-center gap-1 px-3">
             <UserCircleIcon />
-            <AppText>Login now</AppText>
+            <AppText className='text-nowrap whitespace-nowrap' numberOfLines={1}>Login now</AppText>
           </View>
         </PressableView>
       ) : (

@@ -80,12 +80,19 @@ const appConfig: ExpoConfig = {
     ['expo-font'],
     [
       'react-native-fbsdk-next',
-      {
-        appID: '511062105081745',
-        clientToken: '1692dc2e9451677cc7cfb8097f498f0b',
-        displayName: 'Oikoteck',
-        scheme: 'fb511062105081745',
-      },
+      IS_DEV
+        ? {
+            appID: '1466312534483142',
+            clientToken: '39f3ec1ef0ce51150e6e157317babfad',
+            displayName: 'OikoTeck - Test1',
+            scheme: 'fb1466312534483142',
+          }
+        : {
+            appID: '511062105081745',
+            clientToken: '1692dc2e9451677cc7cfb8097f498f0b',
+            displayName: 'Oikoteck',
+            scheme: 'fb511062105081745',
+          },
     ],
     ['@react-native-google-signin/google-signin'],
     ['expo-apple-authentication'],

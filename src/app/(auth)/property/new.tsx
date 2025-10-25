@@ -10,6 +10,7 @@ import PostListingS from '~/components/Pages/PostProperty/PostListingS';
 import PropertyGallery, {
   PropertyGalleryTypes,
 } from '~/components/Pages/PostProperty/PropertyGallery';
+import { emailsAddress } from '~/global';
 import useActivityIndicator from '~/store/useActivityIndicator';
 import { useToast } from '~/store/useToast';
 export default function Index() {
@@ -124,11 +125,11 @@ export default function Index() {
       Property.set('owner', Parse.User.current());
       Property.set('plan', data.payment.plan);
 
-      await Property.save();
-      // await fetch('/emails', {
-      //   method: 'POST',
-      //   body: JSON.stringify({ email: 'listing_review_free', id: result.id }),
-      // });
+     const result = await Property.save();
+      await fetch(emailsAddress, {
+        method: 'POST',
+        body: JSON.stringify({ email: 'listing_review_free', id: result.id }),
+      });
 
       addToast({
         header: 'Listing Under Review',

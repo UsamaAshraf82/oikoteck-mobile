@@ -7,6 +7,9 @@ import {
   PlusCircleIcon,
   UserIcon,
 } from 'phosphor-react-native';
+import { View } from 'react-native';
+import AppText from '~/components/Elements/AppText';
+import { cn } from '~/lib/utils';
 import tailwind from '~/utils/tailwind';
 export default function TabsLayout() {
   return (
@@ -25,62 +28,69 @@ export default function TabsLayout() {
         animation: 'fade',
         headerShown: false,
 
-        // tabBarShowLabel: false,
         tabBarItemStyle: {
           borderColor: tailwind.theme.colors.white,
         },
-        tabBarLabelStyle: {
-          fontFamily: 'LufgaRegular',
-          fontSize: 12,
-          flexWrap: 'nowrap',
-        },
-        // tabBarButton: (props) => (
-        //   <Pressable android_ripple={{ color: tailwind.theme.colors.secondary }}  />{p}</Pressable>
-        // ),
       }}>
       <Tabs.Screen
         name="rent"
         options={{
-          // tabBarShowLabel: false,
-          tabBarLabel: 'Rent',
+          tabBarLabel: (props) => {
+            return <Label focused={props.focused} label="Rent" />;
+          },
           tabBarIcon: ({ color }) => <HouseLineIcon color={color} size={22} />,
         }}
       />
       <Tabs.Screen
         name="buy"
         options={{
-          tabBarLabel: 'Buy',
+          tabBarLabel: (props) => {
+            return <Label focused={props.focused} label="Buy" />;
+          },
           tabBarIcon: ({ color }) => <KeyIcon color={color} />,
         }}
       />
       <Tabs.Screen
         name="post-listing"
         options={{
-          tabBarLabel: 'Post Listing',
-
+          tabBarLabel: (props) => {
+            return <Label focused={props.focused} label="Post Listing" />;
+          },
           tabBarIcon: ({ color }) => <PlusCircleIcon color={color} />,
         }}
       />
       <Tabs.Screen
         name="live-chat"
         options={{
-          tabBarLabel: 'Live Chat',
+          tabBarLabel: (props) => {
+            return <Label focused={props.focused} label="Live Chat" />;
+          },
           tabBarIcon: ({ color }) => <ChatCircleIcon color={color} />,
         }}
       />
       <Tabs.Screen
         name="account"
         options={{
-          tabBarLabel: 'Account',
+          tabBarLabel: (props) => {
+            return <Label focused={props.focused} label="Account" />;
+          },
           tabBarIcon: ({ color }) => <UserIcon color={color} />,
         }}
       />
-      {/* <Tabs.Screen
-        name="property/[id]"
-        options={{
-          href: null,
-        }}
-      /> */}
     </Tabs>
   );
 }
+
+const Label = ({ focused, label }: { focused: boolean; label: string }) => {
+  return (
+    <View style={{ flex: 1 }}>
+      <AppText
+        className={cn(' w-fit text-xs whitespace-nowrap text-nowrap leading-none text-o_light_gray', {
+          'text-secondary': focused,
+        })}
+        numberOfLines={1}>
+        {label}
+      </AppText>
+    </View>
+  );
+};

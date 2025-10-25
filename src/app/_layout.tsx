@@ -1,11 +1,11 @@
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { StripeProvider } from '@stripe/stripe-react-native';
-import { getLoadedFonts, useFonts } from 'expo-font';
+import { useFonts } from 'expo-font';
 import { Slot, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import * as SystemUI from 'expo-system-ui';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator as ActivityIndicatorInternal, Modal, View } from 'react-native';
+import { Settings } from 'react-native-fbsdk-next';
 import Provider from '~/components/Provider';
 import ModalContainer from '~/components/Sheets/Modal';
 import Select from '~/components/Sheets/Select';
@@ -16,13 +16,14 @@ import { ParseInit } from '~/utils/Parse';
 import tailwind from '~/utils/tailwind';
 import '../../global.css';
 
+// SystemUI.setBackgroundColorAsync('#fff');
+SplashScreen.preventAutoHideAsync();
 GoogleSignin.configure({
-  webClientId: '49942846746-4eooga0osnghuh58hic4fkahh128k28g.apps.googleusercontent.com', // from Google Cloud Console
-  offlineAccess: true, // so you can also get refresh tokens if needed
+  webClientId: '249425615765-q3s8kt4ldpuf0u4dr7flmc9pm4n06ugi.apps.googleusercontent.com', // from Google Cloud Console
+  offlineAccess: false, // so you can also get refresh tokens if needed
   scopes: ['profile', 'email'],
 });
-SplashScreen.preventAutoHideAsync();
-SystemUI.setBackgroundColorAsync('#fff');
+Settings.initializeSDK();
 
 export default function RootLayout() {
   const [ready, setReady] = useState(false);
@@ -60,8 +61,6 @@ export default function RootLayout() {
     // }
   }, []);
 
-  console.log('fontsLoaded', fontsLoaded, fontError, getLoadedFonts());
-
   return (
     <StripeProvider publishableKey="pk_test_51PSK7VP5GmAB6WhMTNNCySQpZwOVzUV3T7DJA6W25VrCnxom0KAJ3osQyZR6qXb2GZtO6oP8m33SI4pIoeV913Pf00RBNgWjCl">
       <Provider>
@@ -84,6 +83,9 @@ const Screens = ({ ready, fontsLoaded }: { ready: boolean; fontsLoaded: boolean 
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="property/[id]" />
       <Stack.Protected guard={!user}>
+        <Stack.Screen name="(no-auth)" />
+      </Stack.Protected>
+      <Stack.Protected guard={!!user}>
         <Stack.Screen name="(auth)" />
       </Stack.Protected>
     </Stack>

@@ -1,5 +1,4 @@
 // components/ToastContainer.tsx
-import React from 'react';
 import { Animated, View } from 'react-native';
 import ReactNativeModal from 'react-native-modal';
 import { useToast } from '~/store/useToast';

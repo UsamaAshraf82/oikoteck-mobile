@@ -15,6 +15,7 @@ import Select from '~/components/Elements/Select';
 import { ControlledTextInput } from '~/components/Elements/TextInput';
 import Grid from '~/components/HOC/Grid';
 import PressableView from '~/components/HOC/PressableView';
+import { emailsAddress } from '~/global';
 import useActivityIndicator from '~/store/useActivityIndicator';
 import useSelect from '~/store/useSelectHelper';
 import { useToast } from '~/store/useToast';
@@ -80,6 +81,23 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
     myNewObject.set('read', false);
 
     await myNewObject.save();
+    addToast({
+      header: 'Tour Request',
+      message:
+        'Your request to tour the property is now submitted. Listing owner will contact you soon',
+    });
+    await fetch(emailsAddress, {
+      method: 'POST',
+      body: JSON.stringify({
+        email: 'tour_request',
+        id: property.objectId,
+        sender: data.firstName + ' ' + data.lastName,
+        message: data.message,
+        date: new Date(data.tour_date!).toDateString(),
+        email_address: data.email.toLowerCase(),
+        phone_number: data.country.Code + ' ' + data.phone,
+      }),
+    });
     stopActivity();
     onClose();
   };

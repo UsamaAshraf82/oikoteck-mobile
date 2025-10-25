@@ -24,11 +24,7 @@ export default function Login() {
     formState: { errors },
   } = useForm<SignInValues>({ resolver: zodResolver(SignInSchema) });
 
-  const onSubmit = async (data: SignInValues) => {
-    startActivity();
-    await login(data.email, data.password);
-    stopActivity();
-  };
+
 
   useEffect(() => {
     if (user) {
@@ -36,27 +32,22 @@ export default function Login() {
     }
   }, [user]);
 
-  const onError = () => {
-    // Collect first error message and show as toast
-    // const errorsArray = Object.values(errors);
-
-    Object.values(errors).forEach((err) => {
-      if (err?.message) {
-        addToast({
-          type: 'error',
-          header: 'Validation Error',
-          message: err.message,
-        });
-      }
-    });
-    // if (firstError?.message) {
-    //   // Toast.show({
-    //   //   type: "error",
-    //   //   text1: "Validation Error",
-    //   //   text2: firstError.message,
-    //   // });
-    // }
-  };
+    const onSubmit = async (data: SignInValues) => {
+      startActivity();
+      await login(data.email, data.password);
+      stopActivity();
+    };
+    const onError = () => {
+      Object.values(errors).forEach((err) => {
+        if (err?.message) {
+          addToast({
+            type: 'error',
+            header: 'Validation Error',
+            message: err.message,
+          });
+        }
+      });
+    };
 
   return (
     <View className="flex-1">

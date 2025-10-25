@@ -2,6 +2,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Parse from 'parse/react-native';
 import { create } from 'zustand';
+import { emailsAddress } from '~/global';
 import { User_Type } from '~/type/user';
 import { useToast } from './useToast';
 type Store = {
@@ -83,12 +84,12 @@ const useUser = create<Store>()((set) => ({
         message: 'Check your email to validate your account ',
       });
 
-      await fetch(process.env.EXPO_PUBLIC_SITE_ADDRESS + '/emails', {
+      await fetch(emailsAddress, {
         method: 'POST',
         body: JSON.stringify({ email: 'account_validation', id: user.id }),
       });
 
-      await fetch(process.env.EXPO_PUBLIC_SITE_ADDRESS + '/emails', {
+      await fetch(emailsAddress, {
         method: 'POST',
         body: JSON.stringify({
           email: 'account_greetings',

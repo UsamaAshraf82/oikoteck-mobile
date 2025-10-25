@@ -139,7 +139,6 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
                 //   const element = images[index];
 
                 //   const i = uploadFile({ file: element.base64, name: 's' });
-                //   // console.log(i);
 
                 //   setValue('files', [{ isUploading: true, file: i }]);
                 // }
