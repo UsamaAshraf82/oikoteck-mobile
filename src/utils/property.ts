@@ -1,5 +1,6 @@
 import { ImageManipulator, ImageResult, SaveFormat } from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
+import { Property_Type } from '~/type/property';
 
 export function property_category(property_type: string | null, withAny = false) {
   let category: (string | null)[] = [];
@@ -127,4 +128,10 @@ export async function resizeImages(assets: ImagePicker.ImagePickerAsset[], size:
 
 
   return results;
+}
+
+
+export function isProperty(item: any): item is Property_Type {
+  // Pick a unique field from Property_Type
+  return (item as Property_Type).title !== undefined;
 }

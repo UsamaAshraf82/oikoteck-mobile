@@ -13,3 +13,17 @@ declare module "*.svg" {
   const value: ImageSourcePropType;
   export default value;
 }
+
+declare global {
+  interface RegExpConstructor {
+    escape?: (s: string) => string;
+  }
+}
+
+const escapeForRegExp = (s: string): string => {
+  if (typeof RegExp.escape === 'function') {
+    return RegExp.escape(s);
+  }
+  // fallback
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+};

@@ -24,6 +24,7 @@ import { stringify_area_district } from '~/lib/stringify_district_area';
 import useSelect from '~/store/useSelectHelper';
 import { Property_Type } from '~/type/property';
 import { deviceWidth } from '~/utils/global';
+import { isProperty } from '~/utils/property';
 import PropertyCard from '../../Cards/PropertyCard';
 import DistrictArea from '../../Sheets/District/DistrictArea';
 import FilterModal, { filterType } from './FilterModal';
@@ -508,8 +509,3 @@ const MarketPlace = ({ listing_type }: Props) => {
   );
 };
 export default MarketPlace;
-
-function isProperty(item: ListItem): item is Property_Type {
-  // Pick a unique field from Property_Type
-  return (item as Property_Type).title !== undefined;
-}

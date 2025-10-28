@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'expo-router';
-import { ArrowLeftIcon, EnvelopeSimpleOpenIcon, PencilSimpleIcon, PhoneIcon, UserIcon } from 'phosphor-react-native';
+import { EnvelopeSimpleOpenIcon, PencilSimpleIcon, PhoneIcon, UserIcon } from 'phosphor-react-native';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Pressable, TouchableWithoutFeedback, View } from 'react-native';
@@ -8,6 +8,7 @@ import z from 'zod';
 import AppText from '~/components/Elements/AppText';
 import { flags, RenderFlagWithCode } from '~/components/Elements/Flags';
 import { ControlledTextInput } from '~/components/Elements/TextInput';
+import TopHeader from '~/components/Elements/TopHeader';
 import useActivityIndicator from '~/store/useActivityIndicator';
 import useSelect from '~/store/useSelectHelper';
 import { useToast } from '~/store/useToast';
@@ -20,16 +21,7 @@ const EditUser = () => {
 
   return (
     <View className="flex w-full flex-1 flex-col">
-      <View className="relative h-16 flex-row items-center justify-center">
-        <Pressable
-          className="absolute left-4"
-          onPress={() => {
-            router.back();
-          }}>
-          <ArrowLeftIcon size={16} weight="bold" />
-        </Pressable>
-        <AppText className="font-semibold ">Edit Profile</AppText>
-      </View>
+      <TopHeader onBackPress={() => router.back()} title="Edit Profile" />
       <View className="flex- gap-3  px-4 pt-2">
         <NameInput />
         <NumberInput />

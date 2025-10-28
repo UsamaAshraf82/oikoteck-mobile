@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator as ActivityIndicatorInternal, Modal, View } from 'react-native';
 import { Settings } from 'react-native-fbsdk-next';
 import Provider from '~/components/Provider';
+import Menu from '~/components/Sheets/Menu';
 import ModalContainer from '~/components/Sheets/Modal';
 import Select from '~/components/Sheets/Select';
 import { ToastContainer } from '~/components/ToastContainer';
@@ -67,6 +68,7 @@ export default function RootLayout() {
         <Screens fontsLoaded={fontsLoaded} ready={ready} />
         <ModalContainer />
         <Select />
+        <Menu />
         <ActivityIndicator />
         <ToastContainer />
       </Provider>

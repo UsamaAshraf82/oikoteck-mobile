@@ -1,16 +1,13 @@
 import { FlashList } from '@shopify/flash-list';
-import { CheckCircleIcon } from 'phosphor-react-native';
 import React from 'react';
 import { TouchableNativeFeedback, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
-import { isDeepEqual } from 'remeda';
-import useSelect from '~/store/useSelectHelper';
+import useMenu from '~/store/useMenuHelper';
 import { deviceHeight } from '~/utils/global';
-import tailwind from '~/utils/tailwind';
 import AppText from '../Elements/AppText';
-const Select = () => {
-  const { opened: value } = useSelect();
+const Menu = () => {
+  const { opened: value } = useMenu();
 
   if (value === null) return null;
 
@@ -42,20 +39,14 @@ const Select = () => {
               contentContainerStyle={{ paddingBottom: 40 }}
               renderItem={({ item }) => {
                 return (
-                  <TouchableNativeFeedback onPress={() => value.onPress?.(item)}>
-                    <View className="flex-row justify-between py-2 ">
+                  <TouchableNativeFeedback onPress={() => item.onPress?.()}>
+                    <View className="flex-row gap-2 py-2 ">
+                      {React.isValidElement(item.icon) ? item.icon : null}
                       {typeof item.label === 'string' ? (
                         <AppText className="font-medium text-lg text-primary">{item.label}</AppText>
                       ) : React.isValidElement(item.label) ? (
                         item.label
                       ) : null}
-                      {isDeepEqual(item.value, value.value) && (
-                        <CheckCircleIcon
-                          size={25}
-                          color={tailwind.theme.colors.secondary}
-                          weight="fill"
-                        />
-                      )}
                     </View>
                   </TouchableNativeFeedback>
                 );
@@ -66,20 +57,14 @@ const Select = () => {
           <ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>
             {value.options.map((item, i) => {
               return (
-                <TouchableNativeFeedback key={i} onPress={() => value.onPress?.(item)}>
-                  <View className="flex-row justify-between py-2 ">
+                <TouchableNativeFeedback key={i} onPress={() => item.onPress?.()}>
+                  <View className="flex-row gap-2 py-2 ">
+                    {React.isValidElement(item.icon) ? item.icon : null}
                     {typeof item.label === 'string' ? (
                       <AppText className="font-medium text-lg text-primary">{item.label}</AppText>
                     ) : React.isValidElement(item.label) ? (
                       item.label
                     ) : null}
-                    {isDeepEqual(item.value, value.value) && (
-                      <CheckCircleIcon
-                        size={25}
-                        color={tailwind.theme.colors.secondary}
-                        weight="fill"
-                      />
-                    )}
                   </View>
                 </TouchableNativeFeedback>
               );
@@ -91,4 +76,4 @@ const Select = () => {
   );
 };
 
-export default Select;
+export default Menu;

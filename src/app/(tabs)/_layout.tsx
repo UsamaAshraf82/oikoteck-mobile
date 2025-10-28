@@ -83,11 +83,14 @@ export default function TabsLayout() {
 
 const Label = ({ focused, label }: { focused: boolean; label: string }) => {
   return (
-    <View style={{ flex: 1 }}>
+    <View className="w-full flex-row items-center justify-center">
       <AppText
-        className={cn(' w-fit text-xs whitespace-nowrap text-nowrap leading-none text-o_light_gray', {
-          'text-secondary': focused,
-        })}
+        className={cn(
+          ' w-fit whitespace-nowrap text-nowrap text-center text-xs leading-none text-o_light_gray',
+          {
+            'text-secondary': focused,
+          }
+        )}
         numberOfLines={1}>
         {label}
       </AppText>
