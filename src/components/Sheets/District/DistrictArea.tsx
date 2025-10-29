@@ -2,7 +2,7 @@ import { FlashList } from '@shopify/flash-list';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import Parse from 'parse/react-native';
 import { GlobeHemisphereEastIcon, XIcon } from 'phosphor-react-native';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Platform,
@@ -110,6 +110,8 @@ const DistrictArea = ({ visible, onClose, value = '', onPress }: Props) => {
         <FlashList
           data={allOptions}
           estimatedItemSize={38}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
           keyExtractor={(item) => item.district + item.area_1 + item.area_2}
           contentContainerStyle={{ paddingBottom: 40 }}
           renderItem={({ item }) => {

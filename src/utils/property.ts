@@ -1,6 +1,6 @@
 import { ImageManipulator, ImageResult, SaveFormat } from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
-import { Property_Type } from '~/type/property';
+import { planEnum, Property_Type, statusEnum } from '~/type/property';
 
 export function property_category(property_type: string | null, withAny = false) {
   let category: (string | null)[] = [];
@@ -135,3 +135,220 @@ export function isProperty(item: any): item is Property_Type {
   // Pick a unique field from Property_Type
   return (item as Property_Type).title !== undefined;
 }
+
+
+export const viewListing = (plan: planEnum, status: statusEnum) => {
+  switch (plan) {
+    case 'Free':
+    case 'Promote':
+    case 'Promote +':
+    case 'Platinum':
+    case 'Gold':
+      switch (status) {
+        case 'Pending Approval':
+        case 'Approved':
+          return true;
+        default:
+          return false;
+      }
+
+    default:
+      return false;
+  }
+};
+export const applyCredit = (
+  plan: planEnum,
+  status: statusEnum,
+  future_promote: boolean
+) => {
+  switch (plan) {
+    case 'Free':
+      switch (status) {
+        case 'Approved':
+          if (future_promote) {
+            return false;
+          }
+          return true;
+        default:
+          return false;
+      }
+
+    default:
+      return false;
+  }
+};
+export const editCredits = (
+  plan: planEnum,
+  status: statusEnum,
+  future_promote: boolean
+) => {
+  switch (plan) {
+    case 'Free':
+      switch (status) {
+        case 'Approved':
+          if (future_promote) {
+            return true;
+          }
+          return false;
+        default:
+          return false;
+      }
+
+    default:
+      return false;
+  }
+};
+
+export const editList = (plan: planEnum, status: statusEnum) => {
+  switch (plan) {
+    case 'Free':
+    case 'Promote':
+    case 'Promote +':
+    case 'Gold':
+    case 'Platinum':
+      switch (status) {
+        case 'Pending Approval':
+        case 'Approved':
+        case 'Rejected':
+          return true;
+        default:
+          return false;
+      }
+
+    default:
+      return false;
+  }
+};
+
+export const renewMembership = (plan: planEnum, status: statusEnum) => {
+  switch (plan) {
+    case 'Free':
+      switch (status) {
+        case 'Expired':
+          return true;
+        default:
+          return false;
+      }
+    // case 'Promote':
+    //   switch (status) {
+    //     case 'Approved':
+    //     case 'Expired':
+    //       return true;
+    //     default:
+    //       return false;
+    //   }
+    default:
+      return false;
+  }
+};
+
+export const changeMembership = (plan: planEnum, status: statusEnum) => {
+  switch (plan) {
+    case 'Free':
+      switch (status) {
+        case 'Approved':
+        case 'Expired':
+          return true;
+        default:
+          return false;
+      }
+
+    case 'Promote':
+    default:
+      return false;
+  }
+};
+
+export const cancelMembership = (plan: planEnum, status: statusEnum) => {
+  switch (plan) {
+    case 'Free':
+    case 'Promote':
+    case 'Promote +':
+    case 'Gold':
+    case 'Platinum':
+      switch (status) {
+        case 'Deleted':
+          return false;
+        default:
+          return true;
+      }
+
+    default:
+      return false;
+  }
+};
+export const rejectionReason = (
+  plan: planEnum,
+  status: statusEnum,
+  visible: boolean
+) => {
+  switch (status) {
+    case 'Rejected':
+      return true;
+
+    default:
+      return false;
+  }
+};
+export const activateListing = (
+  plan: planEnum,
+  status: statusEnum,
+  visible: boolean
+) => {
+  switch (plan) {
+    case 'Free':
+    case 'Promote':
+      switch (visible) {
+        case true:
+          return false;
+        default:
+          return status === 'Deleted' ? true : false;
+      }
+
+    default:
+      return false;
+  }
+};
+export const permanentDelete = (status: statusEnum) => {
+  switch (status) {
+    case 'Deleted':
+      return true;
+
+    default:
+      return false;
+  }
+};
+
+export const boostListing = (
+  plan: planEnum,
+  status: statusEnum,
+  bosted: boolean
+) => {
+  switch (plan) {
+    case 'Promote':
+      switch (status) {
+        case 'Approved':
+          return !bosted;
+        default:
+          return false;
+      }
+
+    default:
+      return false;
+  }
+};
+
+export const viewInsight = (
+  plan: planEnum,
+  status: statusEnum,
+  visible: boolean
+) => {
+  switch (status) {
+    case 'Approved':
+      return true;
+    case 'Expired':
+      return visible ? true : false;
+    default:
+      return false;
+  }
+};

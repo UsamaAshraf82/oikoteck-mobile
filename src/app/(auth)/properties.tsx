@@ -5,6 +5,7 @@ import Parse from 'parse/react-native';
 import { ArrowLeftIcon } from 'phosphor-react-native';
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, TouchableWithoutFeedback, View } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import { useDebounceValue } from 'usehooks-ts';
 import PropertyCard from '~/components/Cards/PropertyCardTable';
 import AppText from '~/components/Elements/AppText';
@@ -297,7 +298,7 @@ const Favorities = () => {
         keywords_length: debouncedValue.keywords.length,
         property_type: debouncedValue.property_type,
         property_category: debouncedValue.property_category,
-        status: status,
+        // status: status,
         search: debouncedValue.search,
         visobility: debouncedValue.visibility,
         plan: debouncedValue.plan,
@@ -451,16 +452,60 @@ const Favorities = () => {
         <View>
           <AppText className="mb-2 font-semibold text-3xl ">My Properties 🏠</AppText>
         </View>
-
+        <ScrollView
+          horizontal
+          className="max-h-10"
+          contentContainerClassName="gap-2 h-10"
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}>
+          {[
+            { label: 'All', status: null, id: 'all' },
+            { label: 'Active', status: 'Approved', id: 'active' },
+            { label: 'Pending', status: 'Pending Approval', id: 'pending' },
+            { label: 'Expired', status: 'Expired', id: 'expired' },
+            { label: 'Rejected', status: 'Rejected', id: 'rejected' },
+            { label: 'Deleted', status: 'Deleted', id: 'deleted' },
+          ].map((i: any) => (
+            <Pressable
+              onPress={() => {
+                setStatus(i.status);
+              }}
+              className={cn(
+                'text-gray-3 flex-row items-center justify-center rounded-full  border px-2 py-1 text-xs',
+                {
+                  'border-primary bg-primary font-medium text-white': status === i.status,
+                }
+              )}
+              key={i.label}>
+              <AppText
+                className={cn({
+                  'text-white': status === i.status,
+                })}>
+                {i.label}
+              </AppText>
+              <AppText
+                className={cn(
+                  'text-gray-1 ml-2 rounded-full border border-[#F4F4F6] bg-[#F4F4F6] px-2',
+                  {
+                    'border-white bg-white text-primary': status === i.status,
+                  }
+                )}>
+                {_stats_2[i.id as keyof typeof _stats_2]}
+              </AppText>
+            </Pressable>
+          ))}
+        </ScrollView>
         <FlashList
           className="w-full flex-1"
           data={properties}
           decelerationRate={'fast'}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
           estimatedItemSize={(deviceWidth - 16 * 2) / 1.4 + 8} // ✅ improves performance
           keyExtractor={(item) => item.objectId}
           renderItem={({ item }) => {
             if (isProperty(item)) {
-              return <PropertyCard property={item} />;
+              return <PropertyCard property={item} type="dashboard" />;
             }
             return (
               <View className="px-4 py-6">

@@ -2,7 +2,7 @@ import { FlashList } from '@shopify/flash-list';
 import { useQuery } from '@tanstack/react-query';
 import Parse from 'parse/react-native';
 import { GlobeHemisphereEastIcon, XIcon } from 'phosphor-react-native';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Platform,
   TouchableNativeFeedback,
@@ -105,6 +105,8 @@ const District = ({ visible, onClose, value = '', onPress }: Props) => {
           data={allOptions}
           estimatedItemSize={38}
           keyExtractor={(item) => item}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 10 }}
           renderItem={({ item }) => {
             // const label = stringify_area_district(item);

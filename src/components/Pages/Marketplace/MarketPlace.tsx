@@ -451,6 +451,8 @@ const MarketPlace = ({ listing_type }: Props) => {
           className="w-full flex-1"
           data={properties}
           decelerationRate={'fast'}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
           estimatedItemSize={(deviceWidth - 16 * 2) / 1.4 + 8} // ✅ improves performance
           keyExtractor={(item) => item.objectId}
           renderItem={({ item }) => {

@@ -4,6 +4,7 @@ export type Option = {
   icon?: React.ReactNode;
   label: React.ReactNode;
   onPress: () => void;
+  display?: boolean;
 };
 
 type Select = {
@@ -32,11 +33,12 @@ const useMenu = create<Store>()((set) => ({
         set({ opened: null });
         p.onClose?.();
       },
-      options: p.options.map((option) => ({
+      options: p.options.map(({onPress,display=true,...option}) => ({
         ...option,
+        display:display,
         onPress: () => {
           set({ opened: null });
-          option.onPress();
+          onPress();
         },
       })),
     };

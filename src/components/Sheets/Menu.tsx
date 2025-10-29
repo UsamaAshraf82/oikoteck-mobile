@@ -35,9 +35,12 @@ const Menu = () => {
             <FlashList
               data={value.options}
               estimatedItemSize={38}
+              showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
               keyExtractor={(item, i) => i.toString()}
               contentContainerStyle={{ paddingBottom: 40 }}
               renderItem={({ item }) => {
+                if (!item.display) return null;
                 return (
                   <TouchableNativeFeedback onPress={() => item.onPress?.()}>
                     <View className="flex-row gap-2 py-2 ">
@@ -56,6 +59,7 @@ const Menu = () => {
         ) : (
           <ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>
             {value.options.map((item, i) => {
+              if (!item.display) return null;
               return (
                 <TouchableNativeFeedback key={i} onPress={() => item.onPress?.()}>
                   <View className="flex-row gap-2 py-2 ">
