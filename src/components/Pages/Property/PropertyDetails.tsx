@@ -21,7 +21,7 @@ import {
   ScrollView,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  View
+  View,
 } from 'react-native';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import MapView, { Circle, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
@@ -34,6 +34,7 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
+import FavButton from '~/components/Cards/FavButton';
 import AppText from '~/components/Elements/AppText';
 import AWSImage from '~/components/Elements/AWSImage';
 import Grid from '~/components/HOC/Grid';
@@ -68,6 +69,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
         visible={contactOwnerVisible}
         onClose={() => setContactOwnerVisible(false)}
       />
+
       <View>
         <Modal visible={lightBoxVisible} transparent={true}>
           <GestureHandlerRootView style={{ flex: 1, backgroundColor: 'black' }}>
@@ -79,7 +81,6 @@ export default function PropertyDetails({ property }: { property: Property_Type 
               height={deviceHeight}
               defaultIndex={startIndex}
               renderItem={({ item }) => {
-
                 return <ZoomableImage src={item} />;
               }}
             />
@@ -94,11 +95,10 @@ export default function PropertyDetails({ property }: { property: Property_Type 
             <View className="absolute bottom-2 left-0 right-0 h-24 flex-row justify-center">
               <ScrollView
                 horizontal
-          showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}
+                showsVerticalScrollIndicator={false}
+                showsHorizontalScrollIndicator={false}
                 contentContainerStyle={{ alignItems: 'center', paddingHorizontal: 4 }}>
                 {property.images.map((item, index) => {
-
                   return (
                     <Pressable
                       key={index}
@@ -114,7 +114,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                           height: 90,
                           borderRadius: 6,
                         }}
-                        size='800x800'
+                        size="800x800"
                         src={item}
                       />
                     </Pressable>
@@ -125,8 +125,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
           </GestureHandlerRootView>
         </Modal>
       </View>
-      <ScrollView showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>
         <View className="mb-10 flex-1 bg-white">
           <View className="relative h-[380px]">
             <Carousel
@@ -145,7 +144,6 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                 g.enabled(false);
               }}
               renderItem={({ item, index }) => {
-
                 return (
                   <Pressable
                     onPress={() => {
@@ -158,7 +156,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                       style={{ width: deviceWidth, height: '100%' }}
                       src={item}
                       fitin={true}
-                      size='800x800'
+                      size="800x800"
                       // placeholder={lazy}
                     />
                   </Pressable>
@@ -173,6 +171,9 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                 <ArrowLeftIcon size={20} color="white" />
               </TouchableWithoutFeedback>
             </View>
+            <View className="absolute right-4 top-4 z-10">
+              <FavButton property={property} property_id={property.objectId} />
+            </View>
             <View className="absolute bottom-2 left-0 right-0 flex-row justify-center">
               {property.images.map((_, index) => {
                 return <Dot key={index} index={index} progress={progress} />;
@@ -181,12 +182,12 @@ export default function PropertyDetails({ property }: { property: Property_Type 
           </View>
           <View className="p-4">
             <View className="flex-row items-baseline ">
-              <AppText className="text-2xl font-bold text-secondary" >€ {property.price}</AppText>
+              <AppText className="font-bold text-2xl text-secondary">€ {property.price}</AppText>
               {property.listing_for === 'Rental' && (
-                <AppText className="text-sm font-medium text-[#8D95A5]" >/Month</AppText>
+                <AppText className="font-medium text-sm text-[#8D95A5]">/Month</AppText>
               )}
             </View>
-            <AppText className="mt-2 text-xl font-bold text-primary" >{property.title}</AppText>
+            <AppText className="mt-2 font-bold text-xl text-primary">{property.title}</AppText>
             <View className="mt-3 flex-row items-center">
               <GlobeHemisphereWestIcon
                 color={tailwind.theme.colors.primary}
@@ -194,7 +195,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                 duotoneOpacity={0.9}
                 weight="duotone"
               />
-              <AppText className="ml-2 text-sm font-medium text-primary">
+              <AppText className="ml-2 font-medium text-sm text-primary">
                 {stringify_area_district({
                   district: property.district,
                   area_1: property.area_1,
@@ -205,7 +206,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
             {property.reference_number && (
               <View className="mt-3 flex-row items-center">
                 <SquaresFourIcon color={tailwind.theme.colors.primary} />
-                <AppText className="ml-2 text-sm font-medium text-primary">
+                <AppText className="ml-2 font-medium text-sm text-primary">
                   {property.reference_number}
                 </AppText>
               </View>
@@ -217,7 +218,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                   <AppText>Street Address</AppText>
                   <View className="mt-2 flex-row items-center gap-2">
                     <MapPinIcon size={20} />
-                    <AppText className="text-[15px] font-medium" >{property.address}</AppText>
+                    <AppText className="font-medium text-[15px]">{property.address}</AppText>
                   </View>
                 </View>
               </>
@@ -275,18 +276,18 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                   <AppText>{i.heading}</AppText>
                   <View className="mt-2 flex-row items-center gap-2">
                     {i.icon}
-                    <AppText className="text-[15px] font-medium" >{i.detail}</AppText>
+                    <AppText className="font-medium text-[15px]">{i.detail}</AppText>
                   </View>
                 </View>
               ))}
             </Grid>
             <View className="mt-4" />
-            <AppText className="text-base" >{property.description}</AppText>
+            <AppText className="text-base">{property.description}</AppText>
             <View className="mt-5" />
             <View className="flex-col gap-3">
-              <AppText className="text-2xl font-semibold" >Home Details</AppText>
+              <AppText className="font-semibold text-2xl">Home Details</AppText>
               {property.special_feature.map((i) => (
-                <AppText key={i} >• {i}</AppText>
+                <AppText key={i}>• {i}</AppText>
               ))}
               <AppText>
                 • {property.listing_for === 'Rental' ? 'Earliest Move-in' : 'Earliest Sale'} :{' '}
@@ -315,11 +316,13 @@ export default function PropertyDetails({ property }: { property: Property_Type 
               {!!property.property_oriantation && (
                 <AppText>• Orientation : {property.property_oriantation || ''} </AppText>
               )}
-              {!!property.plot_size && <AppText>• Plot Size : {property.plot_size || ''} m²</AppText>}
+              {!!property.plot_size && (
+                <AppText>• Plot Size : {property.plot_size || ''} m²</AppText>
+              )}
             </View>
             <View className="mt-5" />
             <View className="flex-col gap-3">
-              <AppText className="text-2xl font-semibold" >Payment Methods</AppText>
+              <AppText className="font-semibold text-2xl">Payment Methods</AppText>
               <AppText>
                 •{' '}
                 {property.payment_frequency === 1
@@ -332,7 +335,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
             </View>
             <View className="mt-5" />
             <View className="flex-col gap-1">
-              <AppText className="mb-4 text-2xl font-semibold" >Neighborhood Overview</AppText>
+              <AppText className="mb-4 font-semibold text-2xl">Neighborhood Overview</AppText>
               <View className="h-96">
                 <MapView
                   provider={PROVIDER_GOOGLE}
@@ -373,7 +376,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
           <SimilarListing property={property} />
         </View>
       </ScrollView>
-      <Grid cols={2} className='my-2 px-3' >
+      <Grid cols={2} className="my-2 px-3">
         <PressableView
           onPress={() => {
             setSubmitOfferVisible(true);
@@ -381,7 +384,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
           className="h-12  items-center justify-center rounded-full border border-primary ">
           <View className="flex-row items-center  gap-2">
             <FileTextIcon color={tailwind.theme.colors.primary} />
-            <AppText className="text-primary" >Submit Offer</AppText>
+            <AppText className="text-primary">Submit Offer</AppText>
           </View>
         </PressableView>
         <PressableView
@@ -391,7 +394,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
           className="h-12  items-center justify-center rounded-full border border-secondary bg-secondary">
           <View className="flex-row items-center gap-2">
             <ChatCircleIcon color="#fff" />
-            <AppText className="text-white" >Contact Owner</AppText>
+            <AppText className="text-white">Contact Owner</AppText>
           </View>
         </PressableView>
       </Grid>
@@ -424,13 +427,7 @@ function Dot({ index, progress }: { index: number; progress: SharedValue<number>
 
 const AnimatedImage = Animated.createAnimatedComponent(AWSImage);
 
-function ZoomableImage({
-  src,
-  onSwipeDown,
-}: {
-  src:string
-  onSwipeDown?: () => void;
-}) {
+function ZoomableImage({ src, onSwipeDown }: { src: string; onSwipeDown?: () => void }) {
   const scale = useSharedValue(1);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);

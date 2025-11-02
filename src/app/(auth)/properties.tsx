@@ -496,7 +496,7 @@ const Favorities = () => {
           ))}
         </ScrollView>
         <FlashList
-          className="w-full flex-1"
+          className="w-full flex-1 mt-4"
           data={properties}
           decelerationRate={'fast'}
           showsVerticalScrollIndicator={false}

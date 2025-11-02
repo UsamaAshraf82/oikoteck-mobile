@@ -1,4 +1,5 @@
-import { useRouter } from 'expo-router';
+import { useQuery } from '@tanstack/react-query';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import Parse from 'parse/react-native';
 import { useEffect, useState } from 'react';
 import { BackHandler, View } from 'react-native';
@@ -6,19 +7,36 @@ import Basic1, { Basic1Values } from '~/components/Pages/PostProperty/Basic1';
 import Basic2, { Basic2Values } from '~/components/Pages/PostProperty/Basic2';
 import Basic3, { Basic3Values } from '~/components/Pages/PostProperty/Basic3';
 import LocationInfo, { LocationInfoTypes } from '~/components/Pages/PostProperty/LocationInfo';
-import PaymentInfo, { PaymentInfoTypes } from '~/components/Pages/PostProperty/PaymentInfo';
-import PostListingS from '~/components/Pages/PostProperty/PostListingS';
+import { PaymentInfoTypes } from '~/components/Pages/PostProperty/PaymentInfo';
 import PropertyGallery, {
   PropertyGalleryTypes,
 } from '~/components/Pages/PostProperty/PropertyGallery';
 import { emailsAddress } from '~/global';
 import useActivityIndicator from '~/store/useActivityIndicator';
 import { useToast } from '~/store/useToast';
+import { Property_Type } from '~/type/property';
 export default function Index() {
   const [tab, setTab] = useState(0);
-  const router = useRouter();
   const { addToast } = useToast();
+  const router = useRouter();
   const { startActivity, stopActivity } = useActivityIndicator();
+  const local: { id: string } = useLocalSearchParams();
+
+  const { data: property } = useQuery({
+    queryKey: ['property', local.id],
+    queryFn: async () => {
+      const query = new Parse.Query('Property');
+      query.equalTo('objectId', local.id);
+      query.include('owner');
+
+      const property = (await query.first({
+        json: true,
+      })) as unknown as Property_Type;
+
+      return property;
+    },
+  });
+
   const [data, setData] = useState<{
     basic: Partial<Basic1Values>;
     basic2: Partial<Basic2Values>;
@@ -46,6 +64,75 @@ export default function Index() {
   });
 
   useEffect(() => {
+    if (property)
+      setData({
+        basic: {
+          description: property.description,
+          listing_for: property.listing_for as Basic1Values['listing_for'],
+          property_category: property.property_category as Basic1Values['property_category'],
+          property_oriantation:
+            property.property_oriantation as Basic1Values['property_oriantation'],
+          property_type: property.property_type as Basic1Values['property_type'],
+          title: property.title,
+        },
+        basic2: {
+          bathrooms: property.bathrooms,
+          bedrooms: property.bedrooms,
+          construction_year: property.construction_year,
+          energy_class: property.energy_class,
+          floor: property.floor,
+          furnished: property.furnished,
+          heating: property.heating,
+          heating_expense: property.heating_expense as Basic2Values['heating_expense'],
+          level_of_finish: property.level_of_finish,
+          plot_size: property.plot_size,
+          property_category: property.property_category as Basic2Values['property_category'],
+          property_type: property.property_type as Basic1Values['property_type'],
+          reference_number: property.reference_number,
+          size: property.size,
+          special_feature: property.special_feature,
+        },
+        basic3: {
+          contact_method: property.contact_method as Basic3Values['contact_method'],
+          deposit: property.deposit,
+          level_of_finish: property.level_of_finish,
+          listing_for: property.listing_for as Basic1Values['listing_for'],
+          move_in_date:
+            'iso' in property.move_in_date
+              ? property.move_in_date.iso
+              : property.move_in_date.toISOString(),
+          payment_frequency: property.payment_frequency,
+          price: property.price,
+          reference_number: property.reference_number,
+        },
+        gallery: {
+          agent_icon: property.agent_icon,
+          files: property.images.map((i) => ({ url: i })),
+        },
+        location: {
+          address: property.address,
+          area_1: property.area_1,
+          area_2: property.area_2,
+          center: {
+            lat: property.marker.latitude,
+            lng: property.marker.longitude,
+          },
+          marker: {
+            lat: property.marker.latitude,
+            lng: property.marker.longitude,
+          },
+          district: property.district,
+          exact_location: property.exact_location,
+
+          searched: true,
+        },
+        payment: {
+          plan: property.plan as PaymentInfoTypes['plan'],
+        },
+      });
+  }, [property]);
+
+  useEffect(() => {
     const backAction = () => {
       if (tab > 0) {
         setTab((prev) => prev - 1); // go to previous step
@@ -63,7 +150,8 @@ export default function Index() {
     // Handle final submission here
 
     startActivity();
-    const Property = new Parse.Object('Property');
+    // const Property = new Parse.Object('Property');
+    const query = new Parse.Query('Property');
 
     let images = data.gallery.files;
     // if (data.basic.files) {
@@ -74,6 +162,7 @@ export default function Index() {
     // }
 
     try {
+      const Property = await query.get(local.id);
       Property.set('listing_for', data.basic.listing_for);
       Property.set(
         'images',
@@ -137,6 +226,7 @@ export default function Index() {
         message:
           'Your listing is currently being reviewed by Oikoteck customer service team. You will be notified shortly of its approval status.',
       });
+
       router.push(`/account`);
       stopActivity();
     } catch {}
@@ -203,30 +293,6 @@ export default function Index() {
           // }}
           onSubmit={(data) => {
             setData((i) => ({ ...i, location: data }));
-            setTab(5);
-          }}
-        />
-      );
-    case 5:
-      return (
-        <PaymentInfo
-          data={data.payment}
-          // extra_data={{
-          //   listing_for: data.basic.listing_for!,
-          // }}
-          onSubmit={(data) => {
-            setData((i) => ({ ...i, payment: data }));
-            setTab(6);
-          }}
-        />
-      );
-    case 6:
-      return (
-        <PostListingS
-          extraData={{
-            plan: data.payment.plan!,
-          }}
-          onSubmit={() => {
             onSubmit();
           }}
         />

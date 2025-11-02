@@ -96,7 +96,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
     //   addToast({
     //     message:
     //       'You must agree to Privacy Policy and Terms & Conditions before contacting the listing owner',
-    //     header: 'Policy Consent',
+    //     heading: 'Policy Consent',
     //   });
 
     //   return;
@@ -123,7 +123,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
 
     await myNewObject.save();
     addToast({
-      header: 'Offer submission',
+      heading: 'Offer submission',
       message: 'Your offer is now submitted. Listing owner will contact you soon',
     });
     await fetch(emailsAddress, {
@@ -146,7 +146,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
       if (err?.message) {
         addToast({
           type: 'error',
-          header: 'Validation Error',
+          heading: 'Validation Error',
           message: err.message,
         });
       }

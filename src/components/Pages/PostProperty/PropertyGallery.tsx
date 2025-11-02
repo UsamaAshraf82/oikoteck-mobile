@@ -52,7 +52,7 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
       if (err?.message) {
         useToast.getState().addToast({
           type: 'error',
-          header: 'Validation Error',
+          heading: 'Validation Error',
           message: err.message!,
         });
       }
@@ -236,7 +236,7 @@ export const PropertyGallerySchema = z.object({
     .superRefine((data, ctx) => {
       if (data.length > 20) {
         useToast.getState().addToast({
-          header: 'Image Limit',
+          heading: 'Image Limit',
           message: 'You cannot upload more than 20 images per listing',
         });
         ctx.addIssue({

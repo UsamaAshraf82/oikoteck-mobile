@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { ScrollView, View } from 'react-native';
 import z from 'zod';
@@ -26,11 +27,16 @@ export default function Basic3({ data, extra_data, onSubmit }: Props) {
     setValue,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
   } = useForm<Basic3Values>({
     resolver: zodResolver(Basic3Schema) as any,
     defaultValues: { ...data, ...extra_data },
   });
+
+  useEffect(() => {
+    reset({ ...data, ...extra_data });
+  }, [data]);
 
   const onSubmitInternal = async (data: Basic3Values) => {
     onSubmit(data);
@@ -40,7 +46,7 @@ export default function Basic3({ data, extra_data, onSubmit }: Props) {
       if (err?.message) {
         addToast({
           type: 'error',
-          header: 'Validation Error',
+          heading: 'Validation Error',
           message: err.message,
         });
       }

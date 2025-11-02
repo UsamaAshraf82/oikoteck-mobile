@@ -10,7 +10,7 @@ import { withController } from '../HOC/withController';
 import AppText from './AppText';
 
 type Props = {
-  value?: Date | null;
+  value?: Date | null |string;
   onChange?: (date: Date) => void;
   label?: string;
   minDate?: Date;
@@ -37,11 +37,11 @@ const DatePicker: React.FC<Props> = ({
   withForm,
   label,
 }) => {
-  const [date, setDate] = useState<Date | null>(value);
+  const [date, setDate] = useState<Date | null>(typeof value === 'string' ? new Date(value) : value);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    setDate(value);
+    setDate(typeof value === 'string' ? new Date(value) : value);
   }, [value]);
 
   const handleChange = (_event: any, selectedDate?: Date) => {

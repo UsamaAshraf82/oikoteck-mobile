@@ -39,7 +39,7 @@ const Select = () => {
               data={value.options}
               estimatedItemSize={38}
               showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}
               keyExtractor={(item, i) => i.toString()}
               contentContainerStyle={{ paddingBottom: 40 }}
               renderItem={({ item }) => {

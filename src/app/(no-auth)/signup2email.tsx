@@ -74,7 +74,7 @@ export default function Login() {
       if (err?.message) {
         addToast({
           type: 'error',
-          header: 'Validation Error',
+          heading: 'Validation Error',
           message: err.message,
         });
       }

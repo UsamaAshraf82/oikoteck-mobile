@@ -77,7 +77,7 @@ const NameInput = () => {
       await user.save();
       addToast({
         type: 'success',
-        header: 'Profile Updated',
+        heading: 'Profile Updated',
         message: 'Your name has been updated successfully.',
       });
       setIsEditing(false);
@@ -90,7 +90,7 @@ const NameInput = () => {
       if (err?.message) {
         addToast({
           type: 'error',
-          header: 'Validation Error',
+          heading: 'Validation Error',
           message: err.message,
         });
       }
@@ -214,7 +214,7 @@ const NumberInput = () => {
       await user.save();
       addToast({
         type: 'success',
-        header: 'Profile Updated',
+        heading: 'Profile Updated',
         message: 'Your name has been updated successfully.',
       });
       setIsEditing(false);
@@ -227,7 +227,7 @@ const NumberInput = () => {
       if (err?.message) {
         addToast({
           type: 'error',
-          header: 'Validation Error',
+          heading: 'Validation Error',
           message: err.message,
         });
       }
@@ -367,7 +367,7 @@ const EmailInput = () => {
       await user.save();
       addToast({
         type: 'success',
-        header: 'Profile Updated',
+        heading: 'Profile Updated',
         message: 'Your name has been updated successfully.',
       });
       setIsEditing(false);
@@ -380,7 +380,7 @@ const EmailInput = () => {
       if (err?.message) {
         addToast({
           type: 'error',
-          header: 'Validation Error',
+          heading: 'Validation Error',
           message: err.message,
         });
       }

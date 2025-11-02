@@ -12,7 +12,7 @@ import {
   WhatsappLogoIcon,
   XIcon,
 } from 'phosphor-react-native';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { TouchableNativeFeedback, View } from 'react-native';
 import Modal from 'react-native-modal';
 import AppText from '~/components/Elements/AppText';
@@ -65,7 +65,7 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
       await Linking.openURL(url);
     } catch (error) {
       addToast({
-        header: 'Whatsapp',
+        heading: 'Whatsapp',
         message: 'Cannot Open Whatsapp',
       });
     }

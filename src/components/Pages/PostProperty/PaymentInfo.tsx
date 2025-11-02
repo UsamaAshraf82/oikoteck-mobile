@@ -33,7 +33,7 @@ export default function PaymentInfo({ data, onSubmit }: Props) {
       if (err?.message) {
         addToast({
           type: 'error',
-          header: 'Validation Error',
+          heading: 'Validation Error',
           message: err.message,
         });
       }

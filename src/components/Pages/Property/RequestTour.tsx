@@ -82,7 +82,7 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
 
     await myNewObject.save();
     addToast({
-      header: 'Tour Request',
+      heading: 'Tour Request',
       message:
         'Your request to tour the property is now submitted. Listing owner will contact you soon',
     });
@@ -107,7 +107,7 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
       if (err?.message) {
         addToast({
           type: 'error',
-          header: 'Validation Error',
+          heading: 'Validation Error',
           message: err.message,
         });
       }

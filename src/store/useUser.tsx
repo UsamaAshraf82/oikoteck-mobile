@@ -47,7 +47,7 @@ const useUser = create<Store>()((set) => ({
     } catch (e) {
       useToast.getState().addToast({
         type: 'error',
-        header: 'Authication Error',
+        heading: 'Authication Error',
         message: 'Invalid username/password.',
       });
     }
@@ -80,7 +80,7 @@ const useUser = create<Store>()((set) => ({
 
       useToast.getState().addToast({
         type: 'success',
-        header: 'Account Validation',
+        heading: 'Account Validation',
         message: 'Check your email to validate your account ',
       });
 
@@ -105,7 +105,7 @@ const useUser = create<Store>()((set) => ({
     } catch (e) {
       useToast.getState().addToast({
         type: 'error',
-        header: 'Sign up Error',
+        heading: 'Sign up Error',
         message: 'Internal Server Error',
       });
     }

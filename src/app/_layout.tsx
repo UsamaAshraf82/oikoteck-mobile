@@ -9,6 +9,7 @@ import { Settings } from 'react-native-fbsdk-next';
 import Provider from '~/components/Provider';
 import Menu from '~/components/Sheets/Menu';
 import ModalContainer from '~/components/Sheets/Modal';
+import Popup from '~/components/Sheets/Popup';
 import Select from '~/components/Sheets/Select';
 import { ToastContainer } from '~/components/ToastContainer';
 import useActivityIndicator from '~/store/useActivityIndicator';
@@ -69,6 +70,7 @@ export default function RootLayout() {
         <ModalContainer />
         <Select />
         <Menu />
+        <Popup />
         <ActivityIndicator />
         <ToastContainer />
       </Provider>

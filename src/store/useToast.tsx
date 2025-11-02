@@ -4,7 +4,7 @@ import { create } from 'zustand';
 
 type Toast = {
   id: string;
-  header: string;
+  heading: string;
   message: string;
   time?: number;
   type?: 'success' | 'error' | 'info';

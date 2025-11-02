@@ -38,7 +38,7 @@ export default function Login() {
       });
     } else {
       addToast({
-        header: 'Registered Account',
+        heading: 'Registered Account',
         message: 'Account already exists, please click on log in.',
       });
     }
@@ -56,7 +56,7 @@ export default function Login() {
       if (err?.message) {
         addToast({
           type: 'error',
-          header: 'Validation Error',
+          heading: 'Validation Error',
           message: err.message,
         });
       }

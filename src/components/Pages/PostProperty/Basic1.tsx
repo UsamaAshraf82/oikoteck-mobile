@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CheckCircleIcon } from 'phosphor-react-native';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { ScrollView, View } from 'react-native';
 import z from 'zod';
@@ -21,6 +22,7 @@ export default function Basic1({ data, onSubmit }: Props) {
   const {
     control,
     setValue,
+    reset,
     handleSubmit,
     watch,
     formState: { errors },
@@ -28,6 +30,10 @@ export default function Basic1({ data, onSubmit }: Props) {
     resolver: zodResolver(Basic1Schema),
     defaultValues: data,
   });
+
+  useEffect(()=>{
+    reset(data)
+  },[data])
 
   const onSubmitInternal = async (data: Basic1Values) => {
     onSubmit(data);
@@ -37,7 +43,7 @@ export default function Basic1({ data, onSubmit }: Props) {
       if (err?.message) {
         addToast({
           type: 'error',
-          header: 'Validation Error',
+          heading: 'Validation Error',
           message: err.message,
         });
       }

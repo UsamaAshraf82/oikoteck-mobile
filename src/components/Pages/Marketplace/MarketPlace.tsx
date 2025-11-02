@@ -1,12 +1,5 @@
-import pic1 from '@/assets/district/pic1.png';
-import pic2 from '@/assets/district/pic2.png';
-import pic3 from '@/assets/district/pic3.png';
-import pic4 from '@/assets/district/pic4.png';
-import pic5 from '@/assets/district/pic5.png';
-import pic6 from '@/assets/district/pic6.png';
 import { FlashList } from '@shopify/flash-list';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { DateTime } from 'luxon';
 import Parse from 'parse/react-native';
@@ -20,6 +13,7 @@ import {
   View,
 } from 'react-native';
 import AppText from '~/components/Elements/AppText';
+import AWSImage from '~/components/Elements/AWSImage';
 import { stringify_area_district } from '~/lib/stringify_district_area';
 import useSelect from '~/store/useSelectHelper';
 import { Property_Type } from '~/type/property';
@@ -38,12 +32,12 @@ type Props = {
 const limit = 40;
 
 const district_images = [
-  { district: 'Athens', image: pic1, url: 'Athens - Center' },
-  { district: 'Cyclades', image: pic2, url: 'Cyclades Islands' },
-  { district: 'Piraeus', image: pic3, url: 'Piraeus' },
-  { district: 'Ionian Islands', image: pic4, url: 'Ioannina Prefecture' },
-  { district: 'Thessaloniki', image: pic5, url: 'Thessaloniki' },
-  { district: 'Crete', image: pic6, url: 'Crete' },
+  { district: 'Athens', image: 'district/pic1.png', url: 'Athens - Center' },
+  { district: 'Cyclades', image: 'district/pic2.png', url: 'Cyclades Islands' },
+  { district: 'Piraeus', image: 'district/pic3.png', url: 'Piraeus' },
+  { district: 'Ionian Islands', image: 'district/pic4.png', url: 'Ioannina Prefecture' },
+  { district: 'Thessaloniki', image: 'district/pic5.png', url: 'Thessaloniki' },
+  { district: 'Crete', image:  'district/pic6.png', url: 'Crete' },
 ];
 
 type sortType = {
@@ -434,9 +428,10 @@ const MarketPlace = ({ listing_type }: Props) => {
                 android_ripple={{ color: '#E2E4E8' }}
                 className="mr-2 flex-1  flex-col items-center  justify-center gap-2 rounded-2xl border border-[#E2E4E8] bg-white px-1  pb-2 pt-1 active:bg-black/20 "
                 onPress={() => changeSearch({ district: i.url })}>
-                <Image
+                <AWSImage
                   contentFit="cover"
-                  source={i.image}
+                  src={i.image || ''}
+                  size='180x180'
                   style={{ width: 90, height: 90, borderRadius: 13 }}
                 />
 

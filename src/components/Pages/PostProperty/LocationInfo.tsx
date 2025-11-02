@@ -36,11 +36,12 @@ export default function LocationInfo({ data, onSubmit }: Props) {
     onSubmit(data);
   };
   const onError = () => {
+    console.log(errors);
     Object.values(errors).forEach((err) => {
       if (err?.message) {
         addToast({
           type: 'error',
-          header: 'Validation Error',
+          heading: 'Validation Error',
           message: err.message,
         });
       }
@@ -165,7 +166,7 @@ const LocationInfoSchema = z
       message: 'Address is Required.',
     }),
     searched: z.boolean().optional(),
-    map_error: z.string(),
+    map_error: z.string().optional(),
     marker: z.object({
       lat: z.number(),
       lng: z.number(),

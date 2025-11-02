@@ -13,6 +13,7 @@ import AWSImage from '../Elements/AWSImage';
 import BathIcon from '../SVG/Bath';
 import BedIcon from '../SVG/Bed';
 import SizeIcon from '../SVG/Size';
+import FavButton from './FavButton';
 
 const wide = deviceWidth - 16 * 2;
 const height = wide / 1.2;
@@ -21,7 +22,7 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
   const progress = useSharedValue(0);
   const router = useRouter();
   return (
-    <View className="mb-3 ml-4">
+    <View className="relative mb-3 ml-4">
       <Pressable
         onPress={() => {
           router.push(`/property/${property.objectId}`);
@@ -80,6 +81,9 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
                   }
                 )}>
                 <AppText className="text-xs text-white">{property.plan}</AppText>
+              </View>
+              <View className="absolute right-2 top-2 z-10">
+                <FavButton property_id={property.objectId} property={property} />
               </View>
 
               {/* <MyCarousel

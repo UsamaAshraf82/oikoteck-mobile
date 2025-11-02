@@ -20,6 +20,8 @@ import { stringify_area_district } from '~/lib/stringify_district_area';
 import { cn } from '~/lib/utils';
 import useActivityIndicator from '~/store/useActivityIndicator';
 import useMenu from '~/store/useMenuHelper';
+import usePopup from '~/store/usePopup';
+import { useToast } from '~/store/useToast';
 import useUser from '~/store/useUser';
 import { Property_Type } from '~/type/property';
 import { deviceWidth } from '~/utils/global';
@@ -58,6 +60,8 @@ const PropertyCard = ({
   const query_client = useQueryClient();
   const activity = useActivityIndicator();
   const { openMenu } = useMenu();
+  const { addToast } = useToast();
+  const { confirmPopup } = usePopup();
 
   const options = useMemo(() => {
     if (type === 'favorite')
@@ -73,28 +77,39 @@ const PropertyCard = ({
           icon: <HeartBreakIcon />,
           label: ' Remove from Favorites',
           onPress: async () => {
-            activity.startActivity();
-            const FavouriteQuery = new Parse.Query('Favourite');
-            FavouriteQuery.equalTo('Property', {
-              __type: 'Pointer',
-              className: 'Property',
-              objectId: property.objectId,
-            });
-            FavouriteQuery.equalTo('User', {
-              __type: 'Pointer',
-              className: '_User',
-              objectId: user?.id,
-            });
+            confirmPopup({
+              label: 'Remove Listing',
+              message: 'Are you sure you want to remove this listing from your favorites?',
+              confirm:{
+                className: "bg-red-700 border-red-700",
+                textClassName: "text-white",
+                text: "Yes, Remove"
+              },
+              onConfirm: async () => {
+                activity.startActivity();
+                const FavouriteQuery = new Parse.Query('Favourite');
+                FavouriteQuery.equalTo('Property', {
+                  __type: 'Pointer',
+                  className: 'Property',
+                  objectId: property.objectId,
+                });
+                FavouriteQuery.equalTo('User', {
+                  __type: 'Pointer',
+                  className: '_User',
+                  objectId: user?.id,
+                });
 
-            FavouriteQuery.equalTo('faviorite', true);
-            const faviorite = await FavouriteQuery.first();
+                FavouriteQuery.equalTo('faviorite', true);
+                const faviorite = await FavouriteQuery.first();
 
-            await faviorite?.destroy();
-            query_client.invalidateQueries({
-              queryKey: ['properties', 'faviorites'],
+                await faviorite?.destroy();
+                query_client.invalidateQueries({
+                  queryKey: ['properties', 'faviorites'],
+                });
+                activity.stopActivity();
+                // router.push(`/property/${property.objectId}`);
+              },
             });
-            activity.stopActivity();
-            // router.push(`/property/${property.objectId}`);
           },
         },
       ];
@@ -113,8 +128,7 @@ const PropertyCard = ({
           label: 'Edit Listing',
           display: editList(property.plan, property.status),
           onPress: () => {
-            Alert.alert('TODO');
-            // router.push(`/edit-property/${property.objectId}`);
+            router.push(`/edit-property/${property.objectId}`);
           },
         },
         {
@@ -123,7 +137,6 @@ const PropertyCard = ({
           display: renewMembership(property.plan, property.status),
           onPress: () => {
             Alert.alert('TODO');
-            // router.push(`/renew-plan/${property.objectId}`);
           },
         },
         {
@@ -159,15 +172,49 @@ const PropertyCard = ({
           label: 'Boost Listing',
           display: boostListing(property.plan, property.status, property.promote_bosted),
           onPress: () => {
-            Alert.alert('TODO');
+            confirmPopup({
+              label: 'Boost Listing',
+              message:
+                "Are you sure you want to boost this listing? This feature will push up the listing's rank in the marketplace",
+              onConfirm: async () => {
+                activity.startActivity();
+                const query = new Parse.Query('Property');
+                const pro = await query.get(property.objectId);
+                pro.set('market_date', new Date());
+                pro.set('promote_bosted', true);
+                await pro.save();
+                query_client.invalidateQueries({
+                  queryKey: ['properties'],
+                });
+                activity.stopActivity();
+              },
+              confirm: {
+                className: 'bg-green-700 border-green-700',
+              },
+            });
           },
         },
         {
           icon: <CursorClickIcon />,
           label: 'Activate Listing',
           display: activateListing(property.plan, property.status, property.visible),
-          onPress: () => {
-            Alert.alert('TODO');
+          onPress: async () => {
+            activity.startActivity();
+            const query = new Parse.Query('Property');
+            const pro = await query.get(property.objectId);
+            pro.set('flag', 'ACTIVATE');
+            pro.set('flag_time', new Date());
+            pro.set('status', 'Pending Approval');
+            await pro.save();
+            query_client.invalidateQueries({
+              queryKey: ['properties'],
+            });
+            activity.stopActivity();
+            addToast({
+              heading: 'Listing Under Review',
+              message:
+                'Your listing is currently being reviewed by OikoTeck customer service team. You will be notified shortly of its approval status.',
+            });
           },
         },
         {
@@ -175,7 +222,18 @@ const PropertyCard = ({
           label: 'Rejection Reason',
           display: rejectionReason(property.plan, property.status, property.visible),
           onPress: () => {
-            Alert.alert('TODO');
+            confirmPopup({
+              label: 'Rejection Reason',
+              message: property.reject_reason,
+              onConfirm: () => {},
+              confirm: {
+                className: 'bg-green-700 border-green-700',
+                text: 'Ok',
+              },
+              discard: {
+                className: 'hidden',
+              },
+            });
           },
         },
         {
@@ -183,7 +241,38 @@ const PropertyCard = ({
           label: 'Delete Listing',
           display: cancelMembership(property.plan, property.status),
           onPress: () => {
-            Alert.alert('TODO');
+            confirmPopup({
+              label: 'Delete Listing',
+              message: 'Are you sure you want to delete this listing? ',
+              notice: {
+                label: 'Warning',
+                message:
+                  'This will remove the listing from the marketplace. You can always reactivate it or completely remove it from your dashboard',
+              },
+              discard: { text: 'No, Cancel' },
+              confirm: {
+                text: 'Yes, Delete',
+                className: 'bg-red-600 border-red-600',
+                textClassName: 'text-white',
+              },
+              onConfirm: async () => {
+                activity.startActivity();
+                const query = new Parse.Query('Property');
+                const pro = await query.get(property.objectId);
+                pro.set('status', 'Deleted');
+                pro.set('deleted_on', new Date());
+                pro.set('visible', false);
+                await pro.save();
+                addToast({
+                  heading: 'Listing Deletion',
+                  message: 'Your listing status is now changed to Deleted',
+                });
+                query_client.invalidateQueries({
+                  queryKey: ['properties'],
+                });
+                activity.stopActivity();
+              },
+            });
           },
         },
         {
@@ -191,7 +280,32 @@ const PropertyCard = ({
           label: 'Remove listing permanently',
           display: permanentDelete(property.status),
           onPress: () => {
-            Alert.alert('TODO');
+            confirmPopup({
+              label: 'Remove Listing',
+              message: 'Are you sure you want to remove this listing from your dashboard?',
+              notice: {
+                label: 'Warning',
+                message: 'You will not be able to access your listing after removing it',
+              },
+              confirm: {
+                text: 'Yes, Remove',
+                className: 'bg-red-600 border-red-600',
+                textClassName: 'text-white',
+              },
+              onConfirm: async () => {
+                activity.startActivity();
+                const query = new Parse.Query('Property');
+                const pro = await query.get(property.objectId);
+                pro.set('status', 'Deleted Permanent');
+                pro.set('deleted_permanent_on', 'Deleted Permanent');
+                pro.set('visible', false);
+                await pro.save();
+                query_client.invalidateQueries({
+                  queryKey: ['properties'],
+                });
+                activity.stopActivity();
+              },
+            });
           },
         },
       ];
@@ -215,6 +329,18 @@ const PropertyCard = ({
           <AppText className="text-xs text-white">
             {property.status === 'Pending Approval' ? 'Pending' : property.status + ''}
           </AppText>
+        </View>
+      )}
+      {type === 'dashboard' && (
+        <View
+          className={cn('absolute bottom-4 right-4 rounded-full bg-platinum/70  px-2 py-1 ', {
+            'bg-secondary/70': property.plan === 'Free',
+            'bg-promote/70': property.plan === 'Promote',
+            'bg-promote_plus/70': property.plan === 'Promote +',
+            'bg-gold/70': property.plan === 'Gold',
+            'bg-platinum/70': property.plan === 'Platinum',
+          })}>
+          <AppText className="text-xs text-white">{property.plan}</AppText>
         </View>
       )}
 

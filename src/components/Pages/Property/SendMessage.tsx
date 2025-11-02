@@ -74,7 +74,7 @@ const SendMessage = ({ onClose, property }: SendOfferModalType) => {
     await myNewObject.save();
     stopActivity();
     addToast({
-      header: 'Message submission',
+      heading: 'Message submission',
       message: 'Your message is now sent. Listing owner will contact you soon',
     });
         await fetch(emailsAddress, {
@@ -96,7 +96,7 @@ const SendMessage = ({ onClose, property }: SendOfferModalType) => {
       if (err?.message) {
         addToast({
           type: 'error',
-          header: 'Validation Error',
+          heading: 'Validation Error',
           message: err.message,
         });
       }
