@@ -1,5 +1,5 @@
 import { ArrowLeftIcon } from 'phosphor-react-native';
-import { Pressable, Switch, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import AppText from './AppText';
 type Props = {
   onBackPress: () => void;
@@ -17,7 +17,6 @@ const TopHeader = ({ onBackPress, title }: Props) => {
       </Pressable>
       <View>
         <AppText className="font-semibold ">{title}</AppText>
-        <Switch />
       </View>
     </View>
   );

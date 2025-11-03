@@ -1,5 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
+import { DateTime } from 'luxon';
 import Parse from 'parse/react-native';
 import {
   ArrowCounterClockwiseIcon,
@@ -36,12 +37,12 @@ import {
   editList,
   permanentDelete,
   rejectionReason,
-  renewMembership,
-  viewListing,
+  viewListing
 } from '~/utils/property';
 import tailwind from '~/utils/tailwind';
 import AWSImage from '../Elements/AWSImage';
 import AppText from '../Elements/AppText';
+import Grid from '../HOC/Grid';
 import BathIcon from '../SVG/Bath';
 import BedIcon from '../SVG/Bed';
 import SizeIcon from '../SVG/Size';
@@ -53,7 +54,7 @@ const PropertyCard = ({
   type,
 }: {
   property: Property_Type;
-  type: 'dashboard' | 'favorite';
+  type: 'dashboard' | 'favorite' | 'change_plan';
 }) => {
   const router = useRouter();
   const { user } = useUser();
@@ -80,10 +81,10 @@ const PropertyCard = ({
             confirmPopup({
               label: 'Remove Listing',
               message: 'Are you sure you want to remove this listing from your favorites?',
-              confirm:{
-                className: "bg-red-700 border-red-700",
-                textClassName: "text-white",
-                text: "Yes, Remove"
+              confirm: {
+                className: 'bg-red-700 border-red-700',
+                textClassName: 'text-white',
+                text: 'Yes, Remove',
               },
               onConfirm: async () => {
                 activity.startActivity();
@@ -134,9 +135,10 @@ const PropertyCard = ({
         {
           icon: <ArrowCounterClockwiseIcon />,
           label: 'Renew Membership',
-          display: renewMembership(property.plan, property.status),
+          // display: renewMembership(property.plan, property.status),
           onPress: () => {
-            Alert.alert('TODO');
+            router.push(`/renew-plan/${property.objectId}`);
+            // Alert.alert('TODO');
           },
         },
         {
@@ -144,8 +146,8 @@ const PropertyCard = ({
           label: 'Change Membership',
           display: changeMembership(property.plan, property.status),
           onPress: () => {
-            Alert.alert('TODO');
-            // router.push(`/change-plan/${property.objectId}`);
+            // Alert.alert('TODO');
+            router.push(`/change-plan/${property.objectId}`);
           },
         },
         ///
@@ -311,109 +313,149 @@ const PropertyCard = ({
       ];
     return [];
   }, [property]);
+  const options_bottom = useMemo(() => {
+    if (type === 'change_plan')
+      return [
+        { label: 'Active Plan', value: property.plan },
+        {
+          label: 'Featured On',
+          value: property.approved_on
+            ? property.approved_on instanceof Date
+              ? DateTime.fromJSDate(property.approved_on).toLocaleString(DateTime.DATE_MED)
+              : DateTime.fromISO(property.approved_on.iso).toLocaleString(DateTime.DATE_MED)
+            : 'TBD',
+        },
+        {
+          label: 'Expires On',
+          value: property.expires_on
+            ? property.expires_on instanceof Date
+              ? DateTime.fromJSDate(property.expires_on).toLocaleString(DateTime.DATE_MED)
+              : DateTime.fromISO(property.expires_on.iso).toLocaleString(DateTime.DATE_MED)
+            : 'TBD',
+        },
+      ];
+
+    return [];
+  }, [property]);
 
   return (
     <View
-      className="relative mb-2 flex-row gap-x-2.5 rounded-2xl border border-[#E9E9EC] p-2"
+      className={cn('mb-2 flex-col rounded-2xl border border-[#E9E9EC] p-2', {
+        'border-secondary': ['change_plan'].includes(type),
+      })}
       style={{ borderRadius: 16 }}>
-      <AWSImage src={property.images[0]} style={{ width: 100, height: 100, borderRadius: 16 }} />
-      {type === 'dashboard' && (
-        <View
-          className={cn('absolute left-4 top-4 rounded-full bg-expired/70 px-3 py-1 ', {
-            'bg-pending/70': property.status === 'Pending Approval',
-            'bg-active/70': property.status === 'Approved',
-            'bg-expired/70': property.status === 'Expired',
-            'bg-deleted/70': property.status === 'Deleted',
-            'bg-rejected/70': property.status === 'Rejected',
-          })}>
-          <AppText className="text-xs text-white">
-            {property.status === 'Pending Approval' ? 'Pending' : property.status + ''}
-          </AppText>
-        </View>
-      )}
-      {type === 'dashboard' && (
-        <View
-          className={cn('absolute bottom-4 right-4 rounded-full bg-platinum/70  px-2 py-1 ', {
-            'bg-secondary/70': property.plan === 'Free',
-            'bg-promote/70': property.plan === 'Promote',
-            'bg-promote_plus/70': property.plan === 'Promote +',
-            'bg-gold/70': property.plan === 'Gold',
-            'bg-platinum/70': property.plan === 'Platinum',
-          })}>
-          <AppText className="text-xs text-white">{property.plan}</AppText>
-        </View>
-      )}
-
-      <View className="mt-2">
-        <View className="flex-row items-center justify-between">
-          <View className=" flex-row items-baseline">
-            <AppText className="font-bold text-lg text-secondary">
-              {'€ ' + thoasandseprator(property.price)}
+      <View className={cn('rounded-2xl] relative flex-row gap-x-2.5 ', {})}>
+        <AWSImage src={property.images[0]} style={{ width: 100, height: 100, borderRadius: 16 }} />
+        {['dashboard', 'change_plan'].includes(type) && (
+          <View
+            className={cn('absolute left-2 top-2 rounded-full bg-expired/70 px-3 py-1 ', {
+              'bg-pending/70': property.status === 'Pending Approval',
+              'bg-active/70': property.status === 'Approved',
+              'bg-expired/70': property.status === 'Expired',
+              'bg-deleted/70': property.status === 'Deleted',
+              'bg-rejected/70': property.status === 'Rejected',
+            })}>
+            <AppText className="text-xs text-white">
+              {property.status === 'Pending Approval' ? 'Pending' : property.status + ''}
             </AppText>
-            {property.listing_for !== 'Sale' && (
-              <AppText className="text-xs text-o_light_gray"> / Month</AppText>
-            )}
+          </View>
+        )}
+        {type === 'dashboard' && (
+          <View
+            className={cn('absolute bottom-2 right-2 rounded-full bg-platinum/70  px-2 py-1 ', {
+              'bg-secondary/70': property.plan === 'Free',
+              'bg-promote/70': property.plan === 'Promote',
+              'bg-promote_plus/70': property.plan === 'Promote +',
+              'bg-gold/70': property.plan === 'Gold',
+              'bg-platinum/70': property.plan === 'Platinum',
+            })}>
+            <AppText className="text-xs text-white">{property.plan}</AppText>
+          </View>
+        )}
+
+        <View className="mt-2">
+          <View className="flex-row items-center justify-between">
+            <View className=" flex-row items-baseline">
+              <AppText className="font-bold text-lg text-secondary">
+                {'€ ' + thoasandseprator(property.price)}
+              </AppText>
+              {property.listing_for !== 'Sale' && (
+                <AppText className="text-xs text-o_light_gray"> / Month</AppText>
+              )}
+            </View>
+          </View>
+
+          <AppText
+            className="font-bold text-base text-primary"
+            numberOfLines={1}
+            style={{ maxWidth: wide }}
+            ellipsizeMode="tail">
+            {property.title}
+          </AppText>
+
+          <AppText className="text-xs text-primary" style={{ maxWidth: wide }} numberOfLines={1}>
+            {stringify_area_district({
+              district: property.district,
+              area_1: property.area_1,
+              area_2: property.area_2,
+            })}
+          </AppText>
+
+          <View className="mt-1 flex-row items-center justify-start">
+            <View className="mr-3 flex-row items-center">
+              <BedIcon
+                height={17}
+                width={17}
+                color={tailwind.theme.colors.o_light_gray}
+                className="text-o_light_gray"
+              />
+              <AppText className="ml-1 mr-0 text-sm text-o_light_gray">{property.bedrooms}</AppText>
+            </View>
+            <View className="mr-3 flex-row items-center">
+              <BathIcon
+                height={17}
+                width={17}
+                color={tailwind.theme.colors.o_light_gray}
+                className="text-o_light_gray"
+              />
+              <AppText className="ml-1 mr-0 text-sm text-o_light_gray">{property.bedrooms}</AppText>
+            </View>
+            <View className="mr-3 flex-row items-center  text-o_light_gray">
+              <SizeIcon
+                height={18}
+                width={18}
+                color={tailwind.theme.colors.o_light_gray}
+                className="text-o_light_gray"
+              />
+              <AppText className="ml-1 mr-0 text-sm text-o_light_gray">{property.size} m²</AppText>
+            </View>
           </View>
         </View>
-
-        <AppText
-          className="font-bold text-base text-primary"
-          numberOfLines={1}
-          style={{ maxWidth: wide }}
-          ellipsizeMode="tail">
-          {property.title}
-        </AppText>
-
-        <AppText className="text-xs text-primary" style={{ maxWidth: wide }} numberOfLines={1}>
-          {stringify_area_district({
-            district: property.district,
-            area_1: property.area_1,
-            area_2: property.area_2,
-          })}
-        </AppText>
-
-        <View className="mt-1 flex-row items-center justify-start">
-          <View className="mr-3 flex-row items-center">
-            <BedIcon
-              height={17}
-              width={17}
-              color={tailwind.theme.colors.o_light_gray}
-              className="text-o_light_gray"
-            />
-            <AppText className="ml-1 mr-0 text-sm text-o_light_gray">{property.bedrooms}</AppText>
-          </View>
-          <View className="mr-3 flex-row items-center">
-            <BathIcon
-              height={17}
-              width={17}
-              color={tailwind.theme.colors.o_light_gray}
-              className="text-o_light_gray"
-            />
-            <AppText className="ml-1 mr-0 text-sm text-o_light_gray">{property.bedrooms}</AppText>
-          </View>
-          <View className="mr-3 flex-row items-center  text-o_light_gray">
-            <SizeIcon
-              height={18}
-              width={18}
-              color={tailwind.theme.colors.o_light_gray}
-              className="text-o_light_gray"
-            />
-            <AppText className="ml-1 mr-0 text-sm text-o_light_gray">{property.size} m²</AppText>
-          </View>
-        </View>
+        {options.length > 0 && (
+          <Pressable
+            className="absolute right-2 top-2"
+            onPress={() => {
+              openMenu({
+                options: options,
+                useFlatList: false,
+                label: 'Options',
+              });
+            }}>
+            <DotsThreeCircleIcon />
+          </Pressable>
+        )}
       </View>
-      {options.length > 0 && (
-        <Pressable
-          className="absolute right-2 top-2"
-          onPress={() => {
-            openMenu({
-              options: options,
-              useFlatList: false,
-              label: 'Options',
-            });
-          }}>
-          <DotsThreeCircleIcon />
-        </Pressable>
+      {options_bottom.length > 0 && (
+        <View className="mx-2 mb-1 mt-3">
+          <Grid cols={3} className="flex-row justify-between rounded-2xl bg-[#e9e9ec] p-2">
+            {options_bottom.map((item) => (
+              <View>
+                <AppText className="font-medium text-[13px]">{item.label}</AppText>
+                <AppText className="text-[13px]">{item.value}</AppText>
+              </View>
+            ))}
+          </Grid>
+        </View>
       )}
     </View>
   );

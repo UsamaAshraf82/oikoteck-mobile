@@ -12,11 +12,12 @@ type Props = {
   label?: React.ReactNode;
   labelClassName?: string;
   labelLast?: boolean;
+  disabled?: boolean;
 };
 
 const Checkbox: React.FC<Props> = ({
   label,
-  value,
+  value,disabled,
   onChange,
   getValue,
   labelClassName,
@@ -44,6 +45,7 @@ const Checkbox: React.FC<Props> = ({
           value={isChecked}
           pointerEvents="none"
           color={tailwind.theme.colors.secondary}
+          disabled={disabled}
         />
       </Pressable>
       {labelLast && (
