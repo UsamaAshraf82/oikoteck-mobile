@@ -74,9 +74,10 @@ const FavButton = (props: Props) => {
         refetch();
       }}>
       <HeartIcon
+        key={props.property_id + '_' + faviorite}
         size={26}
         weight={faviorite ? 'fill' : 'duotone'}
-        duotoneColor={tailwind.theme.colors.black}
+        duotoneColor={faviorite ? undefined : tailwind.theme.colors.black}
         color={faviorite ? tailwind.theme.colors.red[600] : tailwind.theme.colors.white}
       />
     </TouchableWithoutFeedback>

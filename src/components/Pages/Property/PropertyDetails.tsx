@@ -1,6 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { DateTime } from 'luxon';
+import Parse from 'parse/react-native';
 import {
   ArrowLeftIcon,
   CalendarIcon,
@@ -46,10 +47,12 @@ import SizeIcon from '~/components/SVG/Size';
 import { stringify_area_district } from '~/lib/stringify_district_area';
 import { cn } from '~/lib/utils';
 import { Property_Type } from '~/type/property';
+import { User_Type } from '~/type/user';
 import { deviceHeight, deviceWidth } from '~/utils/global';
 import tailwind from '~/utils/tailwind';
 import ContactOwner from './ContactOwner';
 import SubmitOffer from './SubmitOffer';
+
 export default function PropertyDetails({ property }: { property: Property_Type }) {
   const router = useRouter();
   const progress = useSharedValue(0);
@@ -58,6 +61,14 @@ export default function PropertyDetails({ property }: { property: Property_Type 
   const [SubmitOfferVisible, setSubmitOfferVisible] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
   const carouselRef = useRef<ICarouselInstance>(null);
+
+  let owner: User_Type;
+  if (property.owner instanceof Parse.User) {
+    // @ts-ignore
+    owner = property.owner.toJSON();
+  } else {
+    owner = property.owner as User_Type;
+  }
 
   return (
     <View className="relative flex-1">
@@ -81,7 +92,23 @@ export default function PropertyDetails({ property }: { property: Property_Type 
               height={deviceHeight}
               defaultIndex={startIndex}
               renderItem={({ item }) => {
-                return <ZoomableImage src={item} />;
+                return (
+                  <View className="relative">
+                    <ZoomableImage src={item} />
+                    {property.agent_icon && owner.logo && (
+                      <View className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2  -translate-y-1/2">
+                        <AWSImage
+                          contentFit="cover"
+                          placeholderContentFit="cover"
+                          src={owner.logo}
+                          size="300x300"
+                          debug
+                          style={{ width: 70, height: 70, opacity: 0.7 }}
+                        />
+                      </View>
+                    )}
+                  </View>
+                );
               }}
             />
 
@@ -101,6 +128,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                 {property.images.map((item, index) => {
                   return (
                     <Pressable
+                      className="relative"
                       key={index}
                       onPress={() => {
                         carouselRef.current?.scrollTo({ index, animated: true });
@@ -117,6 +145,18 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                         size="800x800"
                         src={item}
                       />
+                      {property.agent_icon && owner.logo && (
+                        <View className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2  -translate-y-1/2">
+                          <AWSImage
+                            contentFit="cover"
+                            placeholderContentFit="cover"
+                            src={owner.logo}
+                            size="300x300"
+                            debug
+                            style={{ width: 20, height: 20, opacity: 0.7 }}
+                          />
+                        </View>
+                      )}
                     </Pressable>
                   );
                 })}
@@ -146,6 +186,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
               renderItem={({ item, index }) => {
                 return (
                   <Pressable
+                    className="relative"
                     onPress={() => {
                       setStartIndex(index);
                       setLightBoxVisible(true);
@@ -157,8 +198,19 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                       src={item}
                       fitin={true}
                       size="800x800"
-                      // placeholder={lazy}
                     />
+                    {property.agent_icon && owner.logo && (
+                      <View className="absolute bottom-4 right-3 z-10">
+                        <AWSImage
+                          contentFit="cover"
+                          placeholderContentFit="cover"
+                          src={owner.logo}
+                          size="300x300"
+                          debug
+                          style={{ width: 80, height: 80, opacity: 0.7 }}
+                        />
+                      </View>
+                    )}
                   </Pressable>
                 );
               }}

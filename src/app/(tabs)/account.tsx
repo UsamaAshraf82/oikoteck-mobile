@@ -13,6 +13,7 @@ import {
   HouseLineIcon,
   KeyIcon,
   PasswordIcon,
+  QuestionIcon,
   ShieldWarningIcon,
   SignOutIcon,
   UserCircleIcon,
@@ -177,11 +178,15 @@ const Rental = () => {
               ? [
                   { icon: <WarehouseIcon />, label: 'My Properties', path: 'properties' },
                   { icon: <HandIcon />, label: 'Services', path: 'services' },
+                    { icon: <QuestionIcon />, label: 'Frequently asked Questions', path: 'faqs' },
                   // { icon: <GiftIcon />, label: 'Share promo code', path: 'terms-conditions' },
                   { icon: <HeartIcon />, label: 'My Favorites', path: 'favorities' },
                   { icon: <PasswordIcon />, label: 'Change Password', path: 'change-password' },
                 ]
-              : [{ icon: <HandIcon />, label: 'Services', path: 'services' }]
+              : [
+                  { icon: <HandIcon />, label: 'Services', path: 'services' },
+                  { icon: <HandIcon />, label: 'Services', path: 'services' },
+                ]
             ).map((item, index, arr) => (
               <Link href={item.path} key={item.label}>
                 <View

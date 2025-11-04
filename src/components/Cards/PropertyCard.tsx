@@ -1,10 +1,12 @@
 import { useRouter } from 'expo-router';
+import Parse from 'parse/react-native';
 import { Pressable, View } from 'react-native';
 import Animated, { interpolate, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
 import { stringify_area_district } from '~/lib/stringify_district_area';
 import { cn } from '~/lib/utils';
 import { Property_Type } from '~/type/property';
+import { User_Type } from '~/type/user';
 import { deviceWidth } from '~/utils/global';
 import { thoasandseprator } from '~/utils/number';
 import tailwind from '~/utils/tailwind';
@@ -21,6 +23,13 @@ const height = wide / 1.2;
 const PropertyCard = ({ property }: { property: Property_Type }) => {
   const progress = useSharedValue(0);
   const router = useRouter();
+  let owner: User_Type;
+  if (property.owner instanceof Parse.User) {
+    // @ts-ignore
+    owner = property.owner.toJSON();
+  } else {
+    owner = property.owner as User_Type;
+  }
   return (
     <View className="relative mb-3 ml-4">
       <Pressable
@@ -52,13 +61,27 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
                 // onProgressChange={progress}
                 renderItem={({ item }) => {
                   return (
-                    <AWSImage
-                      contentFit="cover"
-                      placeholderContentFit="cover"
-                      style={{ width: wide, height: '100%' }}
-                      src={item}
-                      size="800x800"
-                    />
+                    <View className="relative">
+                      <AWSImage
+                        contentFit="cover"
+                        placeholderContentFit="cover"
+                        style={{ width: wide, height: '100%' }}
+                        src={item}
+                        size="800x800"
+                      />
+                      {property.agent_icon && owner.logo && (
+                        <View className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2  z-10">
+                          <AWSImage
+                            contentFit="cover"
+                            placeholderContentFit="cover"
+                            src={owner.logo}
+                            size="300x300"
+                            debug
+                            style={{ width: 70, height: 70,opacity:0.7 }}
+                          />
+                        </View>
+                      )}
+                    </View>
                   );
                 }}
               />

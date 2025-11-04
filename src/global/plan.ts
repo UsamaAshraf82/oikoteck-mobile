@@ -1,6 +1,8 @@
 import { GOLD_PRICE, PLATINUM_PRICE, PROMOTE_PLUS_PRICE, PROMOTE_PRICE } from "./global";
 
 
+console.log(GOLD_PRICE, PLATINUM_PRICE, PROMOTE_PLUS_PRICE, PROMOTE_PRICE);
+
 export const plans = [
   {
     link: '/post-listing',
@@ -16,7 +18,7 @@ export const plans = [
     link: '/post-listing',
     pkgColor: 'bg-promote',
     name: 'Promote',
-    price: ['€ 10', 'per listing/month'],
+    price: [`€ ${PROMOTE_PRICE}`, 'per listing/month'],
     price_number: PROMOTE_PRICE,
     description: 'Renewable monthly promotion',
     features: [
@@ -31,7 +33,7 @@ export const plans = [
     pkgColor: 'bg-promote_plus',
     price_number: PROMOTE_PLUS_PRICE,
     name: 'Promote +',
-    price: [`€ `, '/per point'],
+    price: [`€ ${PROMOTE_PLUS_PRICE}`, '/per point'],
     description: 'Points-based promotion',
     features: [
       'Post a Listing',
@@ -45,7 +47,7 @@ export const plans = [
     pkgColor: 'bg-gold',
     name: 'Gold',
     price_number: GOLD_PRICE,
-    price: [`€ `, '/per point'],
+    price: [`€ ${GOLD_PRICE}`, '/per point'],
     description: 'Points-based promotion',
     features: [
       'Post a Listing',
@@ -59,7 +61,7 @@ export const plans = [
     pkgColor: 'bg-platinum',
     name: 'Platinum',
     price_number: PLATINUM_PRICE,
-    price: [`€ `, '/per point'],
+    price: [`€ ${PLATINUM_PRICE}`, '/per point'],
     description: 'Points-based promotion',
     features: [
       'Post a Listing',
