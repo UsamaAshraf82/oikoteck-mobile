@@ -22,7 +22,7 @@ export const HomeTopBar = () => {
           className="h-10   rounded-full bg-[#ebeaec]">
           <View className="flex-row items-center justify-center gap-1 px-3">
             <UserCircleIcon />
-            <AppText className='text-nowrap whitespace-nowrap' numberOfLines={1}>Login</AppText>
+            <AppText className='text-nowrap whitespace-nowrap w-14' numberOfLines={1}>Login</AppText>
           </View>
         </PressableView>
       ) : (

@@ -29,11 +29,11 @@ const Services = () => {
       <ScrollView contentContainerClassName=" px-5 pb-4 ">
         {plans.map((i, j) => (
           <TouchableWithoutFeedback
+            key={j}
             onPress={() => {
               setPlan(i.name);
             }}>
             <View
-              key={j}
               className={cn('relative mt-5  overflow-hidden rounded-3xl border', {
                 'border-2 border-secondary': plan == i.name,
               })}>

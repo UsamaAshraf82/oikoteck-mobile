@@ -18,7 +18,7 @@ import {
   SignOutIcon,
   UserCircleIcon,
   UserIcon,
-  WarehouseIcon
+  WarehouseIcon,
 } from 'phosphor-react-native';
 import { ScrollView, TouchableWithoutFeedback, View } from 'react-native';
 import AppText from '~/components/Elements/AppText';
@@ -60,7 +60,10 @@ const Rental = () => {
         </View>
       )}
 
-      <ScrollView className="mb-6">
+      <ScrollView
+        className="mb-6"
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
         {user ? (
           <View className="mb-6 flex-col items-center justify-center">
             <View className="overflow-hidden rounded-full bg-white">
@@ -172,20 +175,20 @@ const Rental = () => {
           </View>
         )}
 
-        <View className="flex-col gap-5">
+        <View className="flex-col gap-5 px-px">
           <View>
             {(user
               ? [
                   { icon: <WarehouseIcon />, label: 'My Properties', path: 'properties' },
-                  { icon: <HandIcon />, label: 'Services', path: 'services' },
-                    { icon: <QuestionIcon />, label: 'Frequently asked Questions', path: 'faqs' },
-                  // { icon: <GiftIcon />, label: 'Share promo code', path: 'terms-conditions' },
                   { icon: <HeartIcon />, label: 'My Favorites', path: 'favorities' },
                   { icon: <PasswordIcon />, label: 'Change Password', path: 'change-password' },
+                  { icon: <HandIcon />, label: 'Services', path: 'services' },
+                  { icon: <QuestionIcon />, label: 'Frequently asked Questions', path: 'faqs' },
+                  // { icon: <GiftIcon />, label: 'Share promo code', path: 'terms-conditions' },
                 ]
               : [
                   { icon: <HandIcon />, label: 'Services', path: 'services' },
-                  { icon: <HandIcon />, label: 'Services', path: 'services' },
+                  { icon: <QuestionIcon />, label: 'Frequently asked Questions', path: 'faqs' },
                 ]
             ).map((item, index, arr) => (
               <Link href={item.path} key={item.label}>

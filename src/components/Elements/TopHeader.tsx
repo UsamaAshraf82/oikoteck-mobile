@@ -4,8 +4,9 @@ import AppText from './AppText';
 type Props = {
   onBackPress: () => void;
   title: string;
+  right?: React.ReactNode;
 };
-const TopHeader = ({ onBackPress, title }: Props) => {
+const TopHeader = ({ onBackPress, title,right }: Props) => {
   return (
     <View className="relative h-16 flex-row items-center justify-center">
       <Pressable
@@ -18,6 +19,7 @@ const TopHeader = ({ onBackPress, title }: Props) => {
       <View>
         <AppText className="font-semibold ">{title}</AppText>
       </View>
+      {right && <View className='absolute right-4'>{right}</View>}
     </View>
   );
 };

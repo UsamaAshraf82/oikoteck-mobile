@@ -33,7 +33,7 @@ export const ToastContainer = () => {
               toast.type === 'error' && { borderColor: '#f44336' },
               toast.type === 'info' && { borderColor: '#333' },
             ]}>
-            <AppText className="text-left text-lg font-semibold text-secondary">{toast.header}</AppText>
+            <AppText className="text-left text-lg font-semibold text-secondary">{toast.heading}</AppText>
             <AppText className="text-left  text-primary">{toast.message}</AppText>
           </Animated.View>
         ))}

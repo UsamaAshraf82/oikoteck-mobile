@@ -113,8 +113,7 @@ const Favorities = () => {
         </View>
         <View>
           <AppText
-            className="mb-2 font-medium text-[#9191A1]
-      ">
+            className="mb-2 font-medium text-[#9191A1]">
             {data?.pages[0]?.count} favourite listings
           </AppText>
         </View>

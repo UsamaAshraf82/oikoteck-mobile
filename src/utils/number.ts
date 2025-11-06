@@ -1,16 +1,24 @@
 // utils/formatNumber.ts
-export function thoasandseprator(value: number | string, locale = 'en-US') {
+export function thoasandseprator(
+  value: number | string,
+  { locale, digits }: { locale?: string; digits?: number } = {
+    locale: 'en-US',
+  }
+) {
   const n = Number(value);
   if (Number.isNaN(n)) return String(value);
-  // Preferred: Intl
+
   try {
-    return new Intl.NumberFormat(locale).format(n);
+    // ✅ Use Intl.NumberFormat with 2 decimal places
+    return new Intl.NumberFormat(locale, {
+      minimumFractionDigits: digits,
+      maximumFractionDigits: digits,
+    }).format(n);
   } catch {
-    // Fallback if Intl isn't available
-    return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    // ✅ Fallback (no Intl)
+    return n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
 }
-
 
 export const numberminify = (input: string | number | null | undefined) => {
   if (input === null) {
