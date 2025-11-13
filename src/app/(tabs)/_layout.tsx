@@ -25,12 +25,14 @@ export default function TabsLayout() {
         },
         tabBarActiveTintColor: tailwind.theme.colors.secondary,
         tabBarInactiveTintColor: tailwind.theme.colors.o_light_gray,
-        animation: 'fade',
+        // animation: 'fade',
         headerShown: false,
 
         tabBarItemStyle: {
           borderColor: tailwind.theme.colors.white,
         },
+        animation: "none",  // This eliminates the lag in RN 0.81
+        // lazy: false,        // Prevents delayed rendering of tab screens
       }}>
       <Tabs.Screen
         name="rent"

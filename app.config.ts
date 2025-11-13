@@ -30,7 +30,7 @@ const appConfig: ExpoConfig = {
     googleServicesFile: './GoogleService-Info.plist',
   },
   android: {
-        "softwareKeyboardLayoutMode": "pan",
+    softwareKeyboardLayoutMode: 'pan',
     package: IS_DEV ? 'com.oikoteck.dev' : 'com.oikoteck.app',
     adaptiveIcon: {
       foregroundImage: IS_DEV ? './assets/adaptive-icon-dev.png' : './assets/adaptive-icon.png',
@@ -69,6 +69,7 @@ const appConfig: ExpoConfig = {
     },
   },
   plugins: [
+    'expo-build-properties',
     'expo-router',
     [
       'expo-splash-screen',

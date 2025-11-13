@@ -1,7 +1,6 @@
 import PostLisitngIcon from '@/assets/svg/post-listing.svg';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import React from 'react';
 import { View } from 'react-native';
 import AppText from '~/components/Elements/AppText';
 import PressableView from '~/components/HOC/PressableView';
@@ -49,7 +48,7 @@ const PostListing = () => {
       <View className="px-4">
         <PressableView
           onPress={() => {
-            router.push('/property/new');
+            router.replace('/property/new');
           }}
           className="mb-2 h-14 w-full flex-row items-center justify-center rounded-full bg-primary">
           <View>

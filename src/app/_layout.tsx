@@ -1,3 +1,5 @@
+import "react-native-reanimated";
+
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import { useFonts } from 'expo-font';
