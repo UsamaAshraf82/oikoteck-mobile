@@ -5,7 +5,8 @@ import { Link } from 'expo-router';
 import Parse from 'parse/react-native';
 import { XIcon } from 'phosphor-react-native';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { ScrollView, TouchableNativeFeedback, TouchableWithoutFeedback, View } from 'react-native';
+import { TouchableNativeFeedback, TouchableWithoutFeedback, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Modal from 'react-native-modal';
 import { z } from 'zod';
 import AppText from '~/components/Elements/AppText';
@@ -77,9 +78,9 @@ const SendMessage = ({ onClose, property }: SendOfferModalType) => {
       heading: 'Message submission',
       message: 'Your message is now sent. Listing owner will contact you soon',
     });
-        await fetch(emailsAddress, {
+    await fetch(emailsAddress, {
       method: 'POST',
-     body: JSON.stringify({
+      body: JSON.stringify({
         email: 'message_owner',
         id: property.objectId,
         sender: data.firstName + ' ' + data.lastName,
@@ -126,7 +127,10 @@ const SendMessage = ({ onClose, property }: SendOfferModalType) => {
         </View>
 
         <View style={{ maxHeight: deviceHeight * 0.9 }}>
-          <ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>
+          <KeyboardAwareScrollView
+             bottomOffset={50}
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}>
             <AppText className="mt-5 text-base text-primary">
               Send a message to the property owner
             </AppText>
@@ -238,7 +242,7 @@ const SendMessage = ({ onClose, property }: SendOfferModalType) => {
                 </View>
               </PressableView>
             </Grid>
-          </ScrollView>
+          </KeyboardAwareScrollView>
         </View>
       </View>
     </Modal>

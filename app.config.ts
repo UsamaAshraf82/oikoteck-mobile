@@ -10,6 +10,7 @@ const appConfig: ExpoConfig = {
   scheme: IS_DEV ? 'oikoteck-dev' : 'oikoteck',
   userInterfaceStyle: 'light',
   newArchEnabled: true,
+
   ios: {
     usesAppleSignIn: true,
     supportsTablet: true,
@@ -29,6 +30,7 @@ const appConfig: ExpoConfig = {
     googleServicesFile: './GoogleService-Info.plist',
   },
   android: {
+        "softwareKeyboardLayoutMode": "pan",
     package: IS_DEV ? 'com.oikoteck.dev' : 'com.oikoteck.app',
     adaptiveIcon: {
       foregroundImage: IS_DEV ? './assets/adaptive-icon-dev.png' : './assets/adaptive-icon.png',

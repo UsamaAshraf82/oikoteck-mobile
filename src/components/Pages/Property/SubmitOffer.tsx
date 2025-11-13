@@ -5,7 +5,8 @@ import { Link } from 'expo-router';
 import Parse from 'parse/react-native';
 import { XIcon } from 'phosphor-react-native';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { ScrollView, TouchableNativeFeedback, TouchableWithoutFeedback, View } from 'react-native';
+import { TouchableNativeFeedback, TouchableWithoutFeedback, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Modal from 'react-native-modal';
 import { z } from 'zod';
 import AppText from '~/components/Elements/AppText';
@@ -108,7 +109,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
       className: 'Property',
       objectId: property.objectId,
     });
-    myNewObject.set('User',user);
+    myNewObject.set('User', user);
     myNewObject.set('owner', property.owner);
     myNewObject.set('first_name', data.firstName);
     myNewObject.set('last_name', data.lastName);
@@ -181,7 +182,10 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
         </View>
 
         <View style={{ maxHeight: deviceHeight * 0.9 }}>
-          <ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>
+          <KeyboardAwareScrollView
+             bottomOffset={50}
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}>
             <View className="mt-5 flex-col gap-2">
               <Grid cols={2} gap={2}>
                 <TextInput
@@ -305,7 +309,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
                 </View>
               </PressableView>
             </Grid>
-          </ScrollView>
+          </KeyboardAwareScrollView>
         </View>
       </View>
     </Modal>

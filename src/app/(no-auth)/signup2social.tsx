@@ -6,14 +6,14 @@ import Parse from 'parse/react-native';
 import { CheckCircleIcon, UserIcon } from 'phosphor-react-native';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { ScrollView, TouchableWithoutFeedback, View } from 'react-native';
+import { TouchableWithoutFeedback, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { z } from 'zod';
 import AppText from '~/components/Elements/AppText';
 import { ControlledCheckBox } from '~/components/Elements/Checkbox';
 import { flags, RenderFlagWithCode } from '~/components/Elements/Flags';
 import { ControlledTextInput } from '~/components/Elements/TextInput';
 import Grid from '~/components/HOC/Grid';
-import KeyboardAvoidingView from '~/components/HOC/KeyboardAvoidingView';
 import PressableView from '~/components/HOC/PressableView';
 import { emailsAddress } from '~/global';
 import { cn } from '~/lib/utils';
@@ -118,8 +118,9 @@ export default function Login() {
 
   return (
     <View className="flex-1">
-      <KeyboardAvoidingView>
-        <ScrollView
+
+        <KeyboardAwareScrollView
+           bottomOffset={50}
           contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 24 }}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
@@ -292,8 +293,8 @@ export default function Login() {
               />
             </View>
           </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+        </KeyboardAwareScrollView>
+
       <View className="bg-white px-6 py-4">
         <PressableView
           onPress={handleSubmit(onSubmit, onError)}

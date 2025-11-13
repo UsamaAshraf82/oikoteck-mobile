@@ -1,14 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import MapView, { Marker } from 'react-native-maps';
 import z from 'zod';
 import AppText from '~/components/Elements/AppText';
 import { ControlledCheckBox } from '~/components/Elements/Checkbox';
 import Select from '~/components/Elements/Select';
 import { ControlledTextInput } from '~/components/Elements/TextInput';
-import KeyboardAvoidingView from '~/components/HOC/KeyboardAvoidingView';
 import PressableView from '~/components/HOC/PressableView';
 import Area from '~/components/Sheets/District/Areas';
 import District from '~/components/Sheets/District/District';
@@ -54,8 +54,9 @@ export default function LocationInfo({ data, onSubmit }: Props) {
       <View className="flex-1">
         <AppText className="font-bold text-2xl">Location details 📍</AppText>
         <AppText className="text-[15px] text-[#575775]">Set your property location</AppText>
-        <KeyboardAvoidingView>
-          <ScrollView
+
+          <KeyboardAwareScrollView
+             bottomOffset={50}
             contentContainerClassName="mt-5 flex-grow flex-col gap-4 pb-28"
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}>
@@ -120,8 +121,7 @@ export default function LocationInfo({ data, onSubmit }: Props) {
                 }
               />
             </MapView>
-          </ScrollView>
-        </KeyboardAvoidingView>
+          </KeyboardAwareScrollView>
       </View>
       <View className="absolute bottom-0 left-0 right-0   px-5 py-4">
         <PressableView

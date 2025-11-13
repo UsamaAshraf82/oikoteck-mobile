@@ -2,13 +2,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { CheckCircleIcon } from 'phosphor-react-native';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import z from 'zod';
 import AppText from '~/components/Elements/AppText';
 import Select from '~/components/Elements/Select';
 import { ControlledTextInput } from '~/components/Elements/TextInput';
 import Grid from '~/components/HOC/Grid';
-import KeyboardAvoidingView from '~/components/HOC/KeyboardAvoidingView';
 import PressableView from '~/components/HOC/PressableView';
 import { cn } from '~/lib/utils';
 import { useToast } from '~/store/useToast';
@@ -55,8 +55,9 @@ export default function Basic1({ data, onSubmit }: Props) {
       <View className="flex-1">
         <AppText className="font-bold text-2xl">Basic Information 🏠</AppText>
         <AppText className="text-[15px] text-[#575775]">Tell us about your property</AppText>
-        <KeyboardAvoidingView>
-          <ScrollView
+
+          <KeyboardAwareScrollView
+             bottomOffset={50}
             contentContainerClassName="mt-5 flex-grow flex-col gap-4 pb-28"
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}>
@@ -160,8 +161,7 @@ export default function Basic1({ data, onSubmit }: Props) {
                 )
               }
             />
-          </ScrollView>
-        </KeyboardAvoidingView>
+          </KeyboardAwareScrollView>
       </View>
       <View className="absolute bottom-0 left-0 right-0   px-5 py-4">
         <PressableView

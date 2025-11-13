@@ -86,7 +86,7 @@ const ChnagePassword = () => {
         <ControlledTextInput
           control={control}
           name="confirmPassword"
-          label="Repeat Password"
+          label="Confirm Password"
           secureTextEntry
           placeholder="Repeat New Password"
         />

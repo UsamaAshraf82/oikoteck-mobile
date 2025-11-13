@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { PropsWithChildren } from 'react';
 import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { KeyboardProvider } from "react-native-keyboard-controller";
 import {
   initialWindowMetrics,
   SafeAreaProvider,
@@ -17,6 +18,7 @@ const Provider = ({ children }: PropsWithChildren) => {
   return (
     <QueryClientProvider client={queryClient}>
       <GestureHandlerRootView>
+        <KeyboardProvider>
         <View className="flex-1 bg-white text-black">
           <StatusBar style="dark" animated networkActivityIndicatorVisible />
           <SafeAreaProvider initialMetrics={initialWindowMetrics}>
@@ -25,6 +27,7 @@ const Provider = ({ children }: PropsWithChildren) => {
             </SafeAreaView>
           </SafeAreaProvider>
         </View>
+        </KeyboardProvider>
       </GestureHandlerRootView>
     </QueryClientProvider>
   );

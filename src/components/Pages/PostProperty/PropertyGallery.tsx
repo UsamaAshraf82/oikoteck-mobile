@@ -6,13 +6,13 @@ import { Link } from 'expo-router';
 import { ImagesIcon, ImageSquareIcon, TrashIcon } from 'phosphor-react-native';
 import { useEffect } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
-import { ActivityIndicator, ScrollView, TouchableHighlight, View } from 'react-native';
+import { ActivityIndicator, TouchableHighlight, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import z from 'zod';
 import AppText from '~/components/Elements/AppText';
 import AWSImage from '~/components/Elements/AWSImage';
 import { ControlledCheckBox } from '~/components/Elements/Checkbox';
 import Grid from '~/components/HOC/Grid';
-import KeyboardAvoidingView from '~/components/HOC/KeyboardAvoidingView';
 import PressableView from '~/components/HOC/PressableView';
 import { useToast } from '~/store/useToast';
 import { resizeImages } from '~/utils/property';
@@ -155,8 +155,8 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
         </PressableView>
         <AppText className="mt-5 font-medium">Images ({files.length})</AppText>
 
-        <KeyboardAvoidingView>
-          <ScrollView
+          <KeyboardAwareScrollView
+             bottomOffset={50}
             contentContainerClassName="mt-5 flex-grow flex-col gap-6 pb-28"
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}>
@@ -206,8 +206,7 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
                 ))}
               </Grid>
             )}
-          </ScrollView>
-        </KeyboardAvoidingView>
+          </KeyboardAwareScrollView>
       </View>
       <View className="absolute bottom-0 left-0 right-0   px-5 py-4">
         <PressableView

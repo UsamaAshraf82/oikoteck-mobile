@@ -1,10 +1,10 @@
 import { useStripe } from '@stripe/stripe-react-native';
 import Parse from 'parse/react-native';
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import WebView from 'react-native-webview';
 import AppText from '~/components/Elements/AppText';
 import Checkbox from '~/components/Elements/Checkbox';
-import KeyboardAvoidingView from '~/components/HOC/KeyboardAvoidingView';
 import PressableView from '~/components/HOC/PressableView';
 import { PaymentInfoTypes } from './PaymentInfo';
 
@@ -19,14 +19,13 @@ export default function PostListingS({ extraData, onSubmit }: Props) {
         <AppText className="text-[15px] text-[#575775]">
           Confirm your details and publish your listing
         </AppText>
-        <KeyboardAvoidingView>
-          <ScrollView contentContainerClassName="mt-5 flex-grow flex-col gap-4 pb-28" showsVerticalScrollIndicator={false}
+
+          <KeyboardAwareScrollView    bottomOffset={50} contentContainerClassName="mt-5 flex-grow flex-col gap-4 pb-28" showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}>
             <AppText className="font-semibold text-lg">Service Plan Terms</AppText>
             <WebView />
             <Checkbox label="I, Walid Smith, understand and agree to the “Service Plan Terms” above associated with this purchase, the Terms and Conditions, and the Privacy Policy." />
-          </ScrollView>
-        </KeyboardAvoidingView>
+          </KeyboardAwareScrollView>
       </View>
       <View className="absolute bottom-0 left-0 right-0   px-5 py-4">
         <PressableView

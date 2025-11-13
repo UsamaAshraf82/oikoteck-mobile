@@ -5,7 +5,8 @@ import { Link } from 'expo-router';
 import Parse from 'parse/react-native';
 import { XIcon } from 'phosphor-react-native';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { ScrollView, TouchableNativeFeedback, TouchableWithoutFeedback, View } from 'react-native';
+import { TouchableNativeFeedback, TouchableWithoutFeedback, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Modal from 'react-native-modal';
 import { z } from 'zod';
 import AppText from '~/components/Elements/AppText';
@@ -137,7 +138,7 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
           </TouchableNativeFeedback>
         </View>
 
-        <ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>
+        <KeyboardAwareScrollView    bottomOffset={50} showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>
           <AppText className="mt-1 text-base text-primary">
             Send a property tour request to the property owner
           </AppText>
@@ -254,7 +255,7 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
               .
             </AppText>
           </View>
-        </ScrollView>
+        </KeyboardAwareScrollView>
 
         <View className="mt-2" />
         <Grid cols={2} gap={2}>
