@@ -1,9 +1,5 @@
-import {
-  GOLD_PRICE,
-  PLATINUM_PRICE,
-  PROMOTE_PLUS_PRICE,
-  PROMOTE_PRICE,
-} from '@/global';
+import { GOLD_PRICE, PLATINUM_PRICE, PROMOTE_PLUS_PRICE, PROMOTE_PRICE } from "~/global/global";
+
 
 export const plans = [
   {

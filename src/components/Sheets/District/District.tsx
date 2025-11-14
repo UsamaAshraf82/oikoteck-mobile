@@ -14,6 +14,7 @@ import Modal from 'react-native-modal';
 import AppText from '~/components/Elements/AppText';
 import { cn } from '~/lib/utils';
 import { deviceHeight } from '~/utils/global';
+import tailwind from '~/utils/tailwind';
 
 type Props = {
   visible: boolean;
@@ -81,7 +82,7 @@ const District = ({ visible, onClose, value = '', onPress }: Props) => {
               marginHorizontal: 16,
               paddingVertical: Platform.OS === 'ios' ? 10 : 0,
             }}>
-            <GlobeHemisphereEastIcon />
+         <GlobeHemisphereEastIcon weight='fill' color={tailwind.theme.colors.primary}/>
             <TextInput
               style={{
                 flex: 1,

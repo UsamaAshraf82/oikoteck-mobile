@@ -8,7 +8,7 @@ import {
   Platform,
   TouchableNativeFeedback,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
@@ -16,6 +16,7 @@ import AppText from '~/components/Elements/AppText';
 import { stringify_area_district } from '~/lib/stringify_district_area';
 import { cn } from '~/lib/utils';
 import { deviceHeight } from '~/utils/global';
+import tailwind from '~/utils/tailwind';
 
 type Props = {
   visible: boolean;
@@ -40,7 +41,7 @@ const Area = ({ visible, onClose, district, value = '', onPress }: Props) => {
       try {
         const res = (await Parse.Cloud.run('areas', {
           input: text,
-          district:district,
+          district: district,
           pageParam,
         })) as {
           options: { area_1: string; area_2: string }[];
@@ -89,7 +90,7 @@ const Area = ({ visible, onClose, district, value = '', onPress }: Props) => {
               marginHorizontal: 16,
               paddingVertical: Platform.OS === 'ios' ? 10 : 0,
             }}>
-            <GlobeHemisphereEastIcon />
+            <GlobeHemisphereEastIcon weight="fill" color={tailwind.theme.colors.primary} />
             <TextInput
               style={{
                 flex: 1,

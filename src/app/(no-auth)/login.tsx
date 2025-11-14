@@ -7,6 +7,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { z } from 'zod';
 import AppText from '~/components/Elements/AppText';
 import { ControlledTextInput } from '~/components/Elements/TextInput';
+import TopHeader from '~/components/Elements/TopHeader';
 import PressableView from '~/components/HOC/PressableView';
 import SocialSignin from '~/components/Pages/Auth/SocialSignin';
 import useActivityIndicator from '~/store/useActivityIndicator';
@@ -35,25 +36,34 @@ export default function Login() {
     await login(data.email, data.password);
     stopActivity();
   };
+
   const onError = () => {
-    Object.values(errors).forEach((err) => {
-      if (err?.message) {
+    const keys = Object.keys(errors) as (keyof SignInValues)[];
+    for (let index = 0; index < keys.length; index++) {
+      const element = errors[keys[index]];
+      if (element?.message) {
         addToast({
           type: 'error',
-          heading: 'Validation Error',
-          message: err.message,
+          heading: displayNames[keys[index]],
+          message: element.message,
         });
       }
-    });
+    }
   };
 
   return (
     <View className="flex-1">
       {/* Scrollable form */}
+      <TopHeader
+        onBackPress={() => {
+          router.back();
+        }}
+        title=""
+      />
 
       <KeyboardAwareScrollView
         bottomOffset={50}
-        contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 24 }}
+        contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 16 }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}>
@@ -102,7 +112,7 @@ export default function Login() {
       </KeyboardAwareScrollView>
 
       {/* Fixed Bottom Button */}
-      <View className="bg-white px-6 py-4">
+      <View className="bg-white px-4 py-4">
         <PressableView
           onPress={handleSubmit(onSubmit, onError)}
           className="h-14 w-full flex-row items-center justify-center rounded-full bg-secondary">
@@ -127,3 +137,8 @@ const SignInSchema = z.object({
 });
 
 type SignInValues = z.infer<typeof SignInSchema>;
+
+const displayNames: Record<keyof SignInValues, string> = {
+  email: 'Email address',
+  password: 'Password',
+};

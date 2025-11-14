@@ -24,4 +24,6 @@ const tailwind = resolveConfig(tailwindConfig) as ReturnType<typeof resolveConfi
   };
 };
 
+export const tailwind_color = tailwind.theme.colors
+
 export default tailwind;

@@ -31,7 +31,7 @@ type Store = {
   logout: () => Promise<void>;
 };
 
-const useUser = create<Store>()((set) => ({
+const useUser = create<Store>()((set, get) => ({
   user: undefined,
   setUser: (user) => set(() => ({ user: user })),
   login: async (email: string, password: string) => {
@@ -40,6 +40,18 @@ const useUser = create<Store>()((set) => ({
         email.toLowerCase().trim(),
         password
       )) as Parse.User<User_Type>;
+
+      if (!user.attributes.activated) {
+        // await Parse.User
+        useToast.getState().addToast({
+          heading: 'Unverified Email',
+          message: 'User email is not verified. Check email to validate your account.',
+        });
+
+        await get().logout();
+        return;
+      }
+
       if (user.attributes.sessionToken) {
         await AsyncStorage.setItem('session_token', user.attributes.sessionToken);
       }
@@ -101,7 +113,7 @@ const useUser = create<Store>()((set) => ({
         await AsyncStorage.setItem('session_token', user.attributes.sessionToken);
       }
 
-      set({ user });
+      await get().logout();
     } catch (e) {
       useToast.getState().addToast({
         type: 'error',
@@ -128,11 +140,6 @@ const useUser = create<Store>()((set) => ({
   logout: async () => {
     await Parse.User.logOut();
     await AsyncStorage.removeItem('session_token');
-    // await Promise.all([
-    //   delete_cookie('user_id'),
-    //   delete_cookie('session_token'),
-    // ]);
-    // localStorage.removeItem('oikoteck_user');
     set(() => ({ user: null }));
   },
 }));

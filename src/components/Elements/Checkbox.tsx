@@ -12,6 +12,7 @@ type Props = {
   label?: React.ReactNode;
   labelClassName?: string;
   labelLast?: boolean;
+  alignTop?: boolean;
   disabled?: boolean;
 };
 
@@ -21,7 +22,7 @@ const Checkbox: React.FC<Props> = ({
   onChange,
   getValue,
   labelClassName,
-  labelLast,
+  labelLast,alignTop
 }) => {
   const [isChecked, setChecked] = useState<boolean>(!!value);
 
@@ -36,9 +37,9 @@ const Checkbox: React.FC<Props> = ({
   };
   return (
     <View
-      className={cn('mt-1 flex-row items-center justify-between', { 'justify-start': labelLast })}>
+      className={cn('mt-1 flex-row items-center justify-between', { 'justify-start': labelLast,'items-start':alignTop })}>
       {!labelLast && (
-        <AppText className={cn('flex-shrink text-base', labelClassName)}>{label}</AppText>
+        <AppText className={cn('flex-shrink text-base mr-2', labelClassName)}>{label}</AppText>
       )}
       <Pressable onPress={() => handleChange(!isChecked)}>
         <ExpoCheckbox

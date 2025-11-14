@@ -12,6 +12,7 @@ import AppText from '~/components/Elements/AppText';
 import { ControlledCheckBox } from '~/components/Elements/Checkbox';
 import { flags, RenderFlagWithCode } from '~/components/Elements/Flags';
 import { ControlledTextInput } from '~/components/Elements/TextInput';
+import TopHeader from '~/components/Elements/TopHeader';
 import Grid from '~/components/HOC/Grid';
 import PressableView from '~/components/HOC/PressableView';
 import { cn } from '~/lib/utils';
@@ -68,35 +69,44 @@ export default function Login() {
     await signup({ ...data, email: local.email, password: local.password });
     stopActivity();
   };
+
   const onError = () => {
-    Object.values(errors).forEach((err) => {
-      if (err?.message) {
+    const keys = Object.keys(errors) as (keyof SignupTypes)[];
+    for (let index = 0; index < keys.length; index++) {
+      const element = errors[keys[index]];
+      if (element?.message) {
         addToast({
           type: 'error',
-          heading: 'Validation Error',
-          message: err.message,
+          heading: displayNames[keys[index]],
+          message: element.message,
         });
       }
-    });
+    }
   };
 
   return (
-    <View className="flex-1">
+    <View className="flex-1 bg-white">
+      <TopHeader
+        onBackPress={() => {
+          router.back();
+        }}
+        title=""
+      />
       <KeyboardAwareScrollView
         bottomOffset={50}
-        contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 24 }}
+        contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 16 }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}>
-        <View className="mb-14 flex-1 flex-col  justify-center">
-          <AppText className="mt-5 text-left font-semibold text-3xl">Setup your profile ✍️</AppText>
+        <View className="mb-5 flex-1 flex-col  justify-start">
+          <AppText className="text-left font-semibold text-3xl">Setup your profile ✍️</AppText>
           <AppText className="mt-2">
             Enter the details below to finish setting up your profile
           </AppText>
           <View className="mt-5 w-full flex-col gap-2">
-            <View className="flex-col gap-2">
+            <View className="mb-3 flex-col gap-2">
               <AppText className="font-medium">Register As</AppText>
-              <Grid cols={2} gap={2}>
+              <Grid cols={2} gap={4}>
                 {[
                   {
                     label: 'Regular User',
@@ -140,14 +150,14 @@ export default function Login() {
               name="firstName"
               label="First Name"
               autoComplete="name-given"
-              placeholder="Enter your First Name"
+              placeholder="Enter your first name"
             />
             <ControlledTextInput
               control={control}
               name="lastName"
               label="Last Name"
               autoComplete="name-family"
-              placeholder="Enter your Last Name"
+              placeholder="Enter your last name"
             />
             {watch('userType') === 'agent' && (
               <>
@@ -155,7 +165,7 @@ export default function Login() {
                   control={control}
                   name="company_name"
                   label="Registered Company Name"
-                  placeholder="Registered Company Name"
+                  placeholder="Registered company name"
                 />
                 <ControlledTextInput
                   control={control}
@@ -205,7 +215,7 @@ export default function Login() {
                   control={control}
                   name="phone"
                   // autoComplete="nu"
-                  placeholder="Enter your Phone Number"
+                  placeholder="Enter your phone number"
                   textContentType="telephoneNumber"
                   keyboardType="phone-pad"
                 />
@@ -214,18 +224,20 @@ export default function Login() {
             <ControlledCheckBox
               control={control}
               name="terms"
+              alignTop
               label={
                 <>
                   I confirm that I read and I agree with Oikoteck’s{' '}
                   <Link href="/terms-conditions" className="text-secondary">
                     Terms & Conditions
-                  </Link>
+                  </Link> *
                 </>
               }
             />
             <ControlledCheckBox
               control={control}
               name="privacy"
+              alignTop
               label={
                 <>
                   I confirm that I read and understood Oikoteck’s{' '}
@@ -243,12 +255,13 @@ export default function Login() {
                     rel="noopener noreferrer"
                     className="text-secondary">
                     Cookies Policy
-                  </Link>
+                  </Link> *
                 </>
               }
             />
             <ControlledCheckBox
               control={control}
+              alignTop
               name="share_consent"
               label="I consent to the sharing of my contact information and search preferences with real estate agents who offer listings which may align with my interests"
             />
@@ -321,3 +334,16 @@ const SignupSchema = z
   });
 
 type SignupTypes = z.infer<typeof SignupSchema>;
+
+const displayNames: Record<keyof SignupTypes, string> = {
+  company_name: 'Company Name',
+  country: 'Country',
+  firstName: 'First Name',
+  lastName: 'Last Name',
+  phone: 'Phone',
+  privacy: 'Privacy Policy',
+  share_consent: 'Share Consent',
+  terms: 'Terms and Conditions',
+  userType: 'User Type',
+  vat: 'VAT',
+};

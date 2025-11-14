@@ -8,6 +8,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { z } from 'zod';
 import AppText from '~/components/Elements/AppText';
 import { ControlledTextInput } from '~/components/Elements/TextInput';
+import TopHeader from '~/components/Elements/TopHeader';
 import PressableView from '~/components/HOC/PressableView';
 import SocialSignin from '~/components/Pages/Auth/SocialSignin';
 import useActivityIndicator from '~/store/useActivityIndicator';
@@ -52,22 +53,31 @@ export default function Login() {
   }, [user]);
 
   const onError = () => {
-    Object.values(errors).forEach((err) => {
-      if (err?.message) {
+
+    const keys = Object.keys(errors) as (keyof SignupTypes)[];
+    for (let index = 0; index < keys.length; index++) {
+      const element = errors[keys[index]];
+      if (element?.message) {
         addToast({
           type: 'error',
-          heading: 'Validation Error',
-          message: err.message,
+          heading: displayNames[keys[index]],
+          message: element.message,
         });
       }
-    });
+    }
   };
 
   return (
     <View className="flex-1">
+            <TopHeader
+        onBackPress={() => {
+          router.back();
+        }}
+        title=""
+      />
       <KeyboardAwareScrollView
         bottomOffset={50}
-        contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 24 }}
+        contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 16 }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}>
@@ -128,7 +138,7 @@ export default function Login() {
 const SignupSchema = z
   .object({
     email: z
-      .string()
+      .string({ error: 'Email is required' })
       .toLowerCase()
       .trim()
       .min(1, { message: 'Email is required' })
@@ -162,3 +172,9 @@ const SignupSchema = z
     path: ['confirmPassword'],
   });
 type SignupTypes = z.infer<typeof SignupSchema>;
+
+const displayNames: Record<keyof SignupTypes, string> = {
+  email: 'Email address',
+  password: 'Password',
+  confirmPassword: 'Confirm password',
+};

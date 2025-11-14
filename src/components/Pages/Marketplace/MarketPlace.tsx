@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { DateTime } from 'luxon';
 import Parse from 'parse/react-native';
 import { FadersHorizontalIcon, SortAscendingIcon, XCircleIcon } from 'phosphor-react-native';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -12,6 +12,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import AppText from '~/components/Elements/AppText';
 import AWSImage from '~/components/Elements/AWSImage';
 import { stringify_area_district } from '~/lib/stringify_district_area';
@@ -37,7 +38,7 @@ const district_images = [
   { district: 'Piraeus', image: 'district/pic3.png', url: 'Piraeus' },
   { district: 'Ionian Islands', image: 'district/pic4.png', url: 'Ioannina Prefecture' },
   { district: 'Thessaloniki', image: 'district/pic5.png', url: 'Thessaloniki' },
-  { district: 'Crete', image:  'district/pic6.png', url: 'Crete' },
+  { district: 'Crete', image: 'district/pic6.png', url: 'Crete' },
 ];
 
 type sortType = {
@@ -51,6 +52,9 @@ type ListItem = Property_Type | HeadingItem;
 const MarketPlace = ({ listing_type }: Props) => {
   // const params = useLocalSearchParams<filterType>();
   const { openSelect } = useSelect();
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [showTopCities, setShowTopCities] = useState(false);
+  const listRef = useRef<FlashList<any>>(null);
 
   const [districtModal, setDistrictModal] = useState(false);
   const [filtersModal, setFiltersModal] = useState(false);
@@ -382,6 +386,18 @@ const MarketPlace = ({ listing_type }: Props) => {
     return filter;
   }, [sort, search]);
 
+  const topHeight = useSharedValue(140);
+
+  useEffect(() => {
+    topHeight.value = withTiming(showTopCities ? 140 : 0, {
+      duration: 250,
+    });
+  }, [showTopCities]);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    height: topHeight.value,
+  }));
+
   return (
     <View className="flex-1 bg-white ">
       <View className="bg-white">
@@ -402,7 +418,11 @@ const MarketPlace = ({ listing_type }: Props) => {
           }}
         />
         {hasFilters ? (
-          <ScrollView horizontal key="filter" className="mx-4  py-1" showsVerticalScrollIndicator={false}
+          <ScrollView
+            horizontal
+            key="filter"
+            className="mx-4  py-1"
+            showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}>
             {filters.map((i) => (
               <TouchableWithoutFeedback key={i.filter} onPress={i.onPress}>
@@ -415,37 +435,56 @@ const MarketPlace = ({ listing_type }: Props) => {
             ))}
           </ScrollView>
         ) : (
-          <ScrollView
-            horizontal
-            key="district"
-            className="mx-4 py-2"
-            showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}>
-            {district_images.map((i) => (
-              <Pressable
-                key={i.district}
-                shouldRasterizeIOS
-                android_ripple={{ color: '#E2E4E8' }}
-                className="mr-2 flex-1  flex-col items-center  justify-center gap-2 rounded-2xl border border-[#E2E4E8] bg-white px-1  pb-2 pt-1 active:bg-black/20 "
-                onPress={() => changeSearch({ district: i.url })}>
-                <AWSImage
-                  contentFit="cover"
-                  src={i.image || ''}
-                  size='180x180'
-                  style={{ width: 90, height: 90, borderRadius: 13 }}
-                />
+          <Animated.View
+            style={[
+              animatedStyle,
+              {
+                overflow: 'hidden',
+              },
+            ]}>
+            <ScrollView
+              horizontal
+              key="district"
+              className="mx-4 py-2"
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}>
+              {district_images.map((i) => (
+                <Pressable
+                  key={i.district}
+                  shouldRasterizeIOS
+                  android_ripple={{ color: '#E2E4E8' }}
+                  className="mr-2 flex-1  flex-col items-center  justify-center gap-2 rounded-2xl border border-[#E2E4E8] bg-white px-1  pb-2 pt-1 active:bg-black/20 "
+                  onPress={() => changeSearch({ district: i.url })}>
+                  <AWSImage
+                    contentFit="cover"
+                    src={i.image || ''}
+                    size="180x180"
+                    style={{ width: 90, height: 90, borderRadius: 13 }}
+                  />
 
-                <AppText className="mx-2">{i.district}</AppText>
-              </Pressable>
-            ))}
-          </ScrollView>
+                  <AppText className="mx-2">{i.district}</AppText>
+                </Pressable>
+              ))}
+            </ScrollView>
+          </Animated.View>
         )}
       </LinearGradient>
       <View className="flex-1 bg-[#EEF1F7]">
         <FlashList
           className="w-full flex-1"
           data={properties}
-          decelerationRate={'fast'}
+          decelerationRate={'normal'}
+          onScroll={(e) => {
+            const y = e.nativeEvent.contentOffset.y;
+            console.log(y);
+            if (showTopCities) {
+              setShowTopCities(y < 200);
+            } else {
+              setShowTopCities(y < 20);
+            }
+            // Toggle visibility threshold (tune as needed)
+            setShowScrollTop(y > 2500);
+          }}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
           estimatedItemSize={(deviceWidth - 16 * 2) / 1.4 + 8} // ✅ improves performance

@@ -17,7 +17,7 @@ export const SearchView = ({ listing_type, text, onPress, onClear, onFilter }: P
       <View className="shrink flex-row items-center">
         <TouchableWithoutFeedback onPress={onPress}>
           <View className="flex-row items-center">
-            <GlobeHemisphereEastIcon />
+            <GlobeHemisphereEastIcon weight='fill' color={tailwind.theme.colors.primary}/>
             <AppText
               style={{
                 flex: 1,

@@ -25,4 +25,5 @@ export type User_Type = {
   terms: boolean;
   privacy: boolean;
   share_consent: boolean;
+  activated: boolean;
 };

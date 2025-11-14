@@ -86,7 +86,7 @@ const Label = ({ focused, label }: { focused: boolean; label: string }) => {
     <View className="w-full flex-row items-center justify-center">
       <AppText
         className={cn(
-          ' w-full whitespace-nowrap text-nowrap text-center text-xs leading-none text-o_light_gray',
+          ' w-full whitespace-nowrap text-nowrap text-center text-[11px] font-medium leading-none text-o_light_gray',
           {
             'text-secondary': focused,
           }
