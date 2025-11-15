@@ -31,25 +31,26 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
     owner = property.owner as User_Type;
   }
   return (
-    <View className="relative mb-3 ml-4">
+    <View className="relative mb-[14px] ml-4">
       <Pressable
         onPress={() => {
           router.push(`/property/${property.objectId}`);
         }}>
         <View
-          className=" flex-row justify-between overflow-hidden rounded-md bg-white p-2"
+          className=" flex-row justify-between overflow-hidden rounded-2xl bg-white p-3"
           style={{
             width: wide,
             height: height,
           }}>
           <View className="flex-1 bg-white ">
-            <View className="relative flex-1 overflow-hidden rounded-lg">
+            <View className="relative flex-1 overflow-hidden rounded-2xl">
               <Carousel
                 data={property.images}
                 loop={false}
                 pagingEnabled={true}
                 snapEnabled={true}
                 width={wide}
+                //  mode="horizontal-stack"
                 style={{ width: '100%' }}
                 onProgressChange={(_, absoluteProgress) => {
                   progress.value = absoluteProgress;
@@ -70,14 +71,14 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
                         size="800x800"
                       />
                       {property.agent_icon && owner.logo && (
-                        <View className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2  z-10">
+                        <View className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2  -translate-y-1/2">
                           <AWSImage
                             contentFit="cover"
                             placeholderContentFit="cover"
                             src={owner.logo}
                             size="300x300"
                             debug
-                            style={{ width: 70, height: 70,opacity:0.7 }}
+                            style={{ width: 70, height: 70, opacity: 0.7 }}
                           />
                         </View>
                       )}
@@ -93,72 +94,50 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
                 })}
               </View>
 
-              <View
-                className={cn(
-                  'absolute left-2 top-3  flex w-20 items-center justify-center rounded-lg bg-opacity-50 px-2 py-1 ',
-                  {
-                    'bg-gold': property.plan == 'Gold',
-                    'bg-promote': property.plan == 'Promote',
-                    'bg-promote_plus': property.plan == 'Promote +',
-                    'bg-platinum': property.plan == 'Platinum',
-                  }
-                )}>
-                <AppText className="text-xs text-white">{property.plan}</AppText>
-              </View>
+              {property.plan !== 'Free' && (
+                <View
+                  className={cn(
+                    'absolute left-2 top-3  flex w-20 items-center justify-center rounded-full bg-opacity-50 px-2 py-1 ',
+                    {
+                      'bg-gold': property.plan == 'Gold',
+                      'bg-promote': property.plan == 'Promote',
+                      'bg-promote_plus': property.plan == 'Promote +',
+                      'bg-platinum': property.plan == 'Platinum',
+                    }
+                  )}>
+                  <AppText className="text-xs text-white">{property.plan}</AppText>
+                </View>
+              )}
               <View className="absolute right-2 top-2 z-10">
                 <FavButton property_id={property.objectId} property={property} />
               </View>
-
-              {/* <MyCarousel
-              images={property.images_low ? property.images_low : property.images}
-              onPress={propertyPress}
-            /> */}
-              {/* <PropertyMapImage
-            status={props.isMap && property.images.length > 0}
-            propertyPress={propertyPress}
-            image={'https://res.cloudinary.com/dgptopskq/image/upload/v1649909971/kl96mnzmceppaiwmboe0.jpg'}
-          /> */}
-              {/* <PropertyMapImage
-            status={props.isMap && property.images.length > 0}
-            propertyPress={propertyPress}
-            image={property.images_low ? property.images_low[0] : property.images[0]}
-          /> */}
-
-              {/* <PropertyType plan={property.plan} />
-          <FavoriteButtonContainer>
-            <FavouriteButton
-              pId={props.data.id}
-              navigation={props.navigation}
-              // favouritePress={props.favouritePress}
-              // removeFavourite={props.removeFavourite}
-            />
-          </FavoriteButtonContainer> */}
             </View>
-
             <View className="mt-2">
               <View className="flex-row items-center justify-between">
                 <View className=" flex-row items-baseline">
-                  <AppText className="font-bold text-lg text-secondary">
+                  <AppText className="font-semibold text-[17px] text-secondary">
                     {'€ ' + thoasandseprator(property.price)}
                   </AppText>
                   {property.listing_for !== 'Sale' && (
-                    <AppText className="text-xs text-o_light_gray"> / Month</AppText>
+                    <AppText className="font-medium text-[15px] text-o_light_gray">
+                      {' '}
+                      / Month
+                    </AppText>
                   )}
                 </View>
               </View>
-
               <View className="flex-row items-center justify-between">
-                <AppText className="font-bold text-base text-primary">{property.title}</AppText>
+                <AppText className="font-semibold text-[15px] text-primary">
+                  {property.title}
+                </AppText>
               </View>
-
-              <AppText className="text-xs text-primary">
+              <AppText className="text-sm text-[#75758A]">
                 {stringify_area_district({
                   district: property.district,
                   area_1: property.area_1,
                   area_2: property.area_2,
                 })}
               </AppText>
-
               <View className="mt-1 flex-row items-center justify-start">
                 <View className="mr-4 flex-row items-center">
                   <BedIcon
@@ -179,7 +158,7 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
                     className="text-o_light_gray"
                   />
                   <AppText className="ml-1 mr-0 text-sm text-o_light_gray">
-                    {property.bedrooms} beds
+                    {property.bathrooms} baths
                   </AppText>
                 </View>
                 <View className="mr-4 flex-row items-center  text-o_light_gray">
@@ -226,3 +205,37 @@ function Dot({ index, progress }: any) {
 
   return <Animated.View style={[animatedStyle]} className="mx-1 h-2 w-2 rounded-full bg-white" />;
 }
+
+
+function getDotRange(length: number, current: number, max = 5) {
+  if (length <= max) return { start: 0, end: length - 1 };
+
+  let start = current - Math.floor(max / 2);
+  let end = current + Math.floor(max / 2);
+
+  if (start < 0) {
+    start = 0;
+    end = max - 1;
+  }
+
+  if (end >= length) {
+    end = length - 1;
+    start = length - max;
+  }
+
+  return { start, end };
+}
+
+const Dots = ({ imagesLength, progress }: any) => {
+  const currentIndex = Math.round(progress.value);
+  const { start, end } = getDotRange(imagesLength, currentIndex, 5);
+
+  return (
+    <View className="absolute bottom-2 left-0 right-0 flex-row justify-center">
+      {Array.from({ length: end - start + 1 }).map((_, i) => {
+        const dotIndex = start + i;
+        return <Dot key={dotIndex} index={dotIndex} progress={progress} />;
+      })}
+    </View>
+  );
+};

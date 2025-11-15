@@ -3,7 +3,13 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { LinearGradient } from 'expo-linear-gradient';
 import { DateTime } from 'luxon';
 import Parse from 'parse/react-native';
-import { FadersHorizontalIcon, SortAscendingIcon, XCircleIcon } from 'phosphor-react-native';
+import {
+  CaretDoubleUpIcon,
+  FadersHorizontalIcon,
+  GlobeHemisphereEastIcon,
+  SortAscendingIcon,
+  XIcon,
+} from 'phosphor-react-native';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
@@ -20,6 +26,7 @@ import useSelect from '~/store/useSelectHelper';
 import { Property_Type } from '~/type/property';
 import { deviceWidth } from '~/utils/global';
 import { isProperty } from '~/utils/property';
+import { tailwind_color } from '~/utils/tailwind';
 import PropertyCard from '../../Cards/PropertyCard';
 import DistrictArea from '../../Sheets/District/DistrictArea';
 import FilterModal, { filterType } from './FilterModal';
@@ -31,6 +38,7 @@ type Props = {
 };
 
 const limit = 40;
+const topbarHeight = 170;
 
 const district_images = [
   { district: 'Athens', image: 'district/pic1.png', url: 'Athens - Center' },
@@ -53,7 +61,7 @@ const MarketPlace = ({ listing_type }: Props) => {
   // const params = useLocalSearchParams<filterType>();
   const { openSelect } = useSelect();
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [showTopCities, setShowTopCities] = useState(false);
+  const [showTopCities, setShowTopCities] = useState(true);
   const listRef = useRef<FlashList<any>>(null);
 
   const [districtModal, setDistrictModal] = useState(false);
@@ -102,8 +110,9 @@ const MarketPlace = ({ listing_type }: Props) => {
       } catch {}
       return { count: 0, results: [], hasmore: false };
     },
-    getNextPageParam: (lastPage, _, lastPageParam) =>
-      lastPage.hasmore ? lastPageParam + 1 : undefined,
+    getNextPageParam: (lastPage, _, lastPageParam) => {
+      return lastPage.hasmore ? lastPageParam + 1 : undefined;
+    },
     initialPageParam: 0,
   });
 
@@ -147,16 +156,17 @@ const MarketPlace = ({ listing_type }: Props) => {
 
   const properties: ListItem[] = useMemo(() => {
     const main = data?.pages.flatMap((page) => page.results) ?? [];
-    if (!hasNextPage && similar?.results?.length) {
+    if (similar?.results?.length) {
       // inject a "marker" item so we can show heading before similar listings
       return [
+        { objectId: 'main-heading', type: 'heading' as const },
         ...main,
         { objectId: 'similar-heading', type: 'heading' as const },
         ...similar.results,
       ];
     }
-    return main;
-  }, [data, hasNextPage, similar]);
+    return [{ objectId: 'main-heading', type: 'heading' as const }, ...main];
+  }, [data, similar]);
 
   const stringified_area = useMemo(
     () =>
@@ -186,6 +196,11 @@ const MarketPlace = ({ listing_type }: Props) => {
         onPress: () => {
           openSelect({
             label: 'Sort by',
+            className: {
+              label: { wrapper: 'justify-start mb-4', text: 'text-2xl' },
+              option_label: { wrapper: 'py-4', text: 'text-[15px]  font-normal' },
+            },
+            hasXIcon: true,
             options: [
               {
                 label: 'Most Recent',
@@ -244,7 +259,7 @@ const MarketPlace = ({ listing_type }: Props) => {
     if (search.bedroom !== null) {
       filter.push({
         filter: 'Bedrooms: ' + search.bedroom + '+',
-        icon: <XCircleIcon size={20} />,
+        icon: <XIcon size={14} color={tailwind_color.secondary} weight="bold" />,
         onPress: () => {
           changeSearch({ bedroom: null });
         },
@@ -253,7 +268,7 @@ const MarketPlace = ({ listing_type }: Props) => {
     if (search.bathroom !== null) {
       filter.push({
         filter: 'Bathrooms: ' + search.bathroom + '+',
-        icon: <XCircleIcon size={20} />,
+        icon: <XIcon size={14} />,
         onPress: () => {
           changeSearch({ bathroom: null });
         },
@@ -262,7 +277,7 @@ const MarketPlace = ({ listing_type }: Props) => {
     if (search.furnished !== null) {
       filter.push({
         filter: 'Furnished: ' + (search.furnished ? 'Yes' : 'No'),
-        icon: <XCircleIcon size={20} />,
+        icon: <XIcon size={14} />,
         onPress: () => {
           changeSearch({ bathroom: null });
         },
@@ -271,7 +286,7 @@ const MarketPlace = ({ listing_type }: Props) => {
     if (search.keywords !== null) {
       filter.push({
         filter: 'Keywords: ' + search.keywords,
-        icon: <XCircleIcon size={20} />,
+        icon: <XIcon size={14} />,
         onPress: () => {
           changeSearch({ bathroom: null });
         },
@@ -304,7 +319,7 @@ const MarketPlace = ({ listing_type }: Props) => {
 
       filter.push({
         filter: text,
-        icon: <XCircleIcon size={20} />,
+        icon: <XIcon size={14} />,
         onPress: () => {
           changeSearch({ maxDate: null, minDate: null });
         },
@@ -325,7 +340,7 @@ const MarketPlace = ({ listing_type }: Props) => {
 
       filter.push({
         filter: text,
-        icon: <XCircleIcon size={20} />,
+        icon: <XIcon size={14} />,
         onPress: () => {
           changeSearch({ maxPrice: null, minPrice: null });
         },
@@ -346,7 +361,7 @@ const MarketPlace = ({ listing_type }: Props) => {
 
       filter.push({
         filter: text,
-        icon: <XCircleIcon size={20} />,
+        icon: <XIcon size={14} />,
         onPress: () => {
           changeSearch({ minSize: null, maxSize: null });
         },
@@ -355,7 +370,7 @@ const MarketPlace = ({ listing_type }: Props) => {
     if (search.property_type !== null) {
       filter.push({
         filter: 'Property Type: ' + search.property_type,
-        icon: <XCircleIcon size={20} />,
+        icon: <XIcon size={14} />,
         onPress: () => {
           changeSearch({ property_type: null });
         },
@@ -364,32 +379,20 @@ const MarketPlace = ({ listing_type }: Props) => {
     if (search.property_category !== null) {
       filter.push({
         filter: 'Property Category: ' + search.property_category,
-        icon: <XCircleIcon size={20} />,
+        icon: <XIcon size={14} />,
         onPress: () => {
           changeSearch({ property_category: null });
         },
       });
     }
 
-    // Object.keys(search).forEach((i) => {
-    //   if (search[i as keyof filterType] !== null) {
-    //     filter.push({
-    //       filter: i + ': ' + search[i as keyof filterType],
-    //       icon: <XCircleIcon size={20} />,
-    //       onPress: () => {
-    //         changeSearch({ [i]: null });
-    //       },
-    //     });
-    //   }
-    // })
-
     return filter;
   }, [sort, search]);
 
-  const topHeight = useSharedValue(140);
+  const topHeight = useSharedValue(topbarHeight);
 
   useEffect(() => {
-    topHeight.value = withTiming(showTopCities ? 140 : 0, {
+    topHeight.value = withTiming(showTopCities ? topbarHeight : 0, {
       duration: 250,
     });
   }, [showTopCities]);
@@ -421,18 +424,55 @@ const MarketPlace = ({ listing_type }: Props) => {
           <ScrollView
             horizontal
             key="filter"
-            className="mx-4  py-1"
+            className="mx-4 mt-2  py-1"
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}>
-            {filters.map((i) => (
-              <TouchableWithoutFeedback key={i.filter} onPress={i.onPress}>
-                <View className="mr-2 h-10 flex-1 flex-row items-center justify-center rounded-2xl border border-[#E2E4E8] bg-white  px-3 py-2 ">
-                  {i.iconFirst ? i.icon : null}
-                  <AppText className="mx-2 bg-white text-sm text-primary">{i.filter}</AppText>
-                  {i.iconFirst ? null : i.icon}
+            {filters.map((i) => {
+              console.log(filters.length - 2);
+              if (i.filter === 'Sort') {
+                return (
+                  <TouchableWithoutFeedback key={i.filter} onPress={i.onPress}>
+                    <View className="relative mr-2 h-10 flex-1 flex-row items-center justify-center rounded-2xl border border-[#E2E4E8] bg-white  px-3 py-2 ">
+                      {i.iconFirst ? i.icon : null}
+                      <AppText className="mx-2 bg-white text-sm text-primary">{i.filter}</AppText>
+                      {i.iconFirst ? null : i.icon}
+                    </View>
+                  </TouchableWithoutFeedback>
+                );
+              }
+              if (i.filter === 'Filter') {
+                return (
+                  <TouchableWithoutFeedback key={i.filter} onPress={i.onPress}>
+                    <View className="relative mr-2 h-10 flex-1 flex-row items-center justify-center rounded-2xl border border-[#E2E4E8] bg-white  px-3 py-2 ">
+                      {i.iconFirst ? i.icon : null}
+                      <AppText className="mx-2 bg-white text-sm text-primary">{i.filter}</AppText>
+                      {i.iconFirst ? null : i.icon}
+                      <View className="absolute -right-1 -top-1 size-5 items-center justify-center rounded-full border border-secondary bg-secondary">
+                        <AppText className="font-medium text-xs text-white">
+                          {filters.length - 2}
+                        </AppText>
+                      </View>
+                    </View>
+                  </TouchableWithoutFeedback>
+                );
+              }
+              return (
+                <View className="mr-2 h-10 flex-1 flex-row items-center justify-center rounded-2xl border border-secondary bg-secondary/10  px-3 py-2 ">
+                  {i.iconFirst ? (
+                    <TouchableWithoutFeedback key={i.filter} onPress={i.onPress}>
+                      {i.icon}
+                    </TouchableWithoutFeedback>
+                  ) : null}
+
+                  <AppText className="mx-2  text-sm text-secondary">{i.filter}</AppText>
+                  {i.iconFirst ? null : (
+                    <TouchableWithoutFeedback key={i.filter} onPress={i.onPress}>
+                      {i.icon}
+                    </TouchableWithoutFeedback>
+                  )}
                 </View>
-              </TouchableWithoutFeedback>
-            ))}
+              );
+            })}
           </ScrollView>
         ) : (
           <Animated.View
@@ -442,6 +482,7 @@ const MarketPlace = ({ listing_type }: Props) => {
                 overflow: 'hidden',
               },
             ]}>
+            <AppText className="ml-4 mt-3 font-medium">Explore Popular Cities</AppText>
             <ScrollView
               horizontal
               key="district"
@@ -469,14 +510,15 @@ const MarketPlace = ({ listing_type }: Props) => {
           </Animated.View>
         )}
       </LinearGradient>
+
       <View className="flex-1 bg-[#EEF1F7]">
         <FlashList
+          ref={listRef}
           className="w-full flex-1"
           data={properties}
           decelerationRate={'normal'}
           onScroll={(e) => {
             const y = e.nativeEvent.contentOffset.y;
-            console.log(y);
             if (showTopCities) {
               setShowTopCities(y < 200);
             } else {
@@ -487,11 +529,20 @@ const MarketPlace = ({ listing_type }: Props) => {
           }}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
-          estimatedItemSize={(deviceWidth - 16 * 2) / 1.4 + 8} // ✅ improves performance
+          estimatedItemSize={(deviceWidth - 16 * 2) / 1.2 + 14} // ✅ improves performance
           keyExtractor={(item) => item.objectId}
           renderItem={({ item }) => {
             if (isProperty(item)) {
               return <PropertyCard property={item} />;
+            }
+            if (item.objectId === 'main-heading') {
+              return (
+                <View className="px-4 pb-4 pt-2">
+                  <AppText className="font-semibold text-lg text-gray-800">
+                    Explore All Listing
+                  </AppText>
+                </View>
+              );
             }
             return (
               <View className="px-4 py-6">
@@ -517,6 +568,43 @@ const MarketPlace = ({ listing_type }: Props) => {
             )
           }
         />
+
+        <View className="absolute bottom-3 right-5 flex-row gap-2">
+          <Pressable
+            onPress={() => {
+              // listRef.current?.scrollToOffset({ offset: 0, animated: true });
+            }}
+            // style={{
+            //   position: 'absolute',
+            //   bottom: 20,
+            //   right: 16,
+            //   backgroundColor: '#000',
+            //   borderRadius: 999,
+            //   padding: 14,
+            //   elevation: 6,
+            // }}
+            className="elevation-md flex-row items-center gap-1 rounded-full bg-secondary p-3">
+            <GlobeHemisphereEastIcon color="#fff" weight="fill" size={18} />
+            <AppText className="w-10 font-medium text-[13px] text-white">Map</AppText>
+          </Pressable>
+
+          {showScrollTop && (
+            <Pressable
+              onPress={() => listRef.current?.scrollToOffset({ offset: 0, animated: true })}
+              // style={{
+              //   position: 'absolute',
+              //   bottom: 20,
+              //   right: 16,
+              //   backgroundColor: '#000',
+              //   borderRadius: 999,
+              //   padding: 14,
+              //   elevation: 6,
+              // }}
+              className="elevation-md rounded-full bg-secondary p-3">
+              <CaretDoubleUpIcon size={22} color="white" />
+            </Pressable>
+          )}
+        </View>
       </View>
       <DistrictArea
         visible={districtModal}

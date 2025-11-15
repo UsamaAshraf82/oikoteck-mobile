@@ -62,8 +62,6 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
     });
   };
 
-  console.log(watch());
-
   return (
     <View className="flex-1 bg-white px-5 pt-5">
       <View className="flex-1">

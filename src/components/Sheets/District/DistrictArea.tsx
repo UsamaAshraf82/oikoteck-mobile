@@ -8,7 +8,7 @@ import {
   Platform,
   TouchableNativeFeedback,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
@@ -88,7 +88,7 @@ const DistrictArea = ({ visible, onClose, value = '', onPress }: Props) => {
               marginHorizontal: 16,
               paddingVertical: Platform.OS === 'ios' ? 10 : 0,
             }}>
-       <GlobeHemisphereEastIcon weight='fill' color={tailwind.theme.colors.primary}/>
+            <GlobeHemisphereEastIcon weight="fill" color={tailwind.theme.colors.primary} />
             <TextInput
               style={{
                 flex: 1,

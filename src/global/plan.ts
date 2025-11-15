@@ -1,8 +1,6 @@
 import { GOLD_PRICE, PLATINUM_PRICE, PROMOTE_PLUS_PRICE, PROMOTE_PRICE } from "./global";
 
 
-console.log(GOLD_PRICE, PLATINUM_PRICE, PROMOTE_PLUS_PRICE, PROMOTE_PRICE);
-
 export const plans = [
   {
     link: '/post-listing',

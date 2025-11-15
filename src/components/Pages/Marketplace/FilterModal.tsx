@@ -1,5 +1,5 @@
-import { XIcon } from 'phosphor-react-native';
-import React, { useEffect, useState } from 'react';
+import { CaretDownIcon, XIcon } from 'phosphor-react-native';
+import { useEffect, useState } from 'react';
 import { ScrollView, TextInput, TouchableNativeFeedback, View } from 'react-native';
 import Modal from 'react-native-modal';
 import AppText from '~/components/Elements/AppText';
@@ -56,7 +56,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
       isVisible={visible}
       onBackdropPress={onClose}
       onSwipeComplete={onClose}
-      // swipeDirection="down"
+      swipeDirection="down"
       hardwareAccelerated
       avoidKeyboard={false}
       style={{ justifyContent: 'flex-end', margin: 0 }}>
@@ -68,7 +68,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
         <View className="mb-3 h-1 w-10 self-center rounded-sm bg-[#ccc]" />
         <View className="flex-1">
           <View className="flex-row items-center justify-between">
-            <AppText className="text-2xl font-bold text-primary" >Filters</AppText>
+            <AppText className="font-bold text-2xl text-primary">Filters</AppText>
             <TouchableNativeFeedback onPress={onClose}>
               <XIcon />
             </TouchableNativeFeedback>
@@ -78,11 +78,11 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
               className=""
               keyboardShouldPersistTaps="handled"
               keyboardDismissMode="on-drag"
-             showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}>
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}>
               {/* Price Range */}
-              <View className="mt-4">
-                <AppText className="text-lg font-medium text-primary" >Price Range</AppText>
+              <View className="mt-7">
+                <AppText className="font-semibold text-sm text-primary">Price Range</AppText>
                 <View className="mt-2 flex-row items-center justify-between">
                   <PressableView
                     onPress={() => {
@@ -118,20 +118,25 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                         },
                       });
                     }}
-                    className="h-10  flex-1 items-center  justify-center rounded-xl border border-gray-200">
-                    {listing_type === 'Sale' ? (
-                      <AppText>
-                        {filter.minPrice ? '€ ' + numberminify(filter.minPrice) : 'No Min'}
+                    className=" h-14  flex-1 items-center  justify-center rounded-2xl border border-gray-200">
+                    <View className="w-full flex-row items-center justify-between px-2">
+                      <AppText
+                        className={cn('text-sm', {
+                          'text-[#8D95A5]': filter.minPrice === null,
+                          'text-primary': filter.minPrice !== null,
+                        })}>
+                        {filter.minPrice
+                          ? listing_type === 'Sale'
+                            ? '€ ' + numberminify(filter.minPrice)
+                            : '€ ' + thoasandseprator(filter.minPrice)
+                          : 'No Min'}
                       </AppText>
-                    ) : (
-                      <AppText>
-                        {filter.minPrice ? '€ ' + thoasandseprator(filter.minPrice) : 'No Min'}
-                      </AppText>
-                    )}
+                      <CaretDownIcon color="#8D95A5" size={16} />
+                    </View>
                   </PressableView>
-                  <AppText className="mx-1 text-4xl" > - </AppText>
+                  <AppText className="mx-1 text-2xl text-[#8D95A5]"> - </AppText>
                   <PressableView
-                    className="h-10  flex-1 items-center  justify-center rounded-xl border border-gray-200"
+                    className=" h-14  flex-1 items-center  justify-center rounded-2xl border border-gray-200"
                     onPress={() => {
                       let options = [
                         { label: 'No Max', value: null },
@@ -157,27 +162,31 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                       openSelect({
                         label: 'Max Price',
                         options: options,
-
                         onPress: (e) => {
                           changeSearch({ maxPrice: e.value as number | null });
                         },
                       });
                     }}>
-                    {listing_type === 'Sale' ? (
-                      <AppText>
-                        {filter.maxPrice ? '€ ' + numberminify(filter.maxPrice) : 'No Max'}
+                    <View className="w-full flex-row items-center justify-between px-2">
+                      <AppText
+                        className={cn('text-sm', {
+                          'text-[#8D95A5]': filter.minPrice === null,
+                          'text-primary': filter.minPrice !== null,
+                        })}>
+                        {filter.maxPrice
+                          ? listing_type === 'Sale'
+                            ? '€ ' + numberminify(filter.maxPrice)
+                            : '€ ' + thoasandseprator(filter.maxPrice)
+                          : 'No Max'}
                       </AppText>
-                    ) : (
-                      <AppText>
-                        {filter.maxPrice ? '€ ' + thoasandseprator(filter.maxPrice) : 'No Max'}
-                      </AppText>
-                    )}
+                      <CaretDownIcon color="#8D95A5" size={16} />
+                    </View>
                   </PressableView>
                 </View>
               </View>
               {/* Size */}
-              <View className="mt-4">
-                <AppText className="text-lg font-medium text-primary" >Size</AppText>
+              <View className="mt-7">
+                <AppText className="font-semibold text-sm text-primary">Size</AppText>
                 <View className="mt-2 flex-row items-center justify-between">
                   <PressableView
                     onPress={() => {
@@ -200,12 +209,21 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                         },
                       });
                     }}
-                    className="h-10  flex-1 items-center  justify-center rounded-xl border border-gray-200">
-                    <AppText>{filter.minSize ? numberminify(filter.minSize) + ' m²' : 'No Min'}</AppText>
+                    className=" h-14  flex-1 items-center  justify-center rounded-2xl border border-gray-200">
+                    <View className="w-full flex-row items-center justify-between px-2">
+                      <AppText
+                        className={cn('text-sm', {
+                          'text-[#8D95A5]': filter.minSize === null,
+                          'text-primary': filter.minSize !== null,
+                        })}>
+                        {filter.minSize ? numberminify(filter.minSize) + ' m²' : 'No Min'}
+                      </AppText>
+                      <CaretDownIcon color="#8D95A5" size={16} />
+                    </View>
                   </PressableView>
-                  <AppText className="mx-1 text-4xl" > - </AppText>
+                  <AppText className="mx-1 text-2xl text-[#8D95A5]"> - </AppText>
                   <PressableView
-                    className="h-10  flex-1 items-center  justify-center rounded-xl border border-gray-200"
+                    className=" h-14  flex-1 items-center  justify-center rounded-2xl border border-gray-200"
                     onPress={() => {
                       let options = [
                         { label: 'No Min', value: null },
@@ -226,13 +244,24 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                         },
                       });
                     }}>
-                    <AppText>{filter.maxSize ? numberminify(filter.maxSize) + ' m²' : 'No Max'}</AppText>
+                    <View className="w-full flex-row items-center justify-between px-2">
+                      <AppText
+                        className={cn('text-sm', {
+                          'text-[#8D95A5]': filter.maxSize === null,
+                          'text-primary': filter.maxSize !== null,
+                        })}>
+                        {filter.maxSize ? numberminify(filter.maxSize) + ' m²' : 'No Max'}
+                      </AppText>
+                      <CaretDownIcon color="#8D95A5" size={16} />
+                    </View>
                   </PressableView>
                 </View>
               </View>
               {/* Bedrooms */}
-              <View className="mt-4">
-                <AppText className="text-lg font-medium text-primary" >Bedrooms (R) / Rooms (C)</AppText>
+              <View className="mt-7">
+                <AppText className="font-semibold text-sm text-primary">
+                  Bedrooms (R) / Rooms (C)
+                </AppText>
                 <View className="mt-2 flex-row items-center justify-between">
                   {[
                     { label: 'Any', value: null },
@@ -248,7 +277,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                           key={item.label}
                           onPress={() => changeSearch({ bedroom: item.value })}
                           className={cn(
-                            'h-10 flex-1 items-center  justify-center rounded-l-xl  border border-gray-200',
+                            'h-14 flex-1 items-center  justify-center rounded-l-xl  border border-gray-200',
                             {
                               'border-secondary bg-secondary/10 ': filter.bedroom === item.value,
                             }
@@ -268,7 +297,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                           key={item.label}
                           onPress={() => changeSearch({ bedroom: item.value })}
                           className={cn(
-                            'h-10 flex-1 items-center  justify-center rounded-r-xl  border border-gray-200',
+                            'h-14 flex-1 items-center  justify-center rounded-r-xl  border border-gray-200',
                             {
                               'border-secondary bg-secondary/10 ': filter.bedroom === item.value,
                             }
@@ -287,7 +316,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                         key={item.label}
                         onPress={() => changeSearch({ bedroom: item.value })}
                         className={cn(
-                          'h-10 flex-1 items-center  justify-center   border border-gray-200',
+                          'h-14 flex-1 items-center  justify-center   border border-gray-200',
                           {
                             'border-secondary bg-secondary/10 ': filter.bedroom === item.value,
                           }
@@ -304,8 +333,8 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                 </View>
               </View>
               {/* Bathrooms */}
-              <View className="mt-4">
-                <AppText className="text-lg font-medium text-primary" >Bathrooms</AppText>
+              <View className="mt-7">
+                <AppText className="font-semibold text-sm text-primary">Bathrooms</AppText>
                 <View className="mt-2 flex-row items-center justify-between">
                   {[
                     { label: 'Any', value: null },
@@ -321,7 +350,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                           key={item.label}
                           onPress={() => changeSearch({ bathroom: item.value })}
                           className={cn(
-                            'h-10 flex-1 items-center  justify-center rounded-l-xl  border border-gray-200',
+                            'h-14 flex-1 items-center  justify-center rounded-l-xl  border border-gray-200',
                             {
                               'border-secondary bg-secondary/10 ': filter.bathroom === item.value,
                             }
@@ -341,7 +370,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                           key={item.label}
                           onPress={() => changeSearch({ bathroom: item.value })}
                           className={cn(
-                            'h-10 flex-1 items-center  justify-center rounded-r-xl  border border-gray-200',
+                            'h-14 flex-1 items-center  justify-center rounded-r-xl  border border-gray-200',
                             {
                               'border-secondary bg-secondary/10 ': filter.bathroom === item.value,
                             }
@@ -360,7 +389,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                         key={item.label}
                         onPress={() => changeSearch({ bathroom: item.value })}
                         className={cn(
-                          'h-10 flex-1 items-center  justify-center border border-gray-200',
+                          'h-14 flex-1 items-center  justify-center border border-gray-200',
                           {
                             'border-secondary bg-secondary/10 ': filter.bathroom === item.value,
                           }
@@ -377,8 +406,8 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                 </View>
               </View>
               {/* Furnished */}
-              <View className="mt-4">
-                <AppText className="text-lg font-medium text-primary" >Furnished</AppText>
+              <View className="mt-7">
+                <AppText className="font-semibold text-sm text-primary">Furnished</AppText>
                 <View className="mt-2 flex-row items-center justify-between rounded-lg bg-[#F6F8FA] p-2">
                   {[
                     { label: 'Any', value: null },
@@ -406,8 +435,10 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
 
               {/* Date Range */}
               <View>
-                <View className="mt-4">
-                  <AppText className="text-lg font-medium text-primary" >Min. Move-in Date</AppText>
+                <View className="mt-7">
+                  <AppText className="font-semibold text-sm text-primary">
+                    Min. Move-in Date
+                  </AppText>
                   <View className="mt-2 flex-row items-center justify-between">
                     <DatePicker
                       className="h-10 flex-1 items-center justify-center  rounded-xl border border-gray-200 "
@@ -416,8 +447,10 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                     />
                   </View>
                 </View>
-                <View className="mt-4">
-                  <AppText className="text-lg font-medium text-primary" >Max. Move-in Date</AppText>
+                <View className="mt-7">
+                  <AppText className="font-semibold text-sm text-primary">
+                    Max. Move-in Date
+                  </AppText>
                   <View className="mt-2 flex-row items-center justify-between">
                     <DatePicker
                       className="h-10 flex-1 items-center justify-center  rounded-xl border border-gray-200 "
@@ -428,20 +461,20 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                 </View>
               </View>
               {/* Keywords */}
-              <View className="mt-4">
-                <AppText className="text-lg font-medium text-primary" >Keywords</AppText>
+              <View className="mt-7">
+                <AppText className="font-semibold text-sm text-primary">Keywords</AppText>
                 <View>
                   <TextInput
                     className="mt-2 h-12 w-full rounded-lg border border-gray-200 px-3 py-3"
-                    placeholder="Pool Gym Solar Panel etc."
+                    placeholder="Pool, Gym, Solar Panel etc."
                     value={filter.keywords || undefined}
                     onChangeText={(text) => changeSearch({ keywords: text })}
                   />
                 </View>
               </View>
               {/* Property Type */}
-              <View className="mt-4">
-                <AppText className="text-lg font-medium text-primary" >Property Type</AppText>
+              <View className="mt-7">
+                <AppText className="font-semibold text-sm text-primary">Property Type</AppText>
                 <View className="mt-2">
                   {[
                     { label: 'Residential (R)', value: 'Residential' },
@@ -452,7 +485,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                     <Checkbox
                       label={item.label}
                       key={item.label}
-                      labelClassName='ml-2'
+                      labelClassName="ml-2"
                       value={filter.property_type === item.value}
                       onChange={() =>
                         changeSearch({
@@ -464,14 +497,14 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                 </View>
               </View>
               {/* Property Category */}
-              <View className="mt-4">
-                <AppText className="text-lg font-medium text-primary" >Property Category</AppText>
+              <View className="mt-7">
+                <AppText className="font-semibold text-sm text-primary">Property Category</AppText>
                 <View className="mt-2">
                   {property_category(filter.property_type, true).map((item) => (
                     <Checkbox
                       label={item === null ? 'Any' : item}
                       key={item}
-                          labelClassName='ml-2'
+                      labelClassName="ml-2"
                       value={filter.property_category === item}
                       onChange={() =>
                         changeSearch({
@@ -482,12 +515,12 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                   ))}
                 </View>
               </View>
-              <View className="mt-4" />
+              <View className="mt-7" />
             </ScrollView>
           </View>
-          <View className="flex-row justify-between">
+          <View className="mt-2 flex-row justify-between">
             <PressableView
-              className="mr-0.5 h-10 flex-1 overflow-hidden rounded-full border border-gray-200"
+              className="mr-2 h-12 flex-1 overflow-hidden rounded-full border border-gray-200"
               onPress={() => {
                 onPress({
                   district: value.district,
@@ -507,14 +540,14 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                   property_category: null,
                 });
               }}>
-              <AppText className="text-primary" >Reset All</AppText>
+              <AppText className="text-primary font-bold text-[15px]">Reset All</AppText>
             </PressableView>
             <PressableView
-              className="ml0.5 h-10 flex-1 overflow-hidden rounded-full border border-gray-200 bg-secondary"
+              className="ml-2 h-12 flex-1 overflow-hidden rounded-full border border-gray-200 bg-secondary"
               onPress={() => {
                 onPress(filter);
               }}>
-              <AppText className="text-white" >Apply Filter</AppText>
+              <AppText className="text-white font-bold text-[15px]">Apply Filter</AppText>
             </PressableView>
           </View>
         </View>

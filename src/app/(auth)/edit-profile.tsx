@@ -71,7 +71,6 @@ const NameInput = () => {
   const onSubmit = async (data: NameInputTypes) => {
     startActivity();
     if (user) {
-      console.log('dd', data);
       user.set('first_name', data.firstName);
       user.set('last_name', data.lastName);
       await user.save();

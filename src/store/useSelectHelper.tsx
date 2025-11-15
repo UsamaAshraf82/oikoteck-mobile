@@ -7,11 +7,16 @@ export type Option = {
 
 type Select = {
   label: string;
+  className?: {
+    label?: { wrapper?: string; text?: string };
+    option_label?: { wrapper?: string; text?: string };
+  };
   value?: Option['value'];
   onClose?: () => void;
   onPress?: (data: Option) => void;
   options: Option[];
   useFlatList?: boolean;
+  hasXIcon?: boolean;
 };
 
 type Store = {

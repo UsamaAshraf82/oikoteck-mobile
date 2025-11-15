@@ -57,7 +57,6 @@ const SocialSignin = () => {
         }
       }
     } catch (error) {
-      console.log('Google Signin Error', error);
       if (isErrorWithCode(error)) {
         switch (error.code) {
           case statusCodes.IN_PROGRESS:
@@ -111,7 +110,6 @@ const SocialSignin = () => {
           `https://graph.facebook.com/me?fields=id,first_name,last_name,email&access_token=${data.accessToken.toString()}`
         );
         const fb_user = await response.json();
-        console.log('Facebook user data:', fb_user);
 
         router.push({
           pathname: '/signup2social',
@@ -122,7 +120,6 @@ const SocialSignin = () => {
           },
         });
 
-        // console.log('Facebook user data:', user);
       } else {
         setUser(user as ParseUser<User_Type>);
       }

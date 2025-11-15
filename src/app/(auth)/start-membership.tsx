@@ -231,7 +231,7 @@ const Services = () => {
             onPress={async () => {
               activity.startActivity();
               const res = await Parse.Cloud.run('stripe', { price: total });
-              console.log(res);
+
               const { error } = await initPaymentSheet({
                 merchantDisplayName: 'OikoTeck',
                 paymentIntentClientSecret: res.clientSecret,

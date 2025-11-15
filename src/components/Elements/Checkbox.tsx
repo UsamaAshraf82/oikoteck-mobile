@@ -18,11 +18,13 @@ type Props = {
 
 const Checkbox: React.FC<Props> = ({
   label,
-  value,disabled,
+  value,
+  disabled,
   onChange,
   getValue,
   labelClassName,
-  labelLast,alignTop
+  labelLast,
+  alignTop,
 }) => {
   const [isChecked, setChecked] = useState<boolean>(!!value);
 
@@ -37,15 +39,23 @@ const Checkbox: React.FC<Props> = ({
   };
   return (
     <View
-      className={cn('mt-1 flex-row items-center justify-between', { 'justify-start': labelLast,'items-start':alignTop })}>
+      className={cn('mt-1 flex-row items-center justify-between', {
+        'justify-start': labelLast,
+        'items-start': alignTop,
+      })}>
       {!labelLast && (
-        <AppText className={cn('flex-shrink text-base mr-2', labelClassName)}>{label}</AppText>
+        <AppText className={cn('mr-2 flex-shrink text-base', labelClassName)}>{label}</AppText>
       )}
       <Pressable onPress={() => handleChange(!isChecked)}>
         <ExpoCheckbox
           value={isChecked}
           pointerEvents="none"
-          color={tailwind.theme.colors.secondary}
+          color={isChecked ? tailwind.theme.colors.secondary : '#8d95a5'}
+          style={{
+            borderRadius: 5,
+            borderWidth: isChecked ? 3 : 1,
+            // width
+          }}
           disabled={disabled}
         />
       </Pressable>

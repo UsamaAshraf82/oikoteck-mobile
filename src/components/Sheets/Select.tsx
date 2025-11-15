@@ -1,10 +1,11 @@
 import { FlashList } from '@shopify/flash-list';
-import { CheckCircleIcon } from 'phosphor-react-native';
+import { CheckCircleIcon, XIcon } from 'phosphor-react-native';
 import React from 'react';
 import { TouchableNativeFeedback, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
 import { isDeepEqual } from 'remeda';
+import { cn } from '~/lib/utils';
 import useSelect from '~/store/useSelectHelper';
 import { deviceHeight } from '~/utils/global';
 import tailwind from '~/utils/tailwind';
@@ -30,8 +31,18 @@ const Select = () => {
           maxHeight: deviceHeight * 0.9,
         }}>
         <View className="mb-3 h-1 w-10 self-center rounded-sm bg-[#ccc]" />
-        <View className="flex-row items-center justify-center">
-          <AppText className="font-semibold text-xl">{value.label}</AppText>
+        {value.hasXIcon && (
+          <TouchableNativeFeedback onPress={value.onClose}>
+            <View className="absolute right-5 top-6">
+              <XIcon color="#1A2436 " />
+            </View>
+          </TouchableNativeFeedback>
+        )}
+        <View
+          className={cn('flex-row items-center justify-center', value.className?.label?.wrapper)}>
+          <AppText className={cn('font-semibold text-xl', value.className?.label?.text)}>
+            {value.label}
+          </AppText>
         </View>
         {value.useFlatList ? (
           <View style={{ height: deviceHeight * 0.9 - 80 }} className=" w-full">
@@ -45,9 +56,19 @@ const Select = () => {
               renderItem={({ item }) => {
                 return (
                   <TouchableNativeFeedback onPress={() => value.onPress?.(item)}>
-                    <View className="flex-row justify-between py-2 ">
+                    <View
+                      className={cn(
+                        'flex-row justify-between py-2 ',
+                        value.className?.option_label?.wrapper
+                      )}>
                       {typeof item.label === 'string' ? (
-                        <AppText className="font-medium text-lg text-primary">{item.label}</AppText>
+                        <AppText
+                          className={cn(
+                            'font-medium text-lg text-primary',
+                            value.className?.option_label?.text
+                          )}>
+                          {item.label}
+                        </AppText>
                       ) : React.isValidElement(item.label) ? (
                         item.label
                       ) : null}
@@ -69,15 +90,25 @@ const Select = () => {
             {value.options.map((item, i) => {
               return (
                 <TouchableNativeFeedback key={i} onPress={() => value.onPress?.(item)}>
-                  <View className="flex-row justify-between py-2 ">
+                  <View
+                    className={cn(
+                      'flex-row justify-between items-center py-2 items ',
+                      value.className?.option_label?.wrapper
+                    )}>
                     {typeof item.label === 'string' ? (
-                      <AppText className="font-medium text-lg text-primary">{item.label}</AppText>
+                      <AppText
+                        className={cn(
+                          'font-medium text-lg leading-none text-primary',
+                          value.className?.option_label?.text
+                        )}>
+                        {item.label}
+                      </AppText>
                     ) : React.isValidElement(item.label) ? (
                       item.label
                     ) : null}
                     {isDeepEqual(item.value, value.value) && (
                       <CheckCircleIcon
-                        size={25}
+                        size={23}
                         color={tailwind.theme.colors.secondary}
                         weight="fill"
                       />

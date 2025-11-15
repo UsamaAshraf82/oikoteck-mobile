@@ -197,8 +197,6 @@ const usePopup = create<State & Actions>((set) => ({
       // </ModalHOC>
     );
 
-    console.log(Popup);
-    console.log(Popup);
 
     set((state) => {
       const map = state.state;

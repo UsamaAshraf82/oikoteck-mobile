@@ -50,7 +50,7 @@ const ChnagePassword = () => {
 
   const onError = () => {
     Object.values(errors).forEach((err) => {
-      console.log(err)
+
       if (err?.message) {
         addToast({
           type: 'error',
@@ -171,7 +171,7 @@ type PasswordType = z.infer<typeof PasswordSchema>;
 //   const onSubmit = async (data: NameInputTypes) => {
 //     startActivity();
 //     if (user) {
-//       console.log('dd', data);
+
 //       user.set('first_name', data.firstName);
 //       user.set('last_name', data.lastName);
 //       await user.save();

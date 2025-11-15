@@ -36,7 +36,6 @@ export default function LocationInfo({ data, onSubmit }: Props) {
     onSubmit(data);
   };
   const onError = () => {
-    console.log(errors);
     Object.values(errors).forEach((err) => {
       if (err?.message) {
         addToast({
