@@ -43,7 +43,7 @@ export const SearchView = ({ listing_type, text, onPress, onClear, onFilter }: P
             </View>
           </TouchableWithoutFeedback>
         ) : (
-          <TouchableWithoutFeedback onPress={onClear}>
+          <TouchableWithoutFeedback hitSlop={100} onPress={onClear}>
             <View className="p-2">
               <XIcon />
             </View>

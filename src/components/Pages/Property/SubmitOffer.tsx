@@ -1,7 +1,6 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link } from 'expo-router';
 import Parse from 'parse/react-native';
 import { XIcon } from 'phosphor-react-native';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -160,33 +159,35 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
       onBackdropPress={onClose}
       onSwipeComplete={onClose}
       // swipeDirection="down"
+      coverScreen={false}
       hardwareAccelerated
       avoidKeyboard={false}
       style={{ justifyContent: 'flex-end', margin: 0 }}>
       <View
-        className="rounded-t-[20px] bg-white px-4 py-4"
+        className="mr-px rounded-t-[20px] bg-white px-4 py-4"
         style={{
           maxHeight: deviceHeight * 0.9,
         }}>
-        <View className="mb-3 h-1 w-10 self-center rounded-sm bg-[#ccc]" />
+        {/* <View className="mb-3 h-1 w-10 self-center rounded-sm bg-[#ccc]" /> */}
         <View className="flex-row items-center justify-between">
           <View className="flex-col">
             <AppText className="font-bold text-2xl text-primary">Submit Offer</AppText>
-            <AppText className="mt-0 text-base text-primary">
-              Submit an Offer to the property owner
+
+            <AppText className="mb-4 mt-3  text-[15px] text-[#575775]">
+         Submit an offer to the listing owner
             </AppText>
           </View>
-          <TouchableNativeFeedback onPress={onClose}>
+          <TouchableNativeFeedback hitSlop={100} onPress={onClose}>
             <XIcon />
           </TouchableNativeFeedback>
         </View>
 
         <View style={{ maxHeight: deviceHeight * 0.9 }}>
           <KeyboardAwareScrollView
-             bottomOffset={50}
+            bottomOffset={50}
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}>
-            <View className="mt-5 flex-col gap-2">
+            <View className="mt-1 flex-col gap-2">
               <Grid cols={2} gap={2}>
                 <TextInput
                   readOnly
@@ -198,7 +199,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
                   control={control}
                   name="price"
                   label="Your Offer"
-                  placeholder="Enter Last Name"
+                  placeholder="Enter your offer"
                 />
               </Grid>
               <AppText className="mt-0 text-xs text-primary">
@@ -215,7 +216,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
                   name="firstName"
                   multiline={true}
                   label="First Name"
-                  placeholder="Enter First Name"
+                  placeholder="Enter first name"
                   className=""
                 />
                 <ControlledTextInput
@@ -223,10 +224,10 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
                   name="lastName"
                   multiline={true}
                   label="Last Name"
-                  placeholder="Enter Last Name"
+                  placeholder="Enter last name"
                 />
               </Grid>
-              <AppText className="-mb-2">Phone Number</AppText>
+              <AppText className="-mb-2 font-medium text-[13px]">Phone Number</AppText>
               <View className="flex-row items-center gap-0.5">
                 <View className="w-2/5 ">
                   <TouchableWithoutFeedback
@@ -265,7 +266,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
                     control={control}
                     name="phone"
                     // autoComplete="nu"
-                    placeholder="Enter your Phone Number"
+                    placeholder="Enter phone number"
                     textContentType="telephoneNumber"
                     keyboardType="phone-pad"
                   />
@@ -276,11 +277,11 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
                 name="email"
                 multiline={true}
                 label="Email Address"
-                placeholder="Enter your email address"
+                placeholder="Enter email address"
               />
             </View>
             <View className="mt-5">
-              <AppText className="px-3 text-center text-sm">
+              {/* <AppText className="px-3 text-center text-sm">
                 By contacting the property owner, you agree and accepts OikoTeck's{' '}
                 <Link href={'/privacy-policy'} className="text-secondary underline">
                   Privacy Policy
@@ -290,7 +291,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
                   Terms & Conditions
                 </Link>
                 .
-              </AppText>
+              </AppText> */}
             </View>
             <View className="mt-5" />
             <Grid cols={2} gap={2}>
@@ -298,14 +299,14 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
                 onPress={onClose}
                 className="h-12 rounded-full border border-[#C6CAD2]">
                 <View>
-                  <AppText>Cancel</AppText>
+                  <AppText className='font-bold text-[15px]'>Cancel</AppText>
                 </View>
               </PressableView>
               <PressableView
                 onPress={handleSubmit(onSubmit, onError)}
                 className="h-12 rounded-full border border-secondary bg-secondary">
                 <View>
-                  <AppText className="text-white">Send Message</AppText>
+                  <AppText className="text-white font-bold text-[15px]">Send Message</AppText>
                 </View>
               </PressableView>
             </Grid>

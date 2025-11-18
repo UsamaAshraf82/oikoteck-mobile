@@ -65,6 +65,7 @@ const DistrictArea = ({ visible, onClose, value = '', onPress }: Props) => {
       onSwipeComplete={onClose}
       swipeDirection="down"
       hardwareAccelerated
+        coverScreen={false}
       style={{ justifyContent: 'flex-end', margin: 0 }}
       propagateSwipe>
       <View
@@ -102,7 +103,7 @@ const DistrictArea = ({ visible, onClose, value = '', onPress }: Props) => {
               autoFocus
             />
           </View>
-          <TouchableNativeFeedback onPress={onClose}>
+          <TouchableNativeFeedback hitSlop={100} onPress={onClose}>
             <XIcon />
           </TouchableNativeFeedback>
         </View>

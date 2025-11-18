@@ -18,7 +18,7 @@ const SimilarListing = ({ property }: { property: Property_Type }) => {
           lng: property.marker.longitude,
         },
         skip: property.objectId,
-        limit: 6,
+        limit: 8,
         listing_type: property.listing_for,
       });
 
@@ -32,7 +32,7 @@ const SimilarListing = ({ property }: { property: Property_Type }) => {
   }
   return (
     <View className="flex-col gap-1 bg-[#eef1f7] pb-5">
-      <AppText className="mb-4 ml-4 font-semibold text-2xl">Similar Listing</AppText>
+      <AppText className="mb-4 ml-4 font-semibold text-2xl">Similar Listings  </AppText>
       <ScrollView
         horizontal
         showsVerticalScrollIndicator={false}

@@ -1,7 +1,6 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link } from 'expo-router';
 import Parse from 'parse/react-native';
 import { XIcon } from 'phosphor-react-native';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -104,46 +103,52 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
   };
 
   const onError = () => {
-    Object.values(errors).forEach((err) => {
-      if (err?.message) {
+    const keys = Object.keys(errors) as (keyof Tour1Type)[];
+    for (let index = 0; index < keys.length; index++) {
+      const element = errors[keys[index]];
+      if (element?.message) {
         addToast({
           type: 'error',
-          heading: 'Validation Error',
-          message: err.message,
+          heading: displayNames[keys[index]],
+          message: element.message,
         });
       }
-    });
+    }
   };
-
   return (
     <Modal
       isVisible={true}
       onBackdropPress={onClose}
       onSwipeComplete={onClose}
       // swipeDirection="down"
+      coverScreen={false}
       hardwareAccelerated
       avoidKeyboard={false}
       style={{ justifyContent: 'flex-end', margin: 0 }}>
       <View
-        className="rounded-t-[20px] bg-white px-4 pb-2 pt-4"
+        className="mr-px rounded-t-[20px] bg-white px-4 py-4"
         style={{ maxHeight: deviceHeight * 0.9 }}>
         {/* Handle */}
-        <View className="mb-3 h-1 w-10 self-center rounded-sm bg-[#ccc]" />
+        {/* <View className="mb-3 h-1 w-10 self-center rounded-sm bg-[#ccc]" /> */}
 
         {/* Title + Close */}
         <View className="flex-row items-center justify-between">
           <AppText className="font-bold text-2xl text-primary">Request a Tour</AppText>
-          <TouchableNativeFeedback onPress={onClose}>
+          <TouchableNativeFeedback hitSlop={100} onPress={onClose}>
             <XIcon />
           </TouchableNativeFeedback>
         </View>
 
-        <KeyboardAwareScrollView    bottomOffset={50} showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>
-          <AppText className="mt-1 text-base text-primary">
-            Send a property tour request to the property owner
+        <KeyboardAwareScrollView
+          bottomOffset={50}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}>
+          <AppText className="mb-4 mt-3  text-[15px] text-[#575775]">
+            Send a tour request to the listing owner
           </AppText>
-          <View className="mt-5 flex-col gap-2">
+          <View className="flex-col gap-2">
             <Select
+              varient
               options={Tour1Schema.shape.tour_type.options.map((i) => ({ label: i, value: i }))}
               label="Select a tour type"
               title="Tour Type"
@@ -159,13 +164,14 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
             />
 
             <Select
+              varient
               options={Tour1Schema.shape.tour_time.options.map((i) => ({ label: i, value: i }))}
               label="Select a preferred visit time"
               title="Visit Type"
               value={{ label: watch('tour_time'), value: watch('tour_time') }}
               onChange={(value) => setValue('tour_time', value?.value as Tour1Type['tour_time'])}
             />
-            <AppText className="mb-3 mt-5 font-semibold text-xl text-primary">
+            <AppText className="mb-6 mt-6 font-semibold text-xl text-primary">
               How can we get back to you?
             </AppText>
             <Grid cols={2} gap={2}>
@@ -173,18 +179,18 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
                 control={control}
                 name="firstName"
                 label="First Name"
-                placeholder="Enter First Name"
+                placeholder="Enter first name"
                 className=""
               />
               <ControlledTextInput
                 control={control}
                 name="lastName"
                 label="Last Name"
-                placeholder="Enter Last Name"
+                placeholder="Enter last name"
               />
             </Grid>
-            <AppText className="-mb-2">Phone Number</AppText>
-            <View className="flex-row items-center gap-0.5">
+            <AppText className="-mb-2 font-medium text-[13px]">Phone Number</AppText>
+            <View className="flex-row items-center gap-1">
               <View className="w-2/5 ">
                 <TouchableWithoutFeedback
                   onPress={() => {
@@ -222,7 +228,7 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
                   control={control}
                   name="phone"
                   // autoComplete="nu"
-                  placeholder="Enter your Phone Number"
+                  placeholder="Enter Phone Number"
                   textContentType="telephoneNumber"
                   keyboardType="phone-pad"
                 />
@@ -232,7 +238,7 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
               control={control}
               name="email"
               label="Email Address"
-              placeholder="Enter your email address"
+              placeholder="Enter email address"
             />
             <ControlledTextInput
               control={control}
@@ -242,33 +248,21 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
               className="h-52 align-top"
             />
           </View>
-          <View className="mt-5">
-            <AppText className="px-3 text-center text-sm">
-              By contacting the property owner, you agree and accepts OikoTeck's{' '}
-              <Link href={'/privacy-policy'} className="text-secondary underline">
-                Privacy Policy
-              </Link>{' '}
-              and{' '}
-              <Link href={'/terms-conditions'} className="text-secondary underline">
-                Terms & Conditions
-              </Link>
-              .
-            </AppText>
-          </View>
+          <View className="mt-5"></View>
         </KeyboardAwareScrollView>
 
         <View className="mt-2" />
         <Grid cols={2} gap={2}>
           <PressableView onPress={onClose} className="h-12 rounded-full border border-[#C6CAD2]">
             <View>
-              <AppText>Cancel</AppText>
+              <AppText className="font-bold text-[15px]">Cancel</AppText>
             </View>
           </PressableView>
           <PressableView
             onPress={handleSubmit(onSubmit, onError)}
             className="h-12 rounded-full border border-secondary bg-secondary">
             <View>
-              <AppText className="text-white">Request Tour</AppText>
+              <AppText className="font-bold text-[15px] text-white">Request Tour</AppText>
             </View>
           </PressableView>
         </Grid>
@@ -321,3 +315,15 @@ const Tour1Schema = z
   });
 
 type Tour1Type = z.infer<typeof Tour1Schema>;
+
+const displayNames: Record<keyof Tour1Type, string> = {
+  country: 'Country',
+  email: 'Email Address',
+  firstName: 'First Name',
+  lastName: 'Last Name',
+  message: 'Message',
+  phone: 'Phone Number',
+  tour_date: 'Visit Date',
+  tour_time: 'Visit Time',
+  tour_type: 'Tour Type',
+};

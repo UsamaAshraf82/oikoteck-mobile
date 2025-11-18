@@ -23,6 +23,7 @@ const appConfig: ExpoConfig = {
         'This app needs photo library access so users can select images from their gallery.',
       NSLocationWhenInUseUsageDescription:
         'This app uses your location to improve map and property accuracy.',
+      LSApplicationQueriesSchemes: ['whatsapp', 'whatsapp-business'],
     },
     config: {
       googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
@@ -30,7 +31,7 @@ const appConfig: ExpoConfig = {
     googleServicesFile: './GoogleService-Info.plist',
   },
   android: {
-        "softwareKeyboardLayoutMode": "pan",
+    softwareKeyboardLayoutMode: 'pan',
     package: IS_DEV ? 'com.oikoteck.dev' : 'com.oikoteck.app',
     adaptiveIcon: {
       foregroundImage: IS_DEV ? './assets/adaptive-icon-dev.png' : './assets/adaptive-icon.png',
@@ -43,22 +44,29 @@ const appConfig: ExpoConfig = {
       },
     },
     googleServicesFile: './google-services.json',
-    // intentFilters:[
-    //   {
-    //     action: 'android.intent.action.VIEW',
-    //     data: [
-    //       {
-    //         scheme: 'https',
-    //       },
-    //       {
-    //         scheme: 'http',
-    //       },
-    //       {
-    //         scheme: 'geo',
-    //       },
-    //     ],
-    //   },
-    // ]
+    intentFilters: [
+      {
+        action: 'android.intent.action.VIEW',
+        data: [
+          {
+            scheme: 'https',
+          },
+          {
+            scheme: 'http',
+          },
+          {
+            scheme: 'geo',
+          },
+        ],
+
+        category: ['BROWSABLE'],
+      },
+      {
+        action: 'android.intent.action.VIEW',
+        data: [{ scheme: 'whatsapp' }],
+        category: ['BROWSABLE'],
+      },
+    ],
   },
   extra: {
     appId: process.env.EXPO_PUBLIC_APP_ID,

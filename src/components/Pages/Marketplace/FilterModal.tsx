@@ -58,6 +58,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
       onSwipeComplete={onClose}
       swipeDirection="down"
       hardwareAccelerated
+        coverScreen={false}
       avoidKeyboard={false}
       style={{ justifyContent: 'flex-end', margin: 0 }}>
       <View
@@ -69,7 +70,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
         <View className="flex-1">
           <View className="flex-row items-center justify-between">
             <AppText className="font-bold text-2xl text-primary">Filters</AppText>
-            <TouchableNativeFeedback onPress={onClose}>
+            <TouchableNativeFeedback hitSlop={100} onPress={onClose}>
               <XIcon />
             </TouchableNativeFeedback>
           </View>

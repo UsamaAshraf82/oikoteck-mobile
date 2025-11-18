@@ -19,7 +19,7 @@ const TextInput = ({ label, className, secureTextEntry, getValue, ...props }: Pr
         <TextBaseInput
           {...props}
           value={props.value? props.value +'' :''}
-          className={cn('rounded-2xl border border-[#C6CAD2] bg-white px-3 py-3 text-[15px] font-normal', className)}
+          className={cn('rounded-2xl border border-[#C6CAD2] px-3 pt-[11px] pb-[9px] text-[15px] font-normal focus:border-primary', className)}
           secureTextEntry={secureTextEntryHack}
           onChangeText={(text) => {
             getValue?.(text);

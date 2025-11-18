@@ -10,7 +10,7 @@ import { withController } from '../HOC/withController';
 import AppText from './AppText';
 
 type Props = {
-  value?: Date | null |string;
+  value?: Date | null | string;
   onChange?: (date: Date) => void;
   label?: string;
   minDate?: Date;
@@ -37,7 +37,9 @@ const DatePicker: React.FC<Props> = ({
   withForm,
   label,
 }) => {
-  const [date, setDate] = useState<Date | null>(typeof value === 'string' ? new Date(value) : value);
+  const [date, setDate] = useState<Date | null>(
+    typeof value === 'string' ? new Date(value) : value
+  );
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -55,7 +57,7 @@ const DatePicker: React.FC<Props> = ({
   if (withForm) {
     return (
       <View className="w-full  flex-col ">
-        {label && <AppText className="text-[13px] mb-2 font-medium text-primary" >{label}</AppText>}
+        {label && <AppText className="mb-2 font-medium text-[13px] text-primary">{label}</AppText>}
         <View className="relative">
           <PressableView
             onPress={() => setVisible(true)}
@@ -71,10 +73,10 @@ const DatePicker: React.FC<Props> = ({
                 </AppText>
               )}
               <CalendarIcon
-                color={tailwind.theme.colors.primary}
+                color={tailwind.theme.colors.secondary}
                 weight="duotone"
-                duotoneColor={tailwind.theme.colors.primary}
-                duotoneOpacity={0.4}
+                duotoneColor={tailwind.theme.colors.secondary}
+                duotoneOpacity={1}
               />
             </View>
           </PressableView>
@@ -108,10 +110,10 @@ const DatePicker: React.FC<Props> = ({
             </AppText>
           )}
           <CalendarIcon
-            color={tailwind.theme.colors.primary}
+            color={tailwind.theme.colors.secondary}
             weight="duotone"
-            duotoneColor={tailwind.theme.colors.primary}
-            duotoneOpacity={0.4}
+            duotoneColor={tailwind.theme.colors.secondary}
+            duotoneOpacity={1}
           />
         </View>
       </PressableView>

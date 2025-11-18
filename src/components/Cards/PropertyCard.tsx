@@ -1,7 +1,7 @@
 import { useRouter } from 'expo-router';
 import Parse from 'parse/react-native';
 import { Pressable, View } from 'react-native';
-import Animated, { interpolate, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
 import { stringify_area_district } from '~/lib/stringify_district_area';
 import { cn } from '~/lib/utils';
@@ -88,7 +88,7 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
               />
 
               {/* Dots */}
-              <View className="absolute bottom-2 left-0 right-0 flex-row justify-center">
+              <View className="absolute bottom-2 left-0 right-0 flex-row items-center justify-center">
                 {property.images.map((_, index) => {
                   return <Dot key={index} index={index} progress={progress} />;
                 })}
@@ -183,59 +183,34 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
 
 export default PropertyCard;
 
+
 function Dot({ index, progress }: any) {
-  const animatedStyle = useAnimatedStyle(() => {
-    const opacity = interpolate(
-      progress.value,
-      [index - 1, index, index + 1],
-      [0.4, 1, 0.4],
-      'clamp'
-    );
-    const scale = interpolate(
-      progress.value,
-      [index - 1, index, index + 1],
-      [0.8, 1.2, 0.8],
-      'clamp'
-    );
+  const style = useAnimatedStyle(() => {
+    const selectedIndex = Math.round(progress.value);
+
+    const isMain = selectedIndex === index;
+    const isNear = selectedIndex === index + 1 || selectedIndex === index - 1;
+    const isFar = selectedIndex === index + 2 || selectedIndex === index - 2;
+
     return {
-      opacity,
-      transform: [{ scale }],
+      display: isMain || isNear || isFar ? 'flex' : 'none',
+      opacity: isMain || isNear || isFar ? 1 : 0,
+      width: isMain ? 8 : isNear ? 6 : isFar ? 4 : 0,
+      height: isMain ? 8 : isNear ? 6 : isFar ? 4 : 0,
     };
   });
 
-  return <Animated.View style={[animatedStyle]} className="mx-1 h-2 w-2 rounded-full bg-white" />;
-}
-
-
-function getDotRange(length: number, current: number, max = 5) {
-  if (length <= max) return { start: 0, end: length - 1 };
-
-  let start = current - Math.floor(max / 2);
-  let end = current + Math.floor(max / 2);
-
-  if (start < 0) {
-    start = 0;
-    end = max - 1;
-  }
-
-  if (end >= length) {
-    end = length - 1;
-    start = length - max;
-  }
-
-  return { start, end };
-}
-
-const Dots = ({ imagesLength, progress }: any) => {
-  const currentIndex = Math.round(progress.value);
-  const { start, end } = getDotRange(imagesLength, currentIndex, 5);
-
   return (
-    <View className="absolute bottom-2 left-0 right-0 flex-row justify-center">
-      {Array.from({ length: end - start + 1 }).map((_, i) => {
-        const dotIndex = start + i;
-        return <Dot key={dotIndex} index={dotIndex} progress={progress} />;
-      })}
-    </View>
+    <Animated.View
+      key={index}
+      style={style}
+      className={cn(
+        'mx-1 rounded-full   bg-white/70',
+        // override opacity for main
+        {
+          'bg-white/90': Math.round(progress.value) === index,
+        }
+      )}
+    />
   );
-};
+}

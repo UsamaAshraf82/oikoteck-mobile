@@ -18,6 +18,7 @@ const Menu = () => {
       onSwipeComplete={value.onClose}
       swipeDirection="down"
       hardwareAccelerated
+        coverScreen={false}
       avoidKeyboard={false}
       style={{ justifyContent: 'flex-end', margin: 0 }}
       propagateSwipe>

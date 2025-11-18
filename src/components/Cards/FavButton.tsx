@@ -12,9 +12,10 @@ type Props = {
   className?: string;
   property_id: string;
   property: Property_Type;
+  size?: number;
 };
 
-const FavButton = (props: Props) => {
+const FavButton = ({size=26,...props}: Props) => {
   const { user } = useUser();
   const router = useRouter();
 
@@ -75,7 +76,7 @@ const FavButton = (props: Props) => {
       }}>
       <HeartIcon
         key={props.property_id + '_' + faviorite}
-        size={26}
+        size={size}
         weight={faviorite ? 'fill' : 'duotone'}
         duotoneColor={faviorite ? undefined : tailwind.theme.colors.black}
         color={faviorite ? tailwind.theme.colors.red[600] : tailwind.theme.colors.white}

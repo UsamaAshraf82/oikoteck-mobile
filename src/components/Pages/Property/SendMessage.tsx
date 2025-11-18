@@ -1,7 +1,6 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link } from 'expo-router';
 import Parse from 'parse/react-native';
 import { XIcon } from 'phosphor-react-native';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -93,46 +92,48 @@ const SendMessage = ({ onClose, property }: SendOfferModalType) => {
   };
 
   const onError = () => {
-    Object.values(errors).forEach((err) => {
-      if (err?.message) {
+    const keys = Object.keys(errors) as (keyof SendOfferValues)[];
+    for (let index = 0; index < keys.length; index++) {
+      const element = errors[keys[index]];
+      if (element?.message) {
         addToast({
           type: 'error',
-          heading: 'Validation Error',
-          message: err.message,
+          heading: displayNames[keys[index]],
+          message: element.message,
         });
       }
-    });
+    }
   };
-
   return (
     <Modal
       isVisible={true}
       onBackdropPress={onClose}
       onSwipeComplete={onClose}
       // swipeDirection="down"
+      coverScreen={false}
       hardwareAccelerated
       avoidKeyboard={false}
       style={{ justifyContent: 'flex-end', margin: 0 }}>
       <View
-        className="rounded-t-[20px] bg-white px-4 py-4"
+        className="mr-px rounded-t-[20px] bg-white px-4 py-4"
         style={{
           maxHeight: deviceHeight * 0.9,
         }}>
-        <View className="mb-3 h-1 w-10 self-center rounded-sm bg-[#ccc]" />
+        {/* <View className="mb-3 h-1 w-10 self-center rounded-sm bg-[#ccc]" /> */}
         <View className="flex-row items-center justify-between">
-          <AppText className="font-bold text-2xl text-primary">Send Message</AppText>
-          <TouchableNativeFeedback onPress={onClose}>
+          <AppText className="font-bold text-2xl text-primary">Send a Message</AppText>
+          <TouchableNativeFeedback hitSlop={100} onPress={onClose}>
             <XIcon />
           </TouchableNativeFeedback>
         </View>
 
         <View style={{ maxHeight: deviceHeight * 0.9 }}>
           <KeyboardAwareScrollView
-             bottomOffset={50}
+            bottomOffset={50}
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}>
-            <AppText className="mt-5 text-base text-primary">
-              Send a message to the property owner
+            <AppText className="mb-4 mt-3  text-[15px] text-[#575775]">
+              Send a message to the listing owner
             </AppText>
             <View className="flex-col gap-2">
               <ControlledTextInput
@@ -142,7 +143,7 @@ const SendMessage = ({ onClose, property }: SendOfferModalType) => {
                 label="Message to the Owner"
                 className="h-52 align-top"
               />
-              <AppText className="mb-3 mt-5 font-semibold text-xl text-primary">
+              <AppText className="mb-6 mt-6 font-semibold text-xl text-primary">
                 How can we get back to you?
               </AppText>
               <Grid cols={2} gap={2}>
@@ -150,18 +151,18 @@ const SendMessage = ({ onClose, property }: SendOfferModalType) => {
                   control={control}
                   name="firstName"
                   label="First Name"
-                  placeholder="Enter First Name"
+                  placeholder="Enter first name"
                   className=""
                 />
                 <ControlledTextInput
                   control={control}
                   name="lastName"
                   label="Last Name"
-                  placeholder="Enter Last Name"
+                  placeholder="Enter last name"
                 />
               </Grid>
-              <AppText className="-mb-2">Phone Number</AppText>
-              <View className="flex-row items-center gap-0.5">
+              <AppText className="-mb-2 text-[13px] font-medium">Phone Number</AppText>
+              <View className="flex-row items-center gap-1">
                 <View className="w-2/5 ">
                   <TouchableWithoutFeedback
                     onPress={() => {
@@ -199,7 +200,7 @@ const SendMessage = ({ onClose, property }: SendOfferModalType) => {
                     control={control}
                     name="phone"
                     // autoComplete="nu"
-                    placeholder="Enter your Phone Number"
+                    placeholder="Enter phone number"
                     textContentType="telephoneNumber"
                     keyboardType="phone-pad"
                   />
@@ -209,11 +210,11 @@ const SendMessage = ({ onClose, property }: SendOfferModalType) => {
                 control={control}
                 name="email"
                 label="Email Address"
-                placeholder="Enter your email address"
+                placeholder="Enter email address"
               />
             </View>
-            <View className="mt-5">
-              <AppText className="px-3 text-center text-sm">
+            <View className="mt-2">
+              {/* <AppText className="px-3 text-center text-sm">
                 By contacting the property owner, you agree and accepts OikoTeck's{' '}
                 <Link href={'/privacy-policy'} className="text-secondary underline">
                   Privacy Policy
@@ -223,22 +224,22 @@ const SendMessage = ({ onClose, property }: SendOfferModalType) => {
                   Terms & Conditions
                 </Link>
                 .
-              </AppText>
+              </AppText> */}
             </View>
-            <View className="mt-5" />
+            <View className="mt-7" />
             <Grid cols={2} gap={2}>
               <PressableView
                 onPress={onClose}
                 className="h-12 rounded-full border border-[#C6CAD2]">
                 <View>
-                  <AppText>Cancel</AppText>
+                  <AppText className="font-bold text-[15px]">Cancel</AppText>
                 </View>
               </PressableView>
               <PressableView
                 onPress={handleSubmit(onSubmit, onError)}
                 className="h-12 rounded-full border border-secondary bg-secondary">
                 <View>
-                  <AppText className="text-white">Send Message</AppText>
+                  <AppText className="font-bold text-[15px] text-white">Send Message</AppText>
                 </View>
               </PressableView>
             </Grid>
@@ -286,3 +287,12 @@ const SendOfferSchema = z
   });
 
 type SendOfferValues = z.infer<typeof SendOfferSchema>;
+
+const displayNames: Record<keyof SendOfferValues, string> = {
+  country: 'Country',
+  email: 'Email Address',
+  firstName: 'First Name',
+  lastName: 'Last Name',
+  message: 'Message',
+  phone: 'Phone Number',
+};

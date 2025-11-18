@@ -1,4 +1,5 @@
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { PortalHost } from '@rn-primitives/portal';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import { useFonts } from 'expo-font';
 import { Slot, Stack } from 'expo-router';
@@ -64,17 +65,20 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <StripeProvider publishableKey="pk_test_51PSK7VP5GmAB6WhMTNNCySQpZwOVzUV3T7DJA6W25VrCnxom0KAJ3osQyZR6qXb2GZtO6oP8m33SI4pIoeV913Pf00RBNgWjCl">
-      <Provider>
-        <Screens fontsLoaded={fontsLoaded} ready={ready} />
-        <ModalContainer />
-        <Select />
-        <Menu />
-        <Popup />
-        <ActivityIndicator />
-        <ToastContainer />
-      </Provider>
-    </StripeProvider>
+    <>
+      <StripeProvider publishableKey="pk_test_51PSK7VP5GmAB6WhMTNNCySQpZwOVzUV3T7DJA6W25VrCnxom0KAJ3osQyZR6qXb2GZtO6oP8m33SI4pIoeV913Pf00RBNgWjCl">
+        <Provider>
+          <Screens fontsLoaded={fontsLoaded} ready={ready} />
+          <ModalContainer />
+          <Select />
+          <Menu />
+          <Popup />
+          <ActivityIndicator />
+        </Provider>
+      </StripeProvider>
+      <ToastContainer />
+      <PortalHost  name='toast-host'/>
+    </>
   );
 }
 

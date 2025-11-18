@@ -11,9 +11,19 @@ type Props = {
   onChange?: (value: Option | null) => void;
   placeholder?: string;
   onPress?: () => void;
+  varient?: boolean;
 };
 
-const Select = ({ options, value, label, title, onChange, placeholder, onPress }: Props) => {
+const Select = ({
+  options,
+  value,
+  label,
+  title,
+  onChange,
+  varient,
+  placeholder,
+  onPress,
+}: Props) => {
   const { openSelect } = useSelect();
 
   return (
@@ -25,13 +35,28 @@ const Select = ({ options, value, label, title, onChange, placeholder, onPress }
             onPress?.();
 
             if (options) {
-              openSelect({
-                label: title || label || 'Select',
-                options: options,
-                value: value?.value,
+              if (varient) {
+                openSelect({
+                  label: title || label || 'Select',
+                  options: options,
+                  value: value?.value,
 
-                onPress: (value) => onChange?.(value),
-              });
+                  onPress: (value) => onChange?.(value),
+                  className: {
+                    label: { wrapper: 'justify-start mb-4', text: 'text-2xl' },
+                    option_label: { wrapper: 'py-4', text: 'text-[15px]  font-normal' },
+                  },
+                  hasXIcon: true,
+                });
+              } else {
+                openSelect({
+                  label: title || label || 'Select',
+                  options: options,
+                  value: value?.value,
+
+                  onPress: (value) => onChange?.(value),
+                });
+              }
             }
           }}>
           <View className=" flex-row items-center justify-between rounded-2xl border border-[#C6CAD2] bg-white px-2 py-3 text-primary">

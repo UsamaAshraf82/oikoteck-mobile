@@ -382,7 +382,7 @@ const MemberShipModal = ({ onClose, visible, month, onPress, value }: Props) => 
         <View className="mb-4">
           <View className="flex-row items-center justify-between">
             <AppText className="font-bold text-2xl text-primary">Customize Plan</AppText>
-            <TouchableNativeFeedback onPress={onClose}>
+            <TouchableNativeFeedback hitSlop={100} onPress={onClose}>
               <XIcon />
             </TouchableNativeFeedback>
           </View>

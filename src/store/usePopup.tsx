@@ -34,6 +34,7 @@ const usePopup = create<State & Actions>((set) => ({
     const Popup = () => (
       <Modal
         isVisible={true}
+
         // onBackdropPress={() => {
         //   onDiscard?.();
         //   set((state) => {
