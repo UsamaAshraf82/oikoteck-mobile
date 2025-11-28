@@ -87,7 +87,6 @@ const appConfig: ExpoConfig = {
         backgroundColor: '#ffffff',
       },
     ],
-    ['expo-font'],
     [
       'react-native-fbsdk-next',
       IS_DEV

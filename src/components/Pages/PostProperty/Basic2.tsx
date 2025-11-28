@@ -35,6 +35,7 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
     setValue,
     handleSubmit,
     watch,
+    getValues,
     reset,
     formState: { errors },
   } = useForm<Basic2Values>({
@@ -282,6 +283,16 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
                     key={i}
                     label={i}
                     value={watch('special_feature').includes(i)}
+                    getValue={() => {
+
+                    const special = getValues('special_feature')
+
+                    if (special.includes(i)) {
+                      setValue('special_feature',special.filter((p) => p !== i));
+                    } else {
+                    setValue('special_feature',[...special, i]);
+                    }
+                  }}
                   />
                 ))}
               </View>

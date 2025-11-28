@@ -7,13 +7,13 @@
     "prebuild": "set EXPO_PUBLIC_APP_VARIANT=development&& expo prebuild ",
     "ios": "expo run:ios",
     "build:android": "set NODE_ENV=production&&expo prebuild && cd android && gradlew bundleRelease",
-    "install:release": "set NODE_ENV=production&& expo prebuild && cd android && gradlew installRelease"
+    "install:release": "set NODE_ENV=production&& expo prebuild && cd android && gradlew installRelease",
+    "doctor": "expo-doctor"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.899.0",
     "@aws-sdk/credential-providers": "^3.899.0",
     "@aws-sdk/lib-storage": "^3.900.0",
-    "@expo/config-plugins": "~10.1.2",
     "@hookform/resolvers": "^5.2.1",
     "@react-native-async-storage/async-storage": "^2.1.2",
     "@react-native-community/datetimepicker": "8.4.1",
@@ -25,7 +25,7 @@
     "babel-preset-expo": "^13.0.0",
     "clsx": "^2.1.1",
     "country-flag-icons": "^1.5.20",
-    "expo": "~53.0.23",
+    "expo": "~53.0.24",
     "expo-apple-authentication": "~7.2.4",
     "expo-build-properties": "^0.14.8",
     "expo-checkbox": "~4.1.4",
@@ -83,19 +83,14 @@
     "eslint": "^9.25.1",
     "eslint-config-expo": "^9.2.0",
     "eslint-config-prettier": "^10.1.2",
+    "expo-doctor": "^1.17.11",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.11",
     "tailwindcss": "^3.4.0",
     "tsx": "^4.20.5",
     "typescript": "^5.8.3"
   },
-  "expo": {
-    "install": {
-      "exclude": [
-        "react-native"
-      ]
-    }
-  },
+
   "main": "index.ts",
   "private": true,
   "packageManager": "pnpm@10.22.0+sha512.bf049efe995b28f527fd2b41ae0474ce29186f7edcb3bf545087bd61fbbebb2bf75362d1307fda09c2d288e1e499787ac12d4fcb617a974718a6051f2eee741c"
