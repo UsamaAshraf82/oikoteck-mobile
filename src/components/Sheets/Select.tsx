@@ -1,8 +1,7 @@
 import { FlashList } from '@shopify/flash-list';
 import { CheckCircleIcon, XIcon } from 'phosphor-react-native';
 import React from 'react';
-import { TouchableNativeFeedback, View } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView, TouchableNativeFeedback, View } from 'react-native';
 import Modal from 'react-native-modal';
 import { isDeepEqual } from 'remeda';
 import { cn } from '~/lib/utils';

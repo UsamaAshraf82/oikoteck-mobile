@@ -36,15 +36,17 @@ export default function LocationInfo({ data, onSubmit }: Props) {
     onSubmit(data);
   };
   const onError = () => {
-    Object.values(errors).forEach((err) => {
-      if (err?.message) {
+    const keys = Object.keys(errors) as (keyof LocationInfoTypes)[];
+    for (let index = 0; index < keys.length; index++) {
+      const element = errors[keys[index]];
+      if (element?.message) {
         addToast({
           type: 'error',
-          heading: 'Validation Error',
-          message: err.message,
+          heading: displayNames[keys[index]],
+          message: element.message,
         });
       }
-    });
+    }
   };
 
   const marker = useWatch({ control, name: 'marker' });
@@ -54,73 +56,69 @@ export default function LocationInfo({ data, onSubmit }: Props) {
         <AppText className="font-bold text-2xl">Location details 📍</AppText>
         <AppText className="text-[15px] text-[#575775]">Set your property location</AppText>
 
-          <KeyboardAwareScrollView
-             bottomOffset={50}
-            contentContainerClassName="mt-5 flex-grow flex-col gap-4 pb-28"
-            showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}>
-            <Select
-              label="District"
-              onPress={() => {
-                setDistrict(true);
-              }}
-              value={{ label: watch('district'), value: watch('district') }}
-              placeholder="Select District"
-            />
-            <Select
-              label="Area"
-              onPress={() => {
-                setArea(true);
-              }}
-              value={{
-                label: stringify_area_district({
-                  area_1: watch('area_1'),
-                  area_2: watch('area_2'),
-                }),
-                value: { area_1: watch('area_1'), area_2: watch('area_2') },
-              }}
-              placeholder="Select Area"
-            />
-            <ControlledTextInput
-              control={control}
-              name="address"
-              label="Street Address"
-              placeholder="Street Address"
-            />
-            <ControlledCheckBox
-              control={control}
-              name="exact_location"
-              label="Show exact address"
-            />
-            <AppText className="text-sm text-[#575775]">
-              This enables exact property location pin on the map, if disabled we will show a circle
-              with a range of 100m on the property location
-            </AppText>
+        <KeyboardAwareScrollView
+          bottomOffset={50}
+          contentContainerClassName="mt-5 flex-grow flex-col gap-4 pb-28"
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}>
+          <Select
+            label="District"
+            onPress={() => {
+              setDistrict(true);
+            }}
+            value={{ label: watch('district'), value: watch('district') }}
+            placeholder="Select District"
+          />
+          <Select
+            label="Area"
+            onPress={() => {
+              setArea(true);
+            }}
+            value={{
+              label: stringify_area_district({
+                area_1: watch('area_1'),
+                area_2: watch('area_2'),
+              }),
+              value: { area_1: watch('area_1'), area_2: watch('area_2') },
+            }}
+            placeholder="Select Area"
+          />
+          <ControlledTextInput
+            control={control}
+            name="address"
+            label="Street Address"
+            placeholder="Street Address"
+          />
+          <ControlledCheckBox control={control} name="exact_location" label="Show exact address" />
+          <AppText className="text-sm text-[#575775]">
+            This enables exact property location pin on the map, if disabled we will show a circle
+            with a range of 100m on the property location
+          </AppText>
 
-            <AppText className="mt-4 text-sm text-[#575775]">
-              If Google maps find a partial match, drag the pin in the appropriate area to locate
-              your property.
-            </AppText>
-            <MapView
-              style={{ flex: 1 }}
-              initialRegion={{
-                latitude: marker?.lat || 0,
-                longitude: marker?.lng || 0,
-                latitudeDelta: 0.05,
-                longitudeDelta: 0.05,
-              }}>
-              <Marker
-                draggable
-                coordinate={{ latitude: marker?.lat || 0, longitude: marker?.lng || 0 }}
-                onDragEnd={(e) =>
-                  setValue('marker', {
-                    lat: e.nativeEvent.coordinate.latitude,
-                    lng: e.nativeEvent.coordinate.longitude,
-                  })
-                }
-              />
-            </MapView>
-          </KeyboardAwareScrollView>
+          <AppText className="mt-4 text-sm text-[#575775]">
+            If Google maps find a partial match, drag the pin in the appropriate area to locate your
+            property.
+          </AppText>
+          <MapView
+            style={{ flex: 1 }}
+            initialRegion={{
+              latitude: marker?.lat || 0,
+              longitude: marker?.lng || 0,
+              latitudeDelta: 0.05,
+              longitudeDelta: 0.05,
+            }}>
+            <Marker
+              draggable
+              coordinate={{ latitude: marker?.lat || 0, longitude: marker?.lng || 0 }}
+              onDragEnd={(e) =>
+                setValue('marker', {
+                  lat: e.nativeEvent.coordinate.latitude,
+                  lng: e.nativeEvent.coordinate.longitude,
+                })
+              }
+            />
+          </MapView>
+        </KeyboardAwareScrollView>
       </View>
       <View className="absolute bottom-0 left-0 right-0   px-5 py-4">
         <PressableView
@@ -166,10 +164,12 @@ const LocationInfoSchema = z
     }),
     searched: z.boolean().optional(),
     map_error: z.string().optional(),
-    marker: z.object({
-      lat: z.number(),
-      lng: z.number(),
-    }),
+    marker: z
+      .object({
+        lat: z.number(),
+        lng: z.number(),
+      })
+      .optional(),
     center: z
       .object({
         lat: z.number(),
@@ -188,3 +188,15 @@ const LocationInfoSchema = z
   });
 
 export type LocationInfoTypes = z.infer<typeof LocationInfoSchema>;
+
+const displayNames: Record<keyof LocationInfoTypes, string> = {
+  address: 'Address',
+  district: 'District',
+  area_1: 'Area',
+  area_2: 'Area',
+  exact_location: 'Exact Location',
+  searched: 'Searched',
+  map_error: 'Map Error',
+  marker: 'Marker',
+  center: 'Center',
+};

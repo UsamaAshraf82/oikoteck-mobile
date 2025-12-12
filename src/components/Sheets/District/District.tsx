@@ -3,13 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import Parse from 'parse/react-native';
 import { GlobeHemisphereEastIcon, XIcon } from 'phosphor-react-native';
 import { useEffect, useState } from 'react';
-import {
-  Platform,
-  TouchableNativeFeedback,
-  TouchableOpacity,
-  View
-} from 'react-native';
-import { TextInput } from 'react-native-gesture-handler';
+import { Platform, TextInput, TouchableNativeFeedback, TouchableOpacity, View } from 'react-native';
 import Modal from 'react-native-modal';
 import AppText from '~/components/Elements/AppText';
 import { cn } from '~/lib/utils';

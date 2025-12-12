@@ -1,7 +1,6 @@
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
-import { TouchableNativeFeedback, View } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView, TouchableNativeFeedback, View } from 'react-native';
 import Modal from 'react-native-modal';
 import useMenu from '~/store/useMenuHelper';
 import { deviceHeight } from '~/utils/global';

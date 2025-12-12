@@ -10,6 +10,7 @@ const TopHeader = ({ onBackPress, title,right }: Props) => {
   return (
     <View className="relative h-16 flex-row items-center justify-center">
       <Pressable
+        hitSlop={20}
         className="absolute left-4"
         onPress={() => {
           onBackPress();
@@ -19,7 +20,7 @@ const TopHeader = ({ onBackPress, title,right }: Props) => {
       <View>
         <AppText className="font-semibold ">{title}</AppText>
       </View>
-      {right && <View className='absolute right-4'>{right}</View>}
+      {right && <View className="absolute right-4">{right}</View>}
     </View>
   );
 };

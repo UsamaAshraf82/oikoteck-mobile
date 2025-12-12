@@ -66,6 +66,7 @@ const Favorities = () => {
     <View className="flex w-full flex-1 flex-col">
       <View className="relative h-16 flex-row items-center justify-center">
         <Pressable
+          hitSlop={20}
           className="absolute left-4"
           onPress={() => {
             router.back();
@@ -112,8 +113,7 @@ const Favorities = () => {
           <AppText className="mb-2 font-bold text-xl">My Favourites</AppText>
         </View>
         <View>
-          <AppText
-            className="mb-2 font-medium text-[#9191A1]">
+          <AppText className="mb-2 font-medium text-[#9191A1]">
             {data?.pages[0]?.count} favourite listings
           </AppText>
         </View>

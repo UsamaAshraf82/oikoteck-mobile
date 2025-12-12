@@ -59,6 +59,7 @@
     "react-native-reanimated-carousel": "^4.0.3",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
+    "react-native-sortables": "^1.9.4",
     "react-native-svg": "15.11.2",
     "react-native-url-polyfill": "^2.0.0",
     "react-native-webview": "13.13.5",
@@ -90,7 +91,6 @@
     "tsx": "^4.20.5",
     "typescript": "^5.8.3"
   },
-
   "main": "index.ts",
   "private": true,
   "packageManager": "pnpm@10.22.0+sha512.bf049efe995b28f527fd2b41ae0474ce29186f7edcb3bf545087bd61fbbebb2bf75362d1307fda09c2d288e1e499787ac12d4fcb617a974718a6051f2eee741c"

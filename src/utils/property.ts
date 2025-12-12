@@ -1,4 +1,4 @@
-import { ImageManipulator, ImageResult, SaveFormat } from 'expo-image-manipulator';
+import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
 import { planEnum, Property_Type, statusEnum } from '~/type/property';
 
@@ -91,51 +91,41 @@ export const special_feature = (property_type: 'Residential' | 'Commercial' | 'L
   ];
 };
 
-export async function resizeImages(assets: ImagePicker.ImagePickerAsset[], size: number) {
-  const results: ImageResult[] = [];
+export async function resizeImage(asset: ImagePicker.ImagePickerAsset, size: number) {
+  const uri = asset.uri;
+  const origW = asset.width;
+  const origH = asset.height;
 
-  for (const asset of assets) {
-    const uri = asset.uri;
-    const origW = asset.width;
-    const origH = asset.height;
+  // Create a manipulation context
+  let ctx = ImageManipulator.manipulate(uri);
 
-    // Create a manipulation context
-    let ctx = ImageManipulator.manipulate(uri);
-
-    if (Math.max(origW, origH) > size) {
-      // Decide resize dimension based on which side is longer
-      if (origW >= origH) {
-        ctx = ctx.resize({ width: size });
-      } else {
-        ctx = ctx.resize({ height: size });
-      }
+  if (Math.max(origW, origH) > size) {
+    // Decide resize dimension based on which side is longer
+    if (origW >= origH) {
+      ctx = ctx.resize({ width: size });
+    } else {
+      ctx = ctx.resize({ height: size });
     }
-
-    // ctx.
-    // Render transformations
-    const imageRef = await ctx.renderAsync();
-
-
-    // Save with compression & format options
-    const saved = await imageRef.saveAsync({
-      compress: 0.9,
-      format: SaveFormat.WEBP,
-      base64: true,
-    });
-
-    results.push(saved);
   }
 
+  // ctx.
+  // Render transformations
+  const imageRef = await ctx.renderAsync();
 
-  return results;
+  // Save with compression & format options
+  const saved = await imageRef.saveAsync({
+    compress: 0.9,
+    format: SaveFormat.WEBP,
+    base64: true,
+  });
+
+  return saved;
 }
-
 
 export function isProperty(item: any): item is Property_Type {
   // Pick a unique field from Property_Type
   return (item as Property_Type).title !== undefined;
 }
-
 
 export const viewListing = (plan: planEnum, status: statusEnum) => {
   switch (plan) {
@@ -156,11 +146,7 @@ export const viewListing = (plan: planEnum, status: statusEnum) => {
       return false;
   }
 };
-export const applyCredit = (
-  plan: planEnum,
-  status: statusEnum,
-  future_promote: boolean
-) => {
+export const applyCredit = (plan: planEnum, status: statusEnum, future_promote: boolean) => {
   switch (plan) {
     case 'Free':
       switch (status) {
@@ -177,11 +163,7 @@ export const applyCredit = (
       return false;
   }
 };
-export const editCredits = (
-  plan: planEnum,
-  status: statusEnum,
-  future_promote: boolean
-) => {
+export const editCredits = (plan: planEnum, status: statusEnum, future_promote: boolean) => {
   switch (plan) {
     case 'Free':
       switch (status) {
@@ -277,11 +259,7 @@ export const cancelMembership = (plan: planEnum, status: statusEnum) => {
       return false;
   }
 };
-export const rejectionReason = (
-  plan: planEnum,
-  status: statusEnum,
-  visible: boolean
-) => {
+export const rejectionReason = (plan: planEnum, status: statusEnum, visible: boolean) => {
   switch (status) {
     case 'Rejected':
       return true;
@@ -290,11 +268,7 @@ export const rejectionReason = (
       return false;
   }
 };
-export const activateListing = (
-  plan: planEnum,
-  status: statusEnum,
-  visible: boolean
-) => {
+export const activateListing = (plan: planEnum, status: statusEnum, visible: boolean) => {
   switch (plan) {
     case 'Free':
     case 'Promote':
@@ -319,11 +293,7 @@ export const permanentDelete = (status: statusEnum) => {
   }
 };
 
-export const boostListing = (
-  plan: planEnum,
-  status: statusEnum,
-  bosted: boolean
-) => {
+export const boostListing = (plan: planEnum, status: statusEnum, bosted: boolean) => {
   switch (plan) {
     case 'Promote':
       switch (status) {
@@ -338,11 +308,7 @@ export const boostListing = (
   }
 };
 
-export const viewInsight = (
-  plan: planEnum,
-  status: statusEnum,
-  visible: boolean
-) => {
+export const viewInsight = (plan: planEnum, status: statusEnum, visible: boolean) => {
   switch (status) {
     case 'Approved':
       return true;

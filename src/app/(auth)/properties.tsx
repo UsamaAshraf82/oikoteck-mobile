@@ -4,8 +4,13 @@ import { useRouter } from 'expo-router';
 import Parse from 'parse/react-native';
 import { ArrowLeftIcon } from 'phosphor-react-native';
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, TouchableWithoutFeedback, View } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import {
+  ActivityIndicator,
+  Pressable,
+  ScrollView,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import { useDebounceValue } from 'usehooks-ts';
 import PropertyCard from '~/components/Cards/PropertyCardTable';
 import AppText from '~/components/Elements/AppText';
@@ -407,6 +412,7 @@ const Favorities = () => {
     <View className="flex w-full flex-1 flex-col">
       <View className="relative h-16 flex-row items-center justify-center">
         <Pressable
+          hitSlop={20}
           className="absolute left-4"
           onPress={() => {
             router.back();
@@ -496,7 +502,7 @@ const Favorities = () => {
           ))}
         </ScrollView>
         <FlashList
-          className="w-full flex-1 mt-4"
+          className="mt-4 w-full flex-1"
           data={properties}
           decelerationRate={'fast'}
           showsVerticalScrollIndicator={false}

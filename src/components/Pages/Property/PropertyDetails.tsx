@@ -174,6 +174,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
             {/* Close button */}
             <View className="absolute left-4 top-4">
               <TouchableWithoutFeedback
+                hitSlop={20}
                 onPress={() => {
                   setLightBoxVisible(false);
                 }}>
@@ -260,6 +261,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
             />
             <View className="absolute left-4 top-4">
               <TouchableWithoutFeedback
+                hitSlop={20}
                 onPress={() => {
                   router.back();
                 }}>
@@ -442,7 +444,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
           <SimilarListing property={property} />
         </View>
       </ScrollView>
-      <Grid cols={2} className="my-2 px-3 bg-white">
+      <Grid cols={2} className="my-2 bg-white px-3">
         <PressableView
           onPress={() => {
             setSubmitOfferVisible(true);
@@ -450,7 +452,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
           className="h-12  items-center justify-center rounded-full border border-primary ">
           <View className="flex-row items-center  gap-2">
             <FileTextIcon color={tailwind.theme.colors.primary} />
-            <AppText className="text-primary font-semibold text-[13px]">Submit Offer</AppText>
+            <AppText className="font-semibold text-[13px] text-primary">Submit Offer</AppText>
           </View>
         </PressableView>
         <PressableView
@@ -460,7 +462,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
           className="h-12  items-center justify-center rounded-full border border-secondary bg-secondary">
           <View className="flex-row items-center gap-2">
             <ChatCircleIcon color="#fff" />
-            <AppText className="text-white font-semibold text-[13px]">Contact Owner</AppText>
+            <AppText className="font-semibold text-[13px] text-white">Contact Owner</AppText>
           </View>
         </PressableView>
       </Grid>

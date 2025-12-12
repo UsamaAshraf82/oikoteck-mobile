@@ -7,7 +7,7 @@ import Parse from 'parse/react-native';
 import {
   BriefcaseIcon,
   CaretRightIcon,
-  HandIcon,
+  HandCoinsIcon,
   HandshakeIcon,
   HeartIcon,
   HouseLineIcon,
@@ -27,9 +27,11 @@ import { cn } from '~/lib/utils';
 import useUser from '~/store/useUser';
 import tailwind from '~/utils/tailwind';
 
-const PropertyQuery = (listign_for: 'Sale' | 'Rental') => {
+const PropertyQuery = (listing_for: 'Sale' | 'Rental', user: Parse.User) => {
   const query = new Parse.Query('Property');
-  return query.equalTo('listing_for', listign_for);
+  query.equalTo('owner', user);
+  query.equalTo('listing_for', listing_for);
+  return query;
 };
 
 const Rental = () => {
@@ -41,8 +43,8 @@ const Rental = () => {
     queryFn: async () => {
       if (!user?.id) return null;
       const result = await Promise.all([
-        PropertyQuery('Rental').count(),
-        PropertyQuery('Sale').count(),
+        PropertyQuery('Rental', user).count(),
+        PropertyQuery('Sale', user).count(),
       ]);
       return { rental: result[0], sale: result[1] };
     },
@@ -180,14 +182,14 @@ const Rental = () => {
             {(user
               ? [
                   { icon: <WarehouseIcon />, label: 'My Properties', path: 'properties' },
+                  { icon: <HandCoinsIcon />, label: 'Services', path: 'services' },
                   { icon: <HeartIcon />, label: 'My Favorites', path: 'favorities' },
                   { icon: <PasswordIcon />, label: 'Change Password', path: 'change-password' },
-                  { icon: <HandIcon />, label: 'Services', path: 'services' },
                   { icon: <QuestionIcon />, label: 'Frequently asked Questions', path: 'faqs' },
                   // { icon: <GiftIcon />, label: 'Share promo code', path: 'terms-conditions' },
                 ]
               : [
-                  { icon: <HandIcon />, label: 'Services', path: 'services' },
+                  { icon: <HandCoinsIcon />, label: 'Services', path: 'services' },
                   { icon: <QuestionIcon />, label: 'Frequently asked Questions', path: 'faqs' },
                 ]
             ).map((item, index, arr) => (

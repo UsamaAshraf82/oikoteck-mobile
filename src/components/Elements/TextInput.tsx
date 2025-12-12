@@ -14,12 +14,15 @@ const TextInput = ({ label, className, secureTextEntry, getValue, ...props }: Pr
 
   return (
     <View className="w-full  flex-col ">
-      {label && <AppText className="text-[13px] font-medium text-primary" >{label}</AppText>}
+      {label && <AppText className="font-medium text-[13px] text-primary">{label}</AppText>}
       <View className="relative mt-2">
         <TextBaseInput
           {...props}
-          value={props.value? props.value +'' :''}
-          className={cn('rounded-2xl border border-[#C6CAD2] px-3 pt-[11px] pb-[9px] text-[15px] font-normal focus:border-primary', className)}
+          value={props.value ? props.value + '' : ''}
+          className={cn(
+            'rounded-2xl border border-[#C6CAD2] px-3 pb-[9px] pt-[11px] font-normal text-[15px] placeholder:text-sm placeholder:text-gray-500 focus:border-primary',
+            className
+          )}
           secureTextEntry={secureTextEntryHack}
           onChangeText={(text) => {
             getValue?.(text);
