@@ -17,7 +17,7 @@ import { emailsAddress } from '~/global';
 import useActivityIndicator from '~/store/useActivityIndicator';
 import { useToast } from '~/store/useToast';
 export default function Index() {
-  const [tab, setTab] = useState(3);
+  const [tab, setTab] = useState(0);
   const router = useRouter();
   const { addToast } = useToast();
   const { startActivity, stopActivity } = useActivityIndicator();
