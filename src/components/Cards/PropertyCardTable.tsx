@@ -16,7 +16,7 @@ import {
   TrashIcon,
 } from 'phosphor-react-native';
 import { useMemo } from 'react';
-import { Alert, Pressable, View } from 'react-native';
+import { Alert, Pressable, TouchableWithoutFeedback, View } from 'react-native';
 import { stringify_area_district } from '~/lib/stringify_district_area';
 import { cn } from '~/lib/utils';
 import useActivityIndicator from '~/store/useActivityIndicator';
@@ -37,9 +37,10 @@ import {
   editList,
   permanentDelete,
   rejectionReason,
-  viewListing
+  renewMembership,
+  viewListing,
 } from '~/utils/property';
-import tailwind from '~/utils/tailwind';
+import tailwind, { tailwind_color } from '~/utils/tailwind';
 import AWSImage from '../Elements/AWSImage';
 import AppText from '../Elements/AppText';
 import Grid from '../HOC/Grid';
@@ -135,10 +136,9 @@ const PropertyCard = ({
         {
           icon: <ArrowCounterClockwiseIcon />,
           label: 'Renew Membership',
-          // display: renewMembership(property.plan, property.status),
+          display: renewMembership(property.plan, property.status),
           onPress: () => {
             router.push(`/renew-plan/${property.objectId}`);
-            // Alert.alert('TODO');
           },
         },
         {
@@ -146,18 +146,15 @@ const PropertyCard = ({
           label: 'Change Membership',
           display: changeMembership(property.plan, property.status),
           onPress: () => {
-            // Alert.alert('TODO');
             router.push(`/change-plan/${property.objectId}`);
           },
         },
-        ///
         {
           icon: <CoinIcon />,
           label: 'Apply Credit',
           display: applyCredit(property.plan, property.status, property.futurePromote),
           onPress: () => {
             Alert.alert('TODO');
-            // router.push(`/apply-points/${property.objectId}`);
           },
         },
         {
@@ -166,7 +163,6 @@ const PropertyCard = ({
           display: editCredits(property.plan, property.status, property.futurePromote),
           onPress: () => {
             Alert.alert('TODO');
-            // router.push(`/edit-points/${property.objectId}`);
           },
         },
         {
@@ -251,7 +247,7 @@ const PropertyCard = ({
                 message:
                   'This will remove the listing from the marketplace. You can always reactivate it or completely remove it from your dashboard',
               },
-              discard: { text: 'No, Cancel' },
+              discard: { text: 'No, Keep it' },
               confirm: {
                 text: 'Yes, Delete',
                 className: 'bg-red-600 border-red-600',
@@ -345,21 +341,28 @@ const PropertyCard = ({
       })}
       style={{ borderRadius: 16 }}>
       <View className={cn('rounded-2xl] relative flex-row gap-x-2.5 ', {})}>
-        <AWSImage src={property.images[0]} style={{ width: 100, height: 100, borderRadius: 16 }} />
-        {['dashboard', 'change_plan'].includes(type) && (
-          <View
-            className={cn('absolute left-2 top-2 rounded-full bg-expired/70 px-3 py-1 ', {
-              'bg-pending/70': property.status === 'Pending Approval',
-              'bg-active/70': property.status === 'Approved',
-              'bg-expired/70': property.status === 'Expired',
-              'bg-deleted/70': property.status === 'Deleted',
-              'bg-rejected/70': property.status === 'Rejected',
-            })}>
-            <AppText className="text-xs text-white">
-              {property.status === 'Pending Approval' ? 'Pending' : property.status + ''}
-            </AppText>
+        <TouchableWithoutFeedback onPress={() => router.push(`/property/${property.objectId}`)}>
+          <View>
+            <AWSImage
+              src={property.images[0]}
+              style={{ width: 100, height: 100, borderRadius: 16 }}
+            />
+            {['dashboard', 'change_plan'].includes(type) && (
+              <View
+                className={cn('absolute left-2 top-2 rounded-full bg-expired/70 px-3 py-1 ', {
+                  'bg-pending/70': property.status === 'Pending Approval',
+                  'bg-active/70': property.status === 'Approved',
+                  'bg-expired/70': property.status === 'Expired',
+                  'bg-deleted/70': property.status === 'Deleted',
+                  'bg-rejected/70': property.status === 'Rejected',
+                })}>
+                <AppText className="text-xs text-white">
+                  {property.status === 'Pending Approval' ? 'Pending' : property.status + ''}
+                </AppText>
+              </View>
+            )}
           </View>
-        )}
+        </TouchableWithoutFeedback>
         {type === 'dashboard' && (
           <View
             className={cn('absolute bottom-2 right-2 rounded-full bg-platinum/70  px-2 py-1 ', {
@@ -380,20 +383,20 @@ const PropertyCard = ({
                 {'€ ' + thoasandseprator(property.price)}
               </AppText>
               {property.listing_for !== 'Sale' && (
-                <AppText className="text-xs text-o_light_gray"> / Month</AppText>
+                <AppText className="text-xs text-[#9191A1]"> /month</AppText>
               )}
             </View>
           </View>
-
-          <AppText
-            className="font-bold text-base text-primary"
-            numberOfLines={1}
-            style={{ maxWidth: wide }}
-            ellipsizeMode="tail">
-            {property.title}
-          </AppText>
-
-          <AppText className="text-xs text-primary" style={{ maxWidth: wide }} numberOfLines={1}>
+          <TouchableWithoutFeedback onPress={() => router.push(`/property/${property.objectId}`)}>
+            <AppText
+              className="font-bold text-base text-primary"
+              numberOfLines={1}
+              style={{ maxWidth: wide }}
+              ellipsizeMode="tail">
+              {property.title}
+            </AppText>
+          </TouchableWithoutFeedback>
+          <AppText className="text-sm text-[#75758A]" style={{ maxWidth: wide }} numberOfLines={1}>
             {stringify_area_district({
               district: property.district,
               area_1: property.area_1,
@@ -409,7 +412,7 @@ const PropertyCard = ({
                 color={tailwind.theme.colors.o_light_gray}
                 className="text-o_light_gray"
               />
-              <AppText className="ml-1 mr-0 text-sm text-o_light_gray">{property.bedrooms}</AppText>
+              <AppText className="ml-1 mr-0 text-sm text-[#9191A1]">{property.bedrooms}</AppText>
             </View>
             <View className="mr-3 flex-row items-center">
               <BathIcon
@@ -418,7 +421,7 @@ const PropertyCard = ({
                 color={tailwind.theme.colors.o_light_gray}
                 className="text-o_light_gray"
               />
-              <AppText className="ml-1 mr-0 text-sm text-o_light_gray">{property.bedrooms}</AppText>
+              <AppText className="ml-1 mr-0 text-sm text-[#9191A1]">{property.bedrooms}</AppText>
             </View>
             <View className="mr-3 flex-row items-center  text-o_light_gray">
               <SizeIcon
@@ -427,7 +430,7 @@ const PropertyCard = ({
                 color={tailwind.theme.colors.o_light_gray}
                 className="text-o_light_gray"
               />
-              <AppText className="ml-1 mr-0 text-sm text-o_light_gray">{property.size} m²</AppText>
+              <AppText className="ml-1 mr-0 text-sm text-[#9191A1]">{property.size} m²</AppText>
             </View>
           </View>
         </View>
@@ -441,7 +444,7 @@ const PropertyCard = ({
                 label: 'Options',
               });
             }}>
-            <DotsThreeCircleIcon />
+            <DotsThreeCircleIcon color={tailwind_color.o_light_gray} />
           </Pressable>
         )}
       </View>

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import z from 'zod';
 import AppText from '~/components/Elements/AppText';
 import { ControlledCheckBox } from '~/components/Elements/Checkbox';
@@ -100,6 +100,7 @@ export default function LocationInfo({ data, onSubmit }: Props) {
             property.
           </AppText>
           <MapView
+            provider={PROVIDER_GOOGLE}
             style={{ flex: 1 }}
             initialRegion={{
               latitude: marker?.lat || 0,

@@ -419,20 +419,20 @@ const Favorities = () => {
           }}>
           <ArrowLeftIcon size={16} weight="bold" />
         </Pressable>
-        <View className="flex-row gap-2 rounded-full bg-[#E9E9EC] p-2">
+        <View className="flex-row gap-2 rounded-full bg-[#E9E9EC] p-1.5">
           <TouchableWithoutFeedback
             onPress={() => {
               setListingFor('Rental');
             }}>
             <View
-              className={cn('w-20 items-center justify-center  rounded-full   py-2', {
+              className={cn('w-20 items-center justify-center  rounded-full   py-1.5', {
                 'bg-white': listing_for === 'Rental',
               })}>
               <AppText
                 className={cn('text-[#9191A1]', {
-                  'text-medium text-primary': listing_for === 'Rental',
+                  'font-medium text-black': listing_for === 'Rental',
                 })}>
-                Rental
+                Rent
               </AppText>
             </View>
           </TouchableWithoutFeedback>
@@ -441,12 +441,12 @@ const Favorities = () => {
               setListingFor('Sale');
             }}>
             <View
-              className={cn('w-20 items-center justify-center  rounded-full   py-2', {
+              className={cn('w-20 items-center justify-center  rounded-full   py-1.5', {
                 'bg-white': listing_for === 'Sale',
               })}>
               <AppText
                 className={cn('text-[#9191A1]', {
-                  'text-medium text-primary': listing_for === 'Sale',
+                  'font-medium text-black': listing_for === 'Sale',
                 })}>
                 Sale
               </AppText>
@@ -477,23 +477,23 @@ const Favorities = () => {
                 setStatus(i.status);
               }}
               className={cn(
-                'text-gray-3 flex-row items-center justify-center rounded-full  border px-2 py-1 text-xs',
+                'text-gray-3 flex-row items-center justify-center rounded-full border border-[#E2E4E8] bg-[#575775]/5 px-3 py-1 text-xs',
                 {
                   'border-primary bg-primary font-medium text-white': status === i.status,
                 }
               )}
               key={i.label}>
               <AppText
-                className={cn({
-                  'text-white': status === i.status,
+                className={cn('text-[12px]', {
+                  ' text-white': status === i.status,
                 })}>
                 {i.label}
               </AppText>
               <AppText
                 className={cn(
-                  'text-gray-1 ml-2 rounded-full border border-[#F4F4F6] bg-[#F4F4F6] px-2',
+                  'ml-2 rounded-full border border-[#575775]/15 bg-[#575775]/15 px-2 py-1 font-medium text-[12px] text-[#9191A1]',
                   {
-                    'border-white bg-white text-primary': status === i.status,
+                    'border-white bg-white font-semibold text-primary': status === i.status,
                   }
                 )}>
                 {_stats_2[i.id as keyof typeof _stats_2]}
