@@ -71,7 +71,6 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
       // if (!canOpen) throw new Error('Cannot open');
       await Linking.openURL(url);
     } catch (error) {
-      console.log(error)
       addToast({
         heading: 'Whatsapp',
         message: 'Cannot Open Whatsapp',

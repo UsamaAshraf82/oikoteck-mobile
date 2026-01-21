@@ -428,7 +428,6 @@ const MarketPlace = ({ listing_type }: Props) => {
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}>
             {filters.map((i) => {
-              console.log(filters.length - 2);
               if (i.filter === 'Sort') {
                 return (
                   <TouchableWithoutFeedback key={i.filter} onPress={i.onPress}>
