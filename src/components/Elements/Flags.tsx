@@ -226,26 +226,8 @@ import ZA from 'country-flag-icons/3x2/ZA.svg';
 import ZM from 'country-flag-icons/3x2/ZM.svg';
 import ZW from 'country-flag-icons/3x2/ZW.svg';
 import { Image } from 'expo-image';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import AppText from './AppText';
-
-// type flag = { Country?: string; Code?: number; ISO?: string } | undefined;
-
-// // type InputType = {
-// //   label?: string;
-// //   error?: string;
-// //   value?: flag;
-// //   foot?: string;
-// //   disabled?: boolean;
-// //   onChange?: (x: flag) => void;
-// // };
-
-// // const FlagSelector = ({ value, disabled, onChange, ...rest }: InputType) => {
-// //   return (
-
-// //   );
-// // };
-// // export default FlagSelector;
 
 export const RenderFlagWithCode = ({ ISO }: { ISO: string }) => {
   const flag = flags.find((i) => ISO === i.ISO);
@@ -253,15 +235,39 @@ export const RenderFlagWithCode = ({ ISO }: { ISO: string }) => {
   if (!flag) return null;
 
   return (
-    <View className="w-full flex-row items-center justify-between">
-      <View className="flex-row gap-1">
+    <View style={styles.container}>
+      <View style={styles.flagGroup}>
         {flag.flag}
-        <AppText>{flag.ISO}</AppText>
+        <AppText style={styles.isoText}>{flag.ISO}</AppText>
       </View>
-      <AppText>+{flag.Code}</AppText>
+      <AppText style={styles.codeText}>+{flag.Code}</AppText>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  flagGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  isoText: {
+    fontFamily: 'LufgaRegular',
+    fontSize: 14,
+    color: '#192234',
+  },
+  codeText: {
+    fontFamily: 'LufgaRegular',
+    fontSize: 14,
+    color: '#192234',
+  },
+});
 
 export const flags = [
   {

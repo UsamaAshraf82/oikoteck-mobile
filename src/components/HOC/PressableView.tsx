@@ -1,24 +1,35 @@
-import React, { ReactNode } from 'react';
-import { TouchableNativeFeedback, View } from 'react-native';
-import { cn } from '~/lib/utils';
+import * as React from 'react';
+import { ReactNode } from 'react';
+import { StyleProp, StyleSheet, TouchableNativeFeedback, View, ViewStyle } from 'react-native';
 
 type Props = {
   children: ReactNode;
-  className?: string;
+  style?: StyleProp<ViewStyle>;
   onPress?: () => void;
 };
 
-const PressableView: React.FC<Props> = ({ children, className, onPress }) => {
+const PressableView: React.FC<Props> = ({ children, style, onPress }) => {
   return (
-    <View className={cn('overflow-hidden', className)}>
+    <View style={[styles.container, style]}>
       <TouchableNativeFeedback
         onPress={onPress}
-        // background={TouchableNativeFeedback.Ripple('rgba(255,255,255,0.3)', true)}
       >
-        <View className="flex-1 w-full h-full items-center justify-center">{children}</View>
+        <View style={styles.innerContainer}>{children}</View>
       </TouchableNativeFeedback>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    overflow: 'hidden',
+  },
+  innerContainer: {
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
 
 export default PressableView;

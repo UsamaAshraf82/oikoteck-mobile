@@ -6,16 +6,15 @@ import { HeartIcon } from 'phosphor-react-native';
 import { TouchableWithoutFeedback } from 'react-native';
 import useUser from '~/store/useUser';
 import { Property_Type } from '~/type/property';
-import tailwind from '~/utils/tailwind';
 
 type Props = {
-  className?: string;
+  style?: any;
   property_id: string;
   property: Property_Type;
   size?: number;
 };
 
-const FavButton = ({size=26,...props}: Props) => {
+const FavButton = ({ size = 26, ...props }: Props) => {
   const { user } = useUser();
   const router = useRouter();
 
@@ -28,11 +27,6 @@ const FavButton = ({size=26,...props}: Props) => {
         __type: 'Pointer',
         className: 'Property',
         objectId: props.property_id,
-      });
-      FavouriteQuery.equalTo('User', {
-        __type: 'Pointer',
-        className: '_User',
-        objectId: user?.id,
       });
       FavouriteQuery.equalTo('User', {
         __type: 'Pointer',
@@ -75,11 +69,10 @@ const FavButton = ({size=26,...props}: Props) => {
         refetch();
       }}>
       <HeartIcon
-        key={props.property_id + '_' + faviorite}
+        key={props.property_id + '_' + (faviorite ? 'fav' : 'not')}
         size={size}
-        weight={faviorite ? 'fill' : 'duotone'}
-        duotoneColor={faviorite ? undefined : tailwind.theme.colors.black}
-        color={faviorite ? tailwind.theme.colors.red[600] : tailwind.theme.colors.white}
+        weight={faviorite ? 'fill' : 'bold'}
+        color={faviorite ? '#cc3f33' : '#ffffff'}
       />
     </TouchableWithoutFeedback>
   );

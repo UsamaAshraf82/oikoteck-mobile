@@ -1,10 +1,10 @@
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Modal from 'react-native-modal';
 import useModal from '~/store/useModalHelper';
 import { deviceHeight } from '~/utils/global';
-const Select = () => {
-  const { opened: value } = useModal();
 
+const ModalSheet = () => {
+  const { opened: value } = useModal();
 
   if (value === null) return null;
 
@@ -15,20 +15,45 @@ const Select = () => {
       onSwipeComplete={value.onClose}
       swipeDirection="down"
       hardwareAccelerated
-        coverScreen={false}
+      coverScreen={false}
       avoidKeyboard={false}
-      style={{ justifyContent: 'flex-end', margin: 0 }}
+      style={styles.modal}
       propagateSwipe>
       <View
-        className="rounded-t-[20px] bg-white px-4 py-4"
-        style={{
-          maxHeight: deviceHeight * 0.9,
-        }}>
-        <View className="mb-3 h-1 w-10 self-center rounded-sm bg-[#ccc]" />
-        {value.modal }
+        style={[
+          styles.container,
+          {
+            maxHeight: deviceHeight * 0.9,
+          },
+        ]}>
+        <View style={styles.handle} />
+        {value.modal}
       </View>
     </Modal>
   );
 };
 
-export default Select;
+const styles = StyleSheet.create({
+  modal: {
+    justifyContent: 'flex-end',
+    margin: 0,
+  },
+  container: {
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    backgroundColor: 'white',
+    paddingHorizontal: 16,
+    paddingBottom: 24,
+    paddingTop: 16,
+  },
+  handle: {
+    marginBottom: 12,
+    height: 4,
+    width: 40,
+    alignSelf: 'center',
+    borderRadius: 2,
+    backgroundColor: '#ccc',
+  },
+});
+
+export default ModalSheet;

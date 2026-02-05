@@ -5,7 +5,7 @@ import { Link, useLocalSearchParams, useRouter } from 'expo-router';
 import { CheckCircleIcon, UserIcon } from 'phosphor-react-native';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { TouchableWithoutFeedback, View } from 'react-native';
+import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { z } from 'zod';
 import AppText from '~/components/Elements/AppText';
@@ -15,269 +15,10 @@ import { ControlledTextInput } from '~/components/Elements/TextInput';
 import TopHeader from '~/components/Elements/TopHeader';
 import Grid from '~/components/HOC/Grid';
 import PressableView from '~/components/HOC/PressableView';
-import { cn } from '~/lib/utils';
 import useActivityIndicator from '~/store/useActivityIndicator';
 import useSelect from '~/store/useSelectHelper';
 import { useToast } from '~/store/useToast';
 import useUser from '~/store/useUser';
-import tailwind from '~/utils/tailwind';
-
-export default function Login() {
-  const { addToast } = useToast();
-  const { openSelect } = useSelect();
-  const { startActivity, stopActivity } = useActivityIndicator();
-
-  const local: { email: string; password: string } = useLocalSearchParams();
-  const router = useRouter();
-  const { user, signup } = useUser();
-  const {
-    control,
-    setValue,
-    watch,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<SignupTypes>({
-    resolver: zodResolver(SignupSchema),
-    defaultValues: {
-      userType: 'regular',
-      company_name: '',
-      country: { Code: flags[0].Code, Country: flags[0].Country, ISO: flags[0].ISO },
-      terms: false,
-      privacy: false,
-      share_consent: false,
-      firstName: '',
-      lastName: '',
-      phone: '',
-      vat: '',
-    },
-  });
-
-  useEffect(() => {
-    if (!local.email || !local.password) {
-      router.replace('/signup');
-    }
-  }, []);
-
-  useEffect(() => {
-    if (user) {
-      router.push('/rent');
-    }
-  }, [user]);
-
-  const onSubmit = async (data: SignupTypes) => {
-    startActivity();
-    await signup({ ...data, email: local.email, password: local.password });
-    stopActivity();
-  };
-
-  const onError = () => {
-    const keys = Object.keys(errors) as (keyof SignupTypes)[];
-    for (let index = 0; index < keys.length; index++) {
-      const element = errors[keys[index]];
-      if (element?.message) {
-        addToast({
-          type: 'error',
-          heading: displayNames[keys[index]],
-          message: element.message,
-        });
-      }
-    }
-  };
-
-  return (
-    <View className="flex-1 bg-white">
-      <TopHeader
-        onBackPress={() => {
-          router.back();
-        }}
-        title=""
-      />
-      <KeyboardAwareScrollView
-        bottomOffset={50}
-        contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 16 }}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}>
-        <View className="mb-5 flex-1 flex-col  justify-start">
-          <AppText className="text-left font-semibold text-3xl">Setup your profile ✍️</AppText>
-          <AppText className="mt-2">
-            Enter the details below to finish setting up your profile
-          </AppText>
-          <View className="mt-5 w-full flex-col gap-2">
-            <View className="mb-3 flex-col gap-2">
-              <AppText className="font-medium">Register As</AppText>
-              <Grid cols={2} gap={4}>
-                {[
-                  {
-                    label: 'Regular User',
-                    value: 'regular',
-                    icon: <UserIcon color="black" size={35} style={{ width: 30, height: 30 }} />,
-                  },
-                  {
-                    label: 'Real Estate Agent',
-                    value: 'agent',
-                    icon: <Image source={agent} style={{ width: 35, height: 35 }} />,
-                  },
-                ].map((item) => (
-                  <TouchableWithoutFeedback
-                    key={item.value}
-                    onPress={() => setValue('userType', item.value as 'agent' | 'regular')}>
-                    <View
-                      className={cn(
-                        'relative items-center justify-center gap-2 rounded-3xl border py-5',
-                        {
-                          'border-secondary': item.value === watch('userType'),
-                        }
-                      )}>
-                      {item.icon}
-                      <AppText>{item.label}</AppText>
-                      {item.value === watch('userType') && (
-                        <View className="absolute right-2 top-2">
-                          <CheckCircleIcon
-                            color={tailwind.theme.colors.secondary}
-                            size={22}
-                            weight="fill"
-                          />
-                        </View>
-                      )}
-                    </View>
-                  </TouchableWithoutFeedback>
-                ))}
-              </Grid>
-            </View>
-            <ControlledTextInput
-              control={control}
-              name="firstName"
-              label="First Name"
-              autoComplete="name-given"
-              placeholder="Enter your first name"
-            />
-            <ControlledTextInput
-              control={control}
-              name="lastName"
-              label="Last Name"
-              autoComplete="name-family"
-              placeholder="Enter your last name"
-            />
-            {watch('userType') === 'agent' && (
-              <>
-                <ControlledTextInput
-                  control={control}
-                  name="company_name"
-                  label="Registered Company Name"
-                  placeholder="Registered company name"
-                />
-                <ControlledTextInput
-                  control={control}
-                  name="vat"
-                  label="VAT"
-                  placeholder="EL000000000"
-                />
-              </>
-            )}
-
-            <AppText className="-mb-2">Phone Number</AppText>
-            <View className="flex-row items-center gap-0.5">
-              <View className="w-2/5 ">
-                <TouchableWithoutFeedback
-                  onPress={() => {
-                    openSelect({
-                      useFlatList: true,
-                      label: 'Select Country',
-                      options: flags.map((i) => ({
-                        label: (
-                          <View className="w-11/12 flex-row items-center justify-between">
-                            <View className="flex-row gap-2">
-                              {i.flag}
-                              <AppText>{i.Country}</AppText>
-                            </View>
-                            <AppText>+{i.Code}</AppText>
-                          </View>
-                        ),
-                        value: { Code: i.Code, Country: i.Country, ISO: i.ISO },
-                      })),
-                      value: watch('country'),
-                      onPress: (value) =>
-                        setValue(
-                          'country',
-                          value.value as { Code: number; Country: string; ISO: string }
-                        ),
-                      // title: 'Select Country',
-                    });
-                  }}>
-                  <View className="mt-2 rounded-2xl border border-[#C6CAD2] bg-white px-2 py-3">
-                    <RenderFlagWithCode ISO={watch('country').ISO} />
-                  </View>
-                </TouchableWithoutFeedback>
-              </View>
-              <View className="w-3/5 pr-1">
-                <ControlledTextInput
-                  control={control}
-                  name="phone"
-                  // autoComplete="nu"
-                  placeholder="Enter your phone number"
-                  textContentType="telephoneNumber"
-                  keyboardType="phone-pad"
-                />
-              </View>
-            </View>
-            <ControlledCheckBox
-              control={control}
-              name="terms"
-              alignTop
-              label={
-                <>
-                  I confirm that I read and I agree with Oikoteck’s{' '}
-                  <Link href="/terms-conditions" className="text-secondary">
-                    Terms & Conditions
-                  </Link> *
-                </>
-              }
-            />
-            <ControlledCheckBox
-              control={control}
-              name="privacy"
-              alignTop
-              label={
-                <>
-                  I confirm that I read and understood Oikoteck’s{' '}
-                  <Link
-                    href="/privacy-policy"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-secondary">
-                    Data Protection Notice
-                  </Link>{' '}
-                  and the{' '}
-                  <Link
-                    href="/cookie-policy"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-secondary">
-                    Cookies Policy
-                  </Link> *
-                </>
-              }
-            />
-            <ControlledCheckBox
-              control={control}
-              alignTop
-              name="share_consent"
-              label="I consent to the sharing of my contact information and search preferences with real estate agents who offer listings which may align with my interests"
-            />
-          </View>
-        </View>
-      </KeyboardAwareScrollView>
-      <View className="bg-white px-6 py-4">
-        <PressableView
-          onPress={handleSubmit(onSubmit, onError)}
-          className="h-14 w-full flex-row items-center justify-center rounded-full  bg-secondary">
-          <AppText className="font-bold text-[15px] text-white">Sign up</AppText>
-        </PressableView>
-      </View>
-    </View>
-  );
-}
 
 const SignupSchema = z
   .object({
@@ -290,7 +31,9 @@ const SignupSchema = z
       Code: z.number(),
     }),
     userType: z.enum(['regular', 'agent'], {
-      error: 'Please select a user type',
+      errorMap: (issue: z.ZodIssueBase, ctx: { defaultError: string }) => ({
+        message: issue.code === 'invalid_type' ? 'Please select a user type' : ctx.defaultError,
+      }),
     }),
     vat: z.string().optional(),
     company_name: z.string().optional(),
@@ -298,7 +41,7 @@ const SignupSchema = z
     privacy: z.boolean(),
     share_consent: z.boolean(),
   })
-  .superRefine((data, ctx) => {
+  .superRefine((data: SignupTypes, ctx: z.RefinementCtx) => {
     if (data.userType === 'agent') {
       if (!data.vat) {
         ctx.addIssue({
@@ -347,3 +90,416 @@ const displayNames: Record<keyof SignupTypes, string> = {
   userType: 'User Type',
   vat: 'VAT',
 };
+
+export default function Signup2Email() {
+  const { addToast } = useToast();
+  const { openSelect } = useSelect();
+  const activity = useActivityIndicator();
+
+  const local = useLocalSearchParams<{ email: string; password: string }>();
+  const router = useRouter();
+  const { user, signup } = useUser();
+  const {
+    control,
+    setValue,
+    watch,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignupTypes>({
+    resolver: zodResolver(SignupSchema),
+    defaultValues: {
+      userType: 'regular',
+      company_name: '',
+      country: { Code: flags[0].Code, Country: flags[0].Country, ISO: flags[0].ISO },
+      terms: false,
+      privacy: false,
+      share_consent: false,
+      firstName: '',
+      lastName: '',
+      phone: '',
+      vat: '',
+    },
+  });
+
+  useEffect(() => {
+    if (!local.email || !local.password) {
+      router.replace('/signup');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      router.push('/rent');
+    }
+  }, [user]);
+
+  const onSubmit = async (formData: SignupTypes) => {
+    activity.startActivity();
+    await signup({ ...formData, email: local.email || '', password: local.password || '' });
+    activity.stopActivity();
+  };
+
+  const onError = () => {
+    const keys = Object.keys(errors) as (keyof SignupTypes)[];
+    for (let index = 0; index < keys.length; index++) {
+      const element = errors[keys[index]];
+      if (element?.message) {
+        addToast({
+          type: 'error',
+          heading: displayNames[keys[index]],
+          message: element.message,
+        });
+      }
+    }
+  };
+
+  const selectedUserType = watch('userType');
+
+  return (
+    <View style={styles.container}>
+      <TopHeader
+        onBackPress={() => {
+          router.back();
+        }}
+        title=""
+      />
+      <KeyboardAwareScrollView
+        bottomOffset={50}
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
+        <View style={styles.formWrapper}>
+          <AppText style={styles.title}>Setup your profile ✍️</AppText>
+          <AppText style={styles.subtext}>
+            Enter the details below to finish setting up your profile
+          </AppText>
+
+          <View style={styles.inputGroup}>
+            <View style={styles.userTypeWrapper}>
+              <AppText style={styles.label}>Register As</AppText>
+              <Grid cols={2} gap={16}>
+                {[
+                  {
+                    label: 'Regular User',
+                    value: 'regular',
+                    icon: <UserIcon color="#192234" size={30} />,
+                  },
+                  {
+                    label: 'Real Estate Agent',
+                    value: 'agent',
+                    icon: <Image source={agent} style={styles.agentIcon} />,
+                  },
+                ].map((item) => (
+                  <TouchableWithoutFeedback
+                    key={item.value}
+                    onPress={() => setValue('userType', item.value as 'agent' | 'regular')}>
+                    <View
+                      style={[
+                        styles.userTypeCard,
+                        selectedUserType === item.value && styles.userTypeCardActive,
+                      ]}>
+                      {item.icon}
+                      <AppText style={styles.userTypeLabel}>{item.label}</AppText>
+                      {selectedUserType === item.value && (
+                        <View style={styles.checkIcon}>
+                          <CheckCircleIcon color="#82065e" size={22} weight="fill" />
+                        </View>
+                      )}
+                    </View>
+                  </TouchableWithoutFeedback>
+                ))}
+              </Grid>
+            </View>
+
+            <ControlledTextInput
+              control={control}
+              name="firstName"
+              label="First Name"
+              autoComplete="name-given"
+              placeholder="Enter your first name"
+            />
+            <ControlledTextInput
+              control={control}
+              name="lastName"
+              label="Last Name"
+              autoComplete="name-family"
+              placeholder="Enter your last name"
+            />
+
+            {selectedUserType === 'agent' && (
+              <>
+                <ControlledTextInput
+                  control={control}
+                  name="company_name"
+                  label="Registered Company Name"
+                  placeholder="Registered company name"
+                />
+                <ControlledTextInput
+                  control={control}
+                  name="vat"
+                  label="VAT"
+                  placeholder="EL000000000"
+                />
+              </>
+            )}
+
+            <AppText style={styles.phoneLabel}>Phone Number</AppText>
+            <View style={styles.phoneRow}>
+              <View style={styles.countryPickerWrapper}>
+                <TouchableWithoutFeedback
+                  onPress={() => {
+                    openSelect({
+                      useFlatList: true,
+                      label: 'Select Country',
+                      options: flags.map((i) => ({
+                        label: (
+                          <View style={styles.countryOption}>
+                            <View style={styles.countryInfo}>
+                              {i.flag}
+                              <AppText style={styles.countryName}>{i.Country}</AppText>
+                            </View>
+                            <AppText style={styles.countryCode}>+{i.Code}</AppText>
+                          </View>
+                        ),
+                        value: { Code: i.Code, Country: i.Country, ISO: i.ISO },
+                      })),
+                      value: watch('country'),
+                      onPress: (value: any) =>
+                        setValue(
+                          'country',
+                          value.value as { Code: number; Country: string; ISO: string }
+                        ),
+                    });
+                  }}>
+                  <View style={styles.countryPicker}>
+                    <RenderFlagWithCode ISO={watch('country').ISO} />
+                  </View>
+                </TouchableWithoutFeedback>
+              </View>
+              <View style={styles.phoneInputWrapper}>
+                <ControlledTextInput
+                  control={control}
+                  name="phone"
+                  placeholder="Enter your phone number"
+                  textContentType="telephoneNumber"
+                  keyboardType="phone-pad"
+                />
+              </View>
+            </View>
+
+            <View style={styles.checkboxGroup}>
+              <ControlledCheckBox
+                control={control}
+                name="terms"
+                alignTop
+                label={
+                  <AppText style={styles.checkboxText}>
+                    I confirm that I read and I agree with Oikoteck’s{' '}
+                    <Link href="/terms-conditions" style={styles.linkText}>
+                      Terms & Conditions
+                    </Link>{' '}
+                    *
+                  </AppText>
+                }
+              />
+              <ControlledCheckBox
+                control={control}
+                name="privacy"
+                alignTop
+                label={
+                  <AppText style={styles.checkboxText}>
+                    I confirm that I read and understood Oikoteck’s{' '}
+                    <Link href="/privacy-policy" style={styles.linkText}>
+                      Data Protection Notice
+                    </Link>{' '}
+                    and the{' '}
+                    <Link href="/cookie-policy" style={styles.linkText}>
+                      Cookies Policy
+                    </Link>{' '}
+                    *
+                  </AppText>
+                }
+              />
+              <ControlledCheckBox
+                control={control}
+                alignTop
+                name="share_consent"
+                label={
+                  <AppText style={styles.checkboxText}>
+                    I consent to the sharing of my contact information and search preferences with real
+                    estate agents who offer listings which may align with my interests
+                  </AppText>
+                }
+              />
+            </View>
+          </View>
+        </View>
+      </KeyboardAwareScrollView>
+
+      <View style={styles.footer}>
+        <PressableView
+          onPress={handleSubmit(onSubmit, onError)}
+          style={styles.submitBtn}>
+          <AppText style={styles.submitBtnText}>Sign up</AppText>
+        </PressableView>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingHorizontal: 16,
+  },
+  formWrapper: {
+    marginBottom: 20,
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+  },
+  title: {
+    fontFamily: 'LufgaSemiBold',
+    fontSize: 30,
+    color: '#192234',
+    textAlign: 'left',
+  },
+  subtext: {
+    marginTop: 8,
+    fontFamily: 'LufgaRegular',
+    fontSize: 14,
+    color: '#575775',
+  },
+  inputGroup: {
+    marginTop: 20,
+    width: '100%',
+    flexDirection: 'column',
+    gap: 16,
+  },
+  userTypeWrapper: {
+    flexDirection: 'column',
+    gap: 8,
+  },
+  label: {
+    fontFamily: 'LufgaMedium',
+    fontSize: 14,
+    color: '#192234',
+  },
+  userTypeCard: {
+    position: 'relative',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: '#E9E9EC',
+    paddingVertical: 20,
+    backgroundColor: '#fff',
+  },
+  userTypeCardActive: {
+    borderColor: '#82065e',
+    borderWidth: 2,
+  },
+  agentIcon: {
+    width: 35,
+    height: 35,
+  },
+  userTypeLabel: {
+    fontFamily: 'LufgaRegular',
+    fontSize: 13,
+    color: '#192234',
+  },
+  checkIcon: {
+    position: 'absolute',
+    right: 8,
+    top: 8,
+  },
+  phoneLabel: {
+    fontFamily: 'LufgaMedium',
+    fontSize: 14,
+    color: '#192234',
+    marginBottom: -8,
+  },
+  phoneRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  countryPickerWrapper: {
+    width: '38%',
+  },
+  countryPicker: {
+    marginTop: 8,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#C6CAD2',
+    backgroundColor: 'white',
+    paddingHorizontal: 8,
+    paddingVertical: 12,
+  },
+  phoneInputWrapper: {
+    flex: 1,
+  },
+  checkboxGroup: {
+    marginTop: 8,
+    flexDirection: 'column',
+    gap: 12,
+  },
+  checkboxText: {
+    fontFamily: 'LufgaRegular',
+    fontSize: 13,
+    color: '#575775',
+    lineHeight: 18,
+  },
+  linkText: {
+    color: '#82065e',
+    fontFamily: 'LufgaBold',
+  },
+  footer: {
+    backgroundColor: 'white',
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#F0F0F0',
+  },
+  submitBtn: {
+    height: 56,
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 999,
+    backgroundColor: '#82065e',
+  },
+  submitBtnText: {
+    fontFamily: 'LufgaBold',
+    fontSize: 15,
+    color: 'white',
+  },
+  countryOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '92%',
+  },
+  countryInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  countryName: {
+    fontFamily: 'LufgaRegular',
+    fontSize: 14,
+    color: '#192234',
+  },
+  countryCode: {
+    fontFamily: 'LufgaMedium',
+    fontSize: 14,
+    color: '#575775',
+  },
+});

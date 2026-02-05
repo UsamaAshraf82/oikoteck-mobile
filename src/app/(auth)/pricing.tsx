@@ -1,111 +1,157 @@
 import { router } from 'expo-router';
-import { useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import AppText from '~/components/Elements/AppText';
 import TopHeader from '~/components/Elements/TopHeader';
 import Grid from '~/components/HOC/Grid';
 import { onepricetable } from '~/global/plan_price';
 import { thoasandseprator } from '~/utils/number';
-const limit = 50;
+
 const Pricing = () => {
-  const [listing_for, setListingFor] = useState('Rental');
   return (
-    <View className="flex w-full flex-1 flex-col">
+    <View style={styles.container}>
       <TopHeader
         onBackPress={() => router.back()}
         title="Pricing"
-        // right={
-        //   <View className="flex-row gap-1 rounded-full bg-[#E9E9EC] p-1">
-        //     <TouchableWithoutFeedback
-        //       onPress={() => {
-        //         setListingFor('Rental');
-        //       }}>
-        //       <View
-        //         className={cn('px-2 items-center justify-center  rounded-full   py-1', {
-        //           'bg-white': listing_for === 'Rental',
-        //         })}>
-        //         <AppText
-        //           className={cn('text-[#9191A1]', {
-        //             'text-medium text-primary': listing_for === 'Rental',
-        //           })}>
-        //           3 Month
-        //         </AppText>
-        //       </View>
-        //     </TouchableWithoutFeedback>
-        //     <TouchableWithoutFeedback
-        //       onPress={() => {
-        //         setListingFor('Sale');
-        //       }}>
-        //       <View
-        //         className={cn('px-2 items-center justify-center  rounded-full   py-1', {
-        //           'bg-white': listing_for === 'Sale',
-        //         })}>
-        //         <AppText
-        //           className={cn('text-[#9191A1]', {
-        //             'text-medium text-primary': listing_for === 'Sale',
-        //           })}>
-        //           6 Month
-        //         </AppText>
-        //       </View>
-        //     </TouchableWithoutFeedback>
-        //   </View>
-        // }
       />
-      <View className="mb-2 px-5">
-        <View className="">
-          <AppText className="font-semibold text-2xl">Pricing Breakdown</AppText>
-          <AppText className="text-sm text-[#9191A1]">
+      <View style={styles.header}>
+        <View>
+          <AppText style={styles.title}>Pricing Breakdown</AppText>
+          <AppText style={styles.subTitle}>
             View pricing details about each of the premium services we offer
           </AppText>
         </View>
 
-        <Grid cols={4} className="flex-row items-center justify-between border-b border-[#D9D9D9]">
-          <AppText className="font-semibold  text-base">Points</AppText>
-          <View className="flex-col gap-1">
-            <View className="flex-row gap-1">
-              <View className="h-3 w-3 self-center rounded-full bg-promote_plus" />
-              <AppText className="gap-1  font-semibold text-base">Promote +</AppText>
+        <Grid cols={4} style={styles.gridHeader}>
+          <AppText style={styles.pointsLabel}>Points</AppText>
+          <View style={styles.planCol}>
+            <View style={styles.planNameRow}>
+              <View style={[styles.dot, { backgroundColor: '#398be9' }]} />
+              <AppText style={styles.planName}>Promote +</AppText>
             </View>
-            <AppText className="text-xs">Price Per Point</AppText>
+            <AppText style={styles.pricePerPointLabel}>Price Per Point</AppText>
           </View>
-          <View className="flex-col gap-1">
-            <View className="flex-row gap-1">
-              <View className="h-3 w-3 self-center rounded-full bg-gold" />
-              <AppText className="gap-1  font-semibold text-base">Gold</AppText>
+          <View style={styles.planCol}>
+            <View style={styles.planNameRow}>
+              <View style={[styles.dot, { backgroundColor: '#e6c623' }]} />
+              <AppText style={styles.planName}>Gold</AppText>
             </View>
-            <AppText className="text-xs">Price Per Point</AppText>
+            <AppText style={styles.pricePerPointLabel}>Price Per Point</AppText>
           </View>
-          <View className="flex-col gap-1">
-            <View className="flex-row gap-1">
-              <View className="h-3 w-3 self-center rounded-full bg-platinum" />
-              <AppText className="gap-1  font-semibold text-base">Platinum</AppText>
+          <View style={styles.planCol}>
+            <View style={styles.planNameRow}>
+              <View style={[styles.dot, { backgroundColor: '#ff9c46' }]} />
+              <AppText style={styles.planName}>Platinum</AppText>
             </View>
-            <AppText className="text-xs">Price Per Point</AppText>
+            <AppText style={styles.pricePerPointLabel}>Price Per Point</AppText>
           </View>
         </Grid>
       </View>
-      <ScrollView contentContainerClassName="px-5 gap-2">
+      <ScrollView contentContainerStyle={styles.scrollContent}>
         {onepricetable.map((i, j) => (
           <Grid
             cols={4}
             key={j}
-            className="flex-row items-center justify-between border-b border-[#D9D9D9]">
-            <View className="">
-              <AppText className=" text-sm">
+            style={styles.gridRow}>
+            <View>
+              <AppText style={styles.rangeText}>
                 {thoasandseprator(i.low)}{' '}
                 {i.high === Number.MAX_SAFE_INTEGER ? '+' : ' - ' + thoasandseprator(i.high)}
               </AppText>
-              <AppText className=" text-xs">Points</AppText>
+              <AppText style={styles.pointsSubText}>Points</AppText>
             </View>
 
-            <AppText className="font-mono text-sm">€ {i.promote.toFixed(3)}</AppText>
-            <AppText className="font-mono text-sm">€ {i.gold.toFixed(3)}</AppText>
-            <AppText className="font-mono text-sm">€ {i.platinum.toFixed(3)}</AppText>
+            <AppText style={styles.priceText}>€ {i.promote.toFixed(3)}</AppText>
+            <AppText style={styles.priceText}>€ {i.gold.toFixed(3)}</AppText>
+            <AppText style={styles.priceText}>€ {i.platinum.toFixed(3)}</AppText>
           </Grid>
         ))}
       </ScrollView>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  header: {
+    marginBottom: 8,
+    paddingHorizontal: 20,
+  },
+  title: {
+    fontFamily: 'LufgaSemiBold',
+    fontSize: 24,
+    color: '#192234',
+  },
+  subTitle: {
+    fontSize: 14,
+    color: '#9191A1',
+    marginTop: 4,
+  },
+  gridHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderBottomWidth: 1,
+    borderBottomColor: '#D9D9D9',
+    marginTop: 16,
+    paddingBottom: 8,
+  },
+  pointsLabel: {
+    fontFamily: 'LufgaSemiBold',
+    fontSize: 16,
+    color: '#192234',
+  },
+  planCol: {
+    flexDirection: 'column',
+    gap: 4,
+  },
+  planNameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  dot: {
+    height: 12,
+    width: 12,
+    borderRadius: 6,
+  },
+  planName: {
+    fontFamily: 'LufgaSemiBold',
+    fontSize: 14,
+    color: '#192234',
+  },
+  pricePerPointLabel: {
+    fontSize: 10,
+    color: '#9191A1',
+  },
+  scrollContent: {
+    paddingHorizontal: 20,
+    gap: 8,
+  },
+  gridRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderBottomWidth: 1,
+    borderBottomColor: '#D9D9D9',
+    paddingVertical: 12,
+  },
+  rangeText: {
+    fontSize: 14,
+    color: '#192234',
+    fontFamily: 'LufgaMedium',
+  },
+  pointsSubText: {
+    fontSize: 12,
+    color: '#9191A1',
+  },
+  priceText: {
+    fontFamily: 'LufgaMedium', // Using Lufga instead of font-mono for consistency if desired, or keep as monospace
+    fontSize: 13,
+    color: '#192234',
+  },
+});
 
 export default Pricing;

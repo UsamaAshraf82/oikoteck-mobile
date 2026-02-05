@@ -3,12 +3,10 @@ import { useQuery } from '@tanstack/react-query';
 import Parse from 'parse/react-native';
 import { GlobeHemisphereEastIcon, XIcon } from 'phosphor-react-native';
 import { useEffect, useState } from 'react';
-import { Platform, TextInput, TouchableNativeFeedback, TouchableOpacity, View } from 'react-native';
+import { Platform, StyleSheet, TextInput, TouchableNativeFeedback, TouchableOpacity, View } from 'react-native';
 import Modal from 'react-native-modal';
 import AppText from '~/components/Elements/AppText';
-import { cn } from '~/lib/utils';
 import { deviceHeight } from '~/utils/global';
-import tailwind from '~/utils/tailwind';
 
 type Props = {
   visible: boolean;
@@ -28,23 +26,21 @@ const District = ({ visible, onClose, value = '', onPress }: Props) => {
   const { data } = useQuery({
     enabled: visible,
     queryKey: ['districts', text],
-    queryFn: async ({ pageParam = 0 }) => {
+    queryFn: async () => {
       try {
         const res = (await Parse.Cloud.run('district', {
           input: text,
-          pageParam,
-        })) as string []
+        })) as string[];
 
         return res;
       } catch {
-        return []
+        return [];
       }
     },
-
     staleTime: Infinity,
   });
 
-  const allOptions =data// data?.flatMap((page) => page.options) ?? [];
+  const allOptions = data ?? [];
 
   return (
     <Modal
@@ -53,46 +49,36 @@ const District = ({ visible, onClose, value = '', onPress }: Props) => {
       onSwipeComplete={onClose}
       swipeDirection="down"
       hardwareAccelerated
-        coverScreen={false}
-      style={{ justifyContent: 'flex-end', margin: 0 }}
+      coverScreen={false}
+      style={styles.modal}
       propagateSwipe>
       <View
-        className="rounded-t-[20px] bg-white py-4 "
-        style={{
-          height: deviceHeight * 0.9,
-        }}>
+        style={[
+          styles.container,
+          {
+            height: deviceHeight * 0.9,
+          },
+        ]}>
         {/* Handle bar */}
-        <View className="mb-3 h-1 w-10 self-center rounded-sm bg-[#ccc]" />
+        <View style={styles.handle} />
 
         {/* Search bar */}
-        <View className="flex-row items-center justify-between">
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              borderColor: '#ddd',
-              borderWidth: 1,
-              borderRadius: 30,
-              paddingHorizontal: 12,
-              marginHorizontal: 16,
-              paddingVertical: Platform.OS === 'ios' ? 10 : 0,
-            }}>
-         <GlobeHemisphereEastIcon weight='fill' color={tailwind.theme.colors.primary}/>
+        <View style={styles.header}>
+          <View style={styles.searchBox}>
+            <GlobeHemisphereEastIcon weight="fill" color="#192234" />
             <TextInput
-              style={{
-                flex: 1,
-                fontSize: 14,
-                paddingLeft: 8,
-                color: '#333',
-              }}
+              style={styles.input}
               value={text}
               onChangeText={setText}
               placeholder="Search district"
+              placeholderTextColor="#999"
               autoFocus
             />
           </View>
-          <TouchableNativeFeedback hitSlop={100} onPress={onClose}>
-            <XIcon />
+          <TouchableNativeFeedback hitSlop={10} onPress={onClose}>
+            <View style={styles.closeIcon}>
+              <XIcon color="#192234" size={24} />
+            </View>
           </TouchableNativeFeedback>
         </View>
 
@@ -100,38 +86,94 @@ const District = ({ visible, onClose, value = '', onPress }: Props) => {
         <FlashList
           data={allOptions}
           estimatedItemSize={38}
-          keyExtractor={(item) => item}
+          keyExtractor={(item: string) => item}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 10 }}
-          renderItem={({ item }) => {
-            // const label = stringify_area_district(item);
+          renderItem={({ item }: { item: string }) => {
+            const isSelected = value === item;
             return (
               <TouchableOpacity
                 onPress={() => {
                   onPress(item);
                   onClose();
                 }}
-                className=""
-                style={{
-                  paddingVertical: 12,
-                  paddingHorizontal: 20,
-                  borderBottomWidth: 1,
-                  borderBottomColor: '#eee',
-                }}>
-                <AppText className={cn('text-primary ', { 'text-secondary': value === item })}>
+                style={styles.item}>
+                <AppText style={[styles.itemText, isSelected && styles.itemTextSelected]}>
                   {item}
                 </AppText>
               </TouchableOpacity>
             );
           }}
-
           onEndReachedThreshold={0.5}
-
         />
       </View>
     </Modal>
   );
 };
+
+const styles = StyleSheet.create({
+  modal: {
+    justifyContent: 'flex-end',
+    margin: 0,
+  },
+  container: {
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    backgroundColor: 'white',
+    paddingVertical: 16,
+  },
+  handle: {
+    marginBottom: 12,
+    height: 4,
+    width: 40,
+    alignSelf: 'center',
+    borderRadius: 2,
+    backgroundColor: '#ccc',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 8,
+    marginBottom: 12,
+  },
+  searchBox: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: '#ddd',
+    borderWidth: 1,
+    borderRadius: 30,
+    paddingHorizontal: 12,
+    marginHorizontal: 8,
+    paddingVertical: Platform.OS === 'ios' ? 10 : 0,
+    backgroundColor: 'white',
+  },
+  input: {
+    flex: 1,
+    fontSize: 14,
+    paddingLeft: 8,
+    color: '#333',
+    height: Platform.OS === 'ios' ? 'auto' : 40,
+  },
+  closeIcon: {
+    padding: 8,
+  },
+  item: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  itemText: {
+    fontSize: 14,
+    color: '#192234',
+  },
+  itemTextSelected: {
+    color: '#82065e',
+    fontFamily: 'LufgaSemiBold',
+  },
+});
 
 export default District;

@@ -1,10 +1,9 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { DateTime } from 'luxon';
 import { CalendarIcon } from 'phosphor-react-native';
-import React, { useEffect, useState } from 'react';
-import { View } from 'react-native';
-import { cn } from '~/lib/utils';
-import tailwind from '~/utils/tailwind';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import PressableView from '../HOC/PressableView';
 import { withController } from '../HOC/withController';
 import AppText from './AppText';
@@ -17,11 +16,10 @@ type Props = {
   maxDate?: Date;
   disabled?: boolean;
   error?: string;
-  mode?: 'date' | 'time' | 'datetime'; // support both date & time
-  className?: string;
-  textClassName?: string;
+  mode?: 'date' | 'time' | 'datetime';
+  style?: any;
+  textStyle?: any;
   placeholder?: string;
-
   withForm?: boolean;
 };
 
@@ -30,21 +28,26 @@ const DatePicker: React.FC<Props> = ({
   onChange,
   minDate,
   maxDate,
-  className,
-  textClassName,
+  style,
+  textStyle,
   placeholder = 'Select Date',
   mode = 'date',
   withForm,
   label,
 }) => {
   const [date, setDate] = useState<Date | null>(
-    typeof value === 'string' ? new Date(value) : value
+    roleTypeOfValue(value)
   );
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    setDate(typeof value === 'string' ? new Date(value) : value);
+    setDate(roleTypeOfValue(value));
   }, [value]);
+
+  function roleTypeOfValue(val: any) {
+    if (typeof val === 'string') return new Date(val);
+    return val;
+  }
 
   const handleChange = (_event: any, selectedDate?: Date) => {
     setVisible(false);
@@ -54,31 +57,33 @@ const DatePicker: React.FC<Props> = ({
     }
   };
 
+  const renderContent = () => (
+    <View style={styles.inputContent}>
+      <AppText style={[
+          styles.valueText,
+          !date && styles.placeholderText,
+          textStyle
+        ]}>
+        <DateText date={date} mode={mode} placeholder={placeholder} />
+      </AppText>
+      <CalendarIcon
+        color="#82065e"
+        weight="duotone"
+        duotoneColor="#82065e"
+        duotoneOpacity={1}
+      />
+    </View>
+  );
+
   if (withForm) {
     return (
-      <View className="w-full  flex-col ">
-        {label && <AppText className="mb-2 font-medium text-[13px] text-primary">{label}</AppText>}
-        <View className="relative">
+      <View style={styles.formContainer}>
+        {label && <AppText style={styles.label}>{label}</AppText>}
+        <View style={styles.relative}>
           <PressableView
             onPress={() => setVisible(true)}
-            className={cn(' h-12 rounded-2xl  border border-[#C6CAD2]  bg-white ', className)}>
-            <View className="w-full flex-1 flex-row items-center justify-between px-2">
-              {date ? (
-                <AppText className={cn('text-left text-sm', textClassName)}>
-                  <DateText date={date} mode={mode} placeholder={placeholder} />
-                </AppText>
-              ) : (
-                <AppText className={cn('text-left text-sm text-gray-500', textClassName)}>
-                  <DateText date={date} mode={mode} placeholder={placeholder} />
-                </AppText>
-              )}
-              <CalendarIcon
-                color={tailwind.theme.colors.secondary}
-                weight="duotone"
-                duotoneColor={tailwind.theme.colors.secondary}
-                duotoneOpacity={1}
-              />
-            </View>
+            style={[styles.inputWrapper, style]}>
+            {renderContent()}
           </PressableView>
 
           {visible && (
@@ -97,25 +102,9 @@ const DatePicker: React.FC<Props> = ({
   }
 
   return (
-    <View className="flex-1">
-      <PressableView onPress={() => setVisible(true)} className={className}>
-        <View className="w-full flex-1 flex-row items-center justify-between px-2 ">
-          {date ? (
-            <AppText className={cn('text-left text-sm', textClassName)}>
-              <DateText date={date} mode={mode} placeholder={placeholder} />
-            </AppText>
-          ) : (
-            <AppText className={cn('text-left text-sm text-gray-500', textClassName)}>
-              <DateText date={date} mode={mode} placeholder={placeholder} />
-            </AppText>
-          )}
-          <CalendarIcon
-            color={tailwind.theme.colors.secondary}
-            weight="duotone"
-            duotoneColor={tailwind.theme.colors.secondary}
-            duotoneOpacity={1}
-          />
-        </View>
+    <View style={styles.flex1}>
+      <PressableView onPress={() => setVisible(true)} style={style}>
+        {renderContent()}
       </PressableView>
 
       {visible && (
@@ -131,6 +120,50 @@ const DatePicker: React.FC<Props> = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  formContainer: {
+    width: '100%',
+    flexDirection: 'column',
+  },
+  label: {
+    marginBottom: 8,
+    fontFamily: 'LufgaMedium',
+    fontSize: 13,
+    color: '#192234',
+  },
+  relative: {
+    position: 'relative',
+  },
+  inputWrapper: {
+    height: 48,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#C6CAD2',
+    backgroundColor: 'white',
+    justifyContent: 'center',
+  },
+  inputContent: {
+    width: '100%',
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 12,
+  },
+  valueText: {
+    textAlign: 'left',
+    fontSize: 14,
+    fontFamily: 'LufgaRegular',
+    color: '#192234',
+  },
+  placeholderText: {
+    color: '#9CA3AF',
+  },
+  flex1: {
+    flex: 1,
+  },
+});
 
 export default DatePicker;
 

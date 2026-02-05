@@ -1,7 +1,6 @@
 import { FunnelSimpleIcon, GlobeHemisphereEastIcon, XIcon } from 'phosphor-react-native';
-import { Platform, TouchableWithoutFeedback, View } from 'react-native';
+import { Platform, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import AppText from '~/components/Elements/AppText';
-import tailwind from '~/utils/tailwind';
 
 type Props = {
   listing_type: 'Rental' | 'Sale';
@@ -13,19 +12,18 @@ type Props = {
 
 export const SearchView = ({ listing_type, text, onPress, onClear, onFilter }: Props) => {
   return (
-    <View className="mx-4 flex-row items-center justify-between overflow-hidden rounded-full border border-o_light_gray px-2 py-1">
-      <View className="shrink flex-row items-center">
+    <View style={styles.container}>
+      <View style={styles.searchSection}>
         <TouchableWithoutFeedback onPress={onPress}>
-          <View className="flex-row items-center">
-            <GlobeHemisphereEastIcon weight='fill' color={tailwind.theme.colors.primary}/>
+          <View style={styles.innerSearch}>
+            <GlobeHemisphereEastIcon weight="fill" color="#192234" />
             <AppText
-              style={{
-                flex: 1,
-                fontSize: 14,
-                padding: Platform.OS === 'ios' ? 5 : 0,
-                paddingLeft: 8,
-                color: text ? '#000' : '#999',
-              }}>
+              style={[
+                styles.searchText,
+                {
+                  color: text ? '#000' : '#999',
+                },
+              ]}>
               {text ||
                 (listing_type === 'Sale'
                   ? 'Where are you buying in Greece?'
@@ -35,17 +33,17 @@ export const SearchView = ({ listing_type, text, onPress, onClear, onFilter }: P
         </TouchableWithoutFeedback>
       </View>
 
-      <View className="w-10 grow">
+      <View style={styles.iconSection}>
         {!text ? (
           <TouchableWithoutFeedback onPress={onFilter}>
-            <View className="p-2">
-              <FunnelSimpleIcon color={tailwind.theme.colors.o_light_gray} />
+            <View style={styles.iconButton}>
+              <FunnelSimpleIcon color="#cad2df" />
             </View>
           </TouchableWithoutFeedback>
         ) : (
-          <TouchableWithoutFeedback hitSlop={100} onPress={onClear}>
-            <View className="p-2">
-              <XIcon />
+          <TouchableWithoutFeedback hitSlop={10} onPress={onClear}>
+            <View style={styles.iconButton}>
+              <XIcon color="#192234" size={20} />
             </View>
           </TouchableWithoutFeedback>
         )}
@@ -53,3 +51,41 @@ export const SearchView = ({ listing_type, text, onPress, onClear, onFilter }: P
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    marginHorizontal: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    overflow: 'hidden',
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: '#cad2df',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    backgroundColor: 'white',
+  },
+  searchSection: {
+    flexShrink: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  innerSearch: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  searchText: {
+    flex: 1,
+    fontSize: 14,
+    padding: Platform.OS === 'ios' ? 5 : 0,
+    paddingLeft: 8,
+  },
+  iconSection: {
+    width: 40,
+    alignItems: 'flex-end',
+  },
+  iconButton: {
+    padding: 8,
+  },
+});

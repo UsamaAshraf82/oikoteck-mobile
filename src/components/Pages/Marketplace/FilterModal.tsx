@@ -1,9 +1,8 @@
 import { CaretDownIcon, XIcon } from 'phosphor-react-native';
 import { useEffect, useState } from 'react';
-import { ScrollView, TextInput, TouchableNativeFeedback, View } from 'react-native';
+import { ScrollView, StyleSheet, TextInput, TouchableNativeFeedback, View } from 'react-native';
 import Modal from 'react-native-modal';
 import AppText from '~/components/Elements/AppText';
-import { cn } from '~/lib/utils';
 import useSelect from '~/store/useSelectHelper';
 import { Property_Type } from '~/type/property';
 import { deviceHeight } from '~/utils/global';
@@ -41,10 +40,9 @@ type Props = {
 
 const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) => {
   const [filter, setFilters] = useState<filterType>(value);
-  // const [dropdownFilter, setDropDownFilter] = useState<filterType>(value);
   const { openSelect } = useSelect();
-  const changeSearch = (filter: Partial<filterType>) => {
-    setFilters((i) => ({ ...i, ...filter }));
+  const changeSearch = (f: Partial<filterType>) => {
+    setFilters((i) => ({ ...i, ...f }));
   };
 
   useEffect(() => {
@@ -58,38 +56,40 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
       onSwipeComplete={onClose}
       swipeDirection="down"
       hardwareAccelerated
-        coverScreen={false}
+      coverScreen={false}
       avoidKeyboard={false}
-      style={{ justifyContent: 'flex-end', margin: 0 }}>
+      style={styles.modal}>
       <View
-        className="rounded-t-[20px] bg-white px-4 py-4"
-        style={{
-          height: deviceHeight * 0.9,
-        }}>
-        <View className="mb-3 h-1 w-10 self-center rounded-sm bg-[#ccc]" />
-        <View className="flex-1">
-          <View className="flex-row items-center justify-between">
-            <AppText className="font-bold text-2xl text-primary">Filters</AppText>
-            <TouchableNativeFeedback hitSlop={100} onPress={onClose}>
-              <XIcon />
+        style={[
+          styles.container,
+          {
+            height: deviceHeight * 0.9,
+          },
+        ]}>
+        <View style={styles.handle} />
+        <View style={styles.content}>
+          <View style={styles.header}>
+            <AppText style={styles.headerTitle}>Filters</AppText>
+            <TouchableNativeFeedback hitSlop={10} onPress={onClose}>
+              <View>
+                <XIcon color="#192234" size={24} />
+              </View>
             </TouchableNativeFeedback>
           </View>
           <View style={{ maxHeight: deviceHeight * 0.775 }}>
             <ScrollView
-              className=""
               keyboardShouldPersistTaps="handled"
               keyboardDismissMode="on-drag"
               showsVerticalScrollIndicator={false}
               showsHorizontalScrollIndicator={false}>
               {/* Price Range */}
-              <View className="mt-7">
-                <AppText className="font-semibold text-sm text-primary">Price Range</AppText>
-                <View className="mt-2 flex-row items-center justify-between">
+              <View style={styles.section}>
+                <AppText style={styles.sectionLabel}>Price Range</AppText>
+                <View style={styles.row}>
                   <PressableView
                     onPress={() => {
                       let options = [
                         { label: 'No Min', value: null },
-                        // { label: "€ " + "0", value: "0" },
                         ...Array(14)
                           .fill(0)
                           .map((_, i) => ({
@@ -101,7 +101,6 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                       if (listing_type === 'Sale') {
                         options = [
                           { label: 'No Min', value: null },
-                          // { label: "€ " + "0", value: "0" },
                           ...Array(40)
                             .fill(0)
                             .map((_, i) => ({
@@ -113,19 +112,18 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                       openSelect({
                         label: 'Min Price',
                         options: options,
-
-                        onPress: (e) => {
+                        onPress: (e: any) => {
                           changeSearch({ minPrice: e.value as number | null });
                         },
                       });
                     }}
-                    className=" h-14  flex-1 items-center  justify-center rounded-2xl border border-gray-200">
-                    <View className="w-full flex-row items-center justify-between px-2">
+                    style={styles.inputBox}>
+                    <View style={styles.inputInner}>
                       <AppText
-                        className={cn('text-sm', {
-                          'text-[#8D95A5]': filter.minPrice === null,
-                          'text-primary': filter.minPrice !== null,
-                        })}>
+                        style={[
+                          styles.inputText,
+                          { color: filter.minPrice === null ? '#8D95A5' : '#192234' },
+                        ]}>
                         {filter.minPrice
                           ? listing_type === 'Sale'
                             ? '€ ' + numberminify(filter.minPrice)
@@ -135,9 +133,9 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                       <CaretDownIcon color="#8D95A5" size={16} />
                     </View>
                   </PressableView>
-                  <AppText className="mx-1 text-2xl text-[#8D95A5]"> - </AppText>
+                  <AppText style={styles.separator}> - </AppText>
                   <PressableView
-                    className=" h-14  flex-1 items-center  justify-center rounded-2xl border border-gray-200"
+                    style={styles.inputBox}
                     onPress={() => {
                       let options = [
                         { label: 'No Max', value: null },
@@ -163,17 +161,17 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                       openSelect({
                         label: 'Max Price',
                         options: options,
-                        onPress: (e) => {
+                        onPress: (e: any) => {
                           changeSearch({ maxPrice: e.value as number | null });
                         },
                       });
                     }}>
-                    <View className="w-full flex-row items-center justify-between px-2">
+                    <View style={styles.inputInner}>
                       <AppText
-                        className={cn('text-sm', {
-                          'text-[#8D95A5]': filter.minPrice === null,
-                          'text-primary': filter.minPrice !== null,
-                        })}>
+                        style={[
+                          styles.inputText,
+                          { color: filter.maxPrice === null ? '#8D95A5' : '#192234' },
+                        ]}>
                         {filter.maxPrice
                           ? listing_type === 'Sale'
                             ? '€ ' + numberminify(filter.maxPrice)
@@ -186,14 +184,13 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                 </View>
               </View>
               {/* Size */}
-              <View className="mt-7">
-                <AppText className="font-semibold text-sm text-primary">Size</AppText>
-                <View className="mt-2 flex-row items-center justify-between">
+              <View style={styles.section}>
+                <AppText style={styles.sectionLabel}>Size</AppText>
+                <View style={styles.row}>
                   <PressableView
                     onPress={() => {
                       let options = [
                         { label: 'No Min', value: null },
-                        // { label: "€ " + "0", value: "0" },
                         ...[
                           1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
                         ].map((i) => ({
@@ -205,30 +202,29 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                       openSelect({
                         label: 'Min Size',
                         options: options,
-                        onPress: (e) => {
+                        onPress: (e: any) => {
                           changeSearch({ minSize: e.value as number | null });
                         },
                       });
                     }}
-                    className=" h-14  flex-1 items-center  justify-center rounded-2xl border border-gray-200">
-                    <View className="w-full flex-row items-center justify-between px-2">
+                    style={styles.inputBox}>
+                    <View style={styles.inputInner}>
                       <AppText
-                        className={cn('text-sm', {
-                          'text-[#8D95A5]': filter.minSize === null,
-                          'text-primary': filter.minSize !== null,
-                        })}>
+                        style={[
+                          styles.inputText,
+                          { color: filter.minSize === null ? '#8D95A5' : '#192234' },
+                        ]}>
                         {filter.minSize ? numberminify(filter.minSize) + ' m²' : 'No Min'}
                       </AppText>
                       <CaretDownIcon color="#8D95A5" size={16} />
                     </View>
                   </PressableView>
-                  <AppText className="mx-1 text-2xl text-[#8D95A5]"> - </AppText>
+                  <AppText style={styles.separator}> - </AppText>
                   <PressableView
-                    className=" h-14  flex-1 items-center  justify-center rounded-2xl border border-gray-200"
+                    style={styles.inputBox}
                     onPress={() => {
                       let options = [
                         { label: 'No Min', value: null },
-                        // { label: "€ " + "0", value: "0" },
                         ...[
                           1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
                         ].map((i) => ({
@@ -240,17 +236,17 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                       openSelect({
                         label: 'Max Size',
                         options: options,
-                        onPress: (e) => {
+                        onPress: (e: any) => {
                           changeSearch({ maxSize: e.value as number | null });
                         },
                       });
                     }}>
-                    <View className="w-full flex-row items-center justify-between px-2">
+                    <View style={styles.inputInner}>
                       <AppText
-                        className={cn('text-sm', {
-                          'text-[#8D95A5]': filter.maxSize === null,
-                          'text-primary': filter.maxSize !== null,
-                        })}>
+                        style={[
+                          styles.inputText,
+                          { color: filter.maxSize === null ? '#8D95A5' : '#192234' },
+                        ]}>
                         {filter.maxSize ? numberminify(filter.maxSize) + ' m²' : 'No Max'}
                       </AppText>
                       <CaretDownIcon color="#8D95A5" size={16} />
@@ -259,11 +255,9 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                 </View>
               </View>
               {/* Bedrooms */}
-              <View className="mt-7">
-                <AppText className="font-semibold text-sm text-primary">
-                  Bedrooms (R) / Rooms (C)
-                </AppText>
-                <View className="mt-2 flex-row items-center justify-between">
+              <View style={styles.section}>
+                <AppText style={styles.sectionLabel}>Bedrooms (R) / Rooms (C)</AppText>
+                <View style={styles.segmentedRow}>
                   {[
                     { label: 'Any', value: null },
                     { label: '1+', value: 1 },
@@ -272,60 +266,18 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                     { label: '4+', value: 4 },
                     { label: '5+', value: 5 },
                   ].map((item, i, arr) => {
-                    if (i === 0) {
-                      return (
-                        <PressableView
-                          key={item.label}
-                          onPress={() => changeSearch({ bedroom: item.value })}
-                          className={cn(
-                            'h-14 flex-1 items-center  justify-center rounded-l-xl  border border-gray-200',
-                            {
-                              'border-secondary bg-secondary/10 ': filter.bedroom === item.value,
-                            }
-                          )}>
-                          <AppText
-                            className={cn({
-                              ' text-secondary': filter.bedroom === item.value,
-                            })}>
-                            {item.label}
-                          </AppText>
-                        </PressableView>
-                      );
-                    }
-                    if (i === arr.length - 1) {
-                      return (
-                        <PressableView
-                          key={item.label}
-                          onPress={() => changeSearch({ bedroom: item.value })}
-                          className={cn(
-                            'h-14 flex-1 items-center  justify-center rounded-r-xl  border border-gray-200',
-                            {
-                              'border-secondary bg-secondary/10 ': filter.bedroom === item.value,
-                            }
-                          )}>
-                          <AppText
-                            className={cn({
-                              ' text-secondary': filter.bedroom === item.value,
-                            })}>
-                            {item.label}
-                          </AppText>
-                        </PressableView>
-                      );
-                    }
+                    const isActive = filter.bedroom === item.value;
                     return (
                       <PressableView
                         key={item.label}
                         onPress={() => changeSearch({ bedroom: item.value })}
-                        className={cn(
-                          'h-14 flex-1 items-center  justify-center   border border-gray-200',
-                          {
-                            'border-secondary bg-secondary/10 ': filter.bedroom === item.value,
-                          }
-                        )}>
-                        <AppText
-                          className={cn({
-                            ' text-secondary': filter.bedroom === item.value,
-                          })}>
+                        style={[
+                          styles.segmentedButton,
+                          i === 0 ? styles.segmentedLeft : {},
+                          i === arr.length - 1 ? styles.segmentedRight : {},
+                          isActive ? styles.segmentedActive : {},
+                        ] as any}>
+                        <AppText style={[styles.segmentedText, isActive ? styles.textSecondary : {}] as any}>
                           {item.label}
                         </AppText>
                       </PressableView>
@@ -334,9 +286,9 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                 </View>
               </View>
               {/* Bathrooms */}
-              <View className="mt-7">
-                <AppText className="font-semibold text-sm text-primary">Bathrooms</AppText>
-                <View className="mt-2 flex-row items-center justify-between">
+              <View style={styles.section}>
+                <AppText style={styles.sectionLabel}>Bathrooms</AppText>
+                <View style={styles.segmentedRow}>
                   {[
                     { label: 'Any', value: null },
                     { label: '1+', value: 1 },
@@ -345,60 +297,18 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                     { label: '4+', value: 4 },
                     { label: '5+', value: 5 },
                   ].map((item, i, arr) => {
-                    if (i === 0) {
-                      return (
-                        <PressableView
-                          key={item.label}
-                          onPress={() => changeSearch({ bathroom: item.value })}
-                          className={cn(
-                            'h-14 flex-1 items-center  justify-center rounded-l-xl  border border-gray-200',
-                            {
-                              'border-secondary bg-secondary/10 ': filter.bathroom === item.value,
-                            }
-                          )}>
-                          <AppText
-                            className={cn({
-                              ' text-secondary': filter.bathroom === item.value,
-                            })}>
-                            {item.label}
-                          </AppText>
-                        </PressableView>
-                      );
-                    }
-                    if (i === arr.length - 1) {
-                      return (
-                        <PressableView
-                          key={item.label}
-                          onPress={() => changeSearch({ bathroom: item.value })}
-                          className={cn(
-                            'h-14 flex-1 items-center  justify-center rounded-r-xl  border border-gray-200',
-                            {
-                              'border-secondary bg-secondary/10 ': filter.bathroom === item.value,
-                            }
-                          )}>
-                          <AppText
-                            className={cn({
-                              ' text-secondary': filter.bathroom === item.value,
-                            })}>
-                            {item.label}
-                          </AppText>
-                        </PressableView>
-                      );
-                    }
+                    const isActive = filter.bathroom === item.value;
                     return (
                       <PressableView
                         key={item.label}
                         onPress={() => changeSearch({ bathroom: item.value })}
-                        className={cn(
-                          'h-14 flex-1 items-center  justify-center border border-gray-200',
-                          {
-                            'border-secondary bg-secondary/10 ': filter.bathroom === item.value,
-                          }
-                        )}>
-                        <AppText
-                          className={cn({
-                            ' text-secondary': filter.bathroom === item.value,
-                          })}>
+                        style={[
+                          styles.segmentedButton,
+                          i === 0 ? styles.segmentedLeft : {},
+                          i === arr.length - 1 ? styles.segmentedRight : {},
+                          isActive ? styles.segmentedActive : {},
+                        ] as any}>
+                        <AppText style={[styles.segmentedText, isActive ? styles.textSecondary : {}] as any}>
                           {item.label}
                         </AppText>
                       </PressableView>
@@ -407,25 +317,21 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                 </View>
               </View>
               {/* Furnished */}
-              <View className="mt-7">
-                <AppText className="font-semibold text-sm text-primary">Furnished</AppText>
-                <View className="mt-2 flex-row items-center justify-between rounded-lg bg-[#F6F8FA] p-2">
+              <View style={styles.section}>
+                <AppText style={styles.sectionLabel}>Furnished</AppText>
+                <View style={styles.tabRow}>
                   {[
                     { label: 'Any', value: null },
                     { label: 'Yes', value: true },
                     { label: 'No', value: false },
                   ].map((item) => {
+                    const isActive = filter.furnished === item.value;
                     return (
                       <PressableView
                         key={item.label}
                         onPress={() => changeSearch({ furnished: item.value })}
-                        className={cn('h-10 flex-1 items-center   justify-center rounded-lg ', {
-                          'border border-gray-200 bg-white': filter.furnished === item.value,
-                        })}>
-                        <AppText
-                          className={cn('text-[#868C98]', {
-                            'text-primary': filter.furnished === item.value,
-                          })}>
+                        style={[styles.tabButton, isActive ? styles.tabActive : {}] as any}>
+                        <AppText style={[styles.tabText, isActive ? styles.textPrimary : {}] as any}>
                           {item.label}
                         </AppText>
                       </PressableView>
@@ -435,48 +341,43 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
               </View>
 
               {/* Date Range */}
-              <View>
-                <View className="mt-7">
-                  <AppText className="font-semibold text-sm text-primary">
-                    Min. Move-in Date
-                  </AppText>
-                  <View className="mt-2 flex-row items-center justify-between">
-                    <DatePicker
-                      className="h-10 flex-1 items-center justify-center  rounded-xl border border-gray-200 "
-                      value={value.minDate}
-                      onChange={(date) => changeSearch({ minDate: date })}
-                    />
-                  </View>
-                </View>
-                <View className="mt-7">
-                  <AppText className="font-semibold text-sm text-primary">
-                    Max. Move-in Date
-                  </AppText>
-                  <View className="mt-2 flex-row items-center justify-between">
-                    <DatePicker
-                      className="h-10 flex-1 items-center justify-center  rounded-xl border border-gray-200 "
-                      value={value.maxDate}
-                      onChange={(date) => changeSearch({ maxDate: date })}
-                    />
-                  </View>
-                </View>
-              </View>
-              {/* Keywords */}
-              <View className="mt-7">
-                <AppText className="font-semibold text-sm text-primary">Keywords</AppText>
-                <View>
-                  <TextInput
-                    className="mt-2 h-12 w-full rounded-lg border border-gray-200 px-3 py-3"
-                    placeholder="Pool, Gym, Solar Panel etc."
-                    value={filter.keywords || undefined}
-                    onChangeText={(text) => changeSearch({ keywords: text })}
+              <View style={styles.section}>
+                <AppText style={styles.sectionLabel}>Min. Move-in Date</AppText>
+                <View style={styles.dateWrapper}>
+                  <DatePicker
+                    style={styles.datePicker}
+                    value={filter.minDate}
+                    onChange={(date: Date | null) => changeSearch({ minDate: date })}
                   />
                 </View>
               </View>
+              <View style={styles.section}>
+                <AppText style={styles.sectionLabel}>Max. Move-in Date</AppText>
+                <View style={styles.dateWrapper}>
+                  <DatePicker
+                    style={styles.datePicker}
+                    value={filter.maxDate}
+                    onChange={(date: Date | null) => changeSearch({ maxDate: date })}
+                  />
+                </View>
+              </View>
+
+              {/* Keywords */}
+              <View style={styles.section}>
+                <AppText style={styles.sectionLabel}>Keywords</AppText>
+                <TextInput
+                  style={styles.keywordInput}
+                  placeholder="Pool, Gym, Solar Panel etc."
+                  placeholderTextColor="#8D95A5"
+                  value={filter.keywords || undefined}
+                  onChangeText={(text) => changeSearch({ keywords: text })}
+                />
+              </View>
+
               {/* Property Type */}
-              <View className="mt-7">
-                <AppText className="font-semibold text-sm text-primary">Property Type</AppText>
-                <View className="mt-2">
+              <View style={styles.section}>
+                <AppText style={styles.sectionLabel}>Property Type</AppText>
+                <View style={styles.checkGroup}>
                   {[
                     { label: 'Residential (R)', value: 'Residential' },
                     { label: 'Commercial (C)', value: 'Commercial' },
@@ -486,7 +387,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                     <Checkbox
                       label={item.label}
                       key={item.label}
-                      labelClassName="ml-2"
+                      labelStyle={{ marginLeft: 8 }}
                       value={filter.property_type === item.value}
                       onChange={() =>
                         changeSearch({
@@ -497,15 +398,16 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                   ))}
                 </View>
               </View>
+
               {/* Property Category */}
-              <View className="mt-7">
-                <AppText className="font-semibold text-sm text-primary">Property Category</AppText>
-                <View className="mt-2">
+              <View style={styles.section}>
+                <AppText style={styles.sectionLabel}>Property Category</AppText>
+                <View style={styles.checkGroup}>
                   {property_category(filter.property_type, true).map((item) => (
                     <Checkbox
                       label={item === null ? 'Any' : item}
-                      key={item}
-                      labelClassName="ml-2"
+                      key={item || 'any'}
+                      labelStyle={{ marginLeft: 8 }}
                       value={filter.property_category === item}
                       onChange={() =>
                         changeSearch({
@@ -516,12 +418,12 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                   ))}
                 </View>
               </View>
-              <View className="mt-7" />
+              <View style={{ height: 40 }} />
             </ScrollView>
           </View>
-          <View className="mt-2 flex-row justify-between">
+          <View style={styles.footer}>
             <PressableView
-              className="mr-2 h-12 flex-1 overflow-hidden rounded-full border border-gray-200"
+              style={styles.resetButton}
               onPress={() => {
                 onPress({
                   district: value.district,
@@ -541,14 +443,14 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                   property_category: null,
                 });
               }}>
-              <AppText className="text-primary font-bold text-[15px]">Reset All</AppText>
+              <AppText style={styles.resetText}>Reset All</AppText>
             </PressableView>
             <PressableView
-              className="ml-2 h-12 flex-1 overflow-hidden rounded-full border border-gray-200 bg-secondary"
+              style={styles.applyButton}
               onPress={() => {
                 onPress(filter);
               }}>
-              <AppText className="text-white font-bold text-[15px]">Apply Filter</AppText>
+              <AppText style={styles.applyText}>Apply Filter</AppText>
             </PressableView>
           </View>
         </View>
@@ -556,5 +458,203 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
     </Modal>
   );
 };
+
+const styles = StyleSheet.create({
+  modal: {
+    justifyContent: 'flex-end',
+    margin: 0,
+  },
+  container: {
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    backgroundColor: 'white',
+    paddingHorizontal: 16,
+    paddingBottom: 24,
+    paddingTop: 16,
+  },
+  handle: {
+    marginBottom: 12,
+    height: 4,
+    width: 40,
+    alignSelf: 'center',
+    borderRadius: 2,
+    backgroundColor: '#ccc',
+  },
+  content: {
+    flex: 1,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  headerTitle: {
+    fontFamily: 'LufgaBold',
+    fontSize: 24,
+    color: '#192234',
+    flex: 1,
+  },
+  section: {
+    marginTop: 28,
+  },
+  sectionLabel: {
+    fontFamily: 'LufgaSemiBold',
+    fontSize: 14,
+    color: '#192234',
+    marginBottom: 8,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  inputBox: {
+    height: 56,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    backgroundColor: 'white',
+  },
+  inputInner: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 12,
+  },
+  inputText: {
+    fontSize: 14,
+  },
+  separator: {
+    marginHorizontal: 4,
+    fontSize: 24,
+    color: '#8D95A5',
+  },
+  segmentedRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  segmentedButton: {
+    height: 56,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+  },
+  segmentedLeft: {
+    borderTopLeftRadius: 12,
+    borderBottomLeftRadius: 12,
+  },
+  segmentedRight: {
+    borderTopRightRadius: 12,
+    borderBottomRightRadius: 12,
+  },
+  segmentedActive: {
+    borderColor: '#82065e',
+    backgroundColor: 'rgba(130, 6, 94, 0.1)',
+  },
+  segmentedText: {
+    fontSize: 14,
+  },
+  textSecondary: {
+    color: '#82065e',
+  },
+  textPrimary: {
+    color: '#192234',
+  },
+  tabRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderRadius: 12,
+    backgroundColor: '#F6F8FA',
+    padding: 4,
+  },
+  tabButton: {
+    height: 44,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 8,
+  },
+  tabActive: {
+    backgroundColor: 'white',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  tabText: {
+    color: '#868C98',
+  },
+  dateWrapper: {
+    marginTop: 4,
+    flexDirection: 'row',
+  },
+  datePicker: {
+    height: 48,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+  },
+  keywordInput: {
+    height: 48,
+    width: '100%',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    color: '#192234',
+  },
+  checkGroup: {
+    marginTop: 4,
+    gap: 12,
+  },
+  footer: {
+    marginTop: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  resetButton: {
+    marginRight: 8,
+    height: 48,
+    flex: 1,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  resetText: {
+    color: '#192234',
+    fontFamily: 'LufgaBold',
+    fontSize: 15,
+  },
+  applyButton: {
+    marginLeft: 8,
+    height: 48,
+    flex: 1,
+    borderRadius: 999,
+    backgroundColor: '#82065e',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  applyText: {
+    color: 'white',
+    fontFamily: 'LufgaBold',
+    fontSize: 15,
+  },
+});
 
 export default FilterModal;

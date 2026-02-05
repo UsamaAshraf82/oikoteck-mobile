@@ -1,71 +1,171 @@
 import PostLisitngIcon from '@/assets/svg/post-listing.svg';
-import { Image } from 'expo-image';
+import { Image as ExpoImage } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { XIcon } from 'phosphor-react-native';
-import { Pressable, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import AppText from '~/components/Elements/AppText';
 import PressableView from '~/components/HOC/PressableView';
+const Image = ExpoImage as any;
+
 const PostListing = () => {
   const router = useRouter();
   return (
-    <View className="h-full flex-col bg-white">
-      <View className="h-10 flex-row items-center justify-end px-6">
+    <View style={styles.container}>
+      <View style={styles.header}>
         <Pressable onPress={() => router.back()}>
-          <XIcon />
+          <XIcon color="#192234" />
         </Pressable>
       </View>
-      <View className="flex-1 " style={{ maxHeight: '50%' }}>
+
+      <View style={styles.imageSection}>
         <Image
           source={PostLisitngIcon}
           contentFit="contain"
-          style={{ width: '100%', height: '100%' }}
+          style={styles.bannerImage}
         />
       </View>
-      <View className=" flex-1 grow  px-6 ">
-        <AppText className="font-bold text-3xl text-primary" style={{ fontFamily: 'LufgaBold' }}>
+
+      <View style={styles.contentSection}>
+        <AppText style={styles.title}>
           Post a listing
         </AppText>
-        <AppText className="my-1 mb-4 text-[15px] text-[#575775]">
+        <AppText style={styles.subtitle}>
           Post a listing on OikoTeck in just 3 simple and easy steps, and enjoy hassle free property
           management
         </AppText>
-        <View className="relative flex-col gap-4">
+
+        <View style={styles.stepsContainer}>
           {['Add your property details', 'Upload property images', 'And you’re done!!!'].map(
             (i, j) => (
-              <View key={j} className="my-1 flex-row items-center">
-                <View
-                  className="mr-2 h-10 w-10 items-center justify-center rounded-full bg-white"
-                  style={{
-                    shadowColor: 'rgba(87, 87, 117, 0.25)',
-                    shadowOffset: { width: 0, height: 4 },
-                    shadowOpacity: 1,
-                    shadowRadius: 8,
-                    elevation: 4, // Android support
-                  }}>
-                  <AppText className="text-base text-primary">{j + 1}</AppText>
+              <View key={j} style={styles.stepItem}>
+                <View style={styles.stepNumberWrapper}>
+                  <AppText style={styles.stepNumberText}>{j + 1}</AppText>
                 </View>
-                <AppText>{i}</AppText>
+                <AppText style={styles.stepTitle}>{i}</AppText>
               </View>
             )
           )}
-          <View className="absolute left-5 z-[-1] h-full w-0.5 overflow-hidden py-2">
-            <View className="h-full bg-[#ACACB9]" />
+          <View style={styles.timelineLine}>
+            <View style={styles.timelineInner} />
           </View>
         </View>
       </View>
-      <View className="px-4">
+
+      <View style={styles.footer}>
         <PressableView
-          onPress={() => {
-            router.push('/property/new');
-          }}
-          className="mb-2 h-14 w-full flex-row items-center justify-center rounded-full bg-primary">
-          <View>
-            <AppText className="font-bold text-[15px] text-white">Post my listing</AppText>
-          </View>
+          onPress={() => router.push('/property/new')}
+          style={styles.submitBtn}>
+          <AppText style={styles.submitBtnText}>Post my listing</AppText>
         </PressableView>
       </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    height: '100%',
+    flexDirection: 'column',
+    backgroundColor: 'white',
+  },
+  header: {
+    height: 40,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    paddingHorizontal: 24,
+  },
+  imageSection: {
+    flex: 1,
+    maxHeight: '50%',
+  },
+  bannerImage: {
+    width: '100%',
+    height: '100%',
+  },
+  contentSection: {
+    flex: 1,
+    flexGrow: 1,
+    paddingHorizontal: 24,
+  },
+  title: {
+    fontFamily: 'LufgaBold',
+    fontSize: 30,
+    color: '#192234',
+  },
+  subtitle: {
+    marginTop: 4,
+    marginBottom: 16,
+    fontSize: 15,
+    color: '#575775',
+    fontFamily: 'LufgaRegular',
+  },
+  stepsContainer: {
+    position: 'relative',
+    flexDirection: 'column',
+    gap: 16,
+  },
+  stepItem: {
+    marginVertical: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  stepNumberWrapper: {
+    marginRight: 8,
+    height: 40,
+    width: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 999,
+    backgroundColor: 'white',
+    shadowColor: 'rgba(87, 87, 117, 0.25)',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  stepNumberText: {
+    fontSize: 16,
+    color: '#192234',
+    fontFamily: 'LufgaSemiBold',
+  },
+  stepTitle: {
+    fontFamily: 'LufgaRegular',
+    fontSize: 15,
+    color: '#192234',
+  },
+  timelineLine: {
+    position: 'absolute',
+    left: 20,
+    zIndex: -1,
+    height: '100%',
+    width: 2,
+    overflow: 'hidden',
+    paddingVertical: 8,
+  },
+  timelineInner: {
+    height: '100%',
+    backgroundColor: '#ACACB9',
+  },
+  footer: {
+    paddingHorizontal: 16,
+    paddingBottom: 20,
+  },
+  submitBtn: {
+    marginBottom: 8,
+    height: 56,
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 999,
+    backgroundColor: '#82065e',
+  },
+  submitBtnText: {
+    fontFamily: 'LufgaBold',
+    fontSize: 15,
+    color: 'white',
+  },
+});
 
 export default PostListing;

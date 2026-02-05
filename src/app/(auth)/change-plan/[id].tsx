@@ -3,9 +3,8 @@ import { useStripe } from '@stripe/stripe-react-native';
 import { useQuery } from '@tanstack/react-query';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import Parse from 'parse/react-native';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import z from 'zod';
 import PropertyCard from '~/components/Cards/PropertyCardTable';
 import AppText from '~/components/Elements/AppText';
@@ -16,13 +15,28 @@ import PressableView from '~/components/HOC/PressableView';
 import useActivityIndicator from '~/store/useActivityIndicator';
 import { useToast } from '~/store/useToast';
 import { Property_Type } from '~/type/property';
-export default function Index() {
-  const [tab, setTab] = useState(0);
+
+const PaymentInfoSchema = z.object({
+  plan: z.enum(['Free', 'Promote'], {
+    errorMap: (issue: z.ZodIssueBase, ctx: { defaultError: string }) => {
+      if (issue.code === z.ZodIssueCode.invalid_enum_value) {
+        return { message: 'Plan is Required.' };
+      }
+      return { message: ctx.defaultError };
+    },
+  }),
+  promo: z.string().optional(),
+});
+
+export type PaymentInfoTypes = z.infer<typeof PaymentInfoSchema>;
+
+const ChangePlan = () => {
   const { addToast } = useToast();
   const router = useRouter();
-  const { startActivity, stopActivity } = useActivityIndicator();
-  const local: { id: string } = useLocalSearchParams();
+  const activity = useActivityIndicator();
+  const local = useLocalSearchParams<{ id: string }>();
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
+
   const {
     control,
     setValue,
@@ -31,35 +45,59 @@ export default function Index() {
     formState: { errors },
   } = useForm<PaymentInfoTypes>({
     resolver: zodResolver(PaymentInfoSchema),
-    // defaultValues: {},
+    defaultValues: {
+      plan: 'Free',
+    },
   });
 
-  const onSubmitInternal = async (data: PaymentInfoTypes) => {
-    if (data.plan === 'Free') {
-      onSubmit(data);
+  const onSubmitInternal = async (formData: PaymentInfoTypes) => {
+    if (formData.plan === 'Free') {
+      await performSubmit(formData);
     } else {
-      const res = await Parse.Cloud.run('stripe', { price: 30 });
-      const { error } = await initPaymentSheet({
-        merchantDisplayName: 'OikoTeck',
-        paymentIntentClientSecret: res.clientSecret,
-      });
-      if (error) {
-        // handle error
-        return;
-      }
-      const { error: paymentSheetError } = await presentPaymentSheet();
+      activity.startActivity();
+      try {
+        const res = await Parse.Cloud.run('stripe', { price: 30 });
+        const { error } = await initPaymentSheet({
+          merchantDisplayName: 'OikoTeck',
+          paymentIntentClientSecret: res.clientSecret,
+        });
 
-      if (paymentSheetError) {
-        // handle error
-        return;
-      } else {
-        onSubmit(data);
-        // success
+        if (error) {
+          activity.stopActivity();
+          addToast({
+            type: 'error',
+            heading: 'Payment Error',
+            message: error.message,
+          });
+          return;
+        }
+
+        activity.stopActivity();
+        const { error: paymentSheetError } = await presentPaymentSheet();
+
+        if (paymentSheetError) {
+          addToast({
+            type: 'error',
+            heading: 'Payment Error',
+            message: paymentSheetError.message,
+          });
+          return;
+        } else {
+          await performSubmit(formData);
+        }
+      } catch (e: any) {
+        activity.stopActivity();
+        addToast({
+          type: 'error',
+          heading: 'Error',
+          message: e.message || 'An unexpected error occurred.',
+        });
       }
     }
   };
+
   const onError = () => {
-    Object.values(errors).forEach((err) => {
+    Object.values(errors).forEach((err: any) => {
       if (err?.message) {
         addToast({
           type: 'error',
@@ -70,58 +108,83 @@ export default function Index() {
     });
   };
 
-  const { data: property } = useQuery({
+  const { data: property, isLoading } = useQuery({
     queryKey: ['property', local.id],
     queryFn: async () => {
       const query = new Parse.Query('Property');
       query.equalTo('objectId', local.id);
       query.include('owner');
 
-      const property = (await query.first({
+      const result = (await query.first({
         json: true,
       })) as unknown as Property_Type;
 
-      return property;
+      return result;
     },
+    enabled: !!local.id,
   });
 
-  const onSubmit = async (data: PaymentInfoTypes) => {
-    startActivity();
-
+  const performSubmit = async (formData: PaymentInfoTypes) => {
+    activity.startActivity();
     try {
+      if (!local.id) return;
       const query = new Parse.Query('Property');
       const pro = await query.get(local.id);
-      pro.set('plan', data.plan);
-
+      pro.set('plan', formData.plan);
       pro.set('flag', 'CHANGE_PLAN');
       pro.set('flag_time', new Date());
       pro.set('status', 'Pending Approval');
       pro.set('visible', false);
       await pro.save();
 
-      if (data.plan === 'Free') {
+      if (formData.plan === 'Free') {
         addToast({
           heading: 'Listing Under Review',
-          message: `Your listing is currently being reviewed by OikoTeck customer service team. You will be notified shortly of its approval status.`,
+          message:
+            'Your listing is currently being reviewed by OikoTeck customer service team. You will be notified shortly of its approval status.',
         });
       } else {
         addToast({
           heading: 'Change Plan',
-          message: `Your promote listing is currently being reviewed by OikoTeck customer service team. You will be notified shortly of its approval status`,
+          message:
+            'Your promote listing is currently being reviewed by OikoTeck customer service team. You will be notified shortly of its approval status',
         });
       }
-      router.push('/account')
-      stopActivity();
-    } catch {}
-    stopActivity();
+      activity.stopActivity();
+      router.push('/account');
+    } catch (e: any) {
+      activity.stopActivity();
+      addToast({
+        type: 'error',
+        heading: 'Submission Error',
+        message: e.message || 'Failed to update plan.',
+      });
+    }
   };
 
-  if (!property) {
-    return <View></View>;
+  if (isLoading) {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#82065e" />
+      </View>
+    );
   }
 
+  if (!property) {
+    return (
+      <View style={styles.container}>
+        <TopHeader title="Change Membership" onBackPress={() => router.back()} />
+        <View style={styles.emptyContainer}>
+          <AppText style={styles.subTitle}>Property not found.</AppText>
+        </View>
+      </View>
+    );
+  }
+
+  const currentPlan = watch('plan');
+
   return (
-    <View className="flex-1 bg-white ">
+    <View style={styles.container}>
       <TopHeader
         title="Change Membership"
         onBackPress={() => {
@@ -129,39 +192,42 @@ export default function Index() {
         }}
       />
 
-      <View className="flex-1  gap-2 px-5 ">
-        <View>
-          <AppText className="font-bold text-2xl">Change of Membership</AppText>
-          <AppText className="mb-1 text-sm text-[#575775]">
-            Manage your listing membership here.
-          </AppText>
+      <View style={styles.content}>
+        <View style={styles.headerSection}>
+          <AppText style={styles.mainTitle}>Change of Membership</AppText>
+          <AppText style={styles.subTitle}>Manage your listing membership here.</AppText>
         </View>
+
         <PropertyCard property={property} type="change_plan" />
 
-        <View>
-          <AppText className="font-medium text-2xl">Select OikoTeck Service Plan</AppText>
-          <AppText className="mb-1 text-sm text-[#575775]">
+        <View style={styles.selectionSection}>
+          <AppText style={styles.sectionTitle}>Select OikoTeck Service Plan</AppText>
+          <AppText style={styles.sectionSubTitle}>
             Click on a service name to view more details
           </AppText>
         </View>
-        <Checkbox
-          labelLast
-          label="Free"
-          disabled={property.plan === 'Free'}
-          labelClassName="font-light"
-          getValue={() => setValue('plan', 'Free')}
-          value={watch('plan') === 'Free'}
-        />
-        <Checkbox
-          labelLast
-          label="Promote "
-          disabled={property.plan === 'Promote'}
-          labelClassName="font-light"
-          getValue={() => setValue('plan', 'Promote')}
-          value={watch('plan') === 'Promote'}
-        />
-        {watch('plan') === 'Promote' && (
-          <>
+
+        <View style={styles.optionsWrapper}>
+          <Checkbox
+            labelLast
+            label="Free"
+            disabled={property.plan === 'Free'}
+            labelStyle={styles.checkboxLabel}
+            getValue={() => setValue('plan', 'Free')}
+            value={currentPlan === 'Free'}
+          />
+          <Checkbox
+            labelLast
+            label="Promote"
+            disabled={property.plan === 'Promote'}
+            labelStyle={styles.checkboxLabel}
+            getValue={() => setValue('plan', 'Promote')}
+            value={currentPlan === 'Promote'}
+          />
+        </View>
+
+        {currentPlan === 'Promote' && (
+          <View style={styles.promoWrapper}>
             <ControlledTextInput
               control={control}
               name="promo"
@@ -169,25 +235,107 @@ export default function Index() {
               placeholder="Promo Code"
             />
             <TextInput label="One-Time Payment" value="30 €" readOnly />
-          </>
+          </View>
         )}
       </View>
-      <View className="absolute bottom-0 left-0 right-0  px-5 py-4">
+
+      <View style={styles.footer}>
         <PressableView
           onPress={handleSubmit(onSubmitInternal, onError)}
-          className="h-12 items-center justify-center rounded-full bg-secondary">
-          <AppText className="font-bold text-lg text-white">Continue</AppText>
+          style={styles.submitBtn}>
+          <AppText style={styles.submitBtnText}>Continue</AppText>
         </PressableView>
       </View>
     </View>
   );
-}
+};
 
-const PaymentInfoSchema = z.object({
-  plan: z.enum(['Free', 'Promote'], {
-    message: 'Plan is Required.',
-  }),
-  promo: z.string().optional(),
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 20,
+    gap: 16,
+  },
+  headerSection: {
+    marginBottom: 4,
+  },
+  mainTitle: {
+    fontFamily: 'LufgaBold',
+    fontSize: 24,
+    color: '#192234',
+  },
+  subTitle: {
+    fontFamily: 'LufgaRegular',
+    fontSize: 14,
+    color: '#575775',
+    marginTop: 4,
+  },
+  selectionSection: {
+    marginTop: 8,
+  },
+  sectionTitle: {
+    fontFamily: 'LufgaSemiBold',
+    fontSize: 22,
+    color: '#192234',
+  },
+  sectionSubTitle: {
+    fontFamily: 'LufgaRegular',
+    fontSize: 13,
+    color: '#575775',
+    marginTop: 2,
+  },
+  optionsWrapper: {
+    gap: 12,
+  },
+  checkboxLabel: {
+    fontFamily: 'LufgaRegular',
+    fontSize: 16,
+    color: '#192234',
+  },
+  promoWrapper: {
+    gap: 12,
+    marginTop: 8,
+  },
+  footer: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#EEE',
+    backgroundColor: 'white',
+  },
+  submitBtn: {
+    height: 52,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 999,
+    backgroundColor: '#82065e',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+  submitBtnText: {
+    fontFamily: 'LufgaBold',
+    fontSize: 18,
+    color: 'white',
+  },
 });
 
-export type PaymentInfoTypes = z.infer<typeof PaymentInfoSchema>;
+export default ChangePlan;

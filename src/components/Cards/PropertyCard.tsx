@@ -1,15 +1,13 @@
 import { useRouter } from 'expo-router';
 import Parse from 'parse/react-native';
-import { Pressable, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
 import { stringify_area_district } from '~/lib/stringify_district_area';
-import { cn } from '~/lib/utils';
 import { Property_Type } from '~/type/property';
 import { User_Type } from '~/type/user';
 import { deviceWidth } from '~/utils/global';
 import { thoasandseprator } from '~/utils/number';
-import tailwind from '~/utils/tailwind';
 import AppText from '../Elements/AppText';
 import AWSImage from '../Elements/AWSImage';
 import BathIcon from '../SVG/Bath';
@@ -31,38 +29,38 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
     owner = property.owner as User_Type;
   }
   return (
-    <View className="relative mb-[14px] ml-4">
+    <View style={styles.cardWrapper}>
       <Pressable
         onPress={() => {
           router.push(`/property/${property.objectId}`);
         }}>
         <View
-          className=" flex-row justify-between overflow-hidden rounded-2xl bg-white p-3"
-          style={{
-            width: wide,
-            height: height,
-          }}>
-          <View className="flex-1 bg-white ">
-            <View className="relative flex-1 overflow-hidden rounded-2xl">
+          style={[
+            styles.cardContainer,
+            {
+              width: wide,
+              height: height,
+            },
+          ]}>
+          <View style={styles.contentWrapper}>
+            <View style={styles.imageContainer}>
               <Carousel
                 data={property.images}
                 loop={false}
                 pagingEnabled={true}
                 snapEnabled={true}
                 width={wide}
-                //  mode="horizontal-stack"
-                style={{ width: '100%' }}
-                onProgressChange={(_, absoluteProgress) => {
+                style={styles.fullWidth}
+                onProgressChange={(_: any, absoluteProgress: number) => {
                   progress.value = absoluteProgress;
                 }}
                 onConfigurePanGesture={(g: { enabled: (arg0: boolean) => any }) => {
                   'worklet';
                   g.enabled(false);
                 }}
-                // onProgressChange={progress}
-                renderItem={({ item }) => {
+                renderItem={({ item }: { item: string }) => {
                   return (
-                    <View className="relative">
+                    <View style={styles.relative}>
                       <AWSImage
                         contentFit="cover"
                         placeholderContentFit="cover"
@@ -71,7 +69,7 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
                         size="800x800"
                       />
                       {property.agent_icon && owner.logo && (
-                        <View className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2  -translate-y-1/2">
+                        <View style={styles.agentLogoWrapper}>
                           <AWSImage
                             contentFit="cover"
                             placeholderContentFit="cover"
@@ -88,87 +86,82 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
               />
 
               {/* Dots */}
-              <View className="absolute bottom-2 left-0 right-0 flex-row items-center justify-center">
-                {property.images.map((_, index) => {
+              <View style={styles.dotsWrapper}>
+                {property.images.map((_: any, index: number) => {
                   return <Dot key={index} index={index} progress={progress} />;
                 })}
               </View>
 
               {property.plan !== 'Free' && (
                 <View
-                  className={cn(
-                    'absolute left-2 top-3  flex w-20 items-center justify-center rounded-full bg-opacity-50 px-2 py-1 ',
-                    {
-                      'bg-gold': property.plan == 'Gold',
-                      'bg-promote': property.plan == 'Promote',
-                      'bg-promote_plus': property.plan == 'Promote +',
-                      'bg-platinum': property.plan == 'Platinum',
-                    }
-                  )}>
-                  <AppText className="text-xs text-white">{property.plan}</AppText>
+                  style={[
+                    styles.badge,
+                    property.plan === 'Gold' && styles.bgGold,
+                    property.plan === 'Promote' && styles.bgPromote,
+                    property.plan === 'Promote +' && styles.bgPromotePlus,
+                    property.plan === 'Platinum' && styles.bgPlatinum,
+                  ]}>
+                  <AppText style={styles.badgeText}>{property.plan}</AppText>
                 </View>
               )}
-              <View className="absolute right-2 top-2 z-10">
+              <View style={styles.favButtonWrapper}>
                 <FavButton property_id={property.objectId} property={property} />
               </View>
             </View>
-            <View className="mt-2">
-              <View className="flex-row items-center justify-between">
-                <View className=" flex-row items-baseline">
-                  <AppText className="font-semibold text-[17px] text-secondary">
+            <View style={styles.detailsContainer}>
+              <View style={styles.rowBetween}>
+                <View style={styles.rowBaseline}>
+                  <AppText style={styles.priceText}>
                     {'€ ' + thoasandseprator(property.price)}
                   </AppText>
                   {property.listing_for !== 'Sale' && (
-                    <AppText className="font-medium text-[15px] text-o_light_gray">
+                    <AppText style={styles.perMonthText}>
                       {' '}
                       / Month
                     </AppText>
                   )}
                 </View>
               </View>
-              <View className="flex-row items-center justify-between">
-                <AppText className="font-semibold text-[15px] text-primary">
+              <View style={styles.rowBetween}>
+                <AppText style={styles.titleText}>
                   {property.title}
                 </AppText>
               </View>
-              <AppText className="text-sm text-[#75758A]">
+              <AppText style={styles.locationText}>
                 {stringify_area_district({
                   district: property.district,
                   area_1: property.area_1,
                   area_2: property.area_2,
                 })}
               </AppText>
-              <View className="mt-1 flex-row items-center justify-start">
-                <View className="mr-4 flex-row items-center">
+              <View style={styles.featuresContainer}>
+                <View style={styles.featureItem}>
                   <BedIcon
                     height={17}
                     width={17}
-                    color={tailwind.theme.colors.o_light_gray}
-                    className="text-o_light_gray"
+                    color="#7D7D7D"
                   />
-                  <AppText className="ml-1 mr-0 text-sm text-o_light_gray">
+                  <AppText style={styles.featureText}>
                     {property.bedrooms} beds
                   </AppText>
                 </View>
-                <View className="mr-4 flex-row items-center">
+                <View style={styles.featureItem}>
                   <BathIcon
                     height={17}
                     width={17}
-                    color={tailwind.theme.colors.o_light_gray}
-                    className="text-o_light_gray"
+                    color="#7D7D7D"
                   />
-                  <AppText className="ml-1 mr-0 text-sm text-o_light_gray">
+                  <AppText style={styles.featureText}>
                     {property.bathrooms} baths
                   </AppText>
                 </View>
-                <View className="mr-4 flex-row items-center  text-o_light_gray">
+                <View style={styles.featureItem}>
                   <SizeIcon
                     height={18}
                     width={18}
-                    color={tailwind.theme.colors.o_light_gray}
-                    className="text-o_light_gray"
+                    color="#7D7D7D"
                   />
-                  <AppText className="ml-1 mr-0 text-sm text-o_light_gray">
+                  <AppText style={styles.featureText}>
                     {property.size} m²
                   </AppText>
                 </View>
@@ -185,7 +178,7 @@ export default PropertyCard;
 
 
 function Dot({ index, progress }: any) {
-  const style = useAnimatedStyle(() => {
+  const animatedStyle = useAnimatedStyle(() => {
     const selectedIndex = Math.round(progress.value);
 
     const isMain = selectedIndex === index;
@@ -197,20 +190,149 @@ function Dot({ index, progress }: any) {
       opacity: isMain || isNear || isFar ? 1 : 0,
       width: isMain ? 8 : isNear ? 6 : isFar ? 4 : 0,
       height: isMain ? 8 : isNear ? 6 : isFar ? 4 : 0,
+      backgroundColor: isMain ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.7)',
     };
   });
 
   return (
     <Animated.View
       key={index}
-      style={style}
-      className={cn(
-        'mx-1 rounded-full   bg-white/70',
-        // override opacity for main
-        {
-          'bg-white/90': Math.round(progress.value) === index,
-        }
-      )}
+      style={[
+        animatedStyle,
+        styles.dotBase,
+      ]}
     />
   );
 }
+
+const styles = StyleSheet.create({
+  cardWrapper: {
+    position: 'relative',
+    marginBottom: 14,
+    marginLeft: 16,
+  },
+  cardContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    overflow: 'hidden',
+    borderRadius: 16,
+    backgroundColor: 'white',
+    padding: 12,
+  },
+  contentWrapper: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  imageContainer: {
+    position: 'relative',
+    flex: 1,
+    overflow: 'hidden',
+    borderRadius: 16,
+  },
+  fullWidth: {
+    width: '100%',
+  },
+  relative: {
+    position: 'relative',
+  },
+  agentLogoWrapper: {
+    position: 'absolute',
+    left: '50%',
+    top: '50%',
+    zIndex: 10,
+    transform: [{ translateX: -35 }, { translateY: -35 }],
+  },
+  dotsWrapper: {
+    position: 'absolute',
+    bottom: 8,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badge: {
+    position: 'absolute',
+    left: 8,
+    top: 12,
+    width: 80,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 999,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  bgGold: { backgroundColor: '#e6c623' },
+  bgPromote: { backgroundColor: '#5412a1' },
+  bgPromotePlus: { backgroundColor: '#398be9' },
+  bgPlatinum: { backgroundColor: '#ff9c46' },
+  badgeText: {
+    fontSize: 12,
+    color: 'white',
+  },
+  favButtonWrapper: {
+    position: 'absolute',
+    right: 8,
+    top: 8,
+    zIndex: 10,
+  },
+  detailsContainer: {
+    marginTop: 8,
+  },
+  rowBetween: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  rowBaseline: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+  },
+  priceText: {
+    fontFamily: 'LufgaSemiBold',
+    fontSize: 17,
+    color: '#82065e',
+  },
+  perMonthText: {
+    fontFamily: 'LufgaMedium',
+    fontSize: 15,
+    color: '#7D7D7D',
+  },
+  titleText: {
+    fontFamily: 'LufgaSemiBold',
+    fontSize: 15,
+    color: '#192234',
+  },
+  locationText: {
+    fontSize: 14,
+    color: '#75758A',
+  },
+  featuresContainer: {
+    marginTop: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
+  featureItem: {
+    marginRight: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  featureText: {
+    marginLeft: 4,
+    marginRight: 0,
+    fontSize: 14,
+    color: '#7D7D7D',
+  },
+  dotBase: {
+    marginHorizontal: 4,
+    borderRadius: 999,
+  },
+  dotActive: {
+    backgroundColor: 'rgba(255,255,255,0.9)',
+  },
+  dotInactive: {
+    backgroundColor: 'rgba(255,255,255,0.7)',
+  },
+});

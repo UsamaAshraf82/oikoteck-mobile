@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { CheckCircleIcon } from 'phosphor-react-native';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import z from 'zod';
 import AppText from '~/components/Elements/AppText';
@@ -10,10 +10,8 @@ import Select from '~/components/Elements/Select';
 import { ControlledTextInput } from '~/components/Elements/TextInput';
 import Grid from '~/components/HOC/Grid';
 import PressableView from '~/components/HOC/PressableView';
-import { cn } from '~/lib/utils';
 import { useToast } from '~/store/useToast';
 import { property_category } from '~/utils/property';
-import tailwind from '~/utils/tailwind';
 
 type Props = { data: Partial<Basic1Values>; onSubmit: (data: Basic1Values) => void };
 
@@ -35,9 +33,10 @@ export default function Basic1({ data, onSubmit }: Props) {
     reset(data);
   }, [data]);
 
-  const onSubmitInternal = async (data: Basic1Values) => {
-    onSubmit(data);
+  const onSubmitInternal = async (formData: Basic1Values) => {
+    onSubmit(formData);
   };
+
   const onError = () => {
     const keys = Object.keys(errors) as (keyof Basic1Values)[];
     for (let index = 0; index < keys.length; index++) {
@@ -52,36 +51,41 @@ export default function Basic1({ data, onSubmit }: Props) {
     }
   };
 
+  const currentListingFor = watch('listing_for');
+
   return (
-    <View className="flex-1 bg-white px-5 pt-5">
-      <View className="flex-1">
-        <AppText className="font-bold text-2xl">Basic Information 🏠</AppText>
-        <AppText className="text-[15px] text-[#575775]">Tell us about your property</AppText>
+    <View style={styles.container}>
+      <View style={styles.mainContent}>
+        <AppText style={styles.title}>Basic Information 🏠</AppText>
+        <AppText style={styles.subtitle}>Tell us about your property</AppText>
 
         <KeyboardAwareScrollView
           bottomOffset={50}
-          contentContainerClassName="mt-5 flex-grow flex-col gap-4 pb-28"
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}>
           <View>
-            <AppText className="my-3 font-medium text-[13px] text-primary">Listing Type</AppText>
-            <Grid gap={2} cols={2}>
+            <AppText style={styles.sectionLabel}>Listing Type</AppText>
+            <Grid gap={8} cols={2}>
               <PressableView
                 onPress={() => {
                   setValue('listing_for', 'Rental');
                 }}
-                className={cn('h-12 rounded-2xl border border-[#C6CAD2] bg-white', {
-                  'border-secondary bg-secondary/10': watch('listing_for') === 'Rental',
-                })}>
-                <View className="w-full flex-row items-center justify-between px-4 py-3">
+                style={[
+                  styles.listingTypeBtn,
+                  currentListingFor === 'Rental' && styles.listingTypeBtnActive,
+                ]}>
+                <View style={styles.listingTypeContent}>
                   <AppText
-                    className={cn({
-                      'text-secondary ': watch('listing_for') === 'Rental',
-                    })}>
+                    style={[
+                      styles.listingTypeText,
+                      currentListingFor === 'Rental' && styles.listingTypeTextActive,
+                    ]}>
                     Rental
                   </AppText>
-                  {watch('listing_for') === 'Rental' && (
-                    <CheckCircleIcon weight="fill" color={tailwind.theme.colors.secondary} />
+                  {currentListingFor === 'Rental' && (
+                    <CheckCircleIcon weight="fill" color="#82065e" />
                   )}
                 </View>
               </PressableView>
@@ -89,23 +93,26 @@ export default function Basic1({ data, onSubmit }: Props) {
                 onPress={() => {
                   setValue('listing_for', 'Sale');
                 }}
-                className={cn('h-12 rounded-2xl border border-[#C6CAD2] bg-white', {
-                  'border-secondary bg-secondary/10': watch('listing_for') === 'Sale',
-                })}>
-                <View className="w-full flex-row items-center justify-between px-4 py-3">
+                style={[
+                  styles.listingTypeBtn,
+                  currentListingFor === 'Sale' && styles.listingTypeBtnActive,
+                ]}>
+                <View style={styles.listingTypeContent}>
                   <AppText
-                    className={cn({
-                      'text-secondary ': watch('listing_for') === 'Sale',
-                    })}>
+                    style={[
+                      styles.listingTypeText,
+                      currentListingFor === 'Sale' && styles.listingTypeTextActive,
+                    ]}>
                     Sale
                   </AppText>
-                  {watch('listing_for') === 'Sale' && (
-                    <CheckCircleIcon weight="fill" color={tailwind.theme.colors.secondary} />
+                  {currentListingFor === 'Sale' && (
+                    <CheckCircleIcon weight="fill" color="#82065e" />
                   )}
                 </View>
               </PressableView>
             </Grid>
           </View>
+
           <ControlledTextInput
             control={control}
             name="title"
@@ -119,10 +126,10 @@ export default function Basic1({ data, onSubmit }: Props) {
             placeholder="Write listing description..."
             multiline
             numberOfLines={5}
-            className="h-52 align-top"
+            style={styles.descriptionInput}
           />
           <Select
-            options={Basic1Schema.shape.property_type.options.map((i) => ({
+            options={Basic1Schema.shape.property_type.options.map((i: string) => ({
               label: i,
               value: i,
             }))}
@@ -137,9 +144,9 @@ export default function Basic1({ data, onSubmit }: Props) {
           />
           <Select
             varient
-            options={property_category(watch('property_type')).map((i) => ({
-              label: i,
-              value: i,
+            options={property_category(watch('property_type')).map((i: string | null) => ({
+              label: i || '',
+              value: i || '',
             }))}
             label="Property Category"
             placeholder="Select Property Category"
@@ -152,7 +159,7 @@ export default function Basic1({ data, onSubmit }: Props) {
             varient
             options={Basic1Schema.shape.property_oriantation
               .unwrap()
-              .options.map((i) => ({ label: i, value: i }))}
+              .options.map((i: string | null) => ({ label: i || '', value: i || '' }))}
             label="Property Oriantation"
             placeholder="Select Property Oriantation"
             value={{
@@ -165,16 +172,103 @@ export default function Basic1({ data, onSubmit }: Props) {
           />
         </KeyboardAwareScrollView>
       </View>
-      <View className="absolute bottom-0 left-0 right-0   px-5 py-4">
+      <View style={styles.footer}>
         <PressableView
           onPress={handleSubmit(onSubmitInternal, onError)}
-          className="h-12 items-center justify-center rounded-full bg-secondary">
-          <AppText className="font-bold text-lg text-white">Continue</AppText>
+          style={styles.continueBtn}>
+          <AppText style={styles.continueBtnText}>Continue</AppText>
         </PressableView>
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
+  mainContent: {
+    flex: 1,
+  },
+  title: {
+    fontFamily: 'LufgaBold',
+    fontSize: 24,
+    color: '#192234',
+  },
+  subtitle: {
+    fontFamily: 'LufgaRegular',
+    fontSize: 15,
+    color: '#575775',
+  },
+  scrollContent: {
+    marginTop: 20,
+    flexGrow: 1,
+    flexDirection: 'column',
+    gap: 16,
+    paddingBottom: 100,
+  },
+  sectionLabel: {
+    marginVertical: 12,
+    fontFamily: 'LufgaMedium',
+    fontSize: 13,
+    color: '#192234',
+  },
+  listingTypeBtn: {
+    height: 48,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#C6CAD2',
+    backgroundColor: 'white',
+    justifyContent: 'center',
+  },
+  listingTypeBtnActive: {
+    borderColor: '#82065e',
+    backgroundColor: 'rgba(130, 6, 94, 0.1)',
+  },
+  listingTypeContent: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+  },
+  listingTypeText: {
+    fontFamily: 'LufgaRegular',
+    fontSize: 14,
+    color: '#192234',
+  },
+  listingTypeTextActive: {
+    color: '#82065e',
+  },
+  descriptionInput: {
+    height: 208, // h-52 -> 52*4=208
+    textAlignVertical: 'top',
+  },
+  footer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    backgroundColor: 'white',
+  },
+  continueBtn: {
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 999,
+    backgroundColor: '#82065e',
+  },
+  continueBtnText: {
+    fontFamily: 'LufgaBold',
+    fontSize: 18,
+    color: 'white',
+  },
+});
 
 export const Basic1Schema = z.object({
   listing_for: z.enum(['Rental', 'Sale'], {

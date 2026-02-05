@@ -3,30 +3,29 @@ import { ImageBackground } from 'expo-image';
 import { Link, router } from 'expo-router';
 import { CheckIcon, XIcon } from 'phosphor-react-native';
 import { useState } from 'react';
-import { Pressable, ScrollView, TouchableWithoutFeedback, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import AppText from '~/components/Elements/AppText';
 import TopHeader from '~/components/Elements/TopHeader';
 import { plans } from '~/global/plan';
-import { cn } from '~/lib/utils';
-import tailwind from '~/utils/tailwind';
+
 const Services = () => {
   const [plan, setPlan] = useState('');
   return (
-    <View className="flex-1 bg-white">
+    <View style={styles.container}>
       <TopHeader
         onBackPress={() => {
           router.back();
         }}
         title={'Services'}
       />
-      <View className="px-5">
-        <AppText className="font-semibold text-2xl">Choose a Plan 📄</AppText>
-        <AppText className="text-sm text-[#9191A1]">
+      <View style={styles.titleWrapper}>
+        <AppText style={styles.heading}>Choose a Plan 📄</AppText>
+        <AppText style={styles.subHeading}>
           Discover how our Innovative approach can save you money and boost your business
           performance!
         </AppText>
       </View>
-      <ScrollView contentContainerClassName=" px-5 pb-4 ">
+      <ScrollView contentContainerStyle={styles.scrollContent}>
         {plans.map((i, j) => (
           <TouchableWithoutFeedback
             key={j}
@@ -34,64 +33,55 @@ const Services = () => {
               setPlan(i.name);
             }}>
             <View
-              className={cn('relative mt-5  overflow-hidden rounded-3xl border', {
-                'border-2 border-secondary': plan == i.name,
-              })}>
-              {plan == i.name && (
+              style={[
+                styles.planCard,
+                plan === i.name && styles.planCardActive,
+              ]}>
+              {plan === i.name && (
                 <ImageBackground
                   source={blobs}
-                  style={{
-                    flex: 1,
-                    position: 'absolute',
-                    top: 0,
-                    width: '100%',
-                    height: '100%',
-                    filter: 'blur(40px)',
-                  }}
+                  style={styles.blobBackground}
                   blurRadius={50}
                   contentFit="fill"
                 />
               )}
-              <View
-                className={cn('relative gap-3 px-7 py-5', {
-                  'border-secondary': plan == i.name,
-                })}>
-                <View className="flex-row items-center gap-2">
-                  <View className={cn('size-4 rounded-full', i.pkgColor)} />
-                  <AppText className="font-semibold text-lg">{i.name}</AppText>
+              <View style={styles.planCardInner}>
+                <View style={styles.planHeader}>
+                  <View style={[styles.pkgColorCircle, { backgroundColor: i.pkgColor.split('-')[1] || i.pkgColor }]} />
+                  <AppText style={styles.planName}>{i.name}</AppText>
                 </View>
-                <View className="flex-row items-center gap-1">
-                  <AppText className="font-semibold text-lg">{i.price[0]}</AppText>
-                  <AppText className="font-medium text-[#75758A]">{i.price[1]}</AppText>
+                <View style={styles.priceRow}>
+                  <AppText style={styles.priceValue}>{i.price[0]}</AppText>
+                  <AppText style={styles.priceUnit}>{i.price[1]}</AppText>
                 </View>
-                <AppText className="text-sm text-[#575775]">{i.description}</AppText>
-                <View className="mt-2 flex-row flex-wrap gap-2">
-                  {i.features.map((f, j) => (
-                    <View key={i + '-' + j}>
-                      {i.name == 'Free' && (j == 2 || j == 1) ? (
-                        <View className="flex-row gap-1">
+                <AppText style={styles.description}>{i.description}</AppText>
+                <View style={styles.featuresList}>
+                  {i.features.map((f, featureIdx) => (
+                    <View key={i.name + '-' + featureIdx} style={styles.featureItemWrapper}>
+                      {i.name === 'Free' && (featureIdx === 2 || featureIdx === 1) ? (
+                        <View style={styles.featureItem}>
                           <XIcon color="#CCCFD6" size={18} />
-                          <AppText className="text-[#CCCFD6]">{f}</AppText>
+                          <AppText style={styles.featureTextDisabled}>{f}</AppText>
                         </View>
                       ) : (
-                        <View className="flex-row gap-1">
+                        <View style={styles.featureItem}>
                           <CheckIcon color="#575775" size={18} />
-                          <AppText className="text-[#575775]">{f}</AppText>
+                          <AppText style={styles.featureText}>{f}</AppText>
                         </View>
                       )}
                     </View>
                   ))}
                 </View>
                 {['Promote +', 'Gold', 'Platinum'].includes(i.name) && (
-                  <View className="mt-2 flex-row flex-wrap gap-2">
-                    <Link href={'/pricing'} className="text-secondary">
+                  <View style={styles.pricingLinkWrapper}>
+                    <Link href={'/pricing'} style={styles.pricingLink}>
                       Access Pricing Options
                     </Link>
                   </View>
                 )}
-                {plan == i.name && (
-                  <View className="absolute right-4 top-4 items-center justify-center rounded-full bg-secondary p-1">
-                    <CheckIcon color={tailwind.theme.colors.white} weight="bold" size={16} />
+                {plan === i.name && (
+                  <View style={styles.checkBadge}>
+                    <CheckIcon color="white" weight="bold" size={16} />
                   </View>
                 )}
               </View>
@@ -100,9 +90,9 @@ const Services = () => {
         ))}
       </ScrollView>
       {plan && (
-        <View className="border-t border-[#ccc] px-5 py-1">
+        <View style={styles.footer}>
           <Pressable
-            className="h-12 items-center justify-center rounded-full bg-secondary"
+            style={styles.selectBtn}
             onPress={() => {
               if (['Free', 'Promote'].includes(plan)) {
                 router.push('/property/new');
@@ -110,12 +100,157 @@ const Services = () => {
                 router.push('/start-membership');
               }
             }}>
-            <AppText className="font-semibold text-white">Select {plan} Plan</AppText>
+            <AppText style={styles.selectBtnText}>Select {plan} Plan</AppText>
           </Pressable>
         </View>
       )}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  titleWrapper: {
+    paddingHorizontal: 20,
+    marginBottom: 8,
+  },
+  heading: {
+    fontFamily: 'LufgaSemiBold',
+    fontSize: 24,
+    color: '#192234',
+  },
+  subHeading: {
+    fontSize: 14,
+    color: '#9191A1',
+    marginTop: 4,
+  },
+  scrollContent: {
+    paddingHorizontal: 20,
+    paddingBottom: 24,
+  },
+  planCard: {
+    position: 'relative',
+    marginTop: 20,
+    overflow: 'hidden',
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: '#eee',
+    backgroundColor: '#fff',
+  },
+  planCardActive: {
+    borderWidth: 2,
+    borderColor: '#82065e',
+  },
+  blobBackground: {
+    flex: 1,
+    position: 'absolute',
+    top: 0,
+    width: '100%',
+    height: '100%',
+  },
+  planCardInner: {
+    position: 'relative',
+    gap: 12,
+    paddingHorizontal: 28,
+    paddingVertical: 20,
+  },
+  planHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  pkgColorCircle: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+  },
+  planName: {
+    fontFamily: 'LufgaSemiBold',
+    fontSize: 18,
+    color: '#192234',
+  },
+  priceRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  priceValue: {
+    fontFamily: 'LufgaSemiBold',
+    fontSize: 18,
+    color: '#192234',
+  },
+  priceUnit: {
+    fontFamily: 'LufgaMedium',
+    fontSize: 18,
+    color: '#75758A',
+  },
+  description: {
+    fontSize: 14,
+    color: '#575775',
+  },
+  featuresList: {
+    marginTop: 8,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  featureItemWrapper: {
+    // optional refinement
+  },
+  featureItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  featureText: {
+    fontSize: 14,
+    color: '#575775',
+  },
+  featureTextDisabled: {
+    fontSize: 14,
+    color: '#CCCFD6',
+  },
+  pricingLinkWrapper: {
+    marginTop: 8,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  pricingLink: {
+    fontFamily: 'LufgaMedium',
+    color: '#82065e',
+  },
+  checkBadge: {
+    position: 'absolute',
+    right: 16,
+    top: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 999,
+    backgroundColor: '#82065e',
+    padding: 4,
+  },
+  footer: {
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    backgroundColor: 'white',
+  },
+  selectBtn: {
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 24,
+    backgroundColor: '#82065e',
+  },
+  selectBtnText: {
+    fontFamily: 'LufgaSemiBold',
+    fontSize: 16,
+    color: 'white',
+  },
+});
 
 export default Services;

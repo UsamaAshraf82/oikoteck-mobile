@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { CheckCircleIcon, InfoIcon, MinusIcon, PlusIcon } from 'phosphor-react-native';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import z from 'zod';
 import AppText from '~/components/Elements/AppText';
@@ -11,11 +11,9 @@ import Select from '~/components/Elements/Select';
 import { ControlledTextInput } from '~/components/Elements/TextInput';
 import Grid from '~/components/HOC/Grid';
 import PressableView from '~/components/HOC/PressableView';
-import { cn } from '~/lib/utils';
 import useModal from '~/store/useModalHelper';
 import { useToast } from '~/store/useToast';
 import { level_of_finish, special_feature } from '~/utils/property';
-import tailwind from '~/utils/tailwind';
 import { Basic1Values } from './Basic1';
 
 type Props = {
@@ -47,9 +45,10 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
     reset({ ...data, ...extra_data });
   }, [data]);
 
-  const onSubmitInternal = async (data: Basic2Values) => {
-    onSubmit(data);
+  const onSubmitInternal = async (formData: Basic2Values) => {
+    onSubmit(formData);
   };
+
   const onError = () => {
     const keys = Object.keys(errors) as (keyof Basic2Values)[];
     for (let index = 0; index < keys.length; index++) {
@@ -64,63 +63,76 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
     }
   };
 
+  const bedrooms = watch('bedrooms');
+  const bathrooms = watch('bathrooms');
+  const floor = watch('floor') || 0;
+  const furnished = watch('furnished');
+  const propertyCategory = watch('property_category');
+  const propertyType = watch('property_type');
+  const currentSpecialFeatures = watch('special_feature');
+
   return (
-    <View className="flex-1 bg-white px-5 pt-5">
-      <View className="flex-1">
-        <AppText className="font-bold text-2xl">Property details 🏠</AppText>
-        <AppText className="mb-8 text-[15px] text-[#575775]">
-          Tell us more about your property in details
-        </AppText>
+    <View style={styles.container}>
+      <View style={styles.mainContent}>
+        <AppText style={styles.title}>Property details 🏠</AppText>
+        <AppText style={styles.subtitle}>Tell us more about your property in details</AppText>
+
         <KeyboardAwareScrollView
           bottomOffset={50}
-          contentContainerClassName="mt-5 flex-grow flex-col gap-6 pb-28"
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}>
-          <View className="flex-row justify-between">
-            <AppText className="font-medium text-[13px]">No. of Bedrooms</AppText>
-            <View className="flex-row items-center justify-between gap-3">
+          {/* Bedrooms */}
+          <View style={styles.counterRow}>
+            <AppText style={styles.counterLabel}>No. of Bedrooms</AppText>
+            <View style={styles.counterControls}>
               <PressableView
-                className=" size-9 rounded-full border"
-                onPress={() => setValue('bedrooms', watch('bedrooms') - 1)}>
-                <MinusIcon size={14} />
+                style={styles.counterBtn}
+                onPress={() => setValue('bedrooms', bedrooms - 1)}>
+                <MinusIcon size={14} color="#192234" />
               </PressableView>
-              <AppText className="px-2 font-semibold text-xl">{watch('bedrooms')}</AppText>
+              <AppText style={styles.counterValue}>{bedrooms}</AppText>
               <PressableView
-                className="size-9 rounded-full border"
-                onPress={() => setValue('bedrooms', watch('bedrooms') + 1)}>
-                <PlusIcon size={14} />
-              </PressableView>
-            </View>
-          </View>
-          <View className="flex-row justify-between">
-            <AppText className="font-medium text-[13px]">No. of Bathrooms</AppText>
-            <View className="flex-row items-center justify-between gap-3">
-              <PressableView
-                className="size-9 rounded-full border"
-                onPress={() => setValue('bathrooms', watch('bathrooms') - 1)}>
-                <MinusIcon size={14} />
-              </PressableView>
-              <AppText className="px-2 font-semibold text-xl">{watch('bathrooms')}</AppText>
-              <PressableView
-                className="size-9 rounded-full border"
-                onPress={() => setValue('bathrooms', watch('bathrooms') + 1)}>
-                <PlusIcon size={14} />
+                style={styles.counterBtn}
+                onPress={() => setValue('bedrooms', bedrooms + 1)}>
+                <PlusIcon size={14} color="#192234" />
               </PressableView>
             </View>
           </View>
-          <View className="flex-row justify-between">
-            <AppText className="font-medium text-[13px]">Floor</AppText>
-            <View className="flex-row items-center justify-between gap-3">
+
+          {/* Bathrooms */}
+          <View style={styles.counterRow}>
+            <AppText style={styles.counterLabel}>No. of Bathrooms</AppText>
+            <View style={styles.counterControls}>
               <PressableView
-                className="size-9 rounded-full border"
-                onPress={() => setValue('floor', (watch('floor') || 0) - 1)}>
-                <MinusIcon size={14} />
+                style={styles.counterBtn}
+                onPress={() => setValue('bathrooms', bathrooms - 1)}>
+                <MinusIcon size={14} color="#192234" />
               </PressableView>
-              <AppText className="px-2 font-semibold text-xl">{watch('floor')}</AppText>
+              <AppText style={styles.counterValue}>{bathrooms}</AppText>
               <PressableView
-                className="size-9 rounded-full border"
-                onPress={() => setValue('floor', (watch('floor') || 0) + 1)}>
-                <PlusIcon size={14} />
+                style={styles.counterBtn}
+                onPress={() => setValue('bathrooms', bathrooms + 1)}>
+                <PlusIcon size={14} color="#192234" />
+              </PressableView>
+            </View>
+          </View>
+
+          {/* Floor */}
+          <View style={styles.counterRow}>
+            <AppText style={styles.counterLabel}>Floor</AppText>
+            <View style={styles.counterControls}>
+              <PressableView
+                style={styles.counterBtn}
+                onPress={() => setValue('floor', floor - 1)}>
+                <MinusIcon size={14} color="#192234" />
+              </PressableView>
+              <AppText style={styles.counterValue}>{floor}</AppText>
+              <PressableView
+                style={styles.counterBtn}
+                onPress={() => setValue('floor', floor + 1)}>
+                <PlusIcon size={14} color="#192234" />
               </PressableView>
             </View>
           </View>
@@ -129,9 +141,10 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
             control={control}
             name="size"
             keyboardType="number-pad"
-            label={watch('property_type') === 'Residential' ? 'Home Size, m²' : 'Size, m²'}
+            label={propertyType === 'Residential' ? 'Home Size, m²' : 'Size, m²'}
           />
-          {['Detached House', 'Villa'].includes(watch('property_category')) && (
+
+          {['Detached House', 'Villa'].includes(propertyCategory) && (
             <ControlledTextInput
               control={control}
               name="plot_size"
@@ -139,45 +152,38 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
               label="Plot Size, m²"
             />
           )}
-          <View className="flex-col justify-between">
-            <AppText className="mb-2 font-medium text-[13px]">Furnished</AppText>
-            <Grid>
+
+          {/* Furnished */}
+          <View style={styles.radioGroup}>
+            <AppText style={styles.radioGroupLabel}>Furnished</AppText>
+            <Grid gap={8} cols={2}>
               <PressableView
-                className={cn('h-12 rounded-2xl border border-[#C6CAD2] bg-white', {
-                  'border-secondary bg-secondary/10': watch('furnished') === true,
-                })}
-                onPress={() => setValue('furnished', true)}>
-                <View className="w-full flex-row items-center justify-between px-4 py-3">
-                  <AppText
-                    className={cn({
-                      'text-secondary ': watch('furnished') === true,
-                    })}>
+                onPress={() => setValue('furnished', true)}
+                style={[styles.radioBtn, furnished === true && styles.radioBtnActive]}>
+                <View style={styles.radioBtnContent}>
+                  <AppText style={[styles.radioBtnText, furnished === true && styles.radioBtnTextActive]}>
                     Yes
                   </AppText>
-                  {watch('furnished') === true && (
-                    <CheckCircleIcon weight="fill" color={tailwind.theme.colors.secondary} />
+                  {furnished === true && (
+                    <CheckCircleIcon weight="fill" color="#82065e" />
                   )}
                 </View>
               </PressableView>
               <PressableView
-                className={cn('h-12 rounded-2xl border border-[#C6CAD2] bg-white', {
-                  'border-secondary bg-secondary/10': watch('furnished') === false,
-                })}
-                onPress={() => setValue('furnished', false)}>
-                <View className="w-full flex-row items-center justify-between px-4 py-3">
-                  <AppText
-                    className={cn({
-                      'text-secondary ': watch('furnished') === false,
-                    })}>
+                onPress={() => setValue('furnished', false)}
+                style={[styles.radioBtn, furnished === false && styles.radioBtnActive]}>
+                <View style={styles.radioBtnContent}>
+                  <AppText style={[styles.radioBtnText, furnished === false && styles.radioBtnTextActive]}>
                     No
                   </AppText>
-                  {watch('furnished') === false && (
-                    <CheckCircleIcon weight="fill" color={tailwind.theme.colors.secondary} />
+                  {furnished === false && (
+                    <CheckCircleIcon weight="fill" color="#82065e" />
                   )}
                 </View>
               </PressableView>
             </Grid>
           </View>
+
           <Select
             varient
             options={[1, 2, 3, 4, 5].map((i) => ({ label: level_of_finish(i), value: i }))}
@@ -191,38 +197,39 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
               setValue('level_of_finish', value?.value as Basic2Values['level_of_finish']);
             }}
           />
+
           <PressableView
             onPress={() => {
               openModal({
                 modal: (
-                  <View className="flex-col">
-                    <AppText>
+                  <View style={styles.modalContent}>
+                    <AppText style={styles.modalInfoText}>
                       OikoTeck will not display level of finish to users in the marketplace
                     </AppText>
-                    <View className="mt-2 flex flex-col gap-2">
-                      <AppText>Below are some level of finish examples:</AppText>
-                      <AppText className="font-bold text-lg">Poor end</AppText>
-                      <AppText>
+                    <View style={styles.modalSteps}>
+                      <AppText style={styles.modalStepTitle}>Below are some level of finish examples:</AppText>
+                      <AppText style={styles.finishLevelTitle}>Poor end</AppText>
+                      <AppText style={styles.finishLevelDesc}>
                         Laminate countertops, vinyl flooring, basic fixtures, thin paint, basic
                         appliances.
                       </AppText>
-                      <AppText className="font-bold text-lg">Low end</AppText>
-                      <AppText>
+                      <AppText style={styles.finishLevelTitle}>Low end</AppText>
+                      <AppText style={styles.finishLevelDesc}>
                         Basic tile, laminate wood flooring, standard stainless steel appliances,
                         mid-range cabinetry.
                       </AppText>
-                      <AppText className="font-bold text-lg">Medium end</AppText>
-                      <AppText>
+                      <AppText style={styles.finishLevelTitle}>Medium end</AppText>
+                      <AppText style={styles.finishLevelDesc}>
                         Granite countertops, hardwood flooring, quality fixtures, upgraded
                         appliances, solid wood cabinetry.
                       </AppText>
-                      <AppText className="font-bold text-lg">High end</AppText>
-                      <AppText>
+                      <AppText style={styles.finishLevelTitle}>High end</AppText>
+                      <AppText style={styles.finishLevelDesc}>
                         Marble countertops, custom-designed cabinetry, high-end appliances, designer
                         tile, solid wood flooring, unique lighting fixtures.
                       </AppText>
-                      <AppText className="font-bold text-lg">Luxury end</AppText>
-                      <AppText>
+                      <AppText style={styles.finishLevelTitle}>Luxury end</AppText>
+                      <AppText style={styles.finishLevelDesc}>
                         Rare stone countertops, bespoke cabinetry, top-of-the-line appliances,
                         handcrafted elements, integrated smart home technology, designer fixtures
                       </AppText>
@@ -232,10 +239,10 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
                 onClose: () => {},
               });
             }}
-            className="h-16 rounded-2xl bg-[#E8BA3033]">
-            <View className="mx-5 flex-row  gap-2 py-2">
-              <InfoIcon size={18} />
-              <AppText className="mr-4 w-fit text-sm text-primary">
+            style={styles.infoBanner}>
+            <View style={styles.infoBannerContent}>
+              <InfoIcon size={18} color="#192234" />
+              <AppText style={styles.infoBannerText}>
                 OikoTeck will not display level of finish to users in the marketplace
               </AppText>
             </View>
@@ -248,12 +255,12 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
             label="Construction Year"
             keyboardType="decimal-pad"
           />
-          {/* <ControlledTextInput control={control} name="reference_number" label="Reference Number" /> */}
+
           <Select
             varient
             options={Basic2Schema.shape.heating
               .unwrap()
-              .options.map((i) => ({ label: i, value: i }))}
+              .options.map((i: string) => ({ label: i, value: i }))}
             label="Heating System"
             value={{ label: watch('heating'), value: watch('heating') || null }}
             placeholder="Select Heating System"
@@ -261,6 +268,7 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
               setValue('heating', value?.value as Basic2Values['heating']);
             }}
           />
+
           <ControlledTextInput
             control={control}
             name="heating_expense"
@@ -268,11 +276,12 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
             placeholder="Select monthly expenses"
             keyboardType="number-pad"
           />
+
           <Select
             varient
             options={Basic2Schema.shape.energy_class
               .unwrap()
-              .options.map((i) => ({ label: i, value: i }))}
+              .options.map((i: string) => ({ label: i, value: i }))}
             label="Energy Class"
             value={{ label: watch('energy_class'), value: watch('energy_class') || null }}
             placeholder="Select Energy Class"
@@ -280,23 +289,23 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
               setValue('energy_class', value?.value as Basic2Values['energy_class']);
             }}
           />
-          <View>
-            <AppText className="mb-2 font-medium text-[13px]">Special Features</AppText>
 
-            <Grid>
-              {special_feature(watch('property_type')).map((i) => (
+          <View>
+            <AppText style={styles.specialFeaturesLabel}>Special Features</AppText>
+            <Grid gap={8} cols={1}>
+              {special_feature(propertyType).map((i: string) => (
                 <Checkbox
-                  labelClassName="text-[13px] align-middle ml-2"
+                  labelStyle={styles.checkboxLabel}
                   key={i}
                   label={i}
-                  value={watch('special_feature').includes(i)}
+                  labelLast
+                  value={currentSpecialFeatures.includes(i)}
                   getValue={() => {
                     const special = getValues('special_feature');
-
                     if (special.includes(i)) {
                       setValue(
                         'special_feature',
-                        special.filter((p) => p !== i)
+                        special.filter((p: string) => p !== i)
                       );
                     } else {
                       setValue('special_feature', [...special, i]);
@@ -308,16 +317,193 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
           </View>
         </KeyboardAwareScrollView>
       </View>
-      <View className="absolute bottom-0 left-0 right-0   px-5 py-4">
+      <View style={styles.footer}>
         <PressableView
           onPress={handleSubmit(onSubmitInternal, onError)}
-          className="h-12 items-center justify-center rounded-full bg-secondary">
-          <AppText className="font-bold text-lg text-white">Continue</AppText>
+          style={styles.continueBtn}>
+          <AppText style={styles.continueBtnText}>Continue</AppText>
         </PressableView>
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
+  mainContent: {
+    flex: 1,
+  },
+  title: {
+    fontFamily: 'LufgaBold',
+    fontSize: 24,
+    color: '#192234',
+  },
+  subtitle: {
+    fontFamily: 'LufgaRegular',
+    fontSize: 15,
+    color: '#575775',
+    marginBottom: 32,
+  },
+  scrollContent: {
+    marginTop: 20,
+    flexGrow: 1,
+    flexDirection: 'column',
+    gap: 24,
+    paddingBottom: 100,
+  },
+  counterRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  counterLabel: {
+    fontFamily: 'LufgaMedium',
+    fontSize: 13,
+    color: '#192234',
+  },
+  counterControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  counterBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: '#C6CAD2',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  counterValue: {
+    minWidth: 40,
+    textAlign: 'center',
+    fontFamily: 'LufgaSemiBold',
+    fontSize: 20,
+    color: '#192234',
+  },
+  radioGroup: {
+    flexDirection: 'column',
+    gap: 8,
+  },
+  radioGroupLabel: {
+    fontFamily: 'LufgaMedium',
+    fontSize: 13,
+    color: '#192234',
+  },
+  radioBtn: {
+    height: 48,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#C6CAD2',
+    backgroundColor: 'white',
+    justifyContent: 'center',
+  },
+  radioBtnActive: {
+    borderColor: '#82065e',
+    backgroundColor: 'rgba(130, 6, 94, 0.1)',
+  },
+  radioBtnContent: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+  },
+  radioBtnText: {
+    fontFamily: 'LufgaRegular',
+    fontSize: 14,
+    color: '#192234',
+  },
+  radioBtnTextActive: {
+    color: '#82065e',
+  },
+  infoBanner: {
+    height: 64,
+    borderRadius: 16,
+    backgroundColor: 'rgba(232, 186, 48, 0.2)',
+    justifyContent: 'center',
+  },
+  infoBannerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    gap: 8,
+  },
+  infoBannerText: {
+    flex: 1,
+    fontFamily: 'LufgaRegular',
+    fontSize: 12,
+    color: '#192234',
+  },
+  specialFeaturesLabel: {
+    fontFamily: 'LufgaMedium',
+    fontSize: 13,
+    color: '#192234',
+    marginBottom: 8,
+  },
+  checkboxLabel: {
+    fontFamily: 'LufgaRegular',
+    fontSize: 13,
+    color: '#192234',
+  },
+  footer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    backgroundColor: 'white',
+  },
+  continueBtn: {
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 999,
+    backgroundColor: '#82065e',
+  },
+  continueBtnText: {
+    fontFamily: 'LufgaBold',
+    fontSize: 18,
+    color: 'white',
+  },
+  modalContent: {
+    flexDirection: 'column',
+    padding: 16,
+  },
+  modalInfoText: {
+    fontFamily: 'LufgaRegular',
+    fontSize: 14,
+    color: '#192234',
+  },
+  modalSteps: {
+    marginTop: 8,
+    flexDirection: 'column',
+    gap: 8,
+  },
+  modalStepTitle: {
+    fontFamily: 'LufgaSemiBold',
+    fontSize: 14,
+    color: '#192234',
+  },
+  finishLevelTitle: {
+    fontFamily: 'LufgaBold',
+    fontSize: 18,
+    color: '#192234',
+    marginTop: 12,
+  },
+  finishLevelDesc: {
+    fontFamily: 'LufgaRegular',
+    fontSize: 14,
+    color: '#575775',
+  },
+});
 
 export const Basic2Schema = z
   .object({
@@ -412,7 +598,7 @@ export const Basic2Schema = z
       .optional(),
     reference_number: z.string({}).optional(),
   })
-  .superRefine((data, ctx) => {
+  .superRefine((data: any, ctx: z.RefinementCtx) => {
     if (data.property_type !== 'Land') {
       if (data.level_of_finish === 0) {
         ctx.addIssue({

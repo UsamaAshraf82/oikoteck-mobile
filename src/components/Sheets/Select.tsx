@@ -1,14 +1,13 @@
 import { FlashList } from '@shopify/flash-list';
 import { CheckCircleIcon, XIcon } from 'phosphor-react-native';
-import React from 'react';
-import { ScrollView, TouchableNativeFeedback, View } from 'react-native';
+import * as React from 'react';
+import { ScrollView, StyleSheet, TouchableNativeFeedback, View } from 'react-native';
 import Modal from 'react-native-modal';
 import { isDeepEqual } from 'remeda';
-import { cn } from '~/lib/utils';
 import useSelect from '~/store/useSelectHelper';
 import { deviceHeight } from '~/utils/global';
-import tailwind from '~/utils/tailwind';
 import AppText from '../Elements/AppText';
+
 const Select = () => {
   const { opened: value } = useSelect();
 
@@ -21,52 +20,45 @@ const Select = () => {
       onSwipeComplete={value.onClose}
       swipeDirection="down"
       hardwareAccelerated
-        coverScreen={false}
+      coverScreen={false}
       avoidKeyboard={false}
-      style={{ justifyContent: 'flex-end', margin: 0 }}
+      style={styles.modal}
       propagateSwipe>
       <View
-        className="rounded-t-[20px] bg-white px-4 py-4"
-        style={{
-          maxHeight: deviceHeight * 0.9,
-        }}>
-        <View className="mb-3 h-1 w-10 self-center rounded-sm bg-[#ccc]" />
+        style={[
+          styles.container,
+          {
+            maxHeight: deviceHeight * 0.9,
+          },
+        ]}>
+        <View style={styles.handle} />
         {value.hasXIcon && (
           <TouchableNativeFeedback onPress={value.onClose}>
-            <View className="absolute right-5 top-6">
-              <XIcon color="#1A2436 " />
+            <View style={styles.closeIcon}>
+              <XIcon color="#1A2436" size={24} />
             </View>
           </TouchableNativeFeedback>
         )}
-        <View
-          className={cn('flex-row items-center justify-center', value.className?.label?.wrapper)}>
-          <AppText className={cn('font-semibold text-xl', value.className?.label?.text)}>
+        <View style={styles.labelWrapper}>
+          <AppText style={styles.labelText}>
             {value.label}
           </AppText>
         </View>
         {value.useFlatList ? (
-          <View style={{ height: deviceHeight * 0.9 - 80 }} className=" w-full">
+          <View style={[styles.listWrapper, { height: deviceHeight * 0.9 - 80 }]}>
             <FlashList
               data={value.options}
               estimatedItemSize={38}
               showsVerticalScrollIndicator={false}
               showsHorizontalScrollIndicator={false}
-              keyExtractor={(item, i) => i.toString()}
+              keyExtractor={(item: any, i: number) => i.toString()}
               contentContainerStyle={{ paddingBottom: 40 }}
-              renderItem={({ item }) => {
+              renderItem={({ item }: { item: any }) => {
                 return (
                   <TouchableNativeFeedback onPress={() => value.onPress?.(item)}>
-                    <View
-                      className={cn(
-                        'flex-row justify-between py-2 ',
-                        value.className?.option_label?.wrapper
-                      )}>
+                    <View style={styles.optionWrapper}>
                       {typeof item.label === 'string' ? (
-                        <AppText
-                          className={cn(
-                            'font-medium text-lg text-primary',
-                            value.className?.option_label?.text
-                          )}>
+                        <AppText style={styles.optionText}>
                           {item.label}
                         </AppText>
                       ) : React.isValidElement(item.label) ? (
@@ -75,7 +67,7 @@ const Select = () => {
                       {isDeepEqual(item.value, value.value) && (
                         <CheckCircleIcon
                           size={25}
-                          color={tailwind.theme.colors.secondary}
+                          color="#82065e"
                           weight="fill"
                         />
                       )}
@@ -87,20 +79,12 @@ const Select = () => {
           </View>
         ) : (
           <ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>
-            {value.options.map((item, i) => {
+            {value.options.map((item: any, i: number) => {
               return (
                 <TouchableNativeFeedback key={i} onPress={() => value.onPress?.(item)}>
-                  <View
-                    className={cn(
-                      'flex-row justify-between items-center py-2 items ',
-                      value.className?.option_label?.wrapper
-                    )}>
+                  <View style={styles.optionWrapper}>
                     {typeof item.label === 'string' ? (
-                      <AppText
-                        className={cn(
-                          'font-medium text-lg leading-none text-primary',
-                          value.className?.option_label?.text
-                        )}>
+                      <AppText style={styles.optionText}>
                         {item.label}
                       </AppText>
                     ) : React.isValidElement(item.label) ? (
@@ -109,7 +93,7 @@ const Select = () => {
                     {isDeepEqual(item.value, value.value) && (
                       <CheckCircleIcon
                         size={23}
-                        color={tailwind.theme.colors.secondary}
+                        color="#82065e"
                         weight="fill"
                       />
                     )}
@@ -123,5 +107,61 @@ const Select = () => {
     </Modal>
   );
 };
+
+const styles = StyleSheet.create({
+  modal: {
+    justifyContent: 'flex-end',
+    margin: 0,
+  },
+  container: {
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    backgroundColor: 'white',
+    paddingHorizontal: 16,
+    paddingBottom: 24,
+    paddingTop: 16,
+  },
+  handle: {
+    marginBottom: 12,
+    height: 4,
+    width: 40,
+    alignSelf: 'center',
+    borderRadius: 2,
+    backgroundColor: '#ccc',
+  },
+  closeIcon: {
+    position: 'absolute',
+    right: 20,
+    top: 24,
+    zIndex: 10,
+  },
+  labelWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  labelText: {
+    fontFamily: 'LufgaSemiBold',
+    fontSize: 20,
+    color: '#192234',
+  },
+  listWrapper: {
+    width: '100%',
+  },
+  optionWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#f3f4f6',
+  },
+  optionText: {
+    fontFamily: 'LufgaMedium',
+    fontSize: 18,
+    color: '#192234',
+  },
+});
 
 export default Select;

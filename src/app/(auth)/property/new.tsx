@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import Parse from 'parse/react-native';
 import { ArrowLeftIcon, XIcon } from 'phosphor-react-native';
 import { useEffect, useState } from 'react';
-import { BackHandler, Pressable, View } from 'react-native';
+import { BackHandler, Pressable, StyleSheet, View } from 'react-native';
 import AppText from '~/components/Elements/AppText';
 import Basic1, { Basic1Values } from '~/components/Pages/PostProperty/Basic1';
 import Basic2, { Basic2Values } from '~/components/Pages/PostProperty/Basic2';
@@ -16,11 +16,13 @@ import PropertyGallery, {
 import { emailsAddress } from '~/global';
 import useActivityIndicator from '~/store/useActivityIndicator';
 import { useToast } from '~/store/useToast';
-export default function Index() {
+
+export default function PostProperty() {
   const [tab, setTab] = useState(0);
   const router = useRouter();
   const { addToast } = useToast();
   const { startActivity, stopActivity } = useActivityIndicator();
+
   const [data, setData] = useState<{
     basic: Partial<Basic1Values>;
     basic2: Partial<Basic2Values>;
@@ -55,30 +57,21 @@ export default function Index() {
   useEffect(() => {
     const backAction = () => {
       if (tab > 0) {
-        setTab((prev) => prev - 1); // go to previous step
-        return true; // prevent default behavior
+        setTab((prev) => prev - 1);
+        return true;
       }
-      return false; // allow default (exit / navigate back) if already at first step
+      return false;
     };
 
     const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
-
     return () => backHandler.remove();
   }, [tab]);
 
   const onSubmit = async () => {
-    // Handle final submission here
-
     startActivity();
     const Property = new Parse.Object('Property');
 
-    let images = data.gallery.files;
-    // if (data.basic.files) {
-    //   images = data.basic.files;
-    //   const img = data.basic.files[data.basic.front_img || 0];
-    //   images.splice(data.basic.front_img || 0, 1);
-    //   images.unshift(img);
-    // }
+    const images = data.gallery.files;
 
     try {
       Property.set('listing_for', data.basic.listing_for);
@@ -146,27 +139,37 @@ export default function Index() {
       });
       router.push(`/account`);
       stopActivity();
-    } catch {}
-    stopActivity();
+    } catch (e: any) {
+      addToast({
+        type: 'error',
+        heading: 'Error',
+        message: e.message || 'Failed to post listing.',
+      });
+      stopActivity();
+    }
   };
+
+  const renderHeader = (onBack: () => void) => (
+    <View style={styles.header}>
+      <Pressable hitSlop={20} onPress={onBack}>
+        <ArrowLeftIcon color="#192234" size={24} />
+      </Pressable>
+      <AppText style={styles.headerTitle}>Post a listing</AppText>
+      <Pressable hitSlop={20} onPress={() => router.back()}>
+        <XIcon color="#192234" size={24} />
+      </Pressable>
+    </View>
+  );
 
   switch (tab) {
     case 0:
       return (
-        <View className="h-full flex-col bg-white">
-          <View className="h-10 flex-row items-center justify-between px-6">
-            <Pressable hitSlop={20} onPress={() => router.back()}>
-              <ArrowLeftIcon />
-            </Pressable>
-            <AppText className="font-medium ">Post a listing</AppText>
-            <Pressable hitSlop={20} onPress={() => router.back()}>
-              <XIcon />
-            </Pressable>
-          </View>
+        <View style={styles.container}>
+          {renderHeader(() => router.back())}
           <Basic1
             data={data.basic}
-            onSubmit={(data) => {
-              setData((i) => ({ ...i, basic: data }));
+            onSubmit={(val) => {
+              setData((i) => ({ ...i, basic: val }));
               setTab(1);
             }}
           />
@@ -174,24 +177,16 @@ export default function Index() {
       );
     case 1:
       return (
-        <View className="h-full flex-col bg-white">
-          <View className="h-10 flex-row items-center justify-between px-6">
-            <Pressable hitSlop={20} onPress={() => setTab(0)}>
-              <ArrowLeftIcon />
-            </Pressable>
-            <AppText className="font-medium ">Post a listing</AppText>
-            <Pressable hitSlop={20} onPress={() => router.back()}>
-              <XIcon />
-            </Pressable>
-          </View>
+        <View style={styles.container}>
+          {renderHeader(() => setTab(0))}
           <Basic2
             data={data.basic2}
             extra_data={{
               property_type: data.basic.property_type!,
               property_category: data.basic.property_category!,
             }}
-            onSubmit={(data) => {
-              setData((i) => ({ ...i, basic2: data }));
+            onSubmit={(val) => {
+              setData((i) => ({ ...i, basic2: val }));
               setTab(2);
             }}
           />
@@ -199,23 +194,15 @@ export default function Index() {
       );
     case 2:
       return (
-        <View className="h-full flex-col bg-white">
-          <View className="h-10 flex-row items-center justify-between px-6">
-            <Pressable hitSlop={20} onPress={() => setTab(1)}>
-              <ArrowLeftIcon />
-            </Pressable>
-            <AppText className="font-medium ">Post a listing</AppText>
-            <Pressable hitSlop={20} onPress={() => router.back()}>
-              <XIcon />
-            </Pressable>
-          </View>
+        <View style={styles.container}>
+          {renderHeader(() => setTab(1))}
           <Basic3
             data={data.basic3}
             extra_data={{
               listing_for: data.basic.listing_for!,
             }}
-            onSubmit={(data) => {
-              setData((i) => ({ ...i, basic3: data }));
+            onSubmit={(val) => {
+              setData((i) => ({ ...i, basic3: val }));
               setTab(3);
             }}
           />
@@ -223,23 +210,15 @@ export default function Index() {
       );
     case 3:
       return (
-        <View className="h-full flex-col bg-white">
-          <View className="h-10 flex-row items-center justify-between px-6">
-            <Pressable hitSlop={20} onPress={() => setTab(2)}>
-              <ArrowLeftIcon />
-            </Pressable>
-            <AppText className="font-medium ">Post a listing</AppText>
-            <Pressable hitSlop={20} onPress={() => router.back()}>
-              <XIcon />
-            </Pressable>
-          </View>
+        <View style={styles.container}>
+          {renderHeader(() => setTab(2))}
           <PropertyGallery
             data={data.gallery}
             extra_data={{
               listing_for: data.basic.listing_for!,
             }}
-            onSubmit={(data) => {
-              setData((i) => ({ ...i, gallery: data }));
+            onSubmit={(val) => {
+              setData((i) => ({ ...i, gallery: val }));
               setTab(4);
             }}
           />
@@ -247,20 +226,12 @@ export default function Index() {
       );
     case 4:
       return (
-        <View className="h-full flex-col bg-white">
-          <View className="h-10 flex-row items-center justify-between px-6">
-            <Pressable hitSlop={20} onPress={() => setTab(3)}>
-              <ArrowLeftIcon />
-            </Pressable>
-            <AppText className="font-medium ">Post a listing</AppText>
-            <Pressable hitSlop={20} onPress={() => router.back()}>
-              <XIcon />
-            </Pressable>
-          </View>
+        <View style={styles.container}>
+          {renderHeader(() => setTab(3))}
           <LocationInfo
             data={data.location}
-            onSubmit={(data) => {
-              setData((i) => ({ ...i, location: data }));
+            onSubmit={(val) => {
+              setData((i) => ({ ...i, location: val }));
               setTab(5);
             }}
           />
@@ -270,8 +241,8 @@ export default function Index() {
       return (
         <PaymentInfo
           data={data.payment}
-          onSubmit={(data) => {
-            setData((i) => ({ ...i, payment: data }));
+          onSubmit={(val) => {
+            setData((i) => ({ ...i, payment: val }));
             setTab(6);
           }}
         />
@@ -287,7 +258,28 @@ export default function Index() {
           }}
         />
       );
+    default:
+      return <View style={styles.container} />;
   }
-
-  return <View></View>;
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  header: {
+    height: 60,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+  },
+  headerTitle: {
+    fontFamily: 'LufgaMedium',
+    fontSize: 18,
+    color: '#192234',
+  },
+});

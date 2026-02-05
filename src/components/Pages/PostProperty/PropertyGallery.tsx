@@ -6,7 +6,7 @@ import { Link } from 'expo-router';
 import { ImagesIcon, ImageSquareIcon, TrashIcon } from 'phosphor-react-native';
 import { useEffect } from 'react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
-import { ActivityIndicator, ScrollView, TouchableHighlight, View } from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, TouchableHighlight, View } from 'react-native';
 import Sortable from 'react-native-sortables';
 import z from 'zod';
 import AppText from '~/components/Elements/AppText';
@@ -15,7 +15,6 @@ import { ControlledCheckBox } from '~/components/Elements/Checkbox';
 import PressableView from '~/components/HOC/PressableView';
 import { useToast } from '~/store/useToast';
 import { resizeImage } from '~/utils/property';
-import tailwind from '~/utils/tailwind';
 import uploadFile from '~/utils/upload-file';
 import { Basic1Values } from './Basic1';
 
@@ -45,8 +44,8 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
     name: 'files',
   });
 
-  const onSubmitInternal = async (data: PropertyGalleryTypes) => {
-    onSubmit(data);
+  const onSubmitInternal = async (formData: PropertyGalleryTypes) => {
+    onSubmit(formData);
   };
 
   const onError = () => {
@@ -87,7 +86,7 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
               { shouldValidate: true }
             );
           })
-          .catch((err) => {
+          .catch((_err) => {
             setValue(
               'files',
               getValues('files').map((x, i) =>
@@ -104,23 +103,17 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
     const file = watchedFiles?.[index] || item;
 
     return (
-      <View
-        style={{
-          width: '100%',
-          height: '100%',
-          aspectRatio: 1, // Ensure aspect ratio is maintained
-          padding: 8, // Add padding for gap
-        }}>
-        <View className="relative h-full w-full rounded-lg bg-black/10">
+      <View style={styles.gridItem}>
+        <View style={styles.imageContainer}>
           {file.isUploading ? (
             <>
               <Image
                 source={file.temp}
                 contentFit="contain"
-                style={{ width: '100%', height: '100%' }}
+                style={styles.image}
               />
-              <View className="absolute bottom-0 left-0 right-0 top-0 flex-row items-center justify-center bg-black/50">
-                <ActivityIndicator size={'large'} color={tailwind.theme.colors.secondary} />
+              <View style={styles.uploadOverlay}>
+                <ActivityIndicator size="large" color="#82065e" />
               </View>
             </>
           ) : (
@@ -129,13 +122,13 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
                 src={file.url!}
                 placeholderContentFit="contain"
                 contentFit="contain"
-                style={{ width: '100%', height: '100%' }}
+                style={styles.image}
               />
               <TouchableHighlight
                 onPress={() => remove(index)}
-                className="absolute right-1 top-1 flex-row items-center justify-center rounded-full bg-black/50 p-2">
+                style={styles.deleteBtn}>
                 <View>
-                  <TrashIcon size={15} color={tailwind.theme.colors.white} />
+                  <TrashIcon size={15} color="white" />
                 </View>
               </TouchableHighlight>
             </>
@@ -146,46 +139,44 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
   };
 
   return (
-    <View className="flex-1 bg-white">
+    <View style={styles.container}>
       <ScrollView
-        contentContainerStyle={{ paddingBottom: 100, paddingHorizontal: 20, paddingTop: 20 }}
+        contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}>
         <View>
-          <AppText className="font-bold text-2xl">Property Gallery 📸</AppText>
-          <AppText className="text-[15px] text-[#575775]">Upload pictures of your property</AppText>
+          <AppText style={styles.title}>Property Gallery 📸</AppText>
+          <AppText style={styles.subtitle}>Upload pictures of your property</AppText>
 
-          <View className=" mt-4">
-            <AppText className="text-sm text-[#575775]">
+          <View style={styles.overlayOption}>
+            <AppText style={styles.overlayText}>
               Do you want to overlay your company logo on all pictures for this listing? You can
               upload the logo in{' '}
-              <Link href="settings" className="text-secondary">
+              <Link href="/settings" style={styles.settingsLink}>
                 settings
               </Link>
             </AppText>
             <ControlledCheckBox name="agent_icon" control={control} label="Add Overlay Logo" />
           </View>
+
           <PressableView
             onPress={async () => {
               try {
-                let result = await ImagePicker.launchImageLibraryAsync({
+                const result = await ImagePicker.launchImageLibraryAsync({
                   mediaTypes: ['images'],
                   allowsMultipleSelection: true,
                   quality: 1,
                   orderedSelection: true,
-                  // orderedSelection: true, // Note: orderedSelection might not be available in all expo versions or configurations
                 });
 
                 if (!result.canceled) {
                   const currentFilesCount = getValues('files').length;
                   const newAssets = result.assets.map((img) => ({
                     isUploading: true,
-                    temp: img.uri, // keep local uri for placeholder
+                    temp: img.uri,
                   }));
 
-                  // 1. Show placeholders immediately
                   append(newAssets);
 
-                  // 2. Process uploads in background and update the specific fields
                   result.assets.forEach(async (asset, i) => {
                     try {
                       const image = await resizeImage(asset, 3000);
@@ -193,11 +184,9 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
 
                       const uploadPromise = uploadFile({ file: image.base64!, name: 'image' });
 
-                      // Update the form value with the promise so the Effect can track it
                       setValue(`files.${indexToUpdate}.file`, uploadPromise, {
                         shouldValidate: true,
                       });
-                      // Also update the temp URI to the resized one if needed (or keep original)
                       setValue(`files.${indexToUpdate}.temp`, image.uri);
                     } catch (err) {
                       console.error('Error processing image:', err);
@@ -208,21 +197,23 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
                 // console.error(e);
               }
             }}
-            className="mt-5 h-16 items-center justify-center rounded-3xl border border-dashed border-secondary bg-primary/10">
-            <View className="w-full flex-row items-center justify-between px-4">
-              <AppText className="text-lg text-primary">Upload Images</AppText>
-              <ImageSquareIcon />
+            style={styles.uploadBtn}>
+            <View style={styles.uploadBtnContent}>
+              <AppText style={styles.uploadBtnText}>Upload Images</AppText>
+              <ImageSquareIcon color="#192234" />
             </View>
           </PressableView>
-          <AppText className=" mt-5 font-medium">Images ({fields.length})</AppText>
-          <AppText className="mb-3 mt-2 font-normal text-xs text-[#575775]">
+
+          <AppText style={styles.imagesLabel}>Images ({fields.length})</AppText>
+          <AppText style={styles.imagesSubtitle}>
             You can change the priority of the images displayed in the marketplace by sliding the
             images to reshuffle their rank
           </AppText>
+
           {fields.length === 0 && (
-            <View className="h-40 items-center justify-center">
+            <View style={styles.emptyState}>
               <ImagesIcon size={100} weight="light" color="#ACACB9" />
-              <AppText className="font-medium text-sm">No Images at the moment...</AppText>
+              <AppText style={styles.emptyStateText}>No Images at the moment...</AppText>
             </View>
           )}
         </View>
@@ -231,25 +222,163 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
           data={fields}
           renderItem={renderItem}
           columns={2}
-          onDragEnd={({ data }: { data: PropertyGalleryTypes['files'] }) => {
-            // data is the new ordered array of items
-            replace(data);
+          onDragEnd={({ data: sortedData }: { data: PropertyGalleryTypes['files'] }) => {
+            replace(sortedData);
           }}
           // @ts-ignore
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item: { id: string }) => item.id}
         />
       </ScrollView>
 
-      <View className="absolute bottom-0 left-0 right-0   bg-white/90 px-5 py-4">
+      <View style={styles.footer}>
         <PressableView
           onPress={handleSubmit(onSubmitInternal, onError)}
-          className="h-12 items-center justify-center rounded-full bg-secondary">
-          <AppText className="font-bold text-lg text-white">Continue</AppText>
+          style={styles.continueBtn}>
+          <AppText style={styles.continueBtnText}>Continue</AppText>
         </PressableView>
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  scrollContent: {
+    paddingBottom: 100,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
+  title: {
+    fontFamily: 'LufgaBold',
+    fontSize: 24,
+    color: '#192234',
+  },
+  subtitle: {
+    fontFamily: 'LufgaRegular',
+    fontSize: 15,
+    color: '#575775',
+  },
+  overlayOption: {
+    marginTop: 16,
+  },
+  overlayText: {
+    fontFamily: 'LufgaRegular',
+    fontSize: 14,
+    color: '#575775',
+  },
+  settingsLink: {
+    color: '#82065e',
+  },
+  uploadBtn: {
+    marginTop: 20,
+    height: 64,
+    borderRadius: 24,
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: '#82065e',
+    backgroundColor: 'rgba(25, 34, 52, 0.1)',
+    justifyContent: 'center',
+  },
+  uploadBtnContent: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+  },
+  uploadBtnText: {
+    fontFamily: 'LufgaRegular',
+    fontSize: 18,
+    color: '#192234',
+  },
+  imagesLabel: {
+    marginTop: 20,
+    fontFamily: 'LufgaMedium',
+    fontSize: 14,
+    color: '#192234',
+  },
+  imagesSubtitle: {
+    marginTop: 8,
+    marginBottom: 12,
+    fontFamily: 'LufgaRegular',
+    fontSize: 12,
+    color: '#575775',
+  },
+  emptyState: {
+    height: 160,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyStateText: {
+    fontFamily: 'LufgaMedium',
+    fontSize: 14,
+    color: '#192234',
+  },
+  gridItem: {
+    width: '100%',
+    height: '100%',
+    aspectRatio: 1,
+    padding: 8,
+  },
+  imageContainer: {
+    position: 'relative',
+    height: '100%',
+    width: '100%',
+    borderRadius: 8,
+    backgroundColor: 'rgba(0,0,0,0.1)',
+    overflow: 'hidden',
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+  },
+  uploadOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  deleteBtn: {
+    position: 'absolute',
+    right: 4,
+    top: 4,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  footer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+  },
+  continueBtn: {
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 999,
+    backgroundColor: '#82065e',
+  },
+  continueBtnText: {
+    fontFamily: 'LufgaBold',
+    fontSize: 18,
+    color: 'white',
+  },
+});
 
 export const PropertyGallerySchema = z.object({
   agent_icon: z.boolean(),
@@ -264,7 +393,7 @@ export const PropertyGallerySchema = z.object({
       })
     )
     .min(1, { message: 'At least One Image is Required' })
-    .superRefine((data, ctx) => {
+    .superRefine((data: any, ctx: z.RefinementCtx) => {
       if (data.length > 20) {
         useToast.getState().addToast({
           heading: 'Image Limit',

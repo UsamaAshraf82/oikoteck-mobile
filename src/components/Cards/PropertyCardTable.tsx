@@ -3,22 +3,21 @@ import { useRouter } from 'expo-router';
 import { DateTime } from 'luxon';
 import Parse from 'parse/react-native';
 import {
-  ArrowCounterClockwiseIcon,
-  ArrowSquareOutIcon,
-  CoinIcon,
-  CrownIcon,
-  CursorClickIcon,
-  DotsThreeCircleIcon,
-  HeartBreakIcon,
-  LightningIcon,
-  PencilSimpleIcon,
-  ProhibitIcon,
-  TrashIcon,
+    ArrowCounterClockwiseIcon,
+    ArrowSquareOutIcon,
+    CoinIcon,
+    CrownIcon,
+    CursorClickIcon,
+    DotsThreeCircleIcon,
+    HeartBreakIcon,
+    LightningIcon,
+    PencilSimpleIcon,
+    ProhibitIcon,
+    TrashIcon,
 } from 'phosphor-react-native';
 import { useMemo } from 'react';
-import { Alert, Pressable, TouchableWithoutFeedback, View } from 'react-native';
+import { Alert, Pressable, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { stringify_area_district } from '~/lib/stringify_district_area';
-import { cn } from '~/lib/utils';
 import useActivityIndicator from '~/store/useActivityIndicator';
 import useMenu from '~/store/useMenuHelper';
 import usePopup from '~/store/usePopup';
@@ -28,19 +27,18 @@ import { Property_Type } from '~/type/property';
 import { deviceWidth } from '~/utils/global';
 import { thoasandseprator } from '~/utils/number';
 import {
-  activateListing,
-  applyCredit,
-  boostListing,
-  cancelMembership,
-  changeMembership,
-  editCredits,
-  editList,
-  permanentDelete,
-  rejectionReason,
-  renewMembership,
-  viewListing,
+    activateListing,
+    applyCredit,
+    boostListing,
+    cancelMembership,
+    changeMembership,
+    editCredits,
+    editList,
+    permanentDelete,
+    rejectionReason,
+    renewMembership,
+    viewListing,
 } from '~/utils/property';
-import tailwind, { tailwind_color } from '~/utils/tailwind';
 import AWSImage from '../Elements/AWSImage';
 import AppText from '../Elements/AppText';
 import Grid from '../HOC/Grid';
@@ -83,8 +81,8 @@ const PropertyCard = ({
               label: 'Remove Listing',
               message: 'Are you sure you want to remove this listing from your favorites?',
               confirm: {
-                className: 'bg-red-700 border-red-700',
-                textClassName: 'text-white',
+                // className: 'bg-red-700 border-red-700',
+                // textClassName: 'text-white',
                 text: 'Yes, Remove',
               },
               onConfirm: async () => {
@@ -109,7 +107,6 @@ const PropertyCard = ({
                   queryKey: ['properties', 'faviorites'],
                 });
                 activity.stopActivity();
-                // router.push(`/property/${property.objectId}`);
               },
             });
           },
@@ -187,7 +184,7 @@ const PropertyCard = ({
                 activity.stopActivity();
               },
               confirm: {
-                className: 'bg-green-700 border-green-700',
+                // className: 'bg-green-700 border-green-700',
               },
             });
           },
@@ -225,11 +222,11 @@ const PropertyCard = ({
               message: property.reject_reason,
               onConfirm: () => {},
               confirm: {
-                className: 'bg-green-700 border-green-700',
+                // className: 'bg-green-700 border-green-700',
                 text: 'Ok',
               },
               discard: {
-                className: 'hidden',
+                // className: 'hidden',
               },
             });
           },
@@ -250,8 +247,8 @@ const PropertyCard = ({
               discard: { text: 'No, Keep it' },
               confirm: {
                 text: 'Yes, Delete',
-                className: 'bg-red-600 border-red-600',
-                textClassName: 'text-white',
+                // className: 'bg-red-600 border-red-600',
+                // textClassName: 'text-white',
               },
               onConfirm: async () => {
                 activity.startActivity();
@@ -287,8 +284,8 @@ const PropertyCard = ({
               },
               confirm: {
                 text: 'Yes, Remove',
-                className: 'bg-red-600 border-red-600',
-                textClassName: 'text-white',
+                // className: 'bg-red-600 border-red-600',
+                // textClassName: 'text-white',
               },
               onConfirm: async () => {
                 activity.startActivity();
@@ -309,6 +306,7 @@ const PropertyCard = ({
       ];
     return [];
   }, [property]);
+
   const options_bottom = useMemo(() => {
     if (type === 'change_plan')
       return [
@@ -334,69 +332,77 @@ const PropertyCard = ({
     return [];
   }, [property]);
 
+  const statusStyle = useMemo(() => {
+    switch (property.status) {
+      case 'Pending Approval': return styles.statusPending;
+      case 'Approved': return styles.statusApproved;
+      case 'Expired': return styles.statusExpired;
+      case 'Deleted': return styles.statusDeleted;
+      case 'Rejected': return styles.statusRejected;
+      default: return styles.statusExpired;
+    }
+  }, [property.status]);
+
+  const planStyle = useMemo(() => {
+    switch (property.plan) {
+      case 'Free': return styles.planFree;
+      case 'Promote': return styles.planPromote;
+      case 'Promote +': return styles.planPromotePlus;
+      case 'Gold': return styles.planGold;
+      case 'Platinum': return styles.planPlatinum;
+      default: return styles.planPlatinum;
+    }
+  }, [property.plan]);
+
   return (
     <View
-      className={cn('mb-2 flex-col rounded-2xl border border-[#E9E9EC] p-2', {
-        'border-secondary': ['change_plan'].includes(type),
-      })}
-      style={{ borderRadius: 16 }}>
-      <View className={cn('rounded-2xl] relative flex-row gap-x-2.5 ', {})}>
+      style={[
+        styles.cardContainer,
+        type === 'change_plan' && styles.borderSecondary,
+      ]}>
+      <View style={styles.contentRow}>
         <TouchableWithoutFeedback onPress={() => router.push(`/property/${property.objectId}`)}>
-          <View>
+          <View style={styles.imageWrapper}>
             <AWSImage
               src={property.images[0]}
-              style={{ width: 100, height: 100, borderRadius: 16 }}
+              style={styles.image}
             />
             {['dashboard', 'change_plan'].includes(type) && (
-              <View
-                className={cn('absolute left-2 top-2 rounded-full bg-expired/70 px-3 py-1 ', {
-                  'bg-pending/70': property.status === 'Pending Approval',
-                  'bg-active/70': property.status === 'Approved',
-                  'bg-expired/70': property.status === 'Expired',
-                  'bg-deleted/70': property.status === 'Deleted',
-                  'bg-rejected/70': property.status === 'Rejected',
-                })}>
-                <AppText className="text-xs text-white">
+              <View style={[styles.statusBadge, statusStyle]}>
+                <AppText style={styles.badgeTextSmall}>
                   {property.status === 'Pending Approval' ? 'Pending' : property.status + ''}
                 </AppText>
               </View>
             )}
           </View>
         </TouchableWithoutFeedback>
+
         {type === 'dashboard' && (
-          <View
-            className={cn('absolute bottom-2 right-2 rounded-full bg-platinum/70  px-2 py-1 ', {
-              'bg-secondary/70': property.plan === 'Free',
-              'bg-promote/70': property.plan === 'Promote',
-              'bg-promote_plus/70': property.plan === 'Promote +',
-              'bg-gold/70': property.plan === 'Gold',
-              'bg-platinum/70': property.plan === 'Platinum',
-            })}>
-            <AppText className="text-xs text-white">{property.plan}</AppText>
+          <View style={[styles.planBadge, planStyle]}>
+            <AppText style={styles.badgeTextSmall}>{property.plan}</AppText>
           </View>
         )}
 
-        <View className="mt-2">
-          <View className="flex-row items-center justify-between">
-            <View className=" flex-row items-baseline">
-              <AppText className="font-bold text-lg text-secondary">
+        <View style={styles.detailsContainer}>
+          <View style={styles.rowBetween}>
+            <View style={styles.rowBaseline}>
+              <AppText style={styles.priceText}>
                 {'€ ' + thoasandseprator(property.price)}
               </AppText>
               {property.listing_for !== 'Sale' && (
-                <AppText className="text-xs text-[#9191A1]"> /month</AppText>
+                <AppText style={styles.perMonthText}> /month</AppText>
               )}
             </View>
           </View>
           <TouchableWithoutFeedback onPress={() => router.push(`/property/${property.objectId}`)}>
             <AppText
-              className="font-bold text-base text-primary"
+              style={[styles.titleText, { maxWidth: wide }]}
               numberOfLines={1}
-              style={{ maxWidth: wide }}
               ellipsizeMode="tail">
               {property.title}
             </AppText>
           </TouchableWithoutFeedback>
-          <AppText className="text-sm text-[#75758A]" style={{ maxWidth: wide }} numberOfLines={1}>
+          <AppText style={[styles.locationText, { maxWidth: wide }]} numberOfLines={1}>
             {stringify_area_district({
               district: property.district,
               area_1: property.area_1,
@@ -404,39 +410,25 @@ const PropertyCard = ({
             })}
           </AppText>
 
-          <View className="mt-1 flex-row items-center justify-start">
-            <View className="mr-3 flex-row items-center">
-              <BedIcon
-                height={17}
-                width={17}
-                color={tailwind.theme.colors.o_light_gray}
-                className="text-o_light_gray"
-              />
-              <AppText className="ml-1 mr-0 text-sm text-[#9191A1]">{property.bedrooms}</AppText>
+          <View style={styles.featuresRow}>
+            <View style={styles.featureItem}>
+              <BedIcon height={17} width={17} color="#7D7D7D" />
+              <AppText style={styles.featureText}>{property.bedrooms}</AppText>
             </View>
-            <View className="mr-3 flex-row items-center">
-              <BathIcon
-                height={17}
-                width={17}
-                color={tailwind.theme.colors.o_light_gray}
-                className="text-o_light_gray"
-              />
-              <AppText className="ml-1 mr-0 text-sm text-[#9191A1]">{property.bedrooms}</AppText>
+            <View style={styles.featureItem}>
+              <BathIcon height={17} width={17} color="#7D7D7D" />
+              <AppText style={styles.featureText}>{property.bathrooms}</AppText>
             </View>
-            <View className="mr-3 flex-row items-center  text-o_light_gray">
-              <SizeIcon
-                height={18}
-                width={18}
-                color={tailwind.theme.colors.o_light_gray}
-                className="text-o_light_gray"
-              />
-              <AppText className="ml-1 mr-0 text-sm text-[#9191A1]">{property.size} m²</AppText>
+            <View style={styles.featureItem}>
+              <SizeIcon height={18} width={18} color="#7D7D7D" />
+              <AppText style={styles.featureText}>{property.size} m²</AppText>
             </View>
           </View>
         </View>
+
         {options.length > 0 && (
           <Pressable
-            className="absolute right-2 top-2"
+            style={styles.menuButton}
             onPress={() => {
               openMenu({
                 options: options,
@@ -444,17 +436,17 @@ const PropertyCard = ({
                 label: 'Options',
               });
             }}>
-            <DotsThreeCircleIcon color={tailwind_color.o_light_gray} />
+            <DotsThreeCircleIcon color="#7D7D7D" />
           </Pressable>
         )}
       </View>
       {options_bottom.length > 0 && (
-        <View className="mx-2 mb-1 mt-3">
-          <Grid cols={3} className="flex-row justify-between rounded-2xl bg-[#e9e9ec] p-2">
-            {options_bottom.map((item) => (
-              <View>
-                <AppText className="font-medium text-[13px]">{item.label}</AppText>
-                <AppText className="text-[13px]">{item.value}</AppText>
+        <View style={styles.bottomGridWrapper}>
+          <Grid cols={3} style={styles.bottomGrid}>
+            {options_bottom.map((item, idx) => (
+              <View key={idx}>
+                <AppText style={styles.gridLabel}>{item.label}</AppText>
+                <AppText style={styles.gridValue}>{item.value}</AppText>
               </View>
             ))}
           </Grid>
@@ -463,5 +455,138 @@ const PropertyCard = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  cardContainer: {
+    marginBottom: 8,
+    flexDirection: 'column',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#E9E9EC',
+    padding: 8,
+    backgroundColor: 'white',
+  },
+  borderSecondary: {
+    borderColor: '#82065e',
+  },
+  contentRow: {
+    position: 'relative',
+    flexDirection: 'row',
+  },
+  imageWrapper: {
+    position: 'relative',
+    marginRight: 10,
+  },
+  image: {
+    width: 100,
+    height: 100,
+    borderRadius: 16,
+  },
+  statusBadge: {
+    position: 'absolute',
+    left: 8,
+    top: 8,
+    borderRadius: 999,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+  },
+  statusPending: { backgroundColor: 'rgba(238, 147, 43, 0.7)' },
+  statusApproved: { backgroundColor: 'rgba(40, 164, 119, 0.7)' },
+  statusExpired: { backgroundColor: 'rgba(84, 18, 161, 0.7)' },
+  statusDeleted: { backgroundColor: 'rgba(94, 94, 110, 0.7)' },
+  statusRejected: { backgroundColor: 'rgba(204, 63, 51, 0.7)' },
+
+  planBadge: {
+    position: 'absolute',
+    bottom: 8,
+    right: 8,
+    borderRadius: 999,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  planFree: { backgroundColor: 'rgba(130, 6, 94, 0.7)' },
+  planPromote: { backgroundColor: 'rgba(84, 18, 161, 0.7)' },
+  planPromotePlus: { backgroundColor: 'rgba(57, 139, 233, 0.7)' },
+  planGold: { backgroundColor: 'rgba(230, 198, 35, 0.7)' },
+  planPlatinum: { backgroundColor: 'rgba(255, 156, 70, 0.7)' },
+
+  badgeTextSmall: {
+    fontSize: 12,
+    color: 'white',
+  },
+  detailsContainer: {
+    marginTop: 8,
+    flex: 1,
+  },
+  rowBetween: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  rowBaseline: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+  },
+  priceText: {
+    fontFamily: 'LufgaBold',
+    fontSize: 18,
+    color: '#82065e',
+  },
+  perMonthText: {
+    fontSize: 12,
+    color: '#9191A1',
+  },
+  titleText: {
+    fontFamily: 'LufgaBold',
+    fontSize: 16,
+    color: '#192234',
+  },
+  locationText: {
+    fontSize: 14,
+    color: '#75758A',
+  },
+  featuresRow: {
+    marginTop: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
+  featureItem: {
+    marginRight: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  featureText: {
+    marginLeft: 4,
+    fontSize: 14,
+    color: '#9191A1',
+  },
+  menuButton: {
+    position: 'absolute',
+    right: 8,
+    top: 8,
+  },
+  bottomGridWrapper: {
+    marginHorizontal: 8,
+    marginBottom: 4,
+    marginTop: 12,
+  },
+  bottomGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderRadius: 16,
+    backgroundColor: '#e9e9ec',
+    padding: 8,
+  },
+  gridLabel: {
+    fontFamily: 'LufgaMedium',
+    fontSize: 13,
+    color: '#192234',
+  },
+  gridValue: {
+    fontSize: 13,
+    color: '#192234',
+  },
+});
 
 export default PropertyCard;

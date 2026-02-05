@@ -1,57 +1,58 @@
 import { router } from 'expo-router';
 import { CaretDownIcon, CaretUpIcon } from 'phosphor-react-native';
 import { useState } from 'react';
-import { ScrollView, TouchableWithoutFeedback, View } from 'react-native';
+import { ScrollView, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import AppText from '~/components/Elements/AppText';
 import TopHeader from '~/components/Elements/TopHeader';
 import faqs from '~/global/faqs';
-import { cn } from '~/lib/utils';
-import tailwind from '~/utils/tailwind';
-const Services = () => {
+
+const Faqs = () => {
   const [selectedFaq, setSelectedFaq] = useState(-1);
   return (
-    <View className="flex-1 bg-white">
+    <View style={styles.container}>
       <TopHeader
         onBackPress={() => {
           router.back();
         }}
         title={'FAQs'}
       />
-      <View className="px-5">
-        <AppText className="font-semibold text-2xl">Frequently asked Questions 🤔</AppText>
-        <AppText className="text-sm text-[#9191A1]">
+      <View style={styles.titleWrapper}>
+        <AppText style={styles.heading}>Frequently asked Questions 🤔</AppText>
+        <AppText style={styles.subHeading}>
           Explore Frequently asked Questions about our service plans
         </AppText>
       </View>
-      <ScrollView contentContainerClassName="px-5 pb-4 mt-4 gap-2">
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}>
         {faqs.map((faq, i) => (
           <TouchableWithoutFeedback
             key={i}
             onPress={() => {
-
-              setSelectedFaq((prev)=>{
-                if (prev === i) {
-                  return -1;
-                }
-                return i;
-              });
+              setSelectedFaq((prev) => (prev === i ? -1 : i));
             }}>
             <View
-              key={i}
-              className={cn('rounded-2xl border border-[#ACACB9]/40 px-3 py-3', {
-                'border-2 border-secondary': i === selectedFaq,
-              })}>
-              <View className="flex-row justify-between">
-                <AppText className={cn('font-medium', { 'text-secondary': i === selectedFaq })}>
+              style={[
+                styles.faqCard,
+                i === selectedFaq && styles.faqCardActive,
+              ]}>
+              <View style={styles.faqHeader}>
+                <AppText
+                  style={[
+                    styles.faqQuestion,
+                    i === selectedFaq && styles.faqActiveText,
+                  ]}>
                   {faq.que}
                 </AppText>
                 {i === selectedFaq ? (
-                  <CaretUpIcon size={20} color={tailwind.theme.colors.secondary} />
+                  <CaretUpIcon size={20} color="#82065e" />
                 ) : (
                   <CaretDownIcon size={20} color="#ACACB9" />
                 )}
               </View>
-              {i === selectedFaq && <AppText className="text-sm text-[#575775]">{faq.ans}</AppText>}
+              {i === selectedFaq && (
+                <AppText style={styles.faqAnswer}>{faq.ans}</AppText>
+              )}
             </View>
           </TouchableWithoutFeedback>
         ))}
@@ -60,4 +61,65 @@ const Services = () => {
   );
 };
 
-export default Services;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  titleWrapper: {
+    paddingHorizontal: 20,
+    marginBottom: 8,
+  },
+  heading: {
+    fontFamily: 'LufgaSemiBold',
+    fontSize: 24,
+    color: '#192234',
+  },
+  subHeading: {
+    fontFamily: 'LufgaRegular',
+    fontSize: 14,
+    color: '#9191A1',
+    marginTop: 4,
+  },
+  scrollContent: {
+    paddingHorizontal: 20,
+    paddingBottom: 24,
+    marginTop: 16,
+    gap: 12,
+  },
+  faqCard: {
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(172, 172, 185, 0.4)',
+    padding: 16,
+    backgroundColor: '#fff',
+  },
+  faqCardActive: {
+    borderWidth: 2,
+    borderColor: '#82065e',
+  },
+  faqHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  faqQuestion: {
+    fontFamily: 'LufgaMedium',
+    fontSize: 16,
+    color: '#192234',
+    flex: 1,
+    marginRight: 10,
+  },
+  faqActiveText: {
+    color: '#82065e',
+  },
+  faqAnswer: {
+    fontFamily: 'LufgaRegular',
+    fontSize: 14,
+    color: '#575775',
+    marginTop: 12,
+    lineHeight: 20,
+  },
+});
+
+export default Faqs;

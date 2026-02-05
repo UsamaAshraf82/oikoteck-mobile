@@ -1,5 +1,5 @@
 import { CaretDownIcon } from 'phosphor-react-native';
-import { TouchableWithoutFeedback, View } from 'react-native';
+import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import useSelect, { Option } from '~/store/useSelectHelper';
 import AppText from './AppText';
 
@@ -27,9 +27,9 @@ const Select = ({
   const { openSelect } = useSelect();
 
   return (
-    <View className="w-full  flex-col ">
-      {label && <AppText className="mb-2 font-medium text-[13px] text-primary">{label}</AppText>}
-      <View className="relative">
+    <View style={styles.container}>
+      {label && <AppText style={styles.label}>{label}</AppText>}
+      <View style={styles.relative}>
         <TouchableWithoutFeedback
           onPress={() => {
             onPress?.();
@@ -41,7 +41,8 @@ const Select = ({
                   options: options,
                   value: value?.value,
 
-                  onPress: (value) => onChange?.(value),
+                  onPress: (value: Option | null) => onChange?.(value),
+                  // Note: These classNames will need translation in the Sheet/Select component
                   className: {
                     label: { wrapper: 'justify-start mb-4', text: 'text-2xl' },
                     option_label: { wrapper: 'py-4', text: 'text-[15px]  font-normal' },
@@ -54,23 +55,58 @@ const Select = ({
                   options: options,
                   value: value?.value,
 
-                  onPress: (value) => onChange?.(value),
+                  onPress: (value: Option | null) => onChange?.(value),
                 });
               }
             }
           }}>
-          <View className=" flex-row items-center justify-between rounded-2xl border border-[#C6CAD2] bg-white px-2 py-3 text-primary">
+          <View style={styles.selectBox}>
             {value?.label ? (
-              <AppText className="text-sm text-primary">{value?.label}</AppText>
+              <AppText style={styles.valueText}>{value?.label}</AppText>
             ) : (
-              <AppText className="text-sm text-gray-500">{placeholder || ''}</AppText>
+              <AppText style={styles.placeholderText}>{placeholder || ''}</AppText>
             )}
-            <CaretDownIcon size={20} />
+            <CaretDownIcon size={20} color="#192234" />
           </View>
         </TouchableWithoutFeedback>
       </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    flexDirection: 'column',
+  },
+  label: {
+    marginBottom: 8,
+    fontFamily: 'LufgaMedium',
+    fontSize: 13,
+    color: '#192234',
+  },
+  relative: {
+    position: 'relative',
+  },
+  selectBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#C6CAD2',
+    backgroundColor: 'white',
+    paddingHorizontal: 8,
+    paddingVertical: 12,
+  },
+  valueText: {
+    fontSize: 14,
+    color: '#192234',
+  },
+  placeholderText: {
+    fontSize: 14,
+    color: '#6B7280',
+  },
+});
 
 export default Select;

@@ -3,7 +3,7 @@ import { useRouter } from 'expo-router';
 import { EnvelopeSimpleOpenIcon, PencilSimpleIcon, PhoneIcon, UserIcon } from 'phosphor-react-native';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Pressable, TouchableWithoutFeedback, View } from 'react-native';
+import { Pressable, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import z from 'zod';
 import AppText from '~/components/Elements/AppText';
 import { flags, RenderFlagWithCode } from '~/components/Elements/Flags';
@@ -13,16 +13,14 @@ import useActivityIndicator from '~/store/useActivityIndicator';
 import useSelect from '~/store/useSelectHelper';
 import { useToast } from '~/store/useToast';
 import useUser from '~/store/useUser';
-import tailwind from '~/utils/tailwind';
 
 const EditUser = () => {
-  const { user } = useUser();
   const router = useRouter();
 
   return (
-    <View className="flex w-full flex-1 flex-col">
+    <View style={styles.container}>
       <TopHeader onBackPress={() => router.back()} title="Edit Profile" />
-      <View className="flex- gap-3  px-4 pt-2">
+      <View style={styles.formWrapper}>
         <NameInput />
         <NumberInput />
         <EmailInput />
@@ -32,6 +30,8 @@ const EditUser = () => {
 };
 
 export default EditUser;
+
+// --- Components ---
 
 const NameInputSchema = z.object({
   firstName: z.string().min(1, { message: 'First Name is required.' }),
@@ -81,11 +81,11 @@ const NameInput = () => {
       });
       setIsEditing(false);
     }
-
     stopActivity();
   };
+
   const onError = () => {
-    Object.values(errors).forEach((err) => {
+    Object.values(errors).forEach((err: any) => {
       if (err?.message) {
         addToast({
           type: 'error',
@@ -97,14 +97,14 @@ const NameInput = () => {
   };
 
   return (
-    <View className=" relative flex-row rounded-3xl border px-4 py-3">
-      <View className="h-10 w-10 items-center justify-center rounded-full bg-secondary/10">
-        <UserIcon size={16} weight="bold" color={tailwind.theme.colors.secondary} />
+    <View style={styles.inputRow}>
+      <View style={styles.iconContainer}>
+        <UserIcon size={16} weight="bold" color="#82065e" />
       </View>
-      <View className="ml-4 flex-1 flex-col gap-2">
-        {isEditing && <AppText className="font-semibold text-lg">Update Name</AppText>}
-        <AppText className="text-sm text-o_gray-200">Name</AppText>
-        <AppText className="font-medium text-base">
+      <View style={styles.inputContent}>
+        {isEditing && <AppText style={styles.editTitle}>Update Name</AppText>}
+        <AppText style={styles.inputLabel}>Name</AppText>
+        <AppText style={styles.inputValue}>
           {user?.attributes.first_name} {user?.attributes.last_name}
         </AppText>
         {isEditing && (
@@ -121,19 +121,19 @@ const NameInput = () => {
               label="Last Name"
               placeholder="Last Name"
             />
-            <View className="mt-2 flex-row justify-end gap-4">
+            <View style={styles.actionButtons}>
               <Pressable
-                className="rounded-full border border-primary px-4 py-3"
+                style={styles.cancelBtn}
                 onPress={() => {
                   setIsEditing(false);
                   reset();
                 }}>
-                <AppText className="text-primary">Cancel</AppText>
+                <AppText style={styles.cancelBtnText}>Cancel</AppText>
               </Pressable>
               <Pressable
-                className="rounded-full bg-secondary px-4 py-3"
+                style={styles.saveBtn}
                 onPress={handleSubmit(onSubmit, onError)}>
-                <AppText className="text-white">Save Changes</AppText>
+                <AppText style={styles.saveBtnText}>Save Changes</AppText>
               </Pressable>
             </View>
           </>
@@ -141,11 +141,11 @@ const NameInput = () => {
       </View>
       {!isEditing && (
         <Pressable
-          className="absolute right-4 top-3 h-6 w-6 items-center justify-center rounded-full bg-[#ebeaec]"
+          style={styles.editBtn}
           onPress={() => {
             setIsEditing(true);
           }}>
-          <PencilSimpleIcon size={16} weight="fill" color={'#acacb9'} duotoneColor={'#acacb9'} />
+          <PencilSimpleIcon size={16} weight="fill" color={'#acacb9'} />
         </Pressable>
       )}
     </View>
@@ -162,6 +162,7 @@ const NumberInputSchema = z.object({
 });
 
 type NumberInputTypes = z.infer<typeof NumberInputSchema>;
+
 const NumberInput = () => {
   const [isEditing, setIsEditing] = useState(false);
   const { user } = useUser();
@@ -184,7 +185,6 @@ const NumberInput = () => {
         Country: user?.attributes.country,
         ISO: user?.attributes.country_iso,
       },
-
       phone: user?.attributes.phone,
     },
   });
@@ -197,7 +197,6 @@ const NumberInput = () => {
           Country: user?.attributes.country,
           ISO: user?.attributes.country_iso,
         },
-
         phone: user?.attributes.phone,
       });
     }
@@ -218,11 +217,11 @@ const NumberInput = () => {
       });
       setIsEditing(false);
     }
-
     stopActivity();
   };
+
   const onError = () => {
-    Object.values(errors).forEach((err) => {
+    Object.values(errors).forEach((err: any) => {
       if (err?.message) {
         addToast({
           type: 'error',
@@ -234,21 +233,21 @@ const NumberInput = () => {
   };
 
   return (
-    <View className=" relative flex-row rounded-3xl border px-4 py-3">
-      <View className="h-10 w-10 items-center justify-center rounded-full bg-secondary/10">
-        <PhoneIcon size={16} weight="bold" color={tailwind.theme.colors.secondary} />
+    <View style={styles.inputRow}>
+      <View style={styles.iconContainer}>
+        <PhoneIcon size={16} weight="bold" color="#82065e" />
       </View>
-      <View className="ml-4 flex-1 flex-col gap-2">
-        {isEditing && <AppText className="font-semibold text-lg">Update Number</AppText>}
-        <AppText className="text-sm text-o_gray-200">Phone Number</AppText>
-        <AppText className="font-medium text-base">
+      <View style={styles.inputContent}>
+        {isEditing && <AppText style={styles.editTitle}>Update Number</AppText>}
+        <AppText style={styles.inputLabel}>Phone Number</AppText>
+        <AppText style={styles.inputValue}>
           + {user?.attributes.country_code} {user?.attributes.phone}
         </AppText>
         {isEditing && (
           <>
-            <AppText className="-mb-2">Phone Number</AppText>
-            <View className="flex-row items-center gap-0.5">
-              <View className="w-2/5 ">
+            <AppText style={styles.labelBelow}>Phone Number</AppText>
+            <View style={styles.phoneInputRow}>
+              <View style={styles.countryPicker}>
                 <TouchableWithoutFeedback
                   onPress={() => {
                     openSelect({
@@ -256,8 +255,8 @@ const NumberInput = () => {
                       label: 'Select Country',
                       options: flags.map((i) => ({
                         label: (
-                          <View className="w-11/12 flex-row items-center justify-between">
-                            <View className="flex-row gap-2">
+                          <View style={styles.countryOption}>
+                            <View style={styles.countryOptionLeft}>
                               {i.flag}
                               <AppText>{i.Country}</AppText>
                             </View>
@@ -267,43 +266,41 @@ const NumberInput = () => {
                         value: { Code: i.Code, Country: i.Country, ISO: i.ISO },
                       })),
                       value: watch('country'),
-                      onPress: (value) =>
+                      onPress: (value: any) =>
                         setValue(
                           'country',
                           value.value as { Code: number; Country: string; ISO: string }
                         ),
-                      // title: 'Select Country',
                     });
                   }}>
-                  <View className="mt-2 rounded-2xl border border-[#C6CAD2] bg-white px-2 py-3">
+                  <View style={styles.flagBox}>
                     <RenderFlagWithCode ISO={watch('country').ISO} />
                   </View>
                 </TouchableWithoutFeedback>
               </View>
-              <View className="w-3/5 pr-1">
+              <View style={styles.phoneInputBox}>
                 <ControlledTextInput
                   control={control}
                   name="phone"
-                  // autoComplete="nu"
                   placeholder="Enter your Phone Number"
                   textContentType="telephoneNumber"
                   keyboardType="phone-pad"
                 />
               </View>
             </View>
-            <View className="mt-2 flex-row justify-end gap-4">
+            <View style={styles.actionButtons}>
               <Pressable
-                className="rounded-full border border-primary px-4 py-3"
+                style={styles.cancelBtn}
                 onPress={() => {
                   setIsEditing(false);
                   reset();
                 }}>
-                <AppText className="text-primary">Cancel</AppText>
+                <AppText style={styles.cancelBtnText}>Cancel</AppText>
               </Pressable>
               <Pressable
-                className="rounded-full bg-secondary px-4 py-3"
+                style={styles.saveBtn}
                 onPress={handleSubmit(onSubmit, onError)}>
-                <AppText className="text-white">Save Changes</AppText>
+                <AppText style={styles.saveBtnText}>Save Changes</AppText>
               </Pressable>
             </View>
           </>
@@ -311,11 +308,11 @@ const NumberInput = () => {
       </View>
       {!isEditing && (
         <Pressable
-          className="absolute right-4 top-3 h-6 w-6 items-center justify-center rounded-full bg-[#ebeaec]"
+          style={styles.editBtn}
           onPress={() => {
             setIsEditing(true);
           }}>
-          <PencilSimpleIcon size={16} weight="fill" color={'#acacb9'} duotoneColor={'#acacb9'} />
+          <PencilSimpleIcon size={16} weight="fill" color={'#acacb9'} />
         </Pressable>
       )}
     </View>
@@ -328,10 +325,11 @@ const EmailInputSchema = z.object({
     .toLowerCase()
     .trim()
     .min(1, { message: 'Email is required' })
-    .pipe(z.email('Must be a valid email address.')),
+    .email({ message: 'Must be a valid email address.' }),
 });
 
 type EmailInputTypes = z.infer<typeof EmailInputSchema>;
+
 const EmailInput = () => {
   const [isEditing, setIsEditing] = useState(false);
   const { user } = useUser();
@@ -371,11 +369,11 @@ const EmailInput = () => {
       });
       setIsEditing(false);
     }
-
     stopActivity();
   };
+
   const onError = () => {
-    Object.values(errors).forEach((err) => {
+    Object.values(errors).forEach((err: any) => {
       if (err?.message) {
         addToast({
           type: 'error',
@@ -387,39 +385,37 @@ const EmailInput = () => {
   };
 
   return (
-    <View className=" relative flex-row rounded-3xl border px-4 py-3">
-      <View className="h-10 w-10 items-center justify-center rounded-full bg-secondary/10">
-        <EnvelopeSimpleOpenIcon size={16} weight="bold" color={tailwind.theme.colors.secondary} />
+    <View style={styles.inputRow}>
+      <View style={styles.iconContainer}>
+        <EnvelopeSimpleOpenIcon size={16} weight="bold" color="#82065e" />
       </View>
-      <View className="ml-4 flex-1 flex-col gap-2">
-        {isEditing && <AppText className="font-semibold text-lg">Update Email</AppText>}
-        <AppText className="text-sm text-o_gray-200">Email Address</AppText>
-        <AppText className="font-medium text-base">{user?.attributes.username}</AppText>
+      <View style={styles.inputContent}>
+        {isEditing && <AppText style={styles.editTitle}>Update Email</AppText>}
+        <AppText style={styles.inputLabel}>Email Address</AppText>
+        <AppText style={styles.inputValue}>{user?.attributes.username}</AppText>
         {isEditing && (
           <>
             <ControlledTextInput
               control={control}
               name="email"
-              // autoComplete="nu"
               label="Email Address"
               placeholder="Enter your Email Address"
               textContentType="emailAddress"
               keyboardType="email-address"
             />
-
-            <View className="mt-2 flex-row justify-end gap-4">
+            <View style={styles.actionButtons}>
               <Pressable
-                className="rounded-full border border-primary px-4 py-3"
+                style={styles.cancelBtn}
                 onPress={() => {
                   setIsEditing(false);
                   reset();
                 }}>
-                <AppText className="text-primary">Cancel</AppText>
+                <AppText style={styles.cancelBtnText}>Cancel</AppText>
               </Pressable>
               <Pressable
-                className="rounded-full bg-secondary px-4 py-3"
+                style={styles.saveBtn}
                 onPress={handleSubmit(onSubmit, onError)}>
-                <AppText className="text-white">Save Changes</AppText>
+                <AppText style={styles.saveBtnText}>Save Changes</AppText>
               </Pressable>
             </View>
           </>
@@ -427,13 +423,138 @@ const EmailInput = () => {
       </View>
       {!isEditing && !user?.attributes.social_signup && (
         <Pressable
-          className="absolute right-4 top-3 h-6 w-6 items-center justify-center rounded-full bg-[#ebeaec]"
+          style={styles.editBtn}
           onPress={() => {
             setIsEditing(true);
           }}>
-          <PencilSimpleIcon size={16} weight="fill" color={'#acacb9'} duotoneColor={'#acacb9'} />
+          <PencilSimpleIcon size={16} weight="fill" color={'#acacb9'} />
         </Pressable>
       )}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  formWrapper: {
+    flex: 1,
+    gap: 12,
+    paddingHorizontal: 16,
+    paddingTop: 8,
+  },
+  inputRow: {
+    position: 'relative',
+    flexDirection: 'row',
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: '#eee',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: '#fff',
+  },
+  iconContainer: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 20,
+    backgroundColor: 'rgba(130, 6, 94, 0.1)',
+  },
+  inputContent: {
+    marginLeft: 16,
+    flex: 1,
+    flexDirection: 'column',
+    gap: 8,
+  },
+  editTitle: {
+    fontFamily: 'LufgaSemiBold',
+    fontSize: 18,
+    color: '#192234',
+  },
+  inputLabel: {
+    fontSize: 14,
+    color: '#9191A1',
+  },
+  inputValue: {
+    fontFamily: 'LufgaMedium',
+    fontSize: 16,
+    color: '#192234',
+  },
+  labelBelow: {
+    fontSize: 14,
+    color: '#9191A1',
+    marginBottom: -8,
+  },
+  phoneInputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2,
+  },
+  countryPicker: {
+    flex: 2,
+  },
+  phoneInputBox: {
+    flex: 3,
+    paddingRight: 4,
+  },
+  countryOption: {
+    width: '91.67%', // 11/12
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  countryOptionLeft: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  flagBox: {
+    marginTop: 8,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#C6CAD2',
+    backgroundColor: 'white',
+    paddingHorizontal: 8,
+    paddingVertical: 12,
+  },
+  actionButtons: {
+    marginTop: 8,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 16,
+  },
+  cancelBtn: {
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: '#192234',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  cancelBtnText: {
+    color: '#192234',
+    fontFamily: 'LufgaMedium',
+  },
+  saveBtn: {
+    borderRadius: 999,
+    backgroundColor: '#82065e',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  saveBtnText: {
+    color: 'white',
+    fontFamily: 'LufgaMedium',
+  },
+  editBtn: {
+    position: 'absolute',
+    right: 16,
+    top: 12,
+    width: 24,
+    height: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 12,
+    backgroundColor: '#ebeaec',
+  },
+});

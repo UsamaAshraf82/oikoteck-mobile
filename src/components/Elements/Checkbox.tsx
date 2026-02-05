@@ -1,16 +1,16 @@
 import { Checkbox as ExpoCheckbox } from 'expo-checkbox';
-import React, { useEffect, useState } from 'react';
-import { Pressable, View } from 'react-native';
-import { cn } from '~/lib/utils';
-import tailwind from '~/utils/tailwind';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { withController } from '../HOC/withController';
 import AppText from './AppText';
+
 type Props = {
   value?: boolean | null;
   onChange?: (value: boolean) => void;
   getValue?: (value: boolean) => void;
   label?: React.ReactNode;
-  labelClassName?: string;
+  labelStyle?: any;
   labelLast?: boolean;
   alignTop?: boolean;
   disabled?: boolean;
@@ -22,7 +22,7 @@ const Checkbox: React.FC<Props> = ({
   disabled,
   onChange,
   getValue,
-  labelClassName,
+  labelStyle,
   labelLast,
   alignTop,
 }) => {
@@ -37,34 +37,64 @@ const Checkbox: React.FC<Props> = ({
     onChange?.(val); // notify parent (react-hook-form if controlled)
     getValue?.(val); // notify parent (react-hook-form if controlled)
   };
+
   return (
     <View
-      className={cn('mt-1 flex-row items-center justify-between', {
-        'justify-start': labelLast,
-        'items-start': alignTop,
-      })}>
+      style={[
+        styles.container,
+        labelLast && styles.justifyStart,
+        alignTop && styles.alignTop,
+      ]}>
       {!labelLast && (
-        <AppText className={cn('mr-2 flex-shrink text-base', labelClassName)}>{label}</AppText>
+        <AppText style={[styles.labelTextLeft, labelStyle]}>{label}</AppText>
       )}
       <Pressable onPress={() => handleChange(!isChecked)}>
         <ExpoCheckbox
           value={isChecked}
           pointerEvents="none"
-          color={isChecked ? tailwind.theme.colors.secondary : '#8d95a5'}
+          color={isChecked ? '#82065e' : '#8d95a5'}
           style={{
             borderRadius: 5,
             borderWidth: isChecked ? 3 : 1,
-            // width
+            width: 20,
+            height: 20,
           }}
           disabled={disabled}
         />
       </Pressable>
       {labelLast && (
-        <AppText className={cn('ml-2 flex-shrink text-base', labelClassName)}>{label}</AppText>
+        <AppText style={[styles.labelTextRight, labelStyle]}>{label}</AppText>
       )}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  justifyStart: {
+    justifyContent: 'flex-start',
+  },
+  alignTop: {
+    alignItems: 'flex-start',
+  },
+  labelTextLeft: {
+    marginRight: 8,
+    flexShrink: 1,
+    fontSize: 16,
+    color: '#192234',
+  },
+  labelTextRight: {
+    marginLeft: 8,
+    flexShrink: 1,
+    fontSize: 16,
+    color: '#192234',
+  },
+});
 
 export default Checkbox;
 

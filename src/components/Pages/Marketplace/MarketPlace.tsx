@@ -1,22 +1,24 @@
-import { FlashList } from '@shopify/flash-list';
+import { FlashList as ShopifyFlashList } from '@shopify/flash-list';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { LinearGradient } from 'expo-linear-gradient';
 import { DateTime } from 'luxon';
 import Parse from 'parse/react-native';
 import {
-  CaretDoubleUpIcon,
-  FadersHorizontalIcon,
-  GlobeHemisphereEastIcon,
-  SortAscendingIcon,
-  XIcon,
+    CaretDoubleUpIcon,
+    FadersHorizontalIcon,
+    GlobeHemisphereEastIcon,
+    SortAscendingIcon,
+    XIcon,
 } from 'phosphor-react-native';
+import * as React from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  ActivityIndicator,
-  Pressable,
-  ScrollView,
-  TouchableWithoutFeedback,
-  View,
+    ActivityIndicator,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    TouchableWithoutFeedback,
+    View,
 } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import AppText from '~/components/Elements/AppText';
@@ -26,12 +28,12 @@ import useSelect from '~/store/useSelectHelper';
 import { Property_Type } from '~/type/property';
 import { deviceWidth } from '~/utils/global';
 import { isProperty } from '~/utils/property';
-import { tailwind_color } from '~/utils/tailwind';
 import PropertyCard from '../../Cards/PropertyCard';
 import DistrictArea from '../../Sheets/District/DistrictArea';
 import FilterModal, { filterType } from './FilterModal';
 import { SearchView } from './SearchView';
 import { HomeTopBar } from './TopBar';
+const FlashList = ShopifyFlashList as any;
 
 type Props = {
   listing_type: 'Rental' | 'Sale';
@@ -58,11 +60,10 @@ type HeadingItem = { objectId: string; type: 'heading' };
 type ListItem = Property_Type | HeadingItem;
 
 const MarketPlace = ({ listing_type }: Props) => {
-  // const params = useLocalSearchParams<filterType>();
   const { openSelect } = useSelect();
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [showTopCities, setShowTopCities] = useState(true);
-  const listRef = useRef<FlashList<any>>(null);
+  const listRef = useRef<ShopifyFlashList<any>>(null);
 
   const [districtModal, setDistrictModal] = useState(false);
   const [filtersModal, setFiltersModal] = useState(false);
@@ -90,7 +91,7 @@ const MarketPlace = ({ listing_type }: Props) => {
     queryKey: ['latest-properties', listing_type, { ...search, ...sort }],
     queryFn: async ({ pageParam }) => {
       try {
-        const skip = pageParam * limit;
+        const skip = (pageParam as number) * limit;
         const pro = await Parse.Cloud.run('search', {
           skip: skip,
           limit: limit,
@@ -111,7 +112,7 @@ const MarketPlace = ({ listing_type }: Props) => {
       return { count: 0, results: [], hasmore: false };
     },
     getNextPageParam: (lastPage, _, lastPageParam) => {
-      return lastPage.hasmore ? lastPageParam + 1 : undefined;
+      return lastPage.hasmore ? (lastPageParam as number) + 1 : undefined;
     },
     initialPageParam: 0,
   });
@@ -127,10 +128,9 @@ const MarketPlace = ({ listing_type }: Props) => {
     ],
     enabled: data?.pages[data.pages.length - 1].hasmore === false,
     staleTime: 600000,
-    queryFn: async ({ meta }) => {
+    queryFn: async () => {
       try {
         const pro = await Parse.Cloud.run('similar', {
-          // skip: skip,
           limit: limit * 5,
           search: {
             search: {
@@ -157,7 +157,6 @@ const MarketPlace = ({ listing_type }: Props) => {
   const properties: ListItem[] = useMemo(() => {
     const main = data?.pages.flatMap((page) => page.results) ?? [];
     if (similar?.results?.length) {
-      // inject a "marker" item so we can show heading before similar listings
       return [
         { objectId: 'main-heading', type: 'heading' as const },
         ...main,
@@ -186,61 +185,30 @@ const MarketPlace = ({ listing_type }: Props) => {
     const filter: {
       filter: string;
       iconFirst?: boolean;
-      icon: React.JSX.Element;
+      icon: React.ReactNode;
       onPress: () => void;
     }[] = [
       {
         filter: 'Sort',
         iconFirst: true,
-        icon: <SortAscendingIcon size={20} />,
+        icon: <SortAscendingIcon size={20} color="#192234" />,
         onPress: () => {
           openSelect({
             label: 'Sort by',
-            className: {
-              label: { wrapper: 'justify-start mb-4', text: 'text-2xl' },
-              option_label: { wrapper: 'py-4', text: 'text-[15px]  font-normal' },
-            },
             hasXIcon: true,
             options: [
-              {
-                label: 'Most Recent',
-                value: null,
-              },
-              {
-                label: 'Price: High to Low',
-                value: { sort: 'price', sort_order: 'des' },
-              },
-              {
-                label: 'Price: Low to High',
-                value: { sort: 'price', sort_order: 'asc' },
-              },
-              {
-                label: 'Bedrooms: Less to More',
-                value: { sort: 'bedrooms', sort_order: 'asc' },
-              },
-              {
-                label: 'Bedrooms: More to Less',
-                value: { sort: 'bedrooms', sort_order: 'des' },
-              },
-              {
-                label: 'Bathrooms: Less to More',
-                value: { sort: 'bathrooms', sort_order: 'asc' },
-              },
-              {
-                label: 'Bathrooms: More to Less',
-                value: { sort: 'bathrooms', sort_order: 'des' },
-              },
-              {
-                label: 'Size: Small to Large',
-                value: { sort: 'size', sort_order: 'asc' },
-              },
-              {
-                label: 'Size: Large to Small',
-                value: { sort: 'size', sort_order: 'des' },
-              },
+              { label: 'Most Recent', value: null },
+              { label: 'Price: High to Low', value: { sort: 'price', sort_order: 'des' } },
+              { label: 'Price: Low to High', value: { sort: 'price', sort_order: 'asc' } },
+              { label: 'Bedrooms: Less to More', value: { sort: 'bedrooms', sort_order: 'asc' } },
+              { label: 'Bedrooms: More to Less', value: { sort: 'bedrooms', sort_order: 'des' } },
+              { label: 'Bathrooms: Less to More', value: { sort: 'bathrooms', sort_order: 'asc' } },
+              { label: 'Bathrooms: More to Less', value: { sort: 'bathrooms', sort_order: 'des' } },
+              { label: 'Size: Small to Large', value: { sort: 'size', sort_order: 'asc' } },
+              { label: 'Size: Large to Small', value: { sort: 'size', sort_order: 'des' } },
             ],
             value: sort,
-            onPress: (data) => {
+            onPress: (data: any) => {
               setSort(data.value as sortType);
             },
           });
@@ -249,7 +217,7 @@ const MarketPlace = ({ listing_type }: Props) => {
       {
         filter: 'Filter',
         iconFirst: true,
-        icon: <FadersHorizontalIcon size={20} />,
+        icon: <FadersHorizontalIcon size={20} color="#192234" />,
         onPress: () => {
           setFiltersModal(true);
         },
@@ -259,130 +227,88 @@ const MarketPlace = ({ listing_type }: Props) => {
     if (search.bedroom !== null) {
       filter.push({
         filter: 'Bedrooms: ' + search.bedroom + '+',
-        icon: <XIcon size={14} color={tailwind_color.secondary} weight="bold" />,
-        onPress: () => {
-          changeSearch({ bedroom: null });
-        },
+        icon: <XIcon size={14} color="#82065e" weight="bold" />,
+        onPress: () => changeSearch({ bedroom: null }),
       });
     }
     if (search.bathroom !== null) {
       filter.push({
         filter: 'Bathrooms: ' + search.bathroom + '+',
-        icon: <XIcon size={14} />,
-        onPress: () => {
-          changeSearch({ bathroom: null });
-        },
+        icon: <XIcon size={14} color="#82065e" weight="bold" />,
+        onPress: () => changeSearch({ bathroom: null }),
       });
     }
     if (search.furnished !== null) {
       filter.push({
         filter: 'Furnished: ' + (search.furnished ? 'Yes' : 'No'),
-        icon: <XIcon size={14} />,
-        onPress: () => {
-          changeSearch({ bathroom: null });
-        },
+        icon: <XIcon size={14} color="#82065e" weight="bold" />,
+        onPress: () => changeSearch({ furnished: null }),
       });
     }
     if (search.keywords !== null) {
       filter.push({
         filter: 'Keywords: ' + search.keywords,
-        icon: <XIcon size={14} />,
-        onPress: () => {
-          changeSearch({ bathroom: null });
-        },
+        icon: <XIcon size={14} color="#82065e" weight="bold" />,
+        onPress: () => changeSearch({ keywords: null }),
       });
     }
     if (search.minDate !== null || search.maxDate !== null) {
       let text = 'Move-in Date: ';
       if (search.minDate !== null && search.maxDate !== null) {
-        text =
-          'Move-in Date: ' +
-          DateTime.fromJSDate(search.minDate).toLocaleString(DateTime.DATE_SHORT) +
-          ' - ' +
-          DateTime.fromJSDate(search.maxDate).toLocaleString(DateTime.DATE_SHORT);
+        text = text + DateTime.fromJSDate(search.minDate).toLocaleString(DateTime.DATE_SHORT) + ' - ' + DateTime.fromJSDate(search.maxDate).toLocaleString(DateTime.DATE_SHORT);
+      } else if (search.minDate !== null) {
+        text = text + DateTime.fromJSDate(search.minDate).toLocaleString(DateTime.DATE_SHORT) + ' - Any Time';
+      } else if (search.maxDate !== null) {
+        text = text + 'Any Time - ' + DateTime.fromJSDate(search.maxDate).toLocaleString(DateTime.DATE_SHORT);
       }
-
-      if (search.minDate !== null && search.maxDate === null) {
-        text =
-          'Move-in Date: ' +
-          DateTime.fromJSDate(search.minDate).toLocaleString(DateTime.DATE_SHORT) +
-          ' - ' +
-          'Any Time';
-      }
-      if (search.minDate === null && search.maxDate !== null) {
-        text =
-          'Move-in Date: ' +
-          'Any Time' +
-          ' - ' +
-          DateTime.fromJSDate(search.maxDate).toLocaleString(DateTime.DATE_SHORT);
-      }
-
       filter.push({
         filter: text,
-        icon: <XIcon size={14} />,
-        onPress: () => {
-          changeSearch({ maxDate: null, minDate: null });
-        },
+        icon: <XIcon size={14} color="#82065e" weight="bold" />,
+        onPress: () => changeSearch({ maxDate: null, minDate: null }),
       });
     }
     if (search.minPrice !== null || search.maxPrice !== null) {
       let text = 'Price: ';
       if (search.minPrice !== null && search.maxPrice !== null) {
-        text = 'Price: ' + search.minPrice + ' - ' + search.maxPrice;
+        text = text + search.minPrice + ' - ' + search.maxPrice;
+      } else if (search.minPrice !== null) {
+        text = text + search.minPrice + ' - Any Price';
+      } else {
+        text = text + 'Any Price - ' + search.maxPrice;
       }
-
-      if (search.minPrice !== null && search.maxPrice === null) {
-        text = 'Price: ' + search.minPrice + ' - ' + 'Any Price';
-      }
-      if (search.minPrice === null && search.maxPrice !== null) {
-        text = 'Price: ' + 'Any Price' + ' - ' + search.maxPrice;
-      }
-
       filter.push({
         filter: text,
-        icon: <XIcon size={14} />,
-        onPress: () => {
-          changeSearch({ maxPrice: null, minPrice: null });
-        },
+        icon: <XIcon size={14} color="#82065e" weight="bold" />,
+        onPress: () => changeSearch({ maxPrice: null, minPrice: null }),
       });
     }
     if (search.minSize !== null || search.maxSize !== null) {
       let text = 'Size: ';
       if (search.minSize !== null && search.maxSize !== null) {
-        text = 'Size: ' + search.minSize + ' - ' + search.maxSize;
+        text = text + search.minSize + ' - ' + search.maxSize;
+      } else if (search.minSize !== null) {
+        text = text + search.minSize + ' - Any Size';
+      } else {
+        text = text + 'Any Size - ' + search.maxSize;
       }
-
-      if (search.minSize !== null && search.maxSize === null) {
-        text = 'Size: ' + search.minSize + ' - ' + 'Any Size';
-      }
-      if (search.minSize === null && search.maxSize !== null) {
-        text = 'Size: ' + 'Any Size' + ' - ' + search.maxSize;
-      }
-
       filter.push({
         filter: text,
-        icon: <XIcon size={14} />,
-        onPress: () => {
-          changeSearch({ minSize: null, maxSize: null });
-        },
+        icon: <XIcon size={14} color="#82065e" weight="bold" />,
+        onPress: () => changeSearch({ minSize: null, maxSize: null }),
       });
     }
     if (search.property_type !== null) {
       filter.push({
         filter: 'Property Type: ' + search.property_type,
-        icon: <XIcon size={14} />,
-        onPress: () => {
-          changeSearch({ property_type: null });
-        },
+        icon: <XIcon size={14} color="#82065e" weight="bold" />,
+        onPress: () => changeSearch({ property_type: null }),
       });
     }
     if (search.property_category !== null) {
       filter.push({
         filter: 'Property Category: ' + search.property_category,
-        icon: <XIcon size={14} />,
-        onPress: () => {
-          changeSearch({ property_category: null });
-        },
+        icon: <XIcon size={14} color="#82065e" weight="bold" />,
+        onPress: () => changeSearch({ property_category: null }),
       });
     }
 
@@ -402,71 +328,56 @@ const MarketPlace = ({ listing_type }: Props) => {
   }));
 
   return (
-    <View className="flex-1 bg-white ">
-      <View className="bg-white">
+    <View style={styles.container}>
+      <View style={styles.topBarWrapper}>
         <HomeTopBar />
       </View>
-      <LinearGradient colors={['#fff', '#EEF1F7']} className="pb-1">
+      <LinearGradient colors={['#fff', '#EEF1F7']} style={styles.headerGradient}>
         <SearchView
           listing_type={listing_type}
           text={stringified_area}
-          onPress={() => {
-            setDistrictModal(true);
-          }}
-          onFilter={() => {
-            setFiltersModal(true);
-          }}
-          onClear={() => {
-            changeSearch({ district: null, area_1: null, area_2: null });
-          }}
+          onPress={() => setDistrictModal(true)}
+          onFilter={() => setFiltersModal(true)}
+          onClear={() => changeSearch({ district: null, area_1: null, area_2: null })}
         />
         {hasFilters ? (
           <ScrollView
             horizontal
             key="filter"
-            className="mx-4 mt-2  py-1"
+            style={styles.filterScroll}
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}>
-            {filters.map((i) => {
-              if (i.filter === 'Sort') {
+            {filters.map((i, idx) => {
+              if (i.filter === 'Sort' || i.filter === 'Filter') {
+                const isFilter = i.filter === 'Filter';
                 return (
-                  <TouchableWithoutFeedback key={i.filter} onPress={i.onPress}>
-                    <View className="relative mr-2 h-10 flex-1 flex-row items-center justify-center rounded-2xl border border-[#E2E4E8] bg-white  px-3 py-2 ">
-                      {i.iconFirst ? i.icon : null}
-                      <AppText className="mx-2 bg-white text-sm text-primary">{i.filter}</AppText>
-                      {i.iconFirst ? null : i.icon}
-                    </View>
-                  </TouchableWithoutFeedback>
-                );
-              }
-              if (i.filter === 'Filter') {
-                return (
-                  <TouchableWithoutFeedback key={i.filter} onPress={i.onPress}>
-                    <View className="relative mr-2 h-10 flex-1 flex-row items-center justify-center rounded-2xl border border-[#E2E4E8] bg-white  px-3 py-2 ">
-                      {i.iconFirst ? i.icon : null}
-                      <AppText className="mx-2 bg-white text-sm text-primary">{i.filter}</AppText>
-                      {i.iconFirst ? null : i.icon}
-                      <View className="absolute -right-1 -top-1 size-5 items-center justify-center rounded-full border border-secondary bg-secondary">
-                        <AppText className="font-medium text-xs text-white">
-                          {filters.length - 2}
-                        </AppText>
-                      </View>
+                  <TouchableWithoutFeedback key={i.filter + idx} onPress={i.onPress}>
+                    <View style={styles.sortFilterBadge}>
+                      {i.iconFirst && i.icon}
+                      <AppText style={styles.sortFilterText}>{i.filter}</AppText>
+                      {!i.iconFirst && i.icon}
+                      {isFilter && filters.length > 2 && (
+                        <View style={styles.filterCount}>
+                          <AppText style={styles.filterCountText}>
+                            {filters.length - 2}
+                          </AppText>
+                        </View>
+                      )}
                     </View>
                   </TouchableWithoutFeedback>
                 );
               }
               return (
-                <View className="mr-2 h-10 flex-1 flex-row items-center justify-center rounded-2xl border border-secondary bg-secondary/10  px-3 py-2 ">
-                  {i.iconFirst ? (
-                    <TouchableWithoutFeedback key={i.filter} onPress={i.onPress}>
-                      {i.icon}
+                <View key={i.filter + idx} style={styles.activeFilterBadge}>
+                  {i.iconFirst && (
+                    <TouchableWithoutFeedback onPress={i.onPress}>
+                      <View>{i.icon}</View>
                     </TouchableWithoutFeedback>
-                  ) : null}
-
-                  <AppText className="mx-2  text-sm text-secondary">{i.filter}</AppText>
-                  {i.iconFirst ? null : (
-                    <TouchableWithoutFeedback key={i.filter} onPress={i.onPress}>
-                      {i.icon}
+                  )}
+                  <AppText style={styles.activeFilterText}>{i.filter}</AppText>
+                  {!i.iconFirst && (
+                    <TouchableWithoutFeedback onPress={i.onPress}>
+                      <View>{i.icon}</View>
                     </TouchableWithoutFeedback>
                   )}
                 </View>
@@ -474,35 +385,27 @@ const MarketPlace = ({ listing_type }: Props) => {
             })}
           </ScrollView>
         ) : (
-          <Animated.View
-            style={[
-              animatedStyle,
-              {
-                overflow: 'hidden',
-              },
-            ]}>
-            <AppText className="ml-4 mt-3 font-medium">Explore Popular Cities</AppText>
+          <Animated.View style={[animatedStyle, { overflow: 'hidden' }]}>
+            <AppText style={styles.exploreHeading}>Explore Popular Cities</AppText>
             <ScrollView
               horizontal
               key="district"
-              className="mx-4 py-2"
+              style={styles.districtScroll}
               showsVerticalScrollIndicator={false}
               showsHorizontalScrollIndicator={false}>
               {district_images.map((i) => (
                 <Pressable
                   key={i.district}
-                  shouldRasterizeIOS
                   android_ripple={{ color: '#E2E4E8' }}
-                  className="mr-2 flex-1  flex-col items-center  justify-center gap-2 rounded-2xl border border-[#E2E4E8] bg-white px-1  pb-2 pt-1 active:bg-black/20 "
+                  style={styles.districtCard}
                   onPress={() => changeSearch({ district: i.url })}>
                   <AWSImage
                     contentFit="cover"
                     src={i.image || ''}
                     size="180x180"
-                    style={{ width: 90, height: 90, borderRadius: 13 }}
+                    style={styles.districtImage}
                   />
-
-                  <AppText className="mx-2">{i.district}</AppText>
+                  <AppText style={styles.districtName}>{i.district}</AppText>
                 </Pressable>
               ))}
             </ScrollView>
@@ -510,43 +413,29 @@ const MarketPlace = ({ listing_type }: Props) => {
         )}
       </LinearGradient>
 
-      <View className="flex-1 bg-[#EEF1F7]">
+      <View style={styles.listContainer}>
         <FlashList
           ref={listRef}
-          className="w-full flex-1"
           data={properties}
-          decelerationRate={'normal'}
-          onScroll={(e) => {
+          decelerationRate="normal"
+          onScroll={(e: any) => {
             const y = e.nativeEvent.contentOffset.y;
-            if (showTopCities) {
-              setShowTopCities(y < 200);
-            } else {
-              setShowTopCities(y < 20);
-            }
-            // Toggle visibility threshold (tune as needed)
+            setShowTopCities(showTopCities ? y < 200 : y < 20);
             setShowScrollTop(y > 2500);
           }}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
-          estimatedItemSize={(deviceWidth - 16 * 2) / 1.2 + 14} // ✅ improves performance
-          keyExtractor={(item) => item.objectId}
-          renderItem={({ item }) => {
+          estimatedItemSize={(deviceWidth - 32) / 1.2 + 14}
+          keyExtractor={(item: any) => item.objectId}
+          renderItem={({ item }: { item: any }) => {
             if (isProperty(item)) {
               return <PropertyCard property={item} />;
             }
-            if (item.objectId === 'main-heading') {
-              return (
-                <View className="px-4 pb-4 pt-2">
-                  <AppText className="font-semibold text-lg text-gray-800">
-                    Explore All Listing
-                  </AppText>
-                </View>
-              );
-            }
+            const isMain = item.objectId === 'main-heading';
             return (
-              <View className="px-4 py-6">
-                <AppText className="font-semibold text-lg text-gray-800">
-                  Similar Listings According to Your Criteria
+              <View style={isMain ? styles.mainHeading : styles.similarHeading}>
+                <AppText style={styles.headingText}>
+                  {isMain ? 'Explore All Listing' : 'Similar Listings According to Your Criteria'}
                 </AppText>
               </View>
             );
@@ -559,59 +448,36 @@ const MarketPlace = ({ listing_type }: Props) => {
           onEndReachedThreshold={0.5}
           ListFooterComponent={
             isFetchingNextPage ? (
-              <View className="py-4">
-                <ActivityIndicator size="large" />
+              <View style={styles.footerLoader}>
+                <ActivityIndicator size="large" color="#82065e" />
               </View>
             ) : (
-              <View className="py-4" />
+              <View style={styles.footerSpacer} />
             )
           }
         />
 
-        <View className="absolute bottom-3 right-5 flex-row gap-2">
-          <Pressable
-            onPress={() => {
-              // listRef.current?.scrollToOffset({ offset: 0, animated: true });
-            }}
-            // style={{
-            //   position: 'absolute',
-            //   bottom: 20,
-            //   right: 16,
-            //   backgroundColor: '#000',
-            //   borderRadius: 999,
-            //   padding: 14,
-            //   elevation: 6,
-            // }}
-            className="elevation-md flex-row items-center gap-1 rounded-full bg-secondary p-3">
+        <View style={styles.floatingButtons}>
+          <Pressable style={styles.mapButton} onPress={() => {}}>
             <GlobeHemisphereEastIcon color="#fff" weight="fill" size={18} />
-            <AppText className="w-10 font-medium text-[13px] text-white">Map</AppText>
+            <AppText style={styles.mapButtonText}>Map</AppText>
           </Pressable>
 
           {showScrollTop && (
             <Pressable
               onPress={() => listRef.current?.scrollToOffset({ offset: 0, animated: true })}
-              // style={{
-              //   position: 'absolute',
-              //   bottom: 20,
-              //   right: 16,
-              //   backgroundColor: '#000',
-              //   borderRadius: 999,
-              //   padding: 14,
-              //   elevation: 6,
-              // }}
-              className="elevation-md rounded-full bg-secondary p-3">
+              style={styles.scrollTopButton}>
               <CaretDoubleUpIcon size={22} color="white" />
             </Pressable>
           )}
         </View>
       </View>
+
       <DistrictArea
         visible={districtModal}
-        onClose={() => {
-          setDistrictModal(false);
-        }}
+        onClose={() => setDistrictModal(false)}
         value={stringified_area}
-        onPress={(data) => {
+        onPress={(data: any) => {
           setDistrictModal(false);
           changeSearch(data);
         }}
@@ -619,11 +485,9 @@ const MarketPlace = ({ listing_type }: Props) => {
       <FilterModal
         listing_type={listing_type}
         visible={filtersModal}
-        onClose={() => {
-          setFiltersModal(false);
-        }}
+        onClose={() => setFiltersModal(false)}
         value={search}
-        onPress={(data) => {
+        onPress={(data: any) => {
           changeSearch(data);
           setFiltersModal(false);
         }}
@@ -631,4 +495,180 @@ const MarketPlace = ({ listing_type }: Props) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  topBarWrapper: {
+    backgroundColor: 'white',
+  },
+  headerGradient: {
+    paddingBottom: 4,
+  },
+  filterScroll: {
+    marginHorizontal: 16,
+    marginTop: 8,
+    paddingVertical: 4,
+  },
+  sortFilterBadge: {
+    position: 'relative',
+    marginRight: 8,
+    height: 40,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#E2E4E8',
+    backgroundColor: 'white',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  sortFilterText: {
+    marginHorizontal: 8,
+    fontSize: 14,
+    color: '#192234',
+  },
+  filterCount: {
+    position: 'absolute',
+    right: -4,
+    top: -4,
+    height: 20,
+    width: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#82065e',
+    backgroundColor: '#82065e',
+  },
+  filterCountText: {
+    fontFamily: 'LufgaMedium',
+    fontSize: 12,
+    color: 'white',
+  },
+  activeFilterBadge: {
+    marginRight: 8,
+    height: 40,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#82065e',
+    backgroundColor: 'rgba(130, 6, 94, 0.1)',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  activeFilterText: {
+    marginHorizontal: 8,
+    fontSize: 14,
+    color: '#82065e',
+  },
+  exploreHeading: {
+    marginLeft: 16,
+    marginTop: 12,
+    fontFamily: 'LufgaMedium',
+    fontSize: 14,
+  },
+  districtScroll: {
+    marginHorizontal: 16,
+    paddingVertical: 8,
+  },
+  districtCard: {
+    marginRight: 8,
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#E2E4E8',
+    backgroundColor: 'white',
+    paddingHorizontal: 4,
+    paddingBottom: 8,
+    paddingTop: 4,
+  },
+  districtImage: {
+    width: 90,
+    height: 90,
+    borderRadius: 12,
+  },
+  districtName: {
+    marginHorizontal: 8,
+    fontSize: 14,
+    color: '#192234',
+  },
+  listContainer: {
+    flex: 1,
+    backgroundColor: '#EEF1F7',
+  },
+  flashList: {
+    width: '100%',
+    flex: 1,
+  },
+  mainHeading: {
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+    paddingTop: 8,
+  },
+  similarHeading: {
+    paddingHorizontal: 16,
+    paddingVertical: 24,
+  },
+  headingText: {
+    fontFamily: 'LufgaSemiBold',
+    fontSize: 18,
+    color: '#192234',
+  },
+  footerLoader: {
+    paddingVertical: 16,
+  },
+  footerSpacer: {
+    height: 16,
+  },
+  floatingButtons: {
+    position: 'absolute',
+    bottom: 12,
+    right: 20,
+    flexDirection: 'row',
+    gap: 8,
+  },
+  mapButton: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    borderRadius: 999,
+    backgroundColor: '#82065e',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  mapButtonText: {
+    fontFamily: 'LufgaMedium',
+    fontSize: 13,
+    color: 'white',
+    width: 32,
+  },
+  scrollTopButton: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    borderRadius: 999,
+    backgroundColor: '#82065e',
+    padding: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
+
 export default MarketPlace;

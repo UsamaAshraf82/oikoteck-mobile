@@ -2,27 +2,26 @@ import Logo from '@/assets/svg/logo.svg';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { UserCircleIcon, UserIcon } from 'phosphor-react-native';
-import { TouchableWithoutFeedback, View } from 'react-native';
+import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import AppText from '~/components/Elements/AppText';
 import PressableView from '~/components/HOC/PressableView';
 import useUser from '~/store/useUser';
-import tailwind from '~/utils/tailwind';
 
 export const HomeTopBar = () => {
   const router = useRouter();
   const { user } = useUser();
   return (
-    <View className="flex-row items-center justify-between p-4">
-      <Image source={Logo} style={{ minHeight: 36, minWidth: 122 }} contentFit="contain" />
+    <View style={styles.container}>
+      <Image source={Logo} style={styles.logo} contentFit="contain" />
       {!user ? (
         <PressableView
           onPress={() => {
             router.push('/login');
           }}
-          className="h-10   rounded-full bg-[#ebeaec]">
-          <View className="flex-row items-center justify-center gap-1 px-3">
-            <UserCircleIcon />
-            <AppText className='text-nowrap whitespace-nowrap w-14' numberOfLines={1}>Login</AppText>
+          style={styles.loginButton}>
+          <View style={styles.loginInner}>
+            <UserCircleIcon size={20} color="#192234" />
+            <AppText style={styles.loginText} numberOfLines={1}>Login</AppText>
           </View>
         </PressableView>
       ) : (
@@ -30,15 +29,15 @@ export const HomeTopBar = () => {
           onPress={() => {
             router.push('/account');
           }}>
-          <View className="flex-row items-center">
+          <View style={styles.userSection}>
             <View>
-              <AppText className="text-sm leading-tight text-o_gray-200">Welcome Back!</AppText>
-              <AppText className=" font-bold text-base leading-tight text-primary">
+              <AppText style={styles.welcomeText}>Welcome Back!</AppText>
+              <AppText style={styles.userNameText}>
                 {user ? `${user.attributes.first_name} ${user.attributes.last_name}` : ''}
               </AppText>
             </View>
-            <View className="m-2 h-11 w-11 items-center justify-center rounded-full bg-o_gray-200/25">
-              <UserIcon color={tailwind.theme.colors.o_light_gray} size={20} />
+            <View style={styles.userAvatar}>
+              <UserIcon color="#7D7D7D" size={20} />
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -46,3 +45,57 @@ export const HomeTopBar = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+    backgroundColor: 'white',
+  },
+  logo: {
+    minHeight: 36,
+    minWidth: 122,
+  },
+  loginButton: {
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#ebeaec',
+  },
+  loginInner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
+    paddingHorizontal: 12,
+  },
+  loginText: {
+    width: 56,
+    color: '#192234',
+  },
+  userSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  welcomeText: {
+    fontSize: 14,
+    lineHeight: 18,
+    color: '#8D95A5',
+  },
+  userNameText: {
+    fontFamily: 'LufgaBold',
+    fontSize: 16,
+    lineHeight: 20,
+    color: '#192234',
+  },
+  userAvatar: {
+    margin: 8,
+    height: 44,
+    width: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 22,
+    backgroundColor: 'rgba(141, 149, 165, 0.25)',
+  },
+});

@@ -1,7 +1,6 @@
 import { EyeClosedIcon, EyeIcon } from 'phosphor-react-native';
 import { useState } from 'react';
-import { TextInput as TextBaseInput, TouchableOpacity, View } from 'react-native';
-import { cn } from '~/lib/utils';
+import { StyleSheet, TextInput as TextBaseInput, TouchableOpacity, View } from 'react-native';
 import { withController } from '../HOC/withController';
 import AppText from './AppText';
 
@@ -9,20 +8,26 @@ type Props = TextBaseInput['props'] & {
   label?: string;
   getValue?: (text: string) => void;
 };
-const TextInput = ({ label, className, secureTextEntry, getValue, ...props }: Props) => {
+
+const TextInput = ({ label, style, secureTextEntry, getValue, ...props }: Props) => {
   const [secureTextEntryHack, setSecureTextEntryHack] = useState(secureTextEntry);
+  const [isFocused, setIsFocused] = useState(false);
 
   return (
-    <View className="w-full  flex-col ">
-      {label && <AppText className="font-medium text-[13px] text-primary">{label}</AppText>}
-      <View className="relative mt-2">
+    <View style={styles.container}>
+      {label && <AppText style={styles.label}>{label}</AppText>}
+      <View style={styles.inputWrapper}>
         <TextBaseInput
           {...props}
           value={props.value ? props.value + '' : ''}
-          className={cn(
-            'rounded-2xl border border-[#C6CAD2] px-3 pb-[9px] pt-[11px] font-normal text-[15px] placeholder:text-sm placeholder:text-gray-500 focus:border-primary',
-            className
-          )}
+          placeholderTextColor="#6B7280"
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          style={[
+            styles.input,
+            isFocused && styles.inputFocused,
+            style
+          ]}
           secureTextEntry={secureTextEntryHack}
           onChangeText={(text) => {
             getValue?.(text);
@@ -30,9 +35,9 @@ const TextInput = ({ label, className, secureTextEntry, getValue, ...props }: Pr
           }}
         />
         {secureTextEntry && (
-          <View className="absolute  right-3 top-1/2 -translate-y-1/2">
+          <View style={styles.iconWrapper}>
             <TouchableOpacity onPress={() => setSecureTextEntryHack((i) => !i)}>
-              {secureTextEntryHack ? <EyeClosedIcon /> : <EyeIcon />}
+              {secureTextEntryHack ? <EyeClosedIcon size={20} color="#6B7280" /> : <EyeIcon size={20} color="#6B7280" />}
             </TouchableOpacity>
           </View>
         )}
@@ -40,6 +45,44 @@ const TextInput = ({ label, className, secureTextEntry, getValue, ...props }: Pr
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    flexDirection: 'column',
+  },
+  label: {
+    fontFamily: 'LufgaMedium',
+    fontSize: 13,
+    color: '#192234',
+  },
+  inputWrapper: {
+    position: 'relative',
+    marginTop: 8,
+  },
+  input: {
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#C6CAD2',
+    paddingHorizontal: 12,
+    paddingBottom: 9,
+    paddingTop: 11,
+    fontFamily: 'LufgaRegular',
+    fontSize: 15,
+    color: '#192234',
+  },
+  inputFocused: {
+    borderColor: '#192234',
+  },
+  iconWrapper: {
+    position: 'absolute',
+    right: 12,
+    top: '50%',
+    marginTop: -10, // Approximate half of icon size
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
 
 export default TextInput;
 

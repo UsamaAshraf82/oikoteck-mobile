@@ -5,7 +5,7 @@ import { useFonts } from 'expo-font';
 import { Slot, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator as ActivityIndicatorInternal, Modal, View } from 'react-native';
+import { ActivityIndicator as ActivityIndicatorInternal, Modal, StyleSheet, View } from 'react-native';
 import { Settings } from 'react-native-fbsdk-next';
 import Provider from '~/components/Provider';
 import Menu from '~/components/Sheets/Menu';
@@ -16,8 +16,6 @@ import { ToastContainer } from '~/components/ToastContainer';
 import useActivityIndicator from '~/store/useActivityIndicator';
 import useUser from '~/store/useUser';
 import { ParseInit } from '~/utils/Parse';
-import tailwind from '~/utils/tailwind';
-import '../../global.css';
 
 // SystemUI.setBackgroundColorAsync('#fff');
 SplashScreen.preventAutoHideAsync();
@@ -105,13 +103,22 @@ const ActivityIndicator = () => {
   // if (!isInActivity) return null;
   return (
     <Modal transparent visible={isInActivity} animationType="fade">
-      <View className="flex-1 items-center justify-center bg-white/30">
+      <View style={styles.activityOverlay}>
         <ActivityIndicatorInternal
           size="large"
           style={{ transform: [{ scale: 2 }] }}
-          color={tailwind.theme.colors.secondary}
+          color="#82065e"
         />
       </View>
     </Modal>
   );
 };
+
+const styles = StyleSheet.create({
+  activityOverlay: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+  },
+});

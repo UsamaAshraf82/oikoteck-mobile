@@ -6,21 +6,23 @@ import {
   isErrorWithCode,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
-import { Image } from 'expo-image';
+import { Image as ExpoImage } from 'expo-image';
 import { useRouter } from 'expo-router';
 import Parse from 'parse/react-native';
-import ParseUser from 'parse/types/ParseUser';
-import { Alert, Platform, View } from 'react-native';
+import { Alert, Platform, StyleSheet, View } from 'react-native';
 import { AccessToken, LoginManager } from 'react-native-fbsdk-next';
 import AppText from '~/components/Elements/AppText';
 import PressableView from '~/components/HOC/PressableView';
 import useActivityIndicator from '~/store/useActivityIndicator';
 import useUser from '~/store/useUser';
 import { User_Type } from '~/type/user';
+const Image = ExpoImage as any;
+
 const SocialSignin = () => {
   const { setUser } = useUser();
   const router = useRouter();
   const { startActivity, stopActivity } = useActivityIndicator();
+
   const startGoogleFlow = async () => {
     startActivity();
     try {
@@ -53,23 +55,19 @@ const SocialSignin = () => {
             },
           });
         } else {
-          setUser(user as ParseUser<User_Type>);
+          setUser(user as Parse.User<User_Type>);
         }
       }
     } catch (error) {
       if (isErrorWithCode(error)) {
         switch (error.code) {
           case statusCodes.IN_PROGRESS:
-            // operation (eg. sign in) already in progress
             break;
           case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-            // Android only, play services not available or outdated
             break;
           default:
-          // some other error happened
+            break;
         }
-      } else {
-        // an error that's not related to google sign in occurred
       }
     }
     stopActivity();
@@ -77,7 +75,6 @@ const SocialSignin = () => {
 
   const handleFacebookLogin = async () => {
     try {
-      // Log in with permissions
       const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
 
       if (result.isCancelled) {
@@ -85,7 +82,6 @@ const SocialSignin = () => {
         return;
       }
 
-      // Get the access token
       const data = await AccessToken.getCurrentAccessToken();
       if (!data) {
         Alert.alert('Something went wrong obtaining access token');
@@ -119,53 +115,82 @@ const SocialSignin = () => {
             lastName: fb_user.last_name || '',
           },
         });
-
       } else {
-        setUser(user as ParseUser<User_Type>);
+        setUser(user as Parse.User<User_Type>);
       }
     } catch (error) {
-      // Fetch user profile from Graph API
       console.error('Facebook login error:', error);
     }
   };
 
   return (
-    <View className="w-full">
+    <View style={styles.container}>
       <PressableView
-        onPress={() => {
-          startGoogleFlow();
-        }}
-        className="mt-4 h-12 w-full  rounded-full bg-white">
-        <View className="flex-row items-center justify-center gap-3">
-          <Image source={google} style={{ width: 20, height: 20 }} />
-          <AppText className="font-medium text-sm text-primary">Continue with Google</AppText>
+        onPress={startGoogleFlow}
+        style={styles.socialBtn}>
+        <View style={styles.btnContent}>
+          <Image source={google} style={styles.icon} />
+          <AppText style={styles.btnText}>Continue with Google</AppText>
         </View>
       </PressableView>
+
       <PressableView
-        onPress={() => {
-          handleFacebookLogin();
-          // startSignInFlow()
-        }}
-        className="mt-4 h-12 w-full  rounded-full bg-white">
-        <View className="flex-row items-center justify-center gap-3">
-          <Image source={facebook} style={{ width: 20, height: 20 }} />
-          <AppText className="font-medium text-sm text-primary">Continue with Facebook</AppText>
+        onPress={handleFacebookLogin}
+        style={styles.socialBtn}>
+        <View style={styles.btnContent}>
+          <Image source={facebook} style={styles.icon} />
+          <AppText style={styles.btnText}>Continue with Facebook</AppText>
         </View>
       </PressableView>
+
       {Platform.OS === 'ios' && (
         <PressableView
-          onPress={() => {
-            // startSignInFlow()
-          }}
-          className="mt-4 h-12 w-full  rounded-full bg-white">
-          <View className="flex-row items-center justify-center gap-3">
-            <Image source={apple} style={{ width: 20, height: 20 }} />
-            <AppText className="font-medium text-sm text-primary">Continue with Apple</AppText>
+          onPress={() => {}}
+          style={styles.socialBtn}>
+          <View style={styles.btnContent}>
+            <Image source={apple} style={styles.icon} />
+            <AppText style={styles.btnText}>Continue with Apple</AppText>
           </View>
         </PressableView>
       )}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+  },
+  socialBtn: {
+    marginTop: 16,
+    height: 48,
+    width: '100%',
+    borderRadius: 999,
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderColor: '#E9E9EC',
+    justifyContent: 'center',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  btnContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
+  },
+  icon: {
+    width: 20,
+    height: 20,
+  },
+  btnText: {
+    fontFamily: 'LufgaMedium',
+    fontSize: 14,
+    color: '#192234',
+  },
+});
 
 export default SocialSignin;

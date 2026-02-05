@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import z from 'zod';
 import AppText from '~/components/Elements/AppText';
@@ -38,9 +38,10 @@ export default function Basic3({ data, extra_data, onSubmit }: Props) {
     reset({ ...data, ...extra_data });
   }, [data]);
 
-  const onSubmitInternal = async (data: Basic3Values) => {
-    onSubmit(data);
+  const onSubmitInternal = async (formData: Basic3Values) => {
+    onSubmit(formData);
   };
+
   const onError = () => {
     const keys = Object.keys(errors) as (keyof Basic3Values)[];
     for (let index = 0; index < keys.length; index++) {
@@ -55,18 +56,20 @@ export default function Basic3({ data, extra_data, onSubmit }: Props) {
     }
   };
 
+  const listingFor = watch('listing_for');
 
   return (
-    <View className="flex-1 bg-white px-5 pt-5">
-      <View className="flex-1">
-        <AppText className="font-bold text-2xl">
-          Property details 🏠 <AppText className="text-base text-primary ">(Cont..)</AppText>
+    <View style={styles.container}>
+      <View style={styles.mainContent}>
+        <AppText style={styles.title}>
+          Property details 🏠 <AppText style={styles.titleSub}>(Cont..)</AppText>
         </AppText>
-        <AppText className="text-[15px] text-[#575775]">Add your pricing details</AppText>
+        <AppText style={styles.subtitle}>Add your pricing details</AppText>
 
         <KeyboardAwareScrollView
           bottomOffset={50}
-          contentContainerClassName="mt-5 flex-grow flex-col gap-6 pb-28"
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}>
           <ControlledTextInput
@@ -74,15 +77,15 @@ export default function Basic3({ data, extra_data, onSubmit }: Props) {
             name="price"
             placeholder="Amount"
             keyboardType="number-pad"
-            label={watch('listing_for') === 'Rental' ? 'Rent/Month' : 'Price'}
+            label={listingFor === 'Rental' ? 'Rent/Month' : 'Price'}
           />
-          {watch('listing_for') === 'Rental' && (
+          {listingFor === 'Rental' && (
             <Select
               varient
               options={[
                 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
                 24,
-              ].map((i) => ({ label: i + ' month', value: i }))}
+              ].map((i: number) => ({ label: i + ' month', value: i }))}
               label="Security Deposit (Months)"
               value={{
                 label: watch('deposit') || null,
@@ -94,13 +97,13 @@ export default function Basic3({ data, extra_data, onSubmit }: Props) {
               }}
             />
           )}
-          {watch('listing_for') === 'Rental' && (
+          {listingFor === 'Rental' && (
             <Select
               varient
               options={[
                 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
                 24,
-              ].map((i) => ({ label: i + ' month', value: i }))}
+              ].map((i: number) => ({ label: i + ' month', value: i }))}
               label="Payment Frequency (Months)"
               value={{
                 label: watch('payment_frequency'),
@@ -114,15 +117,15 @@ export default function Basic3({ data, extra_data, onSubmit }: Props) {
           )}
 
           <DatePicker
-            label={watch('listing_for') === 'Rental' ? 'Move in Date' : 'Sale Date'}
+            label={listingFor === 'Rental' ? 'Move in Date' : 'Sale Date'}
             value={watch('move_in_date')}
-            onChange={(date) => setValue('move_in_date', date.toISOString())}
+            onChange={(date: Date) => setValue('move_in_date', date.toISOString())}
             withForm
           />
 
           <Select
             varient
-            options={Basic3Schema.shape.contact_method.options.map((i) => ({
+            options={Basic3Schema.shape.contact_method.options.map((i: string) => ({
               label: i,
               value: i,
             }))}
@@ -144,16 +147,71 @@ export default function Basic3({ data, extra_data, onSubmit }: Props) {
           />
         </KeyboardAwareScrollView>
       </View>
-      <View className="absolute bottom-0 left-0 right-0   px-5 py-4">
+      <View style={styles.footer}>
         <PressableView
           onPress={handleSubmit(onSubmitInternal, onError)}
-          className="h-12 items-center justify-center rounded-full bg-secondary">
-          <AppText className="font-bold text-lg text-white">Continue</AppText>
+          style={styles.continueBtn}>
+          <AppText style={styles.continueBtnText}>Continue</AppText>
         </PressableView>
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
+  mainContent: {
+    flex: 1,
+  },
+  title: {
+    fontFamily: 'LufgaBold',
+    fontSize: 24,
+    color: '#192234',
+  },
+  titleSub: {
+    fontFamily: 'LufgaRegular',
+    fontSize: 16,
+    color: '#192234',
+  },
+  subtitle: {
+    fontFamily: 'LufgaRegular',
+    fontSize: 15,
+    color: '#575775',
+  },
+  scrollContent: {
+    marginTop: 20,
+    flexGrow: 1,
+    flexDirection: 'column',
+    gap: 24,
+    paddingBottom: 100,
+  },
+  footer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    backgroundColor: 'white',
+  },
+  continueBtn: {
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 999,
+    backgroundColor: '#82065e',
+  },
+  continueBtnText: {
+    fontFamily: 'LufgaBold',
+    fontSize: 18,
+    color: 'white',
+  },
+});
 
 export const Basic3Schema = z
   .object({
@@ -184,7 +242,7 @@ export const Basic3Schema = z
     // .min(1, "Level of Finish is Required."),
     reference_number: z.string({}).optional(),
   })
-  .superRefine((data, ctx) => {
+  .superRefine((data: any, ctx: z.RefinementCtx) => {
     if (!data.move_in_date) {
       if (data.listing_for === 'Rental') {
         ctx.addIssue({

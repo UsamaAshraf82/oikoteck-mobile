@@ -3,36 +3,37 @@ import { useRouter } from 'expo-router';
 import { DateTime } from 'luxon';
 import Parse from 'parse/react-native';
 import {
-  ArrowLeftIcon,
-  CalendarIcon,
-  ChatCircleIcon,
-  CouchIcon,
-  FileTextIcon,
-  GlobeHemisphereWestIcon,
-  HouseLineIcon,
-  MapPinIcon,
-  ShareFatIcon,
-  SquaresFourIcon,
-  StairsIcon,
+    ArrowLeftIcon,
+    CalendarIcon,
+    ChatCircleIcon,
+    CouchIcon,
+    FileTextIcon,
+    GlobeHemisphereWestIcon,
+    HouseLineIcon,
+    MapPinIcon,
+    ShareFatIcon,
+    SquaresFourIcon,
+    StairsIcon,
 } from 'phosphor-react-native';
 import { useMemo, useRef, useState } from 'react';
 import {
-  ColorValue,
-  Modal,
-  Pressable,
-  ScrollView,
-  Share,
-  TouchableWithoutFeedback,
-  View,
+    ColorValue,
+    Modal,
+    Pressable,
+    ScrollView,
+    Share,
+    StyleSheet,
+    TouchableWithoutFeedback,
+    View,
 } from 'react-native';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import MapView, { Circle, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import Animated, {
-  SharedValue,
-  useAnimatedStyle,
-  useSharedValue,
-  withDecay,
-  withSpring,
+    SharedValue,
+    useAnimatedStyle,
+    useSharedValue,
+    withDecay,
+    withSpring,
 } from 'react-native-reanimated';
 import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
 import FavButton from '~/components/Cards/FavButton';
@@ -45,12 +46,10 @@ import BathIcon from '~/components/SVG/Bath';
 import BedIcon from '~/components/SVG/Bed';
 import SizeIcon from '~/components/SVG/Size';
 import { stringify_area_district } from '~/lib/stringify_district_area';
-import { cn } from '~/lib/utils';
 import { Property_Type } from '~/type/property';
 import { User_Type } from '~/type/user';
 import { deviceHeight, deviceWidth } from '~/utils/global';
 import { thoasandseprator } from '~/utils/number';
-import tailwind, { tailwind_color } from '~/utils/tailwind';
 import ContactOwner from './ContactOwner';
 import SubmitOffer from './SubmitOffer';
 
@@ -67,12 +66,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
   const details = useMemo(() => {
     const base = [
       {
-        icon:
-          property.property_type === 'Commercial' ? (
-            <BedIcon width={18} height={18} />
-          ) : (
-            <BedIcon width={18} height={18} />
-          ),
+        icon: <BedIcon width={18} height={18} />,
         heading: 'Bedrooms',
         detail: property.property_type === 'Land' ? 'N/A' : property.bedrooms,
       },
@@ -127,7 +121,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
   }
 
   return (
-    <View className="relative flex-1">
+    <View style={styles.container}>
       {SubmitOfferVisible && (
         <SubmitOffer property={property} onClose={() => setSubmitOfferVisible(false)} />
       )}
@@ -139,7 +133,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
 
       <View>
         <Modal visible={lightBoxVisible} transparent={true}>
-          <GestureHandlerRootView style={{ flex: 1, backgroundColor: 'black' }}>
+          <GestureHandlerRootView style={styles.lightboxBg}>
             <Carousel
               ref={carouselRef}
               data={property.images}
@@ -147,22 +141,21 @@ export default function PropertyDetails({ property }: { property: Property_Type 
               width={deviceWidth}
               height={deviceHeight}
               defaultIndex={startIndex}
-              onProgressChange={(_, absoluteProgress) => {
+              onProgressChange={(_: any, absoluteProgress: number) => {
                 progress2.value = absoluteProgress;
               }}
-              renderItem={({ item }) => {
+              renderItem={({ item }: { item: string }) => {
                 return (
-                  <View className="relative">
+                  <View style={styles.relative}>
                     <ZoomableImage src={item} />
                     {property.agent_icon && owner.logo && (
-                      <View className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2  -translate-y-1/2">
+                      <View style={styles.agentLogoCenter}>
                         <AWSImage
                           contentFit="cover"
                           placeholderContentFit="cover"
                           src={owner.logo}
                           size="300x300"
-                          debug
-                          style={{ width: 70, height: 70, opacity: 0.7 }}
+                          style={styles.agentLogoImage}
                         />
                       </View>
                     )}
@@ -172,7 +165,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
             />
 
             {/* Close button */}
-            <View className="absolute left-4 top-4">
+            <View style={styles.backButtonLightbox}>
               <TouchableWithoutFeedback
                 hitSlop={20}
                 onPress={() => {
@@ -182,26 +175,25 @@ export default function PropertyDetails({ property }: { property: Property_Type 
               </TouchableWithoutFeedback>
             </View>
 
-            <View className="absolute right-4 top-4 z-10 flex-row gap-3">
+            <View style={styles.headerIconsLightbox}>
               <TouchableWithoutFeedback
                 onPress={async () => {
-                  const result = await Share.share({
+                   await Share.share({
                     message: `Hi! I found this property. Enjoy reviewing its features on OikoTeck.\nhttps://www.oikoteck.com/property/${property.objectId}`,
                   });
-                  console.log(Share, result);
                 }}>
-                <ShareFatIcon color="#fff" duotoneColor={'#000'} weight="duotone" size={30} />
+                <ShareFatIcon color="#fff" weight="duotone" size={30} />
               </TouchableWithoutFeedback>
               <FavButton property={property} property_id={property.objectId} size={30} />
             </View>
-            <View className="absolute bottom-2 left-0 right-0 flex-row items-center justify-center">
+            <View style={styles.dotsWrapper}>
               {property.images.map((_, index) => {
                 return (
                   <Dot
                     key={index}
                     index={index}
                     progress={progress2}
-                    activeColor={tailwind_color.secondary}
+                    activeColor="#82065e"
                   />
                 );
               })}
@@ -210,27 +202,26 @@ export default function PropertyDetails({ property }: { property: Property_Type 
         </Modal>
       </View>
       <ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>
-        <View className="mb-10 flex-1 bg-white">
-          <View className="relative h-[380px]">
+        <View style={styles.content}>
+          <View style={styles.carouselContainer}>
             <Carousel
               data={property.images}
               loop={false}
               pagingEnabled={true}
               snapEnabled={true}
               width={deviceWidth}
-              // height={deviceHeight / 2}
-              style={{ width: '100%', height: '100%' }}
-              onProgressChange={(_, absoluteProgress) => {
+              style={styles.fullSize}
+              onProgressChange={(_: any, absoluteProgress: number) => {
                 progress.value = absoluteProgress;
               }}
               onConfigurePanGesture={(g: { enabled: (arg0: boolean) => any }) => {
                 'worklet';
                 g.enabled(false);
               }}
-              renderItem={({ item, index }) => {
+              renderItem={({ item, index }: { item: string; index: number }) => {
                 return (
                   <Pressable
-                    className="relative"
+                    style={styles.relative}
                     onPress={() => {
                       setStartIndex(index);
                       setLightBoxVisible(true);
@@ -244,14 +235,13 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                       size="800x800"
                     />
                     {property.agent_icon && owner.logo && (
-                      <View className="absolute bottom-4 right-3 z-10">
+                      <View style={styles.agentLogoMain}>
                         <AWSImage
                           contentFit="cover"
                           placeholderContentFit="cover"
                           src={owner.logo}
                           size="300x300"
-                          debug
-                          style={{ width: 80, height: 80, opacity: 0.7 }}
+                          style={styles.agentLogoImage80}
                         />
                       </View>
                     )}
@@ -259,7 +249,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                 );
               }}
             />
-            <View className="absolute left-4 top-4">
+            <View style={styles.backButtonMain}>
               <TouchableWithoutFeedback
                 hitSlop={20}
                 onPress={() => {
@@ -268,42 +258,41 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                 <ArrowLeftIcon size={24} color="white" weight="bold" />
               </TouchableWithoutFeedback>
             </View>
-            <View className="absolute right-4 top-4 z-10 flex-row gap-3">
+            <View style={styles.headerIconsMain}>
               <TouchableWithoutFeedback
                 onPress={async () => {
-                  const result = await Share.share({
+                   await Share.share({
                     message: `Hi! I found this property. Enjoy reviewing its features on OikoTeck.\nhttps://www.oikoteck.com/property/${property.objectId}`,
                   });
-                  console.log(Share, result);
                 }}>
-                <ShareFatIcon color="#fff" duotoneColor={'#000'} weight="duotone" size={30} />
+                <ShareFatIcon color="#fff" weight="duotone" size={30} />
               </TouchableWithoutFeedback>
               <FavButton property={property} property_id={property.objectId} size={30} />
             </View>
-            <View className="absolute bottom-2 left-0 right-0 flex-row items-center justify-center">
+            <View style={styles.dotsWrapper}>
               {property.images.map((_, index) => {
                 return <Dot key={index} index={index} progress={progress} />;
               })}
             </View>
           </View>
-          <View className="mt-5 p-4">
-            <View className="flex-row items-baseline ">
-              <AppText className="font-bold text-2xl text-secondary">
+          <View style={styles.infoWrapper}>
+            <View style={styles.priceRow}>
+              <AppText style={styles.priceText}>
                 € {thoasandseprator(property.price)}
               </AppText>
               {property.listing_for === 'Rental' && (
-                <AppText className="font-medium text-[15px] text-[#8D95A5]">/Month</AppText>
+                <AppText style={styles.perMonthText}>/Month</AppText>
               )}
             </View>
-            <AppText className="mt-5 font-bold text-xl text-primary">{property.title}</AppText>
-            <View className="mt-4 flex-row items-center">
+            <AppText style={styles.titleText}>{property.title}</AppText>
+            <View style={styles.locationRow}>
               <GlobeHemisphereWestIcon
-                color={tailwind.theme.colors.primary}
-                duotoneColor={tailwind.theme.colors.primary}
+                color="#192234"
+                duotoneColor="#192234"
                 duotoneOpacity={0.9}
                 weight="duotone"
               />
-              <AppText className="ml-2 font-medium text-sm text-primary">
+              <AppText style={styles.locationText}>
                 {stringify_area_district({
                   district: property.district,
                   area_1: property.area_1,
@@ -312,58 +301,58 @@ export default function PropertyDetails({ property }: { property: Property_Type 
               </AppText>
             </View>
             {property.reference_number && (
-              <View className="mt-5 flex-row items-center">
-                <SquaresFourIcon color={tailwind.theme.colors.primary} />
-                <AppText className="ml-2 font-medium text-sm text-primary">
+              <View style={styles.refRow}>
+                <SquaresFourIcon color="#192234" />
+                <AppText style={styles.refText}>
                   {property.reference_number}
                 </AppText>
               </View>
             )}
 
-            <View className="mt-4" />
+            <View style={styles.spacer16} />
             {property.exact_location && (
               <>
-                <View className="mt-2" />
-                <View className="flex-col rounded-2xl bg-[#f4f4f6] p-3 text-primary">
-                  <AppText>Street Address</AppText>
-                  <View className="mt-2 flex-row items-center gap-2">
-                    <MapPinIcon size={20} />
-                    <AppText className="font-medium text-[15px]">{property.address}</AppText>
+                <View style={styles.spacer8} />
+                <View style={styles.addressCard}>
+                  <AppText style={styles.cardLabel}>Street Address</AppText>
+                  <View style={styles.cardInfoRow}>
+                    <MapPinIcon size={20} color="#192234" />
+                    <AppText style={styles.cardInfoText}>{property.address}</AppText>
                   </View>
                 </View>
               </>
             )}
-            <View className="mt-2" />
-            <Grid cols={2} gap={2}>
-              {details.map((i, j) => {
+            <View style={styles.spacer8} />
+            <Grid cols={2} gap={8}>
+              {details.map((i) => {
                 return (
                   <View
                     key={i.heading}
-                    className={cn('flex-col rounded-2xl bg-[#f4f4f6] p-3 text-primary')}>
-                    <AppText>{i.heading}</AppText>
-                    <View className="mt-2 flex-row items-center gap-2">
+                    style={styles.detailCard}>
+                    <AppText style={styles.cardLabel}>{i.heading}</AppText>
+                    <View style={styles.cardInfoRow}>
                       {i.icon}
-                      <AppText className="font-medium text-[15px]">{i.detail}</AppText>
+                      <AppText style={styles.cardInfoText}>{i.detail}</AppText>
                     </View>
                   </View>
                 );
               })}
             </Grid>
-            <View className="mt-10" />
-            <AppText className="text-base">{property.description}</AppText>
-            <View className="mt-12" />
-            <View className="flex-col gap-3">
-              <AppText className="font-semibold text-2xl">Home Details</AppText>
+            <View style={styles.spacer40} />
+            <AppText style={styles.description}>{property.description}</AppText>
+            <View style={styles.spacer48} />
+            <View style={styles.sectionHeader}>
+              <AppText style={styles.sectionTitle}>Home Details</AppText>
               {property.special_feature.map((i) => (
-                <AppText key={i}>• {i}</AppText>
+                <AppText key={i} style={styles.bulletItem}>• {i}</AppText>
               ))}
-              <AppText>
+              <AppText style={styles.bulletItem}>
                 • {property.listing_for === 'Rental' ? 'Earliest Move-in' : 'Earliest Sale'} :{' '}
                 {property.move_in_date instanceof Date
                   ? DateTime.fromJSDate(property.move_in_date).toLocaleString(DateTime.DATE_SHORT, {
                       locale: 'en-GB',
                     })
-                  : DateTime.fromISO(property.move_in_date.iso).toLocaleString(
+                  : DateTime.fromISO((property.move_in_date as any).iso).toLocaleString(
                       DateTime.DATE_SHORT,
                       {
                         locale: 'en-GB',
@@ -371,40 +360,40 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                     )}
               </AppText>
               {!!property?.heating && property?.heating !== 'None' && (
-                <AppText>• {property?.heating}</AppText>
+                <AppText style={styles.bulletItem}>• {property?.heating}</AppText>
               )}
               {!!property.heating_expense && (
-                <AppText>• Heating expenses : € {property.heating_expense}</AppText>
+                <AppText style={styles.bulletItem}>• Heating expenses : € {property.heating_expense}</AppText>
               )}
-              {!!property.energy_class && <AppText>• Energy : {property.energy_class}</AppText>}
+              {!!property.energy_class && <AppText style={styles.bulletItem}>• Energy : {property.energy_class}</AppText>}
               {!!property.construction_year && (
-                <AppText>• Construction year : {property.construction_year || ''}</AppText>
+                <AppText style={styles.bulletItem}>• Construction year : {property.construction_year || ''}</AppText>
               )}
-              {!!property.floor && <AppText>• Floor : {property.floor || ''}</AppText>}
+              {!!property.floor && <AppText style={styles.bulletItem}>• Floor : {property.floor || ''}</AppText>}
               {!!property.property_oriantation && (
-                <AppText>• Orientation : {property.property_oriantation || ''} </AppText>
+                <AppText style={styles.bulletItem}>• Orientation : {property.property_oriantation || ''} </AppText>
               )}
               {!!property.plot_size && (
-                <AppText>• Plot Size : {property.plot_size || ''} m²</AppText>
+                <AppText style={styles.bulletItem}>• Plot Size : {property.plot_size || ''} m²</AppText>
               )}
             </View>
-            <View className="mt-12" />
-            <View className="flex-col gap-3">
-              <AppText className="font-semibold text-2xl">Payment Methods</AppText>
-              <AppText>
+            <View style={styles.spacer48} />
+            <View style={styles.sectionHeader}>
+              <AppText style={styles.sectionTitle}>Payment Methods</AppText>
+              <AppText style={styles.bulletItem}>
                 •{' '}
                 {property.payment_frequency === 1
                   ? 'Monthly Payments'
                   : `Payment every ${property.payment_frequency} Months`}
               </AppText>
-              <AppText>
+              <AppText style={styles.bulletItem}>
                 • {property.deposit}-{property.deposit === 1 ? 'Month' : 'Months'} Security Deposit
               </AppText>
             </View>
-            <View className="mt-12" />
-            <View className="flex-col gap-1">
-              <AppText className="mb-4 font-semibold text-2xl">Neighborhood Overview</AppText>
-              <View className="h-96">
+            <View style={styles.spacer48} />
+            <View style={styles.sectionHeader}>
+              <AppText style={styles.sectionTitleNeighbor}>Neighborhood Overview</AppText>
+              <View style={styles.mapContainer}>
                 <MapView
                   provider={PROVIDER_GOOGLE}
                   region={{
@@ -413,14 +402,14 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                     latitudeDelta: 0.05,
                     longitudeDelta: 0.05,
                   }}
-                  style={{ flex: 1 }}>
+                  style={styles.fullSize}>
                   {property.exact_location ? (
                     <Marker
                       coordinate={{
                         latitude: property.marker.latitude,
                         longitude: property.marker.longitude,
                       }}
-                      pinColor={tailwind.theme.colors.secondary}
+                      pinColor="#82065e"
                     />
                   ) : (
                     <Circle
@@ -430,49 +419,51 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                       }}
                       radius={700}
                       strokeWidth={2}
-                      strokeColor={tailwind.theme.colors.secondary}
-                      fillColor={tailwind.theme.colors.secondary + '80'}
+                      strokeColor="#82065e"
+                      fillColor="rgba(130, 6, 94, 0.5)"
                     />
                   )}
                 </MapView>
               </View>
             </View>
           </View>
-          <LinearGradient colors={['#fff', '#EEF1F7']} className="pb-1">
-            <View className="mt-5" />
+          <LinearGradient colors={['#fff', '#EEF1F7']} style={styles.bottomGradient}>
+            <View style={styles.spacer20} />
           </LinearGradient>
           <SimilarListing property={property} />
         </View>
       </ScrollView>
-      <Grid cols={2} className="my-2 bg-white px-3">
-        <PressableView
-          onPress={() => {
-            setSubmitOfferVisible(true);
-          }}
-          className="h-12  items-center justify-center rounded-full border border-primary ">
-          <View className="flex-row items-center  gap-2">
-            <FileTextIcon color={tailwind.theme.colors.primary} />
-            <AppText className="font-semibold text-[13px] text-primary">Submit Offer</AppText>
-          </View>
-        </PressableView>
-        <PressableView
-          onPress={() => {
-            setContactOwnerVisible(true);
-          }}
-          className="h-12  items-center justify-center rounded-full border border-secondary bg-secondary">
-          <View className="flex-row items-center gap-2">
-            <ChatCircleIcon color="#fff" />
-            <AppText className="font-semibold text-[13px] text-white">Contact Owner</AppText>
-          </View>
-        </PressableView>
-      </Grid>
+      <View style={styles.footer}>
+        <Grid cols={2} gap={12}>
+          <PressableView
+            onPress={() => {
+              setSubmitOfferVisible(true);
+            }}
+            style={styles.offerButton}>
+            <View style={styles.footerBtnInner}>
+              <FileTextIcon color="#192234" />
+              <AppText style={styles.offerBtnText}>Submit Offer</AppText>
+            </View>
+          </PressableView>
+          <PressableView
+            onPress={() => {
+              setContactOwnerVisible(true);
+            }}
+            style={styles.contactButton}>
+            <View style={styles.footerBtnInner}>
+              <ChatCircleIcon color="#fff" />
+              <AppText style={styles.contactBtnText}>Contact Owner</AppText>
+            </View>
+          </PressableView>
+        </Grid>
+      </View>
     </View>
   );
 }
 
 const AnimatedImage = Animated.createAnimatedComponent(AWSImage);
 
-function ZoomableImage({ src, onSwipeDown }: { src: string; onSwipeDown?: () => void }) {
+function ZoomableImage({ src }: { src: string }) {
   const scale = useSharedValue(1);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
@@ -480,11 +471,10 @@ function ZoomableImage({ src, onSwipeDown }: { src: string; onSwipeDown?: () => 
   const doubleTap = Gesture.Tap()
     .numberOfTaps(2)
     .onEnd(() => {
-      scale.value = scale.value > 1 ? withSpring(1) : withSpring(2); // toggle zoom
-      translateX.value = withSpring(0); // reset X when zoom toggles
+      scale.value = scale.value > 1 ? withSpring(1) : withSpring(2);
+      translateX.value = withSpring(0);
     });
 
-  // Pinch gesture (zoom)
   const pinch = Gesture.Pinch()
     .onUpdate((e) => {
       scale.value = e.scale;
@@ -493,7 +483,6 @@ function ZoomableImage({ src, onSwipeDown }: { src: string; onSwipeDown?: () => 
       if (scale.value < 1) scale.value = 1;
     });
 
-  // Pan gesture (only horizontal drag)
   const pan = Gesture.Pan()
     .onUpdate((e) => {
       translateX.value = e.translationX;
@@ -501,7 +490,7 @@ function ZoomableImage({ src, onSwipeDown }: { src: string; onSwipeDown?: () => 
     .onEnd((e) => {
       translateX.value = withDecay({ velocity: e.velocityX });
     })
-    .activeOffsetY([-9999, 9999]); // disables vertical drag
+    .activeOffsetY([-9999, 9999]);
 
   const composed = Gesture.Exclusive(doubleTap, Gesture.Simultaneous(pinch, pan));
 
@@ -518,9 +507,8 @@ function ZoomableImage({ src, onSwipeDown }: { src: string; onSwipeDown?: () => 
       <AnimatedImage
         contentFit="contain"
         placeholderContentFit="contain"
-        // style={{ width: deviceWidth, height: '100%' }}
         src={src}
-        style={[{ width: '100%', height: '100%' }, animatedStyle]}
+        style={[styles.fullSize, animatedStyle]}
       />
     </GestureDetector>
   );
@@ -555,5 +543,250 @@ function Dot({
     };
   });
 
-  return <Animated.View key={index} style={style} className={cn('mx-1 rounded-full ')} />;
+  return <Animated.View key={index} style={[styles.dot, style]} />;
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    position: 'relative',
+  },
+  content: {
+    flex: 1,
+    backgroundColor: 'white',
+    marginBottom: 40,
+  },
+  lightboxBg: {
+    flex: 1,
+    backgroundColor: 'black',
+  },
+  relative: {
+    position: 'relative',
+    flex: 1,
+  },
+  agentLogoCenter: {
+    position: 'absolute',
+    left: '50%',
+    top: '50%',
+    zIndex: 10,
+    transform: [{ translateX: -35 }, { translateY: -35 }],
+  },
+  agentLogoImage: {
+    width: 70,
+    height: 70,
+    opacity: 0.7,
+  },
+  agentLogoImage80: {
+    width: 80,
+    height: 80,
+    opacity: 0.7,
+  },
+  backButtonLightbox: {
+    position: 'absolute',
+    left: 16,
+    top: 16,
+  },
+  headerIconsLightbox: {
+    position: 'absolute',
+    right: 16,
+    top: 16,
+    zIndex: 10,
+    flexDirection: 'row',
+    gap: 12,
+  },
+  dotsWrapper: {
+    position: 'absolute',
+    bottom: 8,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  carouselContainer: {
+    position: 'relative',
+    height: 380,
+  },
+  fullSize: {
+    width: '100%',
+    height: '100%',
+  },
+  agentLogoMain: {
+    position: 'absolute',
+    bottom: 16,
+    right: 12,
+    zIndex: 10,
+  },
+  backButtonMain: {
+    position: 'absolute',
+    left: 16,
+    top: 16,
+  },
+  headerIconsMain: {
+    position: 'absolute',
+    right: 16,
+    top: 16,
+    zIndex: 10,
+    flexDirection: 'row',
+    gap: 12,
+  },
+  infoWrapper: {
+    marginTop: 20,
+    padding: 16,
+  },
+  priceRow: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+  },
+  priceText: {
+    fontFamily: 'LufgaBold',
+    fontSize: 24,
+    color: '#82065e',
+  },
+  perMonthText: {
+    fontFamily: 'LufgaMedium',
+    fontSize: 15,
+    color: '#8D95A5',
+  },
+  titleText: {
+    marginTop: 20,
+    fontFamily: 'LufgaBold',
+    fontSize: 20,
+    color: '#192234',
+  },
+  locationRow: {
+    marginTop: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  locationText: {
+    marginLeft: 8,
+    fontFamily: 'LufgaMedium',
+    fontSize: 14,
+    color: '#192234',
+  },
+  refRow: {
+    marginTop: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  refText: {
+    marginLeft: 8,
+    fontFamily: 'LufgaMedium',
+    fontSize: 14,
+    color: '#192234',
+  },
+  spacer16: {
+    marginTop: 16,
+  },
+  spacer8: {
+    marginTop: 8,
+  },
+  spacer20: {
+    marginTop: 20,
+  },
+  spacer40: {
+    marginTop: 40,
+  },
+  spacer48: {
+    marginTop: 48,
+  },
+  addressCard: {
+    flexDirection: 'column',
+    borderRadius: 16,
+    backgroundColor: '#f4f4f6',
+    padding: 12,
+  },
+  cardLabel: {
+    fontSize: 14,
+    color: '#192234',
+  },
+  cardInfoRow: {
+    marginTop: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  cardInfoText: {
+    fontFamily: 'LufgaMedium',
+    fontSize: 15,
+    color: '#192234',
+  },
+  detailCard: {
+    flexDirection: 'column',
+    borderRadius: 16,
+    backgroundColor: '#f4f4f6',
+    padding: 12,
+  },
+  description: {
+    fontSize: 16,
+    lineHeight: 24,
+    color: '#192234',
+  },
+  sectionHeader: {
+    flexDirection: 'column',
+    gap: 12,
+  },
+  sectionTitle: {
+    fontFamily: 'LufgaSemiBold',
+    fontSize: 24,
+    color: '#192234',
+  },
+  sectionTitleNeighbor: {
+    marginBottom: 16,
+    fontFamily: 'LufgaSemiBold',
+    fontSize: 24,
+    color: '#192234',
+  },
+  bulletItem: {
+    fontSize: 14,
+    color: '#192234',
+  },
+  mapContainer: {
+    height: 384,
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  bottomGradient: {
+    paddingBottom: 4,
+  },
+  footer: {
+    paddingHorizontal: 12,
+    marginVertical: 8,
+    backgroundColor: 'white',
+  },
+  offerButton: {
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: '#192234',
+  },
+  contactButton: {
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 999,
+    backgroundColor: '#82065e',
+  },
+  footerBtnInner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  offerBtnText: {
+    fontFamily: 'LufgaSemiBold',
+    fontSize: 13,
+    color: '#192234',
+  },
+  contactBtnText: {
+    fontFamily: 'LufgaSemiBold',
+    fontSize: 13,
+    color: '#white',
+  },
+  dot: {
+    marginHorizontal: 4,
+    borderRadius: 999,
+  },
+});

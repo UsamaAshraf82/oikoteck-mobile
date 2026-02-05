@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useRouter } from 'expo-router';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { z } from 'zod';
 import AppText from '~/components/Elements/AppText';
@@ -13,6 +13,26 @@ import SocialSignin from '~/components/Pages/Auth/SocialSignin';
 import useActivityIndicator from '~/store/useActivityIndicator';
 import { useToast } from '~/store/useToast';
 import useUser from '~/store/useUser';
+
+const SignInSchema = z.object({
+  email: z
+    .string()
+    .toLowerCase()
+    .trim()
+    .min(1, { message: 'Email is required' })
+    .pipe(z.email('Must be a valid email address.')),
+
+  password: z.string({ error: 'Password is required' }).min(1, {
+    message: 'Password is required',
+  }),
+});
+
+type SignInValues = z.infer<typeof SignInSchema>;
+
+const displayNames: Record<keyof SignInValues, string> = {
+  email: 'Email address',
+  password: 'Password',
+};
 
 export default function Login() {
   const { addToast } = useToast();
@@ -52,8 +72,7 @@ export default function Login() {
   };
 
   return (
-    <View className="flex-1">
-      {/* Scrollable form */}
+    <View style={styles.container}>
       <TopHeader
         onBackPress={() => {
           router.back();
@@ -63,29 +82,24 @@ export default function Login() {
 
       <KeyboardAwareScrollView
         bottomOffset={50}
-        contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 16 }}
+        contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}>
-        <View className="mb-20 flex-1 flex-col items-center justify-center">
-          <AppText className="mt-20 text-center font-semibold text-3xl">
-            Sign in to your account!
-          </AppText>
-          <AppText className="mt-2">
+        <View style={styles.formWrapper}>
+          <AppText style={styles.title}>Sign in to your account!</AppText>
+          <AppText style={styles.subtext}>
             Don&apos;t have an account?{' '}
-            <Link href="signup" className="text-secondary">
+            <Link href="signup" style={styles.linkText}>
               Sign up
             </Link>
           </AppText>
 
           <SocialSignin />
 
-          <AppText className="my-14 text-sm text-[#575775]">
-            - - - or sign in with email - - -
-          </AppText>
+          <AppText style={styles.dividerText}>- - - or sign in with email - - -</AppText>
 
-          {/* Inputs */}
-          <View className="w-full flex-col gap-2">
+          <View style={styles.inputGroup}>
             <ControlledTextInput
               control={control}
               name="email"
@@ -103,42 +117,94 @@ export default function Login() {
               placeholder="Enter your password"
             />
           </View>
-          {/* <View className="w-full flex-row justify-end"> */}
-          <Link href="reset-password" className="mt-2 w-full text-right text-sm text-secondary">
+          <Link href="reset-password" style={styles.forgotPassword}>
             Forgot Password?
           </Link>
-          {/* </View> */}
         </View>
       </KeyboardAwareScrollView>
 
-      {/* Fixed Bottom Button */}
-      <View className="bg-white px-4 py-4">
+      <View style={styles.footer}>
         <PressableView
           onPress={handleSubmit(onSubmit, onError)}
-          className="h-14 w-full flex-row items-center justify-center rounded-full bg-secondary">
-          <AppText className="font-bold text-[15px] text-white">Sign in</AppText>
+          style={styles.submitBtn}>
+          <AppText style={styles.submitBtnText}>Sign in</AppText>
         </PressableView>
       </View>
     </View>
   );
 }
 
-const SignInSchema = z.object({
-  email: z
-    .string()
-    .toLowerCase()
-    .trim()
-    .min(1, { message: 'Email is required' })
-    .pipe(z.email('Must be a valid email address.')),
-
-  password: z.string({ error: 'Password is required' }).min(1, {
-    message: 'Password is required',
-  }),
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingHorizontal: 16,
+  },
+  formWrapper: {
+    marginBottom: 80,
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: {
+    marginTop: 80,
+    textAlign: 'center',
+    fontFamily: 'LufgaSemiBold',
+    fontSize: 30,
+    color: '#192234',
+  },
+  subtext: {
+    marginTop: 8,
+    fontFamily: 'LufgaRegular',
+    fontSize: 14,
+    color: '#575775',
+  },
+  linkText: {
+    color: '#82065e',
+    fontFamily: 'LufgaBold',
+  },
+  dividerText: {
+    marginVertical: 56,
+    fontSize: 14,
+    color: '#575775',
+    fontFamily: 'LufgaRegular',
+  },
+  inputGroup: {
+    width: '100%',
+    flexDirection: 'column',
+    gap: 8,
+  },
+  forgotPassword: {
+    marginTop: 8,
+    width: '100%',
+    textAlign: 'right',
+    fontSize: 14,
+    color: '#82065e',
+    fontFamily: 'LufgaMedium',
+  },
+  footer: {
+    backgroundColor: 'white',
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#F0F0F0',
+  },
+  submitBtn: {
+    height: 56,
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 999,
+    backgroundColor: '#82065e',
+  },
+  submitBtnText: {
+    fontFamily: 'LufgaBold',
+    fontSize: 15,
+    color: 'white',
+  },
 });
-
-type SignInValues = z.infer<typeof SignInSchema>;
-
-const displayNames: Record<keyof SignInValues, string> = {
-  email: 'Email address',
-  password: 'Password',
-};
