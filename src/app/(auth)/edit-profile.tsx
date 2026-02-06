@@ -1,6 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'expo-router';
-import { EnvelopeSimpleOpenIcon, PencilSimpleIcon, PhoneIcon, UserIcon } from 'phosphor-react-native';
+import {
+  EnvelopeSimpleOpenIcon,
+  PencilSimpleIcon,
+  PhoneIcon,
+  UserIcon,
+} from 'phosphor-react-native';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Pressable, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
@@ -130,9 +135,7 @@ const NameInput = () => {
                 }}>
                 <AppText style={styles.cancelBtnText}>Cancel</AppText>
               </Pressable>
-              <Pressable
-                style={styles.saveBtn}
-                onPress={handleSubmit(onSubmit, onError)}>
+              <Pressable style={styles.saveBtn} onPress={handleSubmit(onSubmit, onError)}>
                 <AppText style={styles.saveBtnText}>Save Changes</AppText>
               </Pressable>
             </View>
@@ -213,7 +216,7 @@ const NumberInput = () => {
       addToast({
         type: 'success',
         heading: 'Profile Updated',
-        message: 'Your name has been updated successfully.',
+        message: 'Your phone number has been updated successfully.',
       });
       setIsEditing(false);
     }
@@ -238,14 +241,14 @@ const NumberInput = () => {
         <PhoneIcon size={16} weight="bold" color="#82065e" />
       </View>
       <View style={styles.inputContent}>
-        {isEditing && <AppText style={styles.editTitle}>Update Number</AppText>}
+        {isEditing && <AppText style={styles.editTitle}>Update Phone Number</AppText>}
         <AppText style={styles.inputLabel}>Phone Number</AppText>
         <AppText style={styles.inputValue}>
           + {user?.attributes.country_code} {user?.attributes.phone}
         </AppText>
         {isEditing && (
           <>
-            <AppText style={styles.labelBelow}>Phone Number</AppText>
+            <AppText style={styles.labelBelow}>New Phone Number</AppText>
             <View style={styles.phoneInputRow}>
               <View style={styles.countryPicker}>
                 <TouchableWithoutFeedback
@@ -297,9 +300,7 @@ const NumberInput = () => {
                 }}>
                 <AppText style={styles.cancelBtnText}>Cancel</AppText>
               </Pressable>
-              <Pressable
-                style={styles.saveBtn}
-                onPress={handleSubmit(onSubmit, onError)}>
+              <Pressable style={styles.saveBtn} onPress={handleSubmit(onSubmit, onError)}>
                 <AppText style={styles.saveBtnText}>Save Changes</AppText>
               </Pressable>
             </View>
@@ -365,7 +366,7 @@ const EmailInput = () => {
       addToast({
         type: 'success',
         heading: 'Profile Updated',
-        message: 'Your name has been updated successfully.',
+        message: 'Your email address has been updated successfully.',
       });
       setIsEditing(false);
     }
@@ -390,7 +391,7 @@ const EmailInput = () => {
         <EnvelopeSimpleOpenIcon size={16} weight="bold" color="#82065e" />
       </View>
       <View style={styles.inputContent}>
-        {isEditing && <AppText style={styles.editTitle}>Update Email</AppText>}
+        {isEditing && <AppText style={styles.editTitle}>Update Email Address</AppText>}
         <AppText style={styles.inputLabel}>Email Address</AppText>
         <AppText style={styles.inputValue}>{user?.attributes.username}</AppText>
         {isEditing && (
@@ -398,11 +399,14 @@ const EmailInput = () => {
             <ControlledTextInput
               control={control}
               name="email"
-              label="Email Address"
+              label="New Email Address"
               placeholder="Enter your Email Address"
               textContentType="emailAddress"
               keyboardType="email-address"
             />
+            <AppText style={styles.labelBelow}>
+              This email will be use for account verification
+            </AppText>
             <View style={styles.actionButtons}>
               <Pressable
                 style={styles.cancelBtn}
@@ -412,9 +416,7 @@ const EmailInput = () => {
                 }}>
                 <AppText style={styles.cancelBtnText}>Cancel</AppText>
               </Pressable>
-              <Pressable
-                style={styles.saveBtn}
-                onPress={handleSubmit(onSubmit, onError)}>
+              <Pressable style={styles.saveBtn} onPress={handleSubmit(onSubmit, onError)}>
                 <AppText style={styles.saveBtnText}>Save Changes</AppText>
               </Pressable>
             </View>
@@ -470,8 +472,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   editTitle: {
-    fontFamily: 'LufgaSemiBold',
-    fontSize: 18,
+    fontSize: 16,
     color: '#192234',
   },
   inputLabel: {

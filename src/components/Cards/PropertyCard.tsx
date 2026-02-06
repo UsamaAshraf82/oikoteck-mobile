@@ -115,17 +115,12 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
                     {'€ ' + thoasandseprator(property.price)}
                   </AppText>
                   {property.listing_for !== 'Sale' && (
-                    <AppText style={styles.perMonthText}>
-                      {' '}
-                      / Month
-                    </AppText>
+                    <AppText style={styles.perMonthText}> / Month</AppText>
                   )}
                 </View>
               </View>
               <View style={styles.rowBetween}>
-                <AppText style={styles.titleText}>
-                  {property.title}
-                </AppText>
+                <AppText style={styles.titleText}>{property.title}</AppText>
               </View>
               <AppText style={styles.locationText}>
                 {stringify_area_district({
@@ -136,34 +131,16 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
               </AppText>
               <View style={styles.featuresContainer}>
                 <View style={styles.featureItem}>
-                  <BedIcon
-                    height={17}
-                    width={17}
-                    color="#7D7D7D"
-                  />
-                  <AppText style={styles.featureText}>
-                    {property.bedrooms} beds
-                  </AppText>
+                  <BedIcon height={17} width={17} color="#7D7D7D" />
+                  <AppText style={styles.featureText}>{property.bedrooms} beds</AppText>
                 </View>
                 <View style={styles.featureItem}>
-                  <BathIcon
-                    height={17}
-                    width={17}
-                    color="#7D7D7D"
-                  />
-                  <AppText style={styles.featureText}>
-                    {property.bathrooms} baths
-                  </AppText>
+                  <BathIcon height={17} width={17} color="#7D7D7D" />
+                  <AppText style={styles.featureText}>{property.bathrooms} baths</AppText>
                 </View>
                 <View style={styles.featureItem}>
-                  <SizeIcon
-                    height={18}
-                    width={18}
-                    color="#7D7D7D"
-                  />
-                  <AppText style={styles.featureText}>
-                    {property.size} m²
-                  </AppText>
+                  <SizeIcon height={18} width={18} color="#7D7D7D" />
+                  <AppText style={styles.featureText}>{property.size} m²</AppText>
                 </View>
               </View>
             </View>
@@ -175,7 +152,6 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
 };
 
 export default PropertyCard;
-
 
 function Dot({ index, progress }: any) {
   const animatedStyle = useAnimatedStyle(() => {
@@ -194,15 +170,7 @@ function Dot({ index, progress }: any) {
     };
   });
 
-  return (
-    <Animated.View
-      key={index}
-      style={[
-        animatedStyle,
-        styles.dotBase,
-      ]}
-    />
-  );
+  return <Animated.View key={index} style={[animatedStyle, styles.dotBase]} />;
 }
 
 const styles = StyleSheet.create({

@@ -3,13 +3,7 @@ import { router } from 'expo-router';
 import Parse from 'parse/react-native';
 import { XIcon } from 'phosphor-react-native';
 import { useEffect, useMemo, useState } from 'react';
-import {
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  View
-} from 'react-native';
+import { Pressable, ScrollView, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import ReactNativeModal from 'react-native-modal';
 import AppText from '~/components/Elements/AppText';
 import TextInput from '~/components/Elements/TextInput';
@@ -100,32 +94,16 @@ const StartMembership = () => {
 
         <View style={styles.monthSwitcher}>
           <TouchableWithoutFeedback onPress={() => setMonth(3)}>
-            <View
-              style={[
-                styles.monthBtn,
-                month === 3 && styles.monthBtnActive,
-              ]}>
-              <AppText
-                style={[
-                  styles.monthText,
-                  month === 3 && styles.monthTextActive,
-                ]}>
+            <View style={[styles.monthBtn, month === 3 && styles.monthBtnActive]}>
+              <AppText style={[styles.monthText, month === 3 && styles.monthTextActive]}>
                 3-month
               </AppText>
             </View>
           </TouchableWithoutFeedback>
 
           <TouchableWithoutFeedback onPress={() => setMonth(6)}>
-            <View
-              style={[
-                styles.monthBtn,
-                month === 6 && styles.monthBtnActive,
-              ]}>
-              <AppText
-                style={[
-                  styles.monthText,
-                  month === 6 && styles.monthTextActive,
-                ]}>
+            <View style={[styles.monthBtn, month === 6 && styles.monthBtnActive]}>
+              <AppText style={[styles.monthText, month === 6 && styles.monthTextActive]}>
                 6-month
               </AppText>
               <View style={styles.discountBadge}>
@@ -163,7 +141,11 @@ const StartMembership = () => {
                     <View
                       style={[
                         styles.colorDot,
-                        { backgroundColor: plan.pkgColor.includes('-') ? plan.pkgColor.split('-')[1] : plan.pkgColor },
+                        {
+                          backgroundColor: plan.pkgColor.includes('-')
+                            ? plan.pkgColor.split('-')[1]
+                            : plan.pkgColor,
+                        },
                       ]}
                     />
                     <View>
@@ -388,7 +370,11 @@ const MemberShipModal = ({ onClose, month, onPress, value }: ModalProps) => {
                         <View
                           style={[
                             styles.colorDot,
-                            { backgroundColor: plan.pkgColor.includes('-') ? plan.pkgColor.split('-')[1] : plan.pkgColor },
+                            {
+                              backgroundColor: plan.pkgColor.includes('-')
+                                ? plan.pkgColor.split('-')[1]
+                                : plan.pkgColor,
+                            },
                           ]}
                         />
                         <View>
@@ -426,9 +412,7 @@ const MemberShipModal = ({ onClose, month, onPress, value }: ModalProps) => {
         </View>
 
         <View style={styles.modalFooter}>
-          <PressableView
-            style={styles.modalSaveBtn}
-            onPress={() => onPress(points)}>
+          <PressableView style={styles.modalSaveBtn} onPress={() => onPress(points)}>
             <AppText style={styles.modalSaveBtnText}>Save Plan</AppText>
           </PressableView>
         </View>

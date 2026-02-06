@@ -130,9 +130,7 @@ export default function LocationInfo({ data, onSubmit }: Props) {
         </KeyboardAwareScrollView>
       </View>
       <View style={styles.footer}>
-        <PressableView
-          onPress={handleSubmit(onSubmitInternal, onError)}
-          style={styles.continueBtn}>
+        <PressableView onPress={handleSubmit(onSubmitInternal, onError)} style={styles.continueBtn}>
           <AppText style={styles.continueBtnText}>Continue</AppText>
         </PressableView>
       </View>

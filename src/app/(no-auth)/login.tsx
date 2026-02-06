@@ -124,9 +124,7 @@ export default function Login() {
       </KeyboardAwareScrollView>
 
       <View style={styles.footer}>
-        <PressableView
-          onPress={handleSubmit(onSubmit, onError)}
-          style={styles.submitBtn}>
+        <PressableView onPress={handleSubmit(onSubmit, onError)} style={styles.submitBtn}>
           <AppText style={styles.submitBtnText}>Sign in</AppText>
         </PressableView>
       </View>
@@ -137,7 +135,8 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
+    // experimental_backgroundImage:'url(./assets/svg/blob.svg)',
   },
   scrollContent: {
     flexGrow: 1,

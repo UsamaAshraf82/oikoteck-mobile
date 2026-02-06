@@ -42,9 +42,7 @@ export default function PostListingS({ extraData, onSubmit }: Props) {
     <View style={styles.container}>
       <View style={styles.mainContent}>
         <AppText style={styles.title}>Publish Listing</AppText>
-        <AppText style={styles.subtitle}>
-          Confirm your details and publish your listing
-        </AppText>
+        <AppText style={styles.subtitle}>Confirm your details and publish your listing</AppText>
 
         <KeyboardAwareScrollView
           bottomOffset={50}
@@ -63,9 +61,7 @@ export default function PostListingS({ extraData, onSubmit }: Props) {
         </KeyboardAwareScrollView>
       </View>
       <View style={styles.footer}>
-        <PressableView
-          onPress={handlePress}
-          style={styles.continueBtn}>
+        <PressableView onPress={handlePress} style={styles.continueBtn}>
           <AppText style={styles.continueBtnText}>
             {extraData.plan === 'Free' ? 'Continue' : 'Pay Now'}
           </AppText>

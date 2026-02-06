@@ -167,9 +167,7 @@ export default function Signup() {
         </View>
       </KeyboardAwareScrollView>
       <View style={styles.footer}>
-        <PressableView
-          onPress={handleSubmit(onSubmit, onError)}
-          style={styles.submitBtn}>
+        <PressableView onPress={handleSubmit(onSubmit, onError)} style={styles.submitBtn}>
           <AppText style={styles.submitBtnText}>Sign up</AppText>
         </PressableView>
       </View>
@@ -180,7 +178,7 @@ export default function Signup() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
   },
   scrollContent: {
     flexGrow: 1,

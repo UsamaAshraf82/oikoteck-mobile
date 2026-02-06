@@ -4,21 +4,21 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { DateTime } from 'luxon';
 import Parse from 'parse/react-native';
 import {
-    CaretDoubleUpIcon,
-    FadersHorizontalIcon,
-    GlobeHemisphereEastIcon,
-    SortAscendingIcon,
-    XIcon,
+  CaretDoubleUpIcon,
+  FadersHorizontalIcon,
+  GlobeHemisphereEastIcon,
+  SortAscendingIcon,
+  XIcon,
 } from 'phosphor-react-native';
 import * as React from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
-    ActivityIndicator,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    TouchableWithoutFeedback,
-    View,
+  ActivityIndicator,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
 } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import AppText from '~/components/Elements/AppText';
@@ -255,11 +255,21 @@ const MarketPlace = ({ listing_type }: Props) => {
     if (search.minDate !== null || search.maxDate !== null) {
       let text = 'Move-in Date: ';
       if (search.minDate !== null && search.maxDate !== null) {
-        text = text + DateTime.fromJSDate(search.minDate).toLocaleString(DateTime.DATE_SHORT) + ' - ' + DateTime.fromJSDate(search.maxDate).toLocaleString(DateTime.DATE_SHORT);
+        text =
+          text +
+          DateTime.fromJSDate(search.minDate).toLocaleString(DateTime.DATE_SHORT) +
+          ' - ' +
+          DateTime.fromJSDate(search.maxDate).toLocaleString(DateTime.DATE_SHORT);
       } else if (search.minDate !== null) {
-        text = text + DateTime.fromJSDate(search.minDate).toLocaleString(DateTime.DATE_SHORT) + ' - Any Time';
+        text =
+          text +
+          DateTime.fromJSDate(search.minDate).toLocaleString(DateTime.DATE_SHORT) +
+          ' - Any Time';
       } else if (search.maxDate !== null) {
-        text = text + 'Any Time - ' + DateTime.fromJSDate(search.maxDate).toLocaleString(DateTime.DATE_SHORT);
+        text =
+          text +
+          'Any Time - ' +
+          DateTime.fromJSDate(search.maxDate).toLocaleString(DateTime.DATE_SHORT);
       }
       filter.push({
         filter: text,
@@ -358,9 +368,7 @@ const MarketPlace = ({ listing_type }: Props) => {
                       {!i.iconFirst && i.icon}
                       {isFilter && filters.length > 2 && (
                         <View style={styles.filterCount}>
-                          <AppText style={styles.filterCountText}>
-                            {filters.length - 2}
-                          </AppText>
+                          <AppText style={styles.filterCountText}>{filters.length - 2}</AppText>
                         </View>
                       )}
                     </View>

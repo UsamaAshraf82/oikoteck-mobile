@@ -35,9 +35,7 @@ const DatePicker: React.FC<Props> = ({
   withForm,
   label,
 }) => {
-  const [date, setDate] = useState<Date | null>(
-    roleTypeOfValue(value)
-  );
+  const [date, setDate] = useState<Date | null>(roleTypeOfValue(value));
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -59,19 +57,10 @@ const DatePicker: React.FC<Props> = ({
 
   const renderContent = () => (
     <View style={styles.inputContent}>
-      <AppText style={[
-          styles.valueText,
-          !date && styles.placeholderText,
-          textStyle
-        ]}>
+      <AppText style={[styles.valueText, !date && styles.placeholderText, textStyle]}>
         <DateText date={date} mode={mode} placeholder={placeholder} />
       </AppText>
-      <CalendarIcon
-        color="#82065e"
-        weight="duotone"
-        duotoneColor="#82065e"
-        duotoneOpacity={1}
-      />
+      <CalendarIcon color="#82065e" weight="duotone" duotoneColor="#82065e" duotoneOpacity={1} />
     </View>
   );
 
@@ -80,9 +69,7 @@ const DatePicker: React.FC<Props> = ({
       <View style={styles.formContainer}>
         {label && <AppText style={styles.label}>{label}</AppText>}
         <View style={styles.relative}>
-          <PressableView
-            onPress={() => setVisible(true)}
-            style={[styles.inputWrapper, style]}>
+          <PressableView onPress={() => setVisible(true)} style={[styles.inputWrapper, style]}>
             {renderContent()}
           </PressableView>
 

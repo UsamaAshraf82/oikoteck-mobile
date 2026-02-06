@@ -166,9 +166,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
         <View style={styles.header}>
           <View style={styles.headerTextCol}>
             <AppText style={styles.headerTitle}>Submit Offer</AppText>
-            <AppText style={styles.headerSub}>
-              Submit an offer to the listing owner
-            </AppText>
+            <AppText style={styles.headerSub}>Submit an offer to the listing owner</AppText>
           </View>
           <TouchableNativeFeedback hitSlop={10} onPress={onClose}>
             <View style={styles.closeBtn}>
@@ -184,11 +182,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
             showsHorizontalScrollIndicator={false}>
             <View style={styles.priceSection}>
               <Grid cols={2} gap={8}>
-                <TextInput
-                  readOnly
-                  label="Asking Price"
-                  value={property.price + ''}
-                />
+                <TextInput readOnly label="Asking Price" value={property.price + ''} />
                 <ControlledTextInput
                   control={control}
                   name="price"
@@ -201,9 +195,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
               </AppText>
             </View>
             <View style={styles.contactSection}>
-              <AppText style={styles.contactHeading}>
-                How can we get back to you?
-              </AppText>
+              <AppText style={styles.contactHeading}>How can we get back to you?</AppText>
               <Grid cols={2} gap={8}>
                 <ControlledTextInput
                   control={control}
@@ -273,16 +265,12 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
             </View>
             <View style={styles.spacer40} />
             <Grid cols={2} gap={8}>
-              <PressableView
-                onPress={onClose}
-                style={styles.cancelBtn}>
+              <PressableView onPress={onClose} style={styles.cancelBtn}>
                 <View style={styles.footerBtnInner}>
                   <AppText style={styles.cancelBtnText}>Cancel</AppText>
                 </View>
               </PressableView>
-              <PressableView
-                onPress={handleSubmit(onSubmit, onError)}
-                style={styles.sendBtn}>
+              <PressableView onPress={handleSubmit(onSubmit, onError)} style={styles.sendBtn}>
                 <View style={styles.footerBtnInner}>
                   <AppText style={styles.sendBtnText}>Send Message</AppText>
                 </View>

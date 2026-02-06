@@ -1,5 +1,4 @@
-import { goldprice, platprice, promoteplusprice } from "./plan_price";
-
+import { goldprice, platprice, promoteplusprice } from './plan_price';
 
 export const DISCOUNT = 15;
 export const TAX = 24;

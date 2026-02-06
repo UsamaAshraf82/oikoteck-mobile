@@ -31,9 +31,7 @@ const SignupSchema = z
       Code: z.number(),
     }),
     userType: z.enum(['regular', 'agent'], {
-      errorMap: (issue: z.ZodIssueBase, ctx: { defaultError: string }) => ({
-        message: issue.code === 'invalid_type' ? 'Please select a user type' : ctx.defaultError,
-      }),
+      message: 'Please select a user type',
     }),
     vat: z.string().optional(),
     company_name: z.string().optional(),
@@ -327,8 +325,8 @@ export default function Signup2Email() {
                 name="share_consent"
                 label={
                   <AppText style={styles.checkboxText}>
-                    I consent to the sharing of my contact information and search preferences with real
-                    estate agents who offer listings which may align with my interests
+                    I consent to the sharing of my contact information and search preferences with
+                    real estate agents who offer listings which may align with my interests
                   </AppText>
                 }
               />
@@ -338,9 +336,7 @@ export default function Signup2Email() {
       </KeyboardAwareScrollView>
 
       <View style={styles.footer}>
-        <PressableView
-          onPress={handleSubmit(onSubmit, onError)}
-          style={styles.submitBtn}>
+        <PressableView onPress={handleSubmit(onSubmit, onError)} style={styles.submitBtn}>
           <AppText style={styles.submitBtnText}>Sign up</AppText>
         </PressableView>
       </View>

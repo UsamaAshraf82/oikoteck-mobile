@@ -9,10 +9,7 @@ import { thoasandseprator } from '~/utils/number';
 const Pricing = () => {
   return (
     <View style={styles.container}>
-      <TopHeader
-        onBackPress={() => router.back()}
-        title="Pricing"
-      />
+      <TopHeader onBackPress={() => router.back()} title="Pricing" />
       <View style={styles.header}>
         <View>
           <AppText style={styles.title}>Pricing Breakdown</AppText>
@@ -48,10 +45,7 @@ const Pricing = () => {
       </View>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {onepricetable.map((i, j) => (
-          <Grid
-            cols={4}
-            key={j}
-            style={styles.gridRow}>
+          <Grid cols={4} key={j} style={styles.gridRow}>
             <View>
               <AppText style={styles.rangeText}>
                 {thoasandseprator(i.low)}{' '}

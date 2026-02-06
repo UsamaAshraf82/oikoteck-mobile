@@ -18,17 +18,11 @@ const PostListing = () => {
       </View>
 
       <View style={styles.imageSection}>
-        <Image
-          source={PostLisitngIcon}
-          contentFit="contain"
-          style={styles.bannerImage}
-        />
+        <Image source={PostLisitngIcon} contentFit="contain" style={styles.bannerImage} />
       </View>
 
       <View style={styles.contentSection}>
-        <AppText style={styles.title}>
-          Post a listing
-        </AppText>
+        <AppText style={styles.title}>Post a listing</AppText>
         <AppText style={styles.subtitle}>
           Post a listing on OikoTeck in just 3 simple and easy steps, and enjoy hassle free property
           management
@@ -52,9 +46,7 @@ const PostListing = () => {
       </View>
 
       <View style={styles.footer}>
-        <PressableView
-          onPress={() => router.push('/property/new')}
-          style={styles.submitBtn}>
+        <PressableView onPress={() => router.push('/property/new')} style={styles.submitBtn}>
           <AppText style={styles.submitBtnText}>Post my listing</AppText>
         </PressableView>
       </View>

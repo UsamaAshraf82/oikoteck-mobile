@@ -40,9 +40,7 @@ const Select = () => {
           </TouchableNativeFeedback>
         )}
         <View style={styles.labelWrapper}>
-          <AppText style={styles.labelText}>
-            {value.label}
-          </AppText>
+          <AppText style={styles.labelText}>{value.label}</AppText>
         </View>
         {value.useFlatList ? (
           <View style={[styles.listWrapper, { height: deviceHeight * 0.9 - 80 }]}>
@@ -58,18 +56,12 @@ const Select = () => {
                   <TouchableNativeFeedback onPress={() => value.onPress?.(item)}>
                     <View style={styles.optionWrapper}>
                       {typeof item.label === 'string' ? (
-                        <AppText style={styles.optionText}>
-                          {item.label}
-                        </AppText>
+                        <AppText style={styles.optionText}>{item.label}</AppText>
                       ) : React.isValidElement(item.label) ? (
                         item.label
                       ) : null}
                       {isDeepEqual(item.value, value.value) && (
-                        <CheckCircleIcon
-                          size={25}
-                          color="#82065e"
-                          weight="fill"
-                        />
+                        <CheckCircleIcon size={25} color="#82065e" weight="fill" />
                       )}
                     </View>
                   </TouchableNativeFeedback>
@@ -84,18 +76,12 @@ const Select = () => {
                 <TouchableNativeFeedback key={i} onPress={() => value.onPress?.(item)}>
                   <View style={styles.optionWrapper}>
                     {typeof item.label === 'string' ? (
-                      <AppText style={styles.optionText}>
-                        {item.label}
-                      </AppText>
+                      <AppText style={styles.optionText}>{item.label}</AppText>
                     ) : React.isValidElement(item.label) ? (
                       item.label
                     ) : null}
                     {isDeepEqual(item.value, value.value) && (
-                      <CheckCircleIcon
-                        size={23}
-                        color="#82065e"
-                        weight="fill"
-                      />
+                      <CheckCircleIcon size={23} color="#82065e" weight="fill" />
                     )}
                   </View>
                 </TouchableNativeFeedback>

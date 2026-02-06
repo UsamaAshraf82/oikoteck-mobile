@@ -11,7 +11,7 @@ export default function Index() {
     queryFn: async () => {
       const query = new Parse.Query('Property');
       query.equalTo('objectId', local.id);
-      query.include('owner')
+      query.include('owner');
 
       const property = (await query.first({
         json: true,

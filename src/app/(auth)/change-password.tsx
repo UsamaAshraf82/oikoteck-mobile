@@ -77,6 +77,7 @@ const ChangePassword = () => {
 
         await user?.save();
         addToast({
+          type: 'success',
           heading: 'Password Changed',
           message:
             'Password is now successfully changed. You can now login with your new password.',
@@ -106,7 +107,7 @@ const ChangePassword = () => {
 
   return (
     <View style={styles.container}>
-      <TopHeader onBackPress={() => router.back()} title="Change Password" />
+      <TopHeader onBackPress={() => router.back()} title="" />
       <View style={styles.header}>
         <AppText style={styles.title}>Change Password 🔒</AppText>
         <AppText style={styles.subTitle}>Update your current password here</AppText>
@@ -135,9 +136,7 @@ const ChangePassword = () => {
         />
       </View>
       <View style={styles.footer}>
-        <Pressable
-          style={styles.submitBtn}
-          onPress={handleSubmit(onSubmitInternal, onError)}>
+        <Pressable style={styles.submitBtn} onPress={handleSubmit(onSubmitInternal, onError)}>
           <AppText style={styles.submitBtnText}>Change Password</AppText>
         </Pressable>
       </View>
@@ -163,6 +162,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#575775',
     marginBottom: 4,
+    marginTop: 12,
   },
   form: {
     flex: 1,

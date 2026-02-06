@@ -23,11 +23,7 @@ const TextInput = ({ label, style, secureTextEntry, getValue, ...props }: Props)
           placeholderTextColor="#6B7280"
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          style={[
-            styles.input,
-            isFocused && styles.inputFocused,
-            style
-          ]}
+          style={[styles.input, isFocused && styles.inputFocused, style]}
           secureTextEntry={secureTextEntryHack}
           onChangeText={(text) => {
             getValue?.(text);
@@ -37,7 +33,11 @@ const TextInput = ({ label, style, secureTextEntry, getValue, ...props }: Props)
         {secureTextEntry && (
           <View style={styles.iconWrapper}>
             <TouchableOpacity onPress={() => setSecureTextEntryHack((i) => !i)}>
-              {secureTextEntryHack ? <EyeClosedIcon size={20} color="#6B7280" /> : <EyeIcon size={20} color="#6B7280" />}
+              {secureTextEntryHack ? (
+                <EyeClosedIcon size={20} color="#6B7280" />
+              ) : (
+                <EyeIcon size={20} color="#6B7280" />
+              )}
             </TouchableOpacity>
           </View>
         )}

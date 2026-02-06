@@ -185,9 +185,7 @@ const SendMessage = ({ onClose, property }: Props) => {
             bottomOffset={50}
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}>
-            <AppText style={styles.headerSub}>
-              Send a message to the listing owner
-            </AppText>
+            <AppText style={styles.headerSub}>Send a message to the listing owner</AppText>
             <View style={styles.formSection}>
               <ControlledTextInput
                 control={control}
@@ -196,9 +194,7 @@ const SendMessage = ({ onClose, property }: Props) => {
                 label="Message to the Owner"
                 style={styles.textArea}
               />
-              <AppText style={styles.contactHeading}>
-                How can we get back to you?
-              </AppText>
+              <AppText style={styles.contactHeading}>How can we get back to you?</AppText>
               <Grid cols={2} gap={8}>
                 <ControlledTextInput
                   control={control}
@@ -266,16 +262,12 @@ const SendMessage = ({ onClose, property }: Props) => {
             <View style={styles.spacer20} />
             <View style={styles.footer}>
               <Grid cols={2} gap={8}>
-                <PressableView
-                  onPress={onClose}
-                  style={styles.cancelBtn}>
+                <PressableView onPress={onClose} style={styles.cancelBtn}>
                   <View style={styles.footerBtnInner}>
                     <AppText style={styles.cancelBtnText}>Cancel</AppText>
                   </View>
                 </PressableView>
-                <PressableView
-                  onPress={handleSubmit(onSubmit, onError)}
-                  style={styles.sendBtn}>
+                <PressableView onPress={handleSubmit(onSubmit, onError)} style={styles.sendBtn}>
                   <View style={styles.footerBtnInner}>
                     <AppText style={styles.sendBtnText}>Send Message</AppText>
                   </View>

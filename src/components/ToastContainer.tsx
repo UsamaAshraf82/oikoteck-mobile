@@ -37,9 +37,7 @@ export const ToastContainer = () => {
               toast.type === 'info' && styles.infoBorder,
             ]}>
             <View style={styles.textContent}>
-              <AppText style={styles.heading}>
-                {toast.heading}
-              </AppText>
+              <AppText style={styles.heading}>{toast.heading}</AppText>
               <AppText style={styles.message}>{toast.message}</AppText>
             </View>
             <TouchableWithoutFeedback

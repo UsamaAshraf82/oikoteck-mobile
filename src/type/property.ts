@@ -1,19 +1,12 @@
 import ParseGeoPoint from 'parse/types/ParseGeoPoint';
 import { User_Type } from './user';
-export type statusEnum =
-  | 'Approved'
-  | 'Pending Approval'
-  | 'Expired'
-  | 'Rejected'
-  | 'Deleted';
+export type statusEnum = 'Approved' | 'Pending Approval' | 'Expired' | 'Rejected' | 'Deleted';
 export type planEnum = 'Free' | 'Promote' | 'Promote +' | 'Gold' | 'Platinum';
 
 export type Property_Type = {
   images: string[];
   special_feature: string[];
-  marker:
-    | ParseGeoPoint
-    | { __type: 'GeoPoint'; latitude: number; longitude: number };
+  marker: ParseGeoPoint | { __type: 'GeoPoint'; latitude: number; longitude: number };
   listing_for: string;
   title: string;
   reject_reason: string;
@@ -71,13 +64,7 @@ export type Property_Type = {
   exact_location?: boolean;
   real_status?: boolean;
 
-  flag:
-    | 'NEW'
-    | 'EDIT'
-    | 'RENEW'
-    | 'CHANGE_PLAN'
-    | 'ACTIVATE_PRE'
-    | 'ACTIVATE_POST';
+  flag: 'NEW' | 'EDIT' | 'RENEW' | 'CHANGE_PLAN' | 'ACTIVATE_PRE' | 'ACTIVATE_POST';
 
   flag_time: Date | { __type: 'Date'; iso: string };
   move_in_date: Date | { __type: 'Date'; iso: string };

@@ -366,8 +366,8 @@ export default function Signup2Social() {
                 name="share_consent"
                 label={
                   <AppText style={styles.checkboxText}>
-                    I consent to the sharing of my contact information and search preferences with real
-                    estate agents who offer listings which may align with my interests
+                    I consent to the sharing of my contact information and search preferences with
+                    real estate agents who offer listings which may align with my interests
                   </AppText>
                 }
               />
@@ -377,9 +377,7 @@ export default function Signup2Social() {
       </KeyboardAwareScrollView>
 
       <View style={styles.footer}>
-        <PressableView
-          onPress={handleSubmit(onSubmit, onError)}
-          style={styles.submitBtn}>
+        <PressableView onPress={handleSubmit(onSubmit, onError)} style={styles.submitBtn}>
           <AppText style={styles.submitBtnText}>Sign up</AppText>
         </PressableView>
       </View>

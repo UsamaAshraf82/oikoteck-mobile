@@ -151,12 +151,8 @@ const Account = () => {
                   { icon: <HandCoinsIcon />, label: 'Services', path: '/services' },
                   { icon: <HeartIcon />, label: 'My Favorites', path: '/favorities' },
                   { icon: <PasswordIcon />, label: 'Change Password', path: '/change-password' },
-                  { icon: <QuestionIcon />, label: 'Frequently asked Questions', path: '/faqs' },
                 ]
-              : [
-                  { icon: <HandCoinsIcon />, label: 'Services', path: '/services' },
-                  { icon: <QuestionIcon />, label: 'Frequently asked Questions', path: '/faqs' },
-                ]
+              : [{ icon: <HandCoinsIcon />, label: 'Services', path: '/services' }]
             ).map((item, index, arr) => (
               <Link href={item.path as any} key={item.label}>
                 <View
@@ -174,6 +170,7 @@ const Account = () => {
           </View>
           <View>
             {[
+              { icon: <QuestionIcon />, label: 'Frequently Asked Questions', path: '/faqs' },
               { icon: <BriefcaseIcon />, label: 'Terms and Conditions', path: '/terms-conditions' },
               { icon: <ShieldWarningIcon />, label: 'Privacy Policy', path: '/privacy-policy' },
               { icon: <HandshakeIcon />, label: 'Service Plan Terms', path: '/service-plan-terms' },

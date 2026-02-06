@@ -15,15 +15,13 @@ export const cloudfront = (
     if (src?.startsWith('https://images.unsplash.com')) {
       const split = size?.split('x');
       fall =
-        src +
-        `?q=80&w=${split ? split[0] : 500}&h=${split ? split[1] : 500}&auto=webp&fit=crop`;
+        src + `?q=80&w=${split ? split[0] : 500}&h=${split ? split[1] : 500}&auto=webp&fit=crop`;
       lazy = src + `?q=10&w=${50}&h=${50}&auto=webp&fit=crop`;
     } else {
       fall = src;
       lazy = src;
     }
   } else if (size) {
-
     fall =
       cloudfront_src +
       `${fitin ? 'fit-in/' : ''}${size}/` +

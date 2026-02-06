@@ -107,11 +107,7 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
         <View style={styles.imageContainer}>
           {file.isUploading ? (
             <>
-              <Image
-                source={file.temp}
-                contentFit="contain"
-                style={styles.image}
-              />
+              <Image source={file.temp} contentFit="contain" style={styles.image} />
               <View style={styles.uploadOverlay}>
                 <ActivityIndicator size="large" color="#82065e" />
               </View>
@@ -124,9 +120,7 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
                 contentFit="contain"
                 style={styles.image}
               />
-              <TouchableHighlight
-                onPress={() => remove(index)}
-                style={styles.deleteBtn}>
+              <TouchableHighlight onPress={() => remove(index)} style={styles.deleteBtn}>
                 <View>
                   <TrashIcon size={15} color="white" />
                 </View>
@@ -140,9 +134,7 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
 
   return (
     <View style={styles.container}>
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <View>
           <AppText style={styles.title}>Property Gallery 📸</AppText>
           <AppText style={styles.subtitle}>Upload pictures of your property</AppText>
@@ -231,9 +223,7 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
       </ScrollView>
 
       <View style={styles.footer}>
-        <PressableView
-          onPress={handleSubmit(onSubmitInternal, onError)}
-          style={styles.continueBtn}>
+        <PressableView onPress={handleSubmit(onSubmitInternal, onError)} style={styles.continueBtn}>
           <AppText style={styles.continueBtnText}>Continue</AppText>
         </PressableView>
       </View>

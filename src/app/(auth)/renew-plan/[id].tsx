@@ -52,7 +52,8 @@ const RenewPlan = () => {
 
       addToast({
         heading: 'Listing Under Review',
-        message: 'Your listing is currently being reviewed by OikoTeck customer service team. You will be notified shortly of its approval status.',
+        message:
+          'Your listing is currently being reviewed by OikoTeck customer service team. You will be notified shortly of its approval status.',
       });
       activity.stopActivity();
       router.push('/account');
@@ -112,9 +113,7 @@ const RenewPlan = () => {
       </View>
 
       <View style={styles.footer}>
-        <PressableView
-          onPress={onSubmit}
-          style={styles.submitBtn}>
+        <PressableView onPress={onSubmit} style={styles.submitBtn}>
           <AppText style={styles.submitBtnText}>Continue</AppText>
         </PressableView>
       </View>

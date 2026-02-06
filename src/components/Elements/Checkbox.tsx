@@ -39,15 +39,8 @@ const Checkbox: React.FC<Props> = ({
   };
 
   return (
-    <View
-      style={[
-        styles.container,
-        labelLast && styles.justifyStart,
-        alignTop && styles.alignTop,
-      ]}>
-      {!labelLast && (
-        <AppText style={[styles.labelTextLeft, labelStyle]}>{label}</AppText>
-      )}
+    <View style={[styles.container, labelLast && styles.justifyStart, alignTop && styles.alignTop]}>
+      {!labelLast && <AppText style={[styles.labelTextLeft, labelStyle]}>{label}</AppText>}
       <Pressable onPress={() => handleChange(!isChecked)}>
         <ExpoCheckbox
           value={isChecked}
@@ -62,9 +55,7 @@ const Checkbox: React.FC<Props> = ({
           disabled={disabled}
         />
       </Pressable>
-      {labelLast && (
-        <AppText style={[styles.labelTextRight, labelStyle]}>{label}</AppText>
-      )}
+      {labelLast && <AppText style={[styles.labelTextRight, labelStyle]}>{label}</AppText>}
     </View>
   );
 };

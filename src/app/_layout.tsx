@@ -5,7 +5,12 @@ import { useFonts } from 'expo-font';
 import { Slot, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator as ActivityIndicatorInternal, Modal, StyleSheet, View } from 'react-native';
+import {
+  ActivityIndicator as ActivityIndicatorInternal,
+  Modal,
+  StyleSheet,
+  View,
+} from 'react-native';
 import { Settings } from 'react-native-fbsdk-next';
 import Provider from '~/components/Provider';
 import Menu from '~/components/Sheets/Menu';
@@ -75,7 +80,7 @@ export default function RootLayout() {
         </Provider>
       </StripeProvider>
       <ToastContainer />
-      <PortalHost  name='toast-host'/>
+      <PortalHost name="toast-host" />
     </>
   );
 }

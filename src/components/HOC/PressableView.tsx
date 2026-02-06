@@ -11,9 +11,7 @@ type Props = {
 const PressableView: React.FC<Props> = ({ children, style, onPress }) => {
   return (
     <View style={[styles.container, style]}>
-      <TouchableNativeFeedback
-        onPress={onPress}
-      >
+      <TouchableNativeFeedback onPress={onPress}>
         <View style={styles.innerContainer}>{children}</View>
       </TouchableNativeFeedback>
     </View>

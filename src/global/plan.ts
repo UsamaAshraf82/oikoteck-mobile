@@ -1,5 +1,4 @@
-import { GOLD_PRICE, PLATINUM_PRICE, PROMOTE_PLUS_PRICE, PROMOTE_PRICE } from "./global";
-
+import { GOLD_PRICE, PLATINUM_PRICE, PROMOTE_PLUS_PRICE, PROMOTE_PRICE } from './global';
 
 export const plans = [
   {
@@ -19,11 +18,7 @@ export const plans = [
     price: [`€ ${PROMOTE_PRICE}`, 'per listing/month'],
     price_number: PROMOTE_PRICE,
     description: 'Renewable monthly promotion',
-    features: [
-      'Post a Listing',
-      'Promote Listing',
-      'Boost Listing Twice/month',
-    ],
+    features: ['Post a Listing', 'Promote Listing', 'Boost Listing Twice/month'],
     button: 'Select Plan',
   },
   {
@@ -33,11 +28,7 @@ export const plans = [
     name: 'Promote +',
     price: [`€ ${PROMOTE_PLUS_PRICE}`, '/per point'],
     description: 'Points-based promotion',
-    features: [
-      'Post a Listing',
-      'Promote Listing',
-      'Boost Listing Every 48 hours',
-    ],
+    features: ['Post a Listing', 'Promote Listing', 'Boost Listing Every 48 hours'],
     button: 'Select Plan',
   },
   {
@@ -47,11 +38,7 @@ export const plans = [
     price_number: GOLD_PRICE,
     price: [`€ ${GOLD_PRICE}`, '/per point'],
     description: 'Points-based promotion',
-    features: [
-      'Post a Listing',
-      'Promote Listing',
-      'Boost Listing Every 24 hours',
-    ],
+    features: ['Post a Listing', 'Promote Listing', 'Boost Listing Every 24 hours'],
     button: 'Select Plan',
   },
   {
@@ -61,11 +48,7 @@ export const plans = [
     price_number: PLATINUM_PRICE,
     price: [`€ ${PLATINUM_PRICE}`, '/per point'],
     description: 'Points-based promotion',
-    features: [
-      'Post a Listing',
-      'Promote Listing',
-      'Boost Listing Every 8 hours',
-    ],
+    features: ['Post a Listing', 'Promote Listing', 'Boost Listing Every 8 hours'],
     button: 'Select Plan',
   },
 ];

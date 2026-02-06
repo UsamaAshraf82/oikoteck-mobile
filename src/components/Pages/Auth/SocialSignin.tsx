@@ -125,18 +125,14 @@ const SocialSignin = () => {
 
   return (
     <View style={styles.container}>
-      <PressableView
-        onPress={startGoogleFlow}
-        style={styles.socialBtn}>
+      <PressableView onPress={startGoogleFlow} style={styles.socialBtn}>
         <View style={styles.btnContent}>
           <Image source={google} style={styles.icon} />
           <AppText style={styles.btnText}>Continue with Google</AppText>
         </View>
       </PressableView>
 
-      <PressableView
-        onPress={handleFacebookLogin}
-        style={styles.socialBtn}>
+      <PressableView onPress={handleFacebookLogin} style={styles.socialBtn}>
         <View style={styles.btnContent}>
           <Image source={facebook} style={styles.icon} />
           <AppText style={styles.btnText}>Continue with Facebook</AppText>
@@ -144,9 +140,7 @@ const SocialSignin = () => {
       </PressableView>
 
       {Platform.OS === 'ios' && (
-        <PressableView
-          onPress={() => {}}
-          style={styles.socialBtn}>
+        <PressableView onPress={() => {}} style={styles.socialBtn}>
           <View style={styles.btnContent}>
             <Image source={apple} style={styles.icon} />
             <AppText style={styles.btnText}>Continue with Apple</AppText>

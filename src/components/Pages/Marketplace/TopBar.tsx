@@ -21,7 +21,9 @@ export const HomeTopBar = () => {
           style={styles.loginButton}>
           <View style={styles.loginInner}>
             <UserCircleIcon size={20} color="#192234" />
-            <AppText style={styles.loginText} numberOfLines={1}>Login</AppText>
+            <AppText style={styles.loginText} numberOfLines={1}>
+              Login
+            </AppText>
           </View>
         </PressableView>
       ) : (

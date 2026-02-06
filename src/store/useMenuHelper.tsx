@@ -33,9 +33,9 @@ const useMenu = create<Store>()((set) => ({
         set({ opened: null });
         p.onClose?.();
       },
-      options: p.options.map(({onPress,display=true,...option}) => ({
+      options: p.options.map(({ onPress, display = true, ...option }) => ({
         ...option,
-        display:display,
+        display: display,
         onPress: () => {
           set({ opened: null });
           onPress();

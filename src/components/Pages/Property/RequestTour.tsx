@@ -204,13 +204,14 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
           bottomOffset={50}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}>
-          <AppText style={styles.headerSub}>
-            Send a tour request to the listing owner
-          </AppText>
+          <AppText style={styles.headerSub}>Send a tour request to the listing owner</AppText>
           <View style={styles.formSection}>
             <Select
               varient
-              options={Tour1Schema.shape.tour_type.options.map((i: string) => ({ label: i, value: i }))}
+              options={Tour1Schema.shape.tour_type.options.map((i: string) => ({
+                label: i,
+                value: i,
+              }))}
               label="Select a tour type"
               title="Tour Type"
               value={{ label: watch('tour_type'), value: watch('tour_type') }}
@@ -226,15 +227,16 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
 
             <Select
               varient
-              options={Tour1Schema.shape.tour_time.options.map((i: string) => ({ label: i, value: i }))}
+              options={Tour1Schema.shape.tour_time.options.map((i: string) => ({
+                label: i,
+                value: i,
+              }))}
               label="Select a preferred visit time"
               title="Visit Type"
               value={{ label: watch('tour_time'), value: watch('tour_time') }}
               onChange={(value) => setValue('tour_time', value?.value as Tour1Type['tour_time'])}
             />
-            <AppText style={styles.contactHeading}>
-              How can we get back to you?
-            </AppText>
+            <AppText style={styles.contactHeading}>How can we get back to you?</AppText>
             <Grid cols={2} gap={8}>
               <ControlledTextInput
                 control={control}
@@ -311,16 +313,12 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
 
         <View style={styles.footer}>
           <Grid cols={2} gap={8}>
-            <PressableView
-              onPress={onClose}
-              style={styles.cancelBtn}>
+            <PressableView onPress={onClose} style={styles.cancelBtn}>
               <View style={styles.footerBtnInner}>
                 <AppText style={styles.cancelBtnText}>Cancel</AppText>
               </View>
             </PressableView>
-            <PressableView
-              onPress={handleSubmit(onSubmit, onError)}
-              style={styles.sendBtn}>
+            <PressableView onPress={handleSubmit(onSubmit, onError)} style={styles.sendBtn}>
               <View style={styles.footerBtnInner}>
                 <AppText style={styles.sendBtnText}>Request Tour</AppText>
               </View>

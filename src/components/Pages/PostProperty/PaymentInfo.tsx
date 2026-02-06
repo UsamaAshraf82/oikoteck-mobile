@@ -47,9 +47,7 @@ export default function PaymentInfo({ data, onSubmit }: Props) {
     <View style={styles.container}>
       <View style={styles.mainContent}>
         <AppText style={styles.title}>Payments</AppText>
-        <AppText style={styles.subtitle}>
-          Select your option plan and setup payments
-        </AppText>
+        <AppText style={styles.subtitle}>Select your option plan and setup payments</AppText>
         <KeyboardAwareScrollView
           bottomOffset={50}
           contentContainerStyle={styles.scrollContent}
@@ -88,9 +86,7 @@ export default function PaymentInfo({ data, onSubmit }: Props) {
         </KeyboardAwareScrollView>
       </View>
       <View style={styles.footer}>
-        <PressableView
-          onPress={handleSubmit(onSubmitInternal, onError)}
-          style={styles.continueBtn}>
+        <PressableView onPress={handleSubmit(onSubmitInternal, onError)} style={styles.continueBtn}>
           <AppText style={styles.continueBtnText}>Continue</AppText>
         </PressableView>
       </View>

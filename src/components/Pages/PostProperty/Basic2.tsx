@@ -123,15 +123,11 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
           <View style={styles.counterRow}>
             <AppText style={styles.counterLabel}>Floor</AppText>
             <View style={styles.counterControls}>
-              <PressableView
-                style={styles.counterBtn}
-                onPress={() => setValue('floor', floor - 1)}>
+              <PressableView style={styles.counterBtn} onPress={() => setValue('floor', floor - 1)}>
                 <MinusIcon size={14} color="#192234" />
               </PressableView>
               <AppText style={styles.counterValue}>{floor}</AppText>
-              <PressableView
-                style={styles.counterBtn}
-                onPress={() => setValue('floor', floor + 1)}>
+              <PressableView style={styles.counterBtn} onPress={() => setValue('floor', floor + 1)}>
                 <PlusIcon size={14} color="#192234" />
               </PressableView>
             </View>
@@ -161,24 +157,22 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
                 onPress={() => setValue('furnished', true)}
                 style={[styles.radioBtn, furnished === true && styles.radioBtnActive]}>
                 <View style={styles.radioBtnContent}>
-                  <AppText style={[styles.radioBtnText, furnished === true && styles.radioBtnTextActive]}>
+                  <AppText
+                    style={[styles.radioBtnText, furnished === true && styles.radioBtnTextActive]}>
                     Yes
                   </AppText>
-                  {furnished === true && (
-                    <CheckCircleIcon weight="fill" color="#82065e" />
-                  )}
+                  {furnished === true && <CheckCircleIcon weight="fill" color="#82065e" />}
                 </View>
               </PressableView>
               <PressableView
                 onPress={() => setValue('furnished', false)}
                 style={[styles.radioBtn, furnished === false && styles.radioBtnActive]}>
                 <View style={styles.radioBtnContent}>
-                  <AppText style={[styles.radioBtnText, furnished === false && styles.radioBtnTextActive]}>
+                  <AppText
+                    style={[styles.radioBtnText, furnished === false && styles.radioBtnTextActive]}>
                     No
                   </AppText>
-                  {furnished === false && (
-                    <CheckCircleIcon weight="fill" color="#82065e" />
-                  )}
+                  {furnished === false && <CheckCircleIcon weight="fill" color="#82065e" />}
                 </View>
               </PressableView>
             </Grid>
@@ -207,7 +201,9 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
                       OikoTeck will not display level of finish to users in the marketplace
                     </AppText>
                     <View style={styles.modalSteps}>
-                      <AppText style={styles.modalStepTitle}>Below are some level of finish examples:</AppText>
+                      <AppText style={styles.modalStepTitle}>
+                        Below are some level of finish examples:
+                      </AppText>
                       <AppText style={styles.finishLevelTitle}>Poor end</AppText>
                       <AppText style={styles.finishLevelDesc}>
                         Laminate countertops, vinyl flooring, basic fixtures, thin paint, basic
@@ -318,9 +314,7 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
         </KeyboardAwareScrollView>
       </View>
       <View style={styles.footer}>
-        <PressableView
-          onPress={handleSubmit(onSubmitInternal, onError)}
-          style={styles.continueBtn}>
+        <PressableView onPress={handleSubmit(onSubmitInternal, onError)} style={styles.continueBtn}>
           <AppText style={styles.continueBtnText}>Continue</AppText>
         </PressableView>
       </View>

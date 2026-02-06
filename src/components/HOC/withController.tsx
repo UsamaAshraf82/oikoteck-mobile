@@ -29,7 +29,7 @@ export function withController<TFieldValues extends FieldValues, P>(
             onBlur,
           };
 
-            propsForInput.getValue = onChange;
+          propsForInput.getValue = onChange;
 
           return <InputComponent {...propsForInput} />;
         }}

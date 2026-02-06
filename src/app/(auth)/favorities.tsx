@@ -4,7 +4,13 @@ import { useRouter } from 'expo-router';
 import Parse from 'parse/react-native';
 import { ArrowLeftIcon } from 'phosphor-react-native';
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import PropertyCard from '~/components/Cards/PropertyCardTable';
 import AppText from '~/components/Elements/AppText';
 import useUser from '~/store/useUser';
@@ -80,17 +86,9 @@ const Favorites = () => {
             onPress={() => {
               setListingFor('Rental');
             }}>
-            <View
-              style={[
-                styles.tabBtn,
-                listing_for === 'Rental' && styles.tabBtnActive,
-              ]}>
-              <AppText
-                style={[
-                  styles.tabText,
-                  listing_for === 'Rental' && styles.tabTextActive,
-                ]}>
-                Rental
+            <View style={[styles.tabBtn, listing_for === 'Rental' && styles.tabBtnActive]}>
+              <AppText style={[styles.tabText, listing_for === 'Rental' && styles.tabTextActive]}>
+                Rent
               </AppText>
             </View>
           </TouchableWithoutFeedback>
@@ -98,16 +96,8 @@ const Favorites = () => {
             onPress={() => {
               setListingFor('Sale');
             }}>
-            <View
-              style={[
-                styles.tabBtn,
-                listing_for === 'Sale' && styles.tabBtnActive,
-              ]}>
-              <AppText
-                style={[
-                  styles.tabText,
-                  listing_for === 'Sale' && styles.tabTextActive,
-                ]}>
+            <View style={[styles.tabBtn, listing_for === 'Sale' && styles.tabBtnActive]}>
+              <AppText style={[styles.tabText, listing_for === 'Sale' && styles.tabTextActive]}>
                 Sale
               </AppText>
             </View>
@@ -119,9 +109,7 @@ const Favorites = () => {
           <AppText style={styles.mainTitle}>My Favorites</AppText>
         </View>
         <View>
-          <AppText style={styles.subTitle}>
-            {data?.pages[0]?.count || 0} favorite listings
-          </AppText>
+          <AppText style={styles.subTitle}>{data?.pages[0]?.count || 0} favorite listing</AppText>
         </View>
         <View style={styles.listContainer}>
           <FlashList
@@ -206,6 +194,8 @@ const styles = StyleSheet.create({
   },
   tabTextActive: {
     color: '#192234',
+
+    fontFamily: 'LufgaBlack',
   },
   content: {
     flex: 1,

@@ -1,7 +1,7 @@
 // store/toastStore.ts
 import { create } from 'zustand';
 
-type  Props = {
+type Props = {
   isInActivity: boolean;
   startActivity: () => void;
   stopActivity: () => void;
@@ -13,4 +13,4 @@ const useActivityIndicator = create<Props>((set) => ({
   stopActivity: () => set({ isInActivity: false }),
 }));
 
-export default useActivityIndicator
+export default useActivityIndicator;

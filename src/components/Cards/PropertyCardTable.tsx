@@ -3,17 +3,17 @@ import { useRouter } from 'expo-router';
 import { DateTime } from 'luxon';
 import Parse from 'parse/react-native';
 import {
-    ArrowCounterClockwiseIcon,
-    ArrowSquareOutIcon,
-    CoinIcon,
-    CrownIcon,
-    CursorClickIcon,
-    DotsThreeCircleIcon,
-    HeartBreakIcon,
-    LightningIcon,
-    PencilSimpleIcon,
-    ProhibitIcon,
-    TrashIcon,
+  ArrowCounterClockwiseIcon,
+  ArrowSquareOutIcon,
+  CoinIcon,
+  CrownIcon,
+  CursorClickIcon,
+  DotsThreeCircleIcon,
+  HeartIcon,
+  LightningIcon,
+  PencilSimpleIcon,
+  ProhibitIcon,
+  TrashIcon,
 } from 'phosphor-react-native';
 import { useMemo } from 'react';
 import { Alert, Pressable, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
@@ -27,17 +27,17 @@ import { Property_Type } from '~/type/property';
 import { deviceWidth } from '~/utils/global';
 import { thoasandseprator } from '~/utils/number';
 import {
-    activateListing,
-    applyCredit,
-    boostListing,
-    cancelMembership,
-    changeMembership,
-    editCredits,
-    editList,
-    permanentDelete,
-    rejectionReason,
-    renewMembership,
-    viewListing,
+  activateListing,
+  applyCredit,
+  boostListing,
+  cancelMembership,
+  changeMembership,
+  editCredits,
+  editList,
+  permanentDelete,
+  rejectionReason,
+  renewMembership,
+  viewListing,
 } from '~/utils/property';
 import AWSImage from '../Elements/AWSImage';
 import AppText from '../Elements/AppText';
@@ -64,54 +64,7 @@ const PropertyCard = ({
   const { confirmPopup } = usePopup();
 
   const options = useMemo(() => {
-    if (type === 'favorite')
-      return [
-        {
-          icon: <ArrowSquareOutIcon />,
-          label: 'View Listing',
-          onPress: () => {
-            router.push(`/property/${property.objectId}`);
-          },
-        },
-        {
-          icon: <HeartBreakIcon />,
-          label: ' Remove from Favorites',
-          onPress: async () => {
-            confirmPopup({
-              label: 'Remove Listing',
-              message: 'Are you sure you want to remove this listing from your favorites?',
-              confirm: {
-                // className: 'bg-red-700 border-red-700',
-                // textClassName: 'text-white',
-                text: 'Yes, Remove',
-              },
-              onConfirm: async () => {
-                activity.startActivity();
-                const FavouriteQuery = new Parse.Query('Favourite');
-                FavouriteQuery.equalTo('Property', {
-                  __type: 'Pointer',
-                  className: 'Property',
-                  objectId: property.objectId,
-                });
-                FavouriteQuery.equalTo('User', {
-                  __type: 'Pointer',
-                  className: '_User',
-                  objectId: user?.id,
-                });
-
-                FavouriteQuery.equalTo('faviorite', true);
-                const faviorite = await FavouriteQuery.first();
-
-                await faviorite?.destroy();
-                query_client.invalidateQueries({
-                  queryKey: ['properties', 'faviorites'],
-                });
-                activity.stopActivity();
-              },
-            });
-          },
-        },
-      ];
+    if (type === 'favorite') return [];
     if (type === 'dashboard')
       return [
         {
@@ -334,39 +287,44 @@ const PropertyCard = ({
 
   const statusStyle = useMemo(() => {
     switch (property.status) {
-      case 'Pending Approval': return styles.statusPending;
-      case 'Approved': return styles.statusApproved;
-      case 'Expired': return styles.statusExpired;
-      case 'Deleted': return styles.statusDeleted;
-      case 'Rejected': return styles.statusRejected;
-      default: return styles.statusExpired;
+      case 'Pending Approval':
+        return styles.statusPending;
+      case 'Approved':
+        return styles.statusApproved;
+      case 'Expired':
+        return styles.statusExpired;
+      case 'Deleted':
+        return styles.statusDeleted;
+      case 'Rejected':
+        return styles.statusRejected;
+      default:
+        return styles.statusExpired;
     }
   }, [property.status]);
 
   const planStyle = useMemo(() => {
     switch (property.plan) {
-      case 'Free': return styles.planFree;
-      case 'Promote': return styles.planPromote;
-      case 'Promote +': return styles.planPromotePlus;
-      case 'Gold': return styles.planGold;
-      case 'Platinum': return styles.planPlatinum;
-      default: return styles.planPlatinum;
+      case 'Free':
+        return styles.planFree;
+      case 'Promote':
+        return styles.planPromote;
+      case 'Promote +':
+        return styles.planPromotePlus;
+      case 'Gold':
+        return styles.planGold;
+      case 'Platinum':
+        return styles.planPlatinum;
+      default:
+        return styles.planPlatinum;
     }
   }, [property.plan]);
 
   return (
-    <View
-      style={[
-        styles.cardContainer,
-        type === 'change_plan' && styles.borderSecondary,
-      ]}>
+    <View style={[styles.cardContainer, type === 'change_plan' && styles.borderSecondary]}>
       <View style={styles.contentRow}>
         <TouchableWithoutFeedback onPress={() => router.push(`/property/${property.objectId}`)}>
           <View style={styles.imageWrapper}>
-            <AWSImage
-              src={property.images[0]}
-              style={styles.image}
-            />
+            <AWSImage src={property.images[0]} style={styles.image} />
             {['dashboard', 'change_plan'].includes(type) && (
               <View style={[styles.statusBadge, statusStyle]}>
                 <AppText style={styles.badgeTextSmall}>
@@ -376,19 +334,15 @@ const PropertyCard = ({
             )}
           </View>
         </TouchableWithoutFeedback>
-
         {type === 'dashboard' && (
           <View style={[styles.planBadge, planStyle]}>
             <AppText style={styles.badgeTextSmall}>{property.plan}</AppText>
           </View>
         )}
-
         <View style={styles.detailsContainer}>
           <View style={styles.rowBetween}>
             <View style={styles.rowBaseline}>
-              <AppText style={styles.priceText}>
-                {'€ ' + thoasandseprator(property.price)}
-              </AppText>
+              <AppText style={styles.priceText}>{'€ ' + thoasandseprator(property.price)}</AppText>
               {property.listing_for !== 'Sale' && (
                 <AppText style={styles.perMonthText}> /month</AppText>
               )}
@@ -426,6 +380,45 @@ const PropertyCard = ({
           </View>
         </View>
 
+        <Pressable
+          style={[styles.menuButton, { top: 4 }]}
+          onPress={() => {
+            confirmPopup({
+              label: 'Remove Listing',
+              message: 'Are you sure you want to remove this listing from your favorites?',
+              confirm: {
+                style: { backgroundColor: '#cc3f33' },
+                // className: 'bg-red-700 border-red-700',
+                // textClassName: 'text-white',
+                text: 'Yes, Remove',
+              },
+              onConfirm: async () => {
+                activity.startActivity();
+                const FavouriteQuery = new Parse.Query('Favourite');
+                FavouriteQuery.equalTo('Property', {
+                  __type: 'Pointer',
+                  className: 'Property',
+                  objectId: property.objectId,
+                });
+                FavouriteQuery.equalTo('User', {
+                  __type: 'Pointer',
+                  className: '_User',
+                  objectId: user?.id,
+                });
+
+                FavouriteQuery.equalTo('faviorite', true);
+                const faviorite = await FavouriteQuery.first();
+
+                await faviorite?.destroy();
+                query_client.invalidateQueries({
+                  queryKey: ['properties', 'faviorites'],
+                });
+                activity.stopActivity();
+              },
+            });
+          }}>
+          <HeartIcon weight={'fill'} color={'#cc3f33'} />
+        </Pressable>
         {options.length > 0 && (
           <Pressable
             style={styles.menuButton}

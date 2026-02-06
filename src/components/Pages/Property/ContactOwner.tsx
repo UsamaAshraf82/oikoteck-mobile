@@ -5,13 +5,13 @@ import * as Linking from 'expo-linking';
 import { Link } from 'expo-router';
 import Parse from 'parse/react-native';
 import {
-    ChatTeardropIcon,
-    EnvelopeIcon,
-    HouseLineIcon,
-    PhoneCallIcon,
-    UserIcon,
-    WhatsappLogoIcon,
-    XIcon,
+  ChatTeardropIcon,
+  EnvelopeIcon,
+  HouseLineIcon,
+  PhoneCallIcon,
+  UserIcon,
+  WhatsappLogoIcon,
+  XIcon,
 } from 'phosphor-react-native';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -146,10 +146,7 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
                     {owner.first_name} {owner.last_name}
                   </AppText>
                   <View
-                    style={[
-                      styles.badge,
-                      isAgent ? styles.badgeAgent : styles.badgeIndividual,
-                    ]}>
+                    style={[styles.badge, isAgent ? styles.badgeAgent : styles.badgeIndividual]}>
                     {isAgent ? (
                       <ExpoImage source={agent} style={{ width: 14, height: 14 }} />
                     ) : (
@@ -157,7 +154,7 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
                     )}
                     <AppText
                       style={[
-                         styles.badgeText,
+                        styles.badgeText,
                         isAgent ? styles.textAgent : styles.textIndividual,
                       ]}>
                       {isAgent ? 'Broker' : 'Homeowner'}
@@ -230,15 +227,11 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
                 label={
                   <>
                     I confirm that I read and understood Oikoteck’s{' '}
-                    <Link
-                      href="/privacy-policy"
-                      style={styles.linkText}>
+                    <Link href="/privacy-policy" style={styles.linkText}>
                       Data Protection Notice
                     </Link>{' '}
                     and the{' '}
-                    <Link
-                      href="/cookie-policy"
-                      style={styles.linkText}>
+                    <Link href="/cookie-policy" style={styles.linkText}>
                       Cookies Policy
                     </Link>{' '}
                     *
@@ -302,7 +295,7 @@ const PhoneNumberModal = ({
           <AppText style={styles.headerTitle}>Phone Number</AppText>
           <TouchableNativeFeedback hitSlop={10} onPress={onClose}>
             <View style={styles.closeIcon}>
-               <XIcon color="#192234" size={24} />
+              <XIcon color="#192234" size={24} />
             </View>
           </TouchableNativeFeedback>
         </View>
@@ -367,9 +360,7 @@ const EmailModal = ({
         <View style={{ maxHeight: deviceHeight * 0.775 }}>
           <AppText style={styles.subTitle}>Property owner's email address</AppText>
           <View style={styles.numberBox}>
-            <AppText style={styles.numberText}>
-              {owner.username}
-            </AppText>
+            <AppText style={styles.numberText}>{owner.username}</AppText>
           </View>
           <View style={styles.modalActions}>
             <PressableView

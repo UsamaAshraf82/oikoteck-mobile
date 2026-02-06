@@ -63,7 +63,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
         style={[
           styles.container,
           {
-            height: deviceHeight * 0.9,
+            height: deviceHeight * 0.8,
           },
         ]}>
         <View style={styles.handle} />
@@ -271,13 +271,18 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                       <PressableView
                         key={item.label}
                         onPress={() => changeSearch({ bedroom: item.value })}
-                        style={[
-                          styles.segmentedButton,
-                          i === 0 ? styles.segmentedLeft : {},
-                          i === arr.length - 1 ? styles.segmentedRight : {},
-                          isActive ? styles.segmentedActive : {},
-                        ] as any}>
-                        <AppText style={[styles.segmentedText, isActive ? styles.textSecondary : {}] as any}>
+                        style={
+                          [
+                            styles.segmentedButton,
+                            i === 0 ? styles.segmentedLeft : {},
+                            i === arr.length - 1 ? styles.segmentedRight : {},
+                            isActive ? styles.segmentedActive : {},
+                          ] as any
+                        }>
+                        <AppText
+                          style={
+                            [styles.segmentedText, isActive ? styles.textSecondary : {}] as any
+                          }>
                           {item.label}
                         </AppText>
                       </PressableView>
@@ -302,13 +307,18 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                       <PressableView
                         key={item.label}
                         onPress={() => changeSearch({ bathroom: item.value })}
-                        style={[
-                          styles.segmentedButton,
-                          i === 0 ? styles.segmentedLeft : {},
-                          i === arr.length - 1 ? styles.segmentedRight : {},
-                          isActive ? styles.segmentedActive : {},
-                        ] as any}>
-                        <AppText style={[styles.segmentedText, isActive ? styles.textSecondary : {}] as any}>
+                        style={
+                          [
+                            styles.segmentedButton,
+                            i === 0 ? styles.segmentedLeft : {},
+                            i === arr.length - 1 ? styles.segmentedRight : {},
+                            isActive ? styles.segmentedActive : {},
+                          ] as any
+                        }>
+                        <AppText
+                          style={
+                            [styles.segmentedText, isActive ? styles.textSecondary : {}] as any
+                          }>
                           {item.label}
                         </AppText>
                       </PressableView>
@@ -331,7 +341,8 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                         key={item.label}
                         onPress={() => changeSearch({ furnished: item.value })}
                         style={[styles.tabButton, isActive ? styles.tabActive : {}] as any}>
-                        <AppText style={[styles.tabText, isActive ? styles.textPrimary : {}] as any}>
+                        <AppText
+                          style={[styles.tabText, isActive ? styles.textPrimary : {}] as any}>
                           {item.label}
                         </AppText>
                       </PressableView>
@@ -421,38 +432,38 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
               <View style={{ height: 40 }} />
             </ScrollView>
           </View>
-          <View style={styles.footer}>
-            <PressableView
-              style={styles.resetButton}
-              onPress={() => {
-                onPress({
-                  district: value.district,
-                  area_1: value.area_1,
-                  area_2: value.area_2,
-                  minPrice: null,
-                  maxPrice: null,
-                  minSize: null,
-                  maxSize: null,
-                  minDate: null,
-                  maxDate: null,
-                  bedroom: null,
-                  furnished: null,
-                  bathroom: null,
-                  keywords: null,
-                  property_type: null,
-                  property_category: null,
-                });
-              }}>
-              <AppText style={styles.resetText}>Reset All</AppText>
-            </PressableView>
-            <PressableView
-              style={styles.applyButton}
-              onPress={() => {
-                onPress(filter);
-              }}>
-              <AppText style={styles.applyText}>Apply Filter</AppText>
-            </PressableView>
-          </View>
+        </View>
+        <View style={styles.footer}>
+          <PressableView
+            style={styles.resetButton}
+            onPress={() => {
+              onPress({
+                district: value.district,
+                area_1: value.area_1,
+                area_2: value.area_2,
+                minPrice: null,
+                maxPrice: null,
+                minSize: null,
+                maxSize: null,
+                minDate: null,
+                maxDate: null,
+                bedroom: null,
+                furnished: null,
+                bathroom: null,
+                keywords: null,
+                property_type: null,
+                property_category: null,
+              });
+            }}>
+            <AppText style={styles.resetText}>Reset All</AppText>
+          </PressableView>
+          <PressableView
+            style={styles.applyButton}
+            onPress={() => {
+              onPress(filter);
+            }}>
+            <AppText style={styles.applyText}>Apply Filter</AppText>
+          </PressableView>
         </View>
       </View>
     </Modal>
@@ -623,6 +634,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     marginTop: 16,
+    backgroundColor: 'white',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },

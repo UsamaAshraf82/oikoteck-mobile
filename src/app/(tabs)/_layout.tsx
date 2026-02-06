@@ -81,10 +81,7 @@ const Label = ({ focused, label }: { focused: boolean; label: string }) => {
   return (
     <View style={styles.labelContainer}>
       <AppText
-        style={[
-          styles.labelText,
-          focused ? styles.labelFocused : styles.labelInactive,
-        ]}
+        style={[styles.labelText, focused ? styles.labelFocused : styles.labelInactive]}
         numberOfLines={1}>
         {label}
       </AppText>

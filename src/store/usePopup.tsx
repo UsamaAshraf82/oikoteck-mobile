@@ -33,7 +33,6 @@ const usePopup = create<State & Actions>((set) => ({
     const Popup = () => (
       <Modal
         isVisible={true}
-
         // onBackdropPress={() => {
         //   onDiscard?.();
         //   set((state) => {
@@ -72,9 +71,7 @@ const usePopup = create<State & Actions>((set) => ({
           {notice && (
             <View style={styles.noticeWrapper}>
               {typeof notice.label === 'string' ? (
-                <AppText style={styles.noticeLabel}>
-                  {notice.label}
-                </AppText>
+                <AppText style={styles.noticeLabel}>{notice.label}</AppText>
               ) : React.isValidElement(notice.label) ? (
                 notice.label
               ) : null}
@@ -119,9 +116,7 @@ const usePopup = create<State & Actions>((set) => ({
           {/* {value.modal} */}
         </View>
       </Modal>
-
     );
-
 
     set((state) => {
       const map = state.state;

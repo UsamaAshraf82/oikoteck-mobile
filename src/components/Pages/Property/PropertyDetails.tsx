@@ -3,37 +3,37 @@ import { useRouter } from 'expo-router';
 import { DateTime } from 'luxon';
 import Parse from 'parse/react-native';
 import {
-    ArrowLeftIcon,
-    CalendarIcon,
-    ChatCircleIcon,
-    CouchIcon,
-    FileTextIcon,
-    GlobeHemisphereWestIcon,
-    HouseLineIcon,
-    MapPinIcon,
-    ShareFatIcon,
-    SquaresFourIcon,
-    StairsIcon,
+  ArrowLeftIcon,
+  CalendarIcon,
+  ChatCircleIcon,
+  CouchIcon,
+  FileTextIcon,
+  GlobeHemisphereWestIcon,
+  HouseLineIcon,
+  MapPinIcon,
+  ShareFatIcon,
+  SquaresFourIcon,
+  StairsIcon,
 } from 'phosphor-react-native';
 import { useMemo, useRef, useState } from 'react';
 import {
-    ColorValue,
-    Modal,
-    Pressable,
-    ScrollView,
-    Share,
-    StyleSheet,
-    TouchableWithoutFeedback,
-    View,
+  ColorValue,
+  Modal,
+  Pressable,
+  ScrollView,
+  Share,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
 } from 'react-native';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import MapView, { Circle, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import Animated, {
-    SharedValue,
-    useAnimatedStyle,
-    useSharedValue,
-    withDecay,
-    withSpring,
+  SharedValue,
+  useAnimatedStyle,
+  useSharedValue,
+  withDecay,
+  withSpring,
 } from 'react-native-reanimated';
 import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
 import FavButton from '~/components/Cards/FavButton';
@@ -178,7 +178,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
             <View style={styles.headerIconsLightbox}>
               <TouchableWithoutFeedback
                 onPress={async () => {
-                   await Share.share({
+                  await Share.share({
                     message: `Hi! I found this property. Enjoy reviewing its features on OikoTeck.\nhttps://www.oikoteck.com/property/${property.objectId}`,
                   });
                 }}>
@@ -188,14 +188,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
             </View>
             <View style={styles.dotsWrapper}>
               {property.images.map((_, index) => {
-                return (
-                  <Dot
-                    key={index}
-                    index={index}
-                    progress={progress2}
-                    activeColor="#82065e"
-                  />
-                );
+                return <Dot key={index} index={index} progress={progress2} activeColor="#82065e" />;
               })}
             </View>
           </GestureHandlerRootView>
@@ -261,7 +254,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
             <View style={styles.headerIconsMain}>
               <TouchableWithoutFeedback
                 onPress={async () => {
-                   await Share.share({
+                  await Share.share({
                     message: `Hi! I found this property. Enjoy reviewing its features on OikoTeck.\nhttps://www.oikoteck.com/property/${property.objectId}`,
                   });
                 }}>
@@ -277,9 +270,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
           </View>
           <View style={styles.infoWrapper}>
             <View style={styles.priceRow}>
-              <AppText style={styles.priceText}>
-                € {thoasandseprator(property.price)}
-              </AppText>
+              <AppText style={styles.priceText}>€ {thoasandseprator(property.price)}</AppText>
               {property.listing_for === 'Rental' && (
                 <AppText style={styles.perMonthText}>/Month</AppText>
               )}
@@ -303,9 +294,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
             {property.reference_number && (
               <View style={styles.refRow}>
                 <SquaresFourIcon color="#192234" />
-                <AppText style={styles.refText}>
-                  {property.reference_number}
-                </AppText>
+                <AppText style={styles.refText}>{property.reference_number}</AppText>
               </View>
             )}
 
@@ -326,9 +315,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
             <Grid cols={2} gap={8}>
               {details.map((i) => {
                 return (
-                  <View
-                    key={i.heading}
-                    style={styles.detailCard}>
+                  <View key={i.heading} style={styles.detailCard}>
                     <AppText style={styles.cardLabel}>{i.heading}</AppText>
                     <View style={styles.cardInfoRow}>
                       {i.icon}
@@ -344,7 +331,9 @@ export default function PropertyDetails({ property }: { property: Property_Type 
             <View style={styles.sectionHeader}>
               <AppText style={styles.sectionTitle}>Home Details</AppText>
               {property.special_feature.map((i) => (
-                <AppText key={i} style={styles.bulletItem}>• {i}</AppText>
+                <AppText key={i} style={styles.bulletItem}>
+                  • {i}
+                </AppText>
               ))}
               <AppText style={styles.bulletItem}>
                 • {property.listing_for === 'Rental' ? 'Earliest Move-in' : 'Earliest Sale'} :{' '}
@@ -363,18 +352,30 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                 <AppText style={styles.bulletItem}>• {property?.heating}</AppText>
               )}
               {!!property.heating_expense && (
-                <AppText style={styles.bulletItem}>• Heating expenses : € {property.heating_expense}</AppText>
+                <AppText style={styles.bulletItem}>
+                  • Heating expenses : € {property.heating_expense}
+                </AppText>
               )}
-              {!!property.energy_class && <AppText style={styles.bulletItem}>• Energy : {property.energy_class}</AppText>}
+              {!!property.energy_class && (
+                <AppText style={styles.bulletItem}>• Energy : {property.energy_class}</AppText>
+              )}
               {!!property.construction_year && (
-                <AppText style={styles.bulletItem}>• Construction year : {property.construction_year || ''}</AppText>
+                <AppText style={styles.bulletItem}>
+                  • Construction year : {property.construction_year || ''}
+                </AppText>
               )}
-              {!!property.floor && <AppText style={styles.bulletItem}>• Floor : {property.floor || ''}</AppText>}
+              {!!property.floor && (
+                <AppText style={styles.bulletItem}>• Floor : {property.floor || ''}</AppText>
+              )}
               {!!property.property_oriantation && (
-                <AppText style={styles.bulletItem}>• Orientation : {property.property_oriantation || ''} </AppText>
+                <AppText style={styles.bulletItem}>
+                  • Orientation : {property.property_oriantation || ''}{' '}
+                </AppText>
               )}
               {!!property.plot_size && (
-                <AppText style={styles.bulletItem}>• Plot Size : {property.plot_size || ''} m²</AppText>
+                <AppText style={styles.bulletItem}>
+                  • Plot Size : {property.plot_size || ''} m²
+                </AppText>
               )}
             </View>
             <View style={styles.spacer48} />

@@ -32,11 +32,7 @@ const Services = () => {
             onPress={() => {
               setPlan(i.name);
             }}>
-            <View
-              style={[
-                styles.planCard,
-                plan === i.name && styles.planCardActive,
-              ]}>
+            <View style={[styles.planCard, plan === i.name && styles.planCardActive]}>
               {plan === i.name && (
                 <ImageBackground
                   source={blobs}
@@ -47,7 +43,12 @@ const Services = () => {
               )}
               <View style={styles.planCardInner}>
                 <View style={styles.planHeader}>
-                  <View style={[styles.pkgColorCircle, { backgroundColor: i.pkgColor.split('-')[1] || i.pkgColor }]} />
+                  <View
+                    style={[
+                      styles.pkgColorCircle,
+                      { backgroundColor: i.pkgColor.split('-')[1] || i.pkgColor },
+                    ]}
+                  />
                   <AppText style={styles.planName}>{i.name}</AppText>
                 </View>
                 <View style={styles.priceRow}>

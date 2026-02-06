@@ -340,16 +340,8 @@ const UserProperties = () => {
             onPress={() => {
               setListingFor('Rental');
             }}>
-            <View
-              style={[
-                styles.tabBtn,
-                listing_for === 'Rental' && styles.tabBtnActive,
-              ]}>
-              <AppText
-                style={[
-                  styles.tabText,
-                  listing_for === 'Rental' && styles.tabTextActive,
-                ]}>
+            <View style={[styles.tabBtn, listing_for === 'Rental' && styles.tabBtnActive]}>
+              <AppText style={[styles.tabText, listing_for === 'Rental' && styles.tabTextActive]}>
                 Rent
               </AppText>
             </View>
@@ -358,16 +350,8 @@ const UserProperties = () => {
             onPress={() => {
               setListingFor('Sale');
             }}>
-            <View
-              style={[
-                styles.tabBtn,
-                listing_for === 'Sale' && styles.tabBtnActive,
-              ]}>
-              <AppText
-                style={[
-                  styles.tabText,
-                  listing_for === 'Sale' && styles.tabTextActive,
-                ]}>
+            <View style={[styles.tabBtn, listing_for === 'Sale' && styles.tabBtnActive]}>
+              <AppText style={[styles.tabText, listing_for === 'Sale' && styles.tabTextActive]}>
                 Sale
               </AppText>
             </View>
@@ -397,22 +381,13 @@ const UserProperties = () => {
               onPress={() => {
                 setStatus(i.status);
               }}
-              style={[
-                styles.statusBadge,
-                status === i.status && styles.statusBadgeActive,
-              ]}>
+              style={[styles.statusBadge, status === i.status && styles.statusBadgeActive]}>
               <AppText
-                style={[
-                  styles.statusLabel,
-                  status === i.status && styles.statusLabelActive,
-                ]}>
+                style={[styles.statusLabel, status === i.status && styles.statusLabelActive]}>
                 {i.label}
               </AppText>
               <AppText
-                style={[
-                  styles.statusCount,
-                  status === i.status && styles.statusCountActive,
-                ]}>
+                style={[styles.statusCount, status === i.status && styles.statusCountActive]}>
                 {_stats_2[i.id as keyof typeof _stats_2]}
               </AppText>
             </Pressable>

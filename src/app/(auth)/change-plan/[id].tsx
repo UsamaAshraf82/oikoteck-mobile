@@ -240,9 +240,7 @@ const ChangePlan = () => {
       </View>
 
       <View style={styles.footer}>
-        <PressableView
-          onPress={handleSubmit(onSubmitInternal, onError)}
-          style={styles.submitBtn}>
+        <PressableView onPress={handleSubmit(onSubmitInternal, onError)} style={styles.submitBtn}>
           <AppText style={styles.submitBtnText}>Continue</AppText>
         </PressableView>
       </View>
