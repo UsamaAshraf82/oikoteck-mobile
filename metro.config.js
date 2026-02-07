@@ -7,5 +7,5 @@ config.resolver.extraNodeModules = {
   ...config.resolver.extraNodeModules,
   crypto: path.resolve(__dirname, 'crypto-shim.js'),
 };
-s;
+
 module.exports = config;

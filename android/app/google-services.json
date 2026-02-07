@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "249425615765",
+    "project_id": "oikoteck-a5072",
+    "storage_bucket": "oikoteck-a5072.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:249425615765:android:fc0213d9c27a4ef6e8b49c",
+        "android_client_info": {
+          "package_name": "com.oikoteck.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "249425615765-4ffri3a5ja5qs2g7rt0eed0hn6v1c4n6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.oikoteck.app",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "249425615765-q3s8kt4ldpuf0u4dr7flmc9pm4n06ugi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4SpQIPS3WAyGeW_KWOjX4K1qRgjPuwtw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "249425615765-q3s8kt4ldpuf0u4dr7flmc9pm4n06ugi.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "249425615765-c3hb68cqlo6fcjd82bft3uqeq8t857bh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.oikoteck.app"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:249425615765:android:55f42c1783d4cd91e8b49c",
+        "android_client_info": {
+          "package_name": "com.oikoteck.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "249425615765-0ukp8ek7hi69at648ckbfr3gvhkon1or.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.oikoteck.dev",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "249425615765-q3s8kt4ldpuf0u4dr7flmc9pm4n06ugi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4SpQIPS3WAyGeW_KWOjX4K1qRgjPuwtw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "249425615765-q3s8kt4ldpuf0u4dr7flmc9pm4n06ugi.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "249425615765-c3hb68cqlo6fcjd82bft3uqeq8t857bh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.oikoteck.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
