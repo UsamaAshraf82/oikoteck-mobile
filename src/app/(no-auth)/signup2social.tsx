@@ -34,9 +34,7 @@ const SignupSchema = z
       Code: z.number(),
     }),
     userType: z.enum(['regular', 'agent'], {
-      errorMap: (issue: z.ZodIssueBase, ctx: { defaultError: string }) => ({
-        message: issue.code === 'invalid_type' ? 'Please select a user type' : ctx.defaultError,
-      }),
+      message: 'Please select a user type',
     }),
     vat: z.string().optional(),
     company_name: z.string().optional(),

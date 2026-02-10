@@ -522,7 +522,7 @@ const styles = StyleSheet.create({
   },
   sortFilterBadge: {
     position: 'relative',
-    marginRight: 8,
+    marginRight: 12,
     height: 40,
     flexDirection: 'row',
     alignItems: 'center',
@@ -558,7 +558,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   activeFilterBadge: {
-    marginRight: 8,
+    marginRight: 12,
     height: 40,
     flexDirection: 'row',
     alignItems: 'center',

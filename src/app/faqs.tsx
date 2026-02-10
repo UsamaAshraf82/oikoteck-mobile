@@ -14,12 +14,12 @@ const Faqs = () => {
         onBackPress={() => {
           router.back();
         }}
-        title={'FAQs'}
+        title={''}
       />
       <View style={styles.titleWrapper}>
         <AppText style={styles.heading}>Frequently asked Questions 🤔</AppText>
         <AppText style={styles.subHeading}>
-          Explore Frequently asked Questions about our service plans
+          Explore frequently asked questions about our service plans
         </AppText>
       </View>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     fontFamily: 'LufgaRegular',
     fontSize: 14,
     color: '#9191A1',
-    marginTop: 4,
+    marginTop: 16,
   },
   scrollContent: {
     paddingHorizontal: 20,

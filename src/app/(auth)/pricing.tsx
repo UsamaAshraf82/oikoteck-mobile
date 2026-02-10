@@ -51,7 +51,7 @@ const Pricing = () => {
                 {thoasandseprator(i.low)}{' '}
                 {i.high === Number.MAX_SAFE_INTEGER ? '+' : ' - ' + thoasandseprator(i.high)}
               </AppText>
-              <AppText style={styles.pointsSubText}>Points</AppText>
+              {/* <AppText style={styles.pointsSubText}>Points</AppText> */}
             </View>
 
             <AppText style={styles.priceText}>€ {i.promote.toFixed(3)}</AppText>
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   subTitle: {
     fontSize: 14,
     color: '#9191A1',
-    marginTop: 4,
+    marginTop: 16,
   },
   gridHeader: {
     flexDirection: 'row',
@@ -100,11 +100,13 @@ const styles = StyleSheet.create({
   planCol: {
     flexDirection: 'column',
     gap: 4,
+    textAlign: 'center',
   },
   planNameRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
+    justifyContent: 'center',
   },
   dot: {
     height: 12,
@@ -115,10 +117,12 @@ const styles = StyleSheet.create({
     fontFamily: 'LufgaSemiBold',
     fontSize: 14,
     color: '#192234',
+    textAlign: 'center',
   },
   pricePerPointLabel: {
     fontSize: 10,
     color: '#9191A1',
+    textAlign: 'center',
   },
   scrollContent: {
     paddingHorizontal: 20,
@@ -145,6 +149,7 @@ const styles = StyleSheet.create({
     fontFamily: 'LufgaMedium', // Using Lufga instead of font-mono for consistency if desired, or keep as monospace
     fontSize: 13,
     color: '#192234',
+    textAlign: 'center',
   },
 });
 

@@ -2,7 +2,7 @@ import { FlashList } from '@shopify/flash-list';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import Parse from 'parse/react-native';
 import { GlobeHemisphereEastIcon, XIcon } from 'phosphor-react-native';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Platform,
@@ -28,10 +28,22 @@ type Props = {
 
 const DistrictArea = ({ visible, onClose, value = '', onPress }: Props) => {
   const [text, setText] = useState('');
+  const inputRef = useRef<TextInput>(null);
 
   useEffect(() => {
     setText(value);
   }, [value]);
+
+  // Focus the input when modal becomes visible
+  useEffect(() => {
+    if (visible) {
+      // Delay to allow modal animation to complete
+      const timer = setTimeout(() => {
+        inputRef.current?.focus();
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [visible]);
 
   // Query for districts/areas
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
@@ -84,12 +96,12 @@ const DistrictArea = ({ visible, onClose, value = '', onPress }: Props) => {
           <View style={styles.searchBox}>
             <GlobeHemisphereEastIcon weight="fill" color="#192234" />
             <TextInput
+              ref={inputRef}
               style={styles.input}
               value={text}
               onChangeText={setText}
               placeholder="Search district or area"
               placeholderTextColor="#999"
-              autoFocus
             />
           </View>
           <TouchableNativeFeedback hitSlop={10} onPress={onClose}>

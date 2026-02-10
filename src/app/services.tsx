@@ -1,15 +1,19 @@
 import blobs from '@/assets/svg/blobs_2.svg';
 import { ImageBackground } from 'expo-image';
-import { Link, router } from 'expo-router';
+import { router } from 'expo-router';
 import { CheckIcon, XIcon } from 'phosphor-react-native';
 import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import AppText from '~/components/Elements/AppText';
 import TopHeader from '~/components/Elements/TopHeader';
 import { plans } from '~/global/plan';
+import { useToast } from '~/store/useToast';
+import useUser from '~/store/useUser';
 
 const Services = () => {
-  const [plan, setPlan] = useState('');
+  const { user } = useUser();
+  const { addToast } = useToast();
+  const [plan, setPlan] = useState('Free');
   return (
     <View style={styles.container}>
       <TopHeader
@@ -37,8 +41,8 @@ const Services = () => {
                 <ImageBackground
                   source={blobs}
                   style={styles.blobBackground}
-                  blurRadius={50}
-                  contentFit="fill"
+                  blurRadius={100}
+                  contentFit="cover"
                 />
               )}
               <View style={styles.planCardInner}>
@@ -66,7 +70,7 @@ const Services = () => {
                         </View>
                       ) : (
                         <View style={styles.featureItem}>
-                          <CheckIcon color="#575775" size={18} />
+                          <CheckIcon color="black" size={18} />
                           <AppText style={styles.featureText}>{f}</AppText>
                         </View>
                       )}
@@ -75,16 +79,27 @@ const Services = () => {
                 </View>
                 {['Promote +', 'Gold', 'Platinum'].includes(i.name) && (
                   <View style={styles.pricingLinkWrapper}>
-                    <Link href={'/pricing'} style={styles.pricingLink}>
-                      Access Pricing Options
-                    </Link>
+                    <Pressable
+                      onPress={() => {
+                        if (!user || user.attributes.user_type !== 'agent') {
+                          addToast({
+                            heading: 'Access Restriction',
+                            message: 'Only real estate brokers can access those plans',
+                            type: 'error',
+                          });
+                          return;
+                        }
+                        router.push('/pricing');
+                      }}>
+                      <AppText style={styles.pricingLink}>Access Pricing Options</AppText>
+                    </Pressable>
                   </View>
                 )}
-                {plan === i.name && (
-                  <View style={styles.checkBadge}>
-                    <CheckIcon color="white" weight="bold" size={16} />
-                  </View>
-                )}
+                {/* {plan === i.name && ( */}
+                <View style={plan === i.name ? styles.checkBadgeActive : styles.checkBadge}>
+                  <CheckIcon color="white" weight="bold" size={16} />
+                </View>
+                {/* )} */}
               </View>
             </View>
           </TouchableWithoutFeedback>
@@ -95,9 +110,21 @@ const Services = () => {
           <Pressable
             style={styles.selectBtn}
             onPress={() => {
+              if (!user) {
+                router.push('/');
+                return;
+              }
               if (['Free', 'Promote'].includes(plan)) {
                 router.push('/property/new');
               } else {
+                if (user.attributes.user_type !== 'agent') {
+                  addToast({
+                    heading: 'Access Restriction',
+                    message: 'Only real estate brokers can access those plans',
+                    type: 'error',
+                  });
+                  return;
+                }
                 router.push('/start-membership');
               }
             }}>
@@ -126,7 +153,7 @@ const styles = StyleSheet.create({
   subHeading: {
     fontSize: 14,
     color: '#9191A1',
-    marginTop: 4,
+    marginTop: 16,
   },
   scrollContent: {
     paddingHorizontal: 20,
@@ -151,6 +178,7 @@ const styles = StyleSheet.create({
     top: 0,
     width: '100%',
     height: '100%',
+    filter: 'blur(30px)',
   },
   planCardInner: {
     position: 'relative',
@@ -179,13 +207,13 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   priceValue: {
-    fontFamily: 'LufgaSemiBold',
-    fontSize: 18,
+    fontFamily: 'LufgaBlack',
+    fontSize: 22,
     color: '#192234',
   },
   priceUnit: {
     fontFamily: 'LufgaMedium',
-    fontSize: 18,
+    fontSize: 16,
     color: '#75758A',
   },
   description: {
@@ -223,7 +251,7 @@ const styles = StyleSheet.create({
     fontFamily: 'LufgaMedium',
     color: '#82065e',
   },
-  checkBadge: {
+  checkBadgeActive: {
     position: 'absolute',
     right: 16,
     top: 16,
@@ -231,6 +259,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 999,
     backgroundColor: '#82065e',
+    padding: 4,
+  },
+  checkBadge: {
+    position: 'absolute',
+    right: 16,
+    top: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 999,
+    backgroundColor: '#eee',
     padding: 4,
   },
   footer: {

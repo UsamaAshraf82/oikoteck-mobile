@@ -18,7 +18,7 @@ export const plans = [
     price: [`€ ${PROMOTE_PRICE}`, 'per listing/month'],
     price_number: PROMOTE_PRICE,
     description: 'Renewable monthly promotion',
-    features: ['Post a Listing', 'Promote Listing', 'Boost Listing Twice/month'],
+    features: ['Post a Listing', 'Promote Listing', 'Boost Listing (twice/month)'],
     button: 'Select Plan',
   },
   {

@@ -393,7 +393,7 @@ const styles = StyleSheet.create({
     gap: 8,
     borderRadius: 24,
     borderWidth: 1,
-    borderColor: '#E9E9EC',
+    borderColor: '#C6CAD2',
     paddingVertical: 20,
     backgroundColor: '#fff',
   },

@@ -86,6 +86,7 @@ export default function Signup() {
       addToast({
         heading: 'Registered Account',
         message: 'Account already exists, please click on log in.',
+        type: 'error',
       });
     }
     activity.stopActivity();

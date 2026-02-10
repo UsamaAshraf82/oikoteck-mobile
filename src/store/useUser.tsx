@@ -46,6 +46,7 @@ const useUser = create<Store>()((set, get) => ({
         useToast.getState().addToast({
           heading: 'Unverified Email',
           message: 'User email is not verified. Check email to validate your account.',
+          type: 'error',
         });
 
         await get().logout();
