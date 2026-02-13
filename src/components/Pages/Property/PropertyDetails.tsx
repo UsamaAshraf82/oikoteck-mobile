@@ -66,23 +66,23 @@ export default function PropertyDetails({ property }: { property: Property_Type 
   const details = useMemo(() => {
     const base = [
       {
-        icon: <BedIcon width={18} height={18} />,
+        icon: <BedIcon width={18} height={18} strokeWidth={2} />,
         heading: 'Bedrooms',
         detail: property.property_type === 'Land' ? 'N/A' : property.bedrooms,
       },
       {
-        icon: <BathIcon width={18} height={18} />,
+        icon: <BathIcon width={18} height={18} strokeWidth={2} />,
         heading: 'Bathrooms',
         detail: property.property_type === 'Land' ? 'N/A' : property.bathrooms,
       },
       {
-        icon: <SizeIcon width={18} height={18} />,
+        icon: <SizeIcon width={18} height={18} strokeWidth={2} />,
         heading: property.property_type === 'Land' ? 'Plot Size' : 'Size',
         detail: property.size + ' m²',
       },
       {
         heading: 'Type',
-        icon: <HouseLineIcon size={20} />,
+        icon: <HouseLineIcon size={20} weight="bold" />,
         detail: property.property_type,
       },
     ];
@@ -91,7 +91,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
     if (property.property_type !== 'Land') {
       base.push({
         heading: 'Floor No',
-        icon: <StairsIcon size={20} />,
+        icon: <StairsIcon size={20} weight="bold" />,
         detail: property.floor === 0 ? 'Ground' : property.floor,
       });
     }
@@ -99,12 +99,12 @@ export default function PropertyDetails({ property }: { property: Property_Type 
     base.push(
       {
         heading: 'Listing Date',
-        icon: <CalendarIcon size={20} />,
+        icon: <CalendarIcon size={20} weight="bold" />,
         detail: new Date(property.createdAt).toLocaleDateString('en-GB'),
       },
       {
         heading: 'Furnished',
-        icon: <CouchIcon size={20} />,
+        icon: <CouchIcon size={20} weight="bold" />,
         detail: property.furnished ? 'Yes' : 'No',
       }
     );
@@ -272,7 +272,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
             <View style={styles.priceRow}>
               <AppText style={styles.priceText}>€ {thoasandseprator(property.price)}</AppText>
               {property.listing_for === 'Rental' && (
-                <AppText style={styles.perMonthText}>/Month</AppText>
+                <AppText style={styles.perMonthText}>/month</AppText>
               )}
             </View>
             <AppText style={styles.titleText}>{property.title}</AppText>
@@ -784,7 +784,7 @@ const styles = StyleSheet.create({
   contactBtnText: {
     fontFamily: 'LufgaSemiBold',
     fontSize: 13,
-    color: '#white',
+    color: 'white',
   },
   dot: {
     marginHorizontal: 4,

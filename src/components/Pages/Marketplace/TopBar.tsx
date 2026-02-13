@@ -20,9 +20,14 @@ export const HomeTopBar = () => {
           }}
           style={styles.loginButton}>
           <View style={styles.loginInner}>
-            <UserCircleIcon size={20} color="#192234" />
+            <UserCircleIcon
+              size={25}
+              color="#192234"
+              weight="duotone"
+              style={{ marginHorizontal: 0, marginVertical: 0 }}
+            />
             <AppText style={styles.loginText} numberOfLines={1}>
-              Login
+              Login Now
             </AppText>
           </View>
         </PressableView>
@@ -73,8 +78,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   loginText: {
-    width: 56,
     color: '#192234',
+    fontFamily: 'LufgaBold',
   },
   userSection: {
     flexDirection: 'row',

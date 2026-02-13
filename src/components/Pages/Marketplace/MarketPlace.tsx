@@ -181,6 +181,27 @@ const MarketPlace = ({ listing_type }: Props) => {
     return Object.keys(search).some((i) => search[i as keyof filterType] !== null);
   }, [search]);
 
+  const sortTitle = useMemo(() => {
+    if (!sort?.sort) return 'Sort';
+    if (sort?.sort === 'price') {
+      if (sort?.sort_order === 'asc') return 'Price: Low to High';
+      return 'Price: High to Low';
+    }
+    if (sort?.sort === 'bedrooms') {
+      if (sort?.sort_order === 'asc') return 'Bedrooms: Less to More';
+      return 'Bedrooms: More to Less';
+    }
+    if (sort?.sort === 'bathrooms') {
+      if (sort?.sort_order === 'asc') return 'Bathrooms: Less to More';
+      return 'Bathrooms: More to Less';
+    }
+    if (sort?.sort === 'size') {
+      if (sort?.sort_order === 'asc') return 'Size: Small to Large';
+      return 'Size: Large to Small';
+    }
+    return sort?.sort;
+  }, [sort?.sort, sort?.sort_order]);
+
   const filters = useMemo(() => {
     const filter: {
       filter: string;
@@ -189,7 +210,7 @@ const MarketPlace = ({ listing_type }: Props) => {
       onPress: () => void;
     }[] = [
       {
-        filter: 'Sort',
+        filter: sortTitle,
         iconFirst: true,
         icon: <SortAscendingIcon size={20} color="#192234" />,
         onPress: () => {
@@ -215,7 +236,7 @@ const MarketPlace = ({ listing_type }: Props) => {
         },
       },
       {
-        filter: 'Filter',
+        filter: 'Filters',
         iconFirst: true,
         icon: <FadersHorizontalIcon size={20} color="#192234" />,
         onPress: () => {
@@ -366,9 +387,9 @@ const MarketPlace = ({ listing_type }: Props) => {
                       {i.iconFirst && i.icon}
                       <AppText style={styles.sortFilterText}>{i.filter}</AppText>
                       {!i.iconFirst && i.icon}
-                      {isFilter && filters.length > 2 && (
+                      {isFilter && filters.length > 1 && (
                         <View style={styles.filterCount}>
-                          <AppText style={styles.filterCountText}>{filters.length - 2}</AppText>
+                          <AppText style={styles.filterCountText}>{filters.length - 1}</AppText>
                         </View>
                       )}
                     </View>
@@ -394,7 +415,7 @@ const MarketPlace = ({ listing_type }: Props) => {
           </ScrollView>
         ) : (
           <Animated.View style={[animatedStyle, { overflow: 'hidden' }]}>
-            <AppText style={styles.exploreHeading}>Explore Popular Cities</AppText>
+            {/* <AppText style={styles.exploreHeading}>Explore Popular Cities</AppText> */}
             <ScrollView
               horizontal
               key="district"
@@ -443,7 +464,11 @@ const MarketPlace = ({ listing_type }: Props) => {
             return (
               <View style={isMain ? styles.mainHeading : styles.similarHeading}>
                 <AppText style={styles.headingText}>
-                  {isMain ? 'Explore All Listing' : 'Similar Listings According to Your Criteria'}
+                  {isMain
+                    ? hasFilters
+                      ? `We found ${properties.length - 1} listings matching your criteria`
+                      : 'Explore all listing'
+                    : 'Similar listing according to your criteria'}
                 </AppText>
               </View>
             );
@@ -536,8 +561,9 @@ const styles = StyleSheet.create({
   },
   sortFilterText: {
     marginHorizontal: 8,
-    fontSize: 14,
+    fontSize: 13,
     color: '#192234',
+    fontFamily: 'LufgaMedium',
   },
   filterCount: {
     position: 'absolute',

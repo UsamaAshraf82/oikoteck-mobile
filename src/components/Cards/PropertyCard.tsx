@@ -18,7 +18,7 @@ import FavButton from './FavButton';
 const wide = deviceWidth - 16 * 2;
 const height = wide / 1.2;
 
-const PropertyCard = ({ property }: { property: Property_Type }) => {
+const PropertyCard = ({ property, shrink =1}: { property: Property_Type; shrink?: number }) => {
   const progress = useSharedValue(0);
   const router = useRouter();
   let owner: User_Type;
@@ -38,8 +38,8 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
           style={[
             styles.cardContainer,
             {
-              width: wide,
-              height: height,
+              width: wide * shrink,
+              height: height * shrink,
             },
           ]}>
           <View style={styles.contentWrapper}>
@@ -49,7 +49,7 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
                 loop={false}
                 pagingEnabled={true}
                 snapEnabled={true}
-                width={wide}
+                width={wide* shrink}
                 style={styles.fullWidth}
                 onProgressChange={(_: any, absoluteProgress: number) => {
                   progress.value = absoluteProgress;
@@ -64,7 +64,7 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
                       <AWSImage
                         contentFit="cover"
                         placeholderContentFit="cover"
-                        style={{ width: wide, height: '100%' }}
+                        style={{ width: wide* shrink, height: '100%' }}
                         src={item}
                         size="800x800"
                       />
@@ -115,7 +115,7 @@ const PropertyCard = ({ property }: { property: Property_Type }) => {
                     {'€ ' + thoasandseprator(property.price)}
                   </AppText>
                   {property.listing_for !== 'Sale' && (
-                    <AppText style={styles.perMonthText}> / Month</AppText>
+                    <AppText style={styles.perMonthText}>/month</AppText>
                   )}
                 </View>
               </View>

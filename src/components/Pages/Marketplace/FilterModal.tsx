@@ -9,7 +9,6 @@ import { deviceHeight } from '~/utils/global';
 import { numberminify, thoasandseprator } from '~/utils/number';
 import { property_category } from '~/utils/property';
 import Checkbox from '../../Elements/Checkbox';
-import DatePicker from '../../Elements/DatePicker';
 import PressableView from '../../HOC/PressableView';
 
 export type filterType = {
@@ -110,7 +109,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                         ];
                       }
                       openSelect({
-                        label: 'Min Price',
+                        label: 'Minimum Price',
                         options: options,
                         onPress: (e: any) => {
                           changeSearch({ minPrice: e.value as number | null });
@@ -130,7 +129,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                             : '€ ' + thoasandseprator(filter.minPrice)
                           : 'No Min'}
                       </AppText>
-                      <CaretDownIcon color="#8D95A5" size={16} />
+                      <CaretDownIcon color="#000" size={16} />
                     </View>
                   </PressableView>
                   <AppText style={styles.separator}> - </AppText>
@@ -159,7 +158,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                         ];
                       }
                       openSelect({
-                        label: 'Max Price',
+                        label: 'Maximum Price',
                         options: options,
                         onPress: (e: any) => {
                           changeSearch({ maxPrice: e.value as number | null });
@@ -178,7 +177,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                             : '€ ' + thoasandseprator(filter.maxPrice)
                           : 'No Max'}
                       </AppText>
-                      <CaretDownIcon color="#8D95A5" size={16} />
+                      <CaretDownIcon color="#000" size={16} />
                     </View>
                   </PressableView>
                 </View>
@@ -200,7 +199,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                       ];
 
                       openSelect({
-                        label: 'Min Size',
+                        label: 'Minimum Size',
                         options: options,
                         onPress: (e: any) => {
                           changeSearch({ minSize: e.value as number | null });
@@ -216,7 +215,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                         ]}>
                         {filter.minSize ? numberminify(filter.minSize) + ' m²' : 'No Min'}
                       </AppText>
-                      <CaretDownIcon color="#8D95A5" size={16} />
+                      <CaretDownIcon color="#000" size={16} />
                     </View>
                   </PressableView>
                   <AppText style={styles.separator}> - </AppText>
@@ -234,7 +233,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                       ];
 
                       openSelect({
-                        label: 'Max Size',
+                        label: 'Maximum Size',
                         options: options,
                         onPress: (e: any) => {
                           changeSearch({ maxSize: e.value as number | null });
@@ -249,7 +248,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                         ]}>
                         {filter.maxSize ? numberminify(filter.maxSize) + ' m²' : 'No Max'}
                       </AppText>
-                      <CaretDownIcon color="#8D95A5" size={16} />
+                      <CaretDownIcon color="#000" size={16} />
                     </View>
                   </PressableView>
                 </View>
@@ -352,7 +351,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
               </View>
 
               {/* Date Range */}
-              <View style={styles.section}>
+              {/* <View style={styles.section}>
                 <AppText style={styles.sectionLabel}>Min. Move-in Date</AppText>
                 <View style={styles.dateWrapper}>
                   <DatePicker
@@ -371,14 +370,14 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                     onChange={(date: Date | null) => changeSearch({ maxDate: date })}
                   />
                 </View>
-              </View>
+              </View> */}
 
               {/* Keywords */}
               <View style={styles.section}>
                 <AppText style={styles.sectionLabel}>Keywords</AppText>
                 <TextInput
                   style={styles.keywordInput}
-                  placeholder="Pool, Gym, Solar Panel etc."
+                  placeholder="Pool, Gym, Solar Panel, etc."
                   placeholderTextColor="#8D95A5"
                   value={filter.keywords || undefined}
                   onChangeText={(text) => changeSearch({ keywords: text })}
