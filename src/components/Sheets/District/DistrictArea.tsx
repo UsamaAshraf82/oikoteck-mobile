@@ -71,6 +71,8 @@ const DistrictArea = ({ visible, onClose, value = '', onPress }: Props) => {
 
   const allOptions = data?.pages.flatMap((page) => page.options) ?? [];
 
+  console.log(allOptions);
+
   return (
     <Modal
       isVisible={visible}
@@ -117,6 +119,7 @@ const DistrictArea = ({ visible, onClose, value = '', onPress }: Props) => {
           estimatedItemSize={38}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
           keyExtractor={(item: DistrictOption) => item.district + item.area_1 + item.area_2}
           contentContainerStyle={{ paddingBottom: 40 }}
           renderItem={({ item }: { item: DistrictOption }) => {

@@ -174,6 +174,7 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
       }
     }
   };
+  const minDate = new Date();
 
   return (
     <Modal
@@ -223,6 +224,7 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
               name="tour_date"
               label="Select a preferred visit date"
               withForm
+              minDate={minDate}
             />
 
             <Select
@@ -288,7 +290,8 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
                 <ControlledTextInput
                   control={control}
                   name="phone"
-                  placeholder="Enter Phone Number"
+
+                  placeholder="Enter phone number"
                   textContentType="telephoneNumber"
                   keyboardType="phone-pad"
                 />
@@ -363,7 +366,7 @@ const styles = StyleSheet.create({
   },
   formSection: {
     flexDirection: 'column',
-    gap: 8,
+    gap: 20,
   },
   contactHeading: {
     marginBottom: 12,
@@ -373,7 +376,7 @@ const styles = StyleSheet.create({
     color: '#192234',
   },
   label: {
-    marginBottom: -8,
+    marginBottom: -20,
     fontFamily: 'LufgaMedium',
     fontSize: 13,
   },

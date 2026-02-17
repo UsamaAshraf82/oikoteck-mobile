@@ -32,15 +32,15 @@ const Select = () => {
           },
         ]}>
         <View style={styles.handle} />
-        {value.hasXIcon && (
-          <TouchableNativeFeedback onPress={value.onClose}>
-            <View style={styles.closeIcon}>
-              <XIcon color="#1A2436" size={24} />
-            </View>
-          </TouchableNativeFeedback>
-        )}
         <View style={styles.labelWrapper}>
           <AppText style={styles.labelText}>{value.label}</AppText>
+          {value.hasXIcon && (
+            <TouchableNativeFeedback onPress={value.onClose}>
+              <View style={styles.closeIcon}>
+                <XIcon color="#1A2436" size={24} weight="bold" />
+              </View>
+            </TouchableNativeFeedback>
+          )}
         </View>
         {value.useFlatList ? (
           <View style={[styles.listWrapper, { height: deviceHeight * 0.9 - 80 }]}>
@@ -118,8 +118,9 @@ const styles = StyleSheet.create({
   closeIcon: {
     position: 'absolute',
     right: 20,
-    top: 24,
+    top: '50%',
     zIndex: 10,
+    transform: [{ translateY: '-50%' }],
   },
   labelWrapper: {
     flexDirection: 'row',
@@ -128,8 +129,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   labelText: {
-    fontFamily: 'LufgaSemiBold',
-    fontSize: 20,
+    fontFamily: 'LufgaBold',
+    fontSize: 24,
     color: '#192234',
   },
   listWrapper: {
@@ -144,8 +145,8 @@ const styles = StyleSheet.create({
     borderBottomColor: '#f3f4f6',
   },
   optionText: {
-    fontFamily: 'LufgaMedium',
-    fontSize: 18,
+    fontFamily: 'LufgaRegular',
+    fontSize: 15,
     color: '#192234',
   },
 });

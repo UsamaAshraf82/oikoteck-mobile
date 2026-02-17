@@ -61,6 +61,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
   const [contactOwnerVisible, setContactOwnerVisible] = useState(false);
   const [SubmitOfferVisible, setSubmitOfferVisible] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
+  const [activePageIndex, setActivePageIndex] = useState(0);
   const carouselRef = useRef<ICarouselInstance>(null);
 
   const details = useMemo(() => {
@@ -144,6 +145,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
               onProgressChange={(_: any, absoluteProgress: number) => {
                 progress2.value = absoluteProgress;
               }}
+              onSnapToItem={(index) => setActivePageIndex(index)}
               renderItem={({ item }: { item: string }) => {
                 return (
                   <View style={styles.relative}>
@@ -173,6 +175,11 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                 }}>
                 <ArrowLeftIcon size={24} color="white" weight="bold" />
               </TouchableWithoutFeedback>
+            </View>
+            <View style={styles.numberLightbox}>
+              <AppText style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>
+                {activePageIndex + 1}/{property.images.length}
+              </AppText>
             </View>
 
             <View style={styles.headerIconsLightbox}>
@@ -217,6 +224,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                     style={styles.relative}
                     onPress={() => {
                       setStartIndex(index);
+                      setActivePageIndex(index);
                       setLightBoxVisible(true);
                     }}>
                     <AWSImage
@@ -585,12 +593,18 @@ const styles = StyleSheet.create({
   backButtonLightbox: {
     position: 'absolute',
     left: 16,
-    top: 16,
+    top: 26,
+  },
+  numberLightbox: {
+    position: 'absolute',
+    left: '50%',
+    top: 26,
+    transform: [{ translateX: '-50%' }],
   },
   headerIconsLightbox: {
     position: 'absolute',
     right: 16,
-    top: 16,
+    top: 26,
     zIndex: 10,
     flexDirection: 'row',
     gap: 12,
@@ -622,6 +636,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 16,
     top: 16,
+    backgroundColor: 'rgba(0,0,0,0.1)',
+    padding: 8,
+    borderRadius: 12,
   },
   headerIconsMain: {
     position: 'absolute',
@@ -629,6 +646,9 @@ const styles = StyleSheet.create({
     top: 16,
     zIndex: 10,
     flexDirection: 'row',
+    backgroundColor: 'rgba(0,0,0,0.1)',
+    padding: 8,
+    borderRadius: 12,
     gap: 12,
   },
   infoWrapper: {

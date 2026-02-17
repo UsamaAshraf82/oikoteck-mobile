@@ -60,7 +60,7 @@ const DatePicker: React.FC<Props> = ({
       <AppText style={[styles.valueText, !date && styles.placeholderText, textStyle]}>
         <DateText date={date} mode={mode} placeholder={placeholder} />
       </AppText>
-      <CalendarIcon color="#82065e" weight="duotone" duotoneColor="#82065e" duotoneOpacity={1} />
+      <CalendarIcon color="#000" weight="duotone" duotoneColor="#000" duotoneOpacity={1} />
     </View>
   );
 
@@ -81,6 +81,7 @@ const DatePicker: React.FC<Props> = ({
               minimumDate={minDate}
               maximumDate={maxDate}
               onChange={handleChange}
+              accentColor="#82065e"
             />
           )}
         </View>
@@ -102,6 +103,7 @@ const DatePicker: React.FC<Props> = ({
           minimumDate={minDate}
           maximumDate={maxDate}
           onChange={handleChange}
+          accentColor="#82065e"
         />
       )}
     </View>

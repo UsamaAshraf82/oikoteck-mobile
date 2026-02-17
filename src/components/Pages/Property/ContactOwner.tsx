@@ -1,4 +1,4 @@
-import agent from '@/assets/svg/agent.svg';
+import agent from '@/assets/svg/agent-blue.svg';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Image } from 'expo-image';
 import * as Linking from 'expo-linking';
@@ -148,7 +148,10 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
                   <View
                     style={[styles.badge, isAgent ? styles.badgeAgent : styles.badgeIndividual]}>
                     {isAgent ? (
-                      <ExpoImage source={agent} style={{ width: 14, height: 14 }} />
+                      <ExpoImage
+                        source={agent}
+                        style={{ width: 14, height: 14, color: '#0E6DF1' }}
+                      />
                     ) : (
                       <UserIcon size={14} color="#5412A1" />
                     )}
@@ -184,7 +187,7 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
                 onPress={handleSubmit(openWhatsApp, onError)}
                 style={styles.whatsappBtn}>
                 <View style={styles.btnInner}>
-                  <AppText style={styles.btnTextWhite}>Chat On WhatsApp</AppText>
+                  <AppText style={styles.btnTextWhite}>Chat on WhatsApp</AppText>
                   <WhatsappLogoIcon color="white" size={20} />
                 </View>
               </PressableView>
@@ -192,7 +195,7 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
                 onPress={handleSubmit(() => setMessage(true), onError)}
                 style={styles.messageBtn}>
                 <View style={styles.btnInner}>
-                  <AppText style={styles.btnTextWhite}>Send a Message</AppText>
+                  <AppText style={styles.btnTextWhite}>Send a message</AppText>
                   <ChatTeardropIcon color="white" size={20} />
                 </View>
               </PressableView>
@@ -210,6 +213,7 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
                 control={control}
                 alignTop
                 name="terms"
+                labelStyle={{ color: '#ACACB9', fontSize: 14,fontFamily: 'LufgaMedium' }}
                 label={
                   <>
                     I confirm that I read and I agree with Oikoteck’s{' '}
@@ -224,6 +228,7 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
                 control={control}
                 alignTop
                 name="privacy"
+                labelStyle={{ color: '#ACACB9', fontSize: 14,fontFamily: 'LufgaMedium' }}
                 label={
                   <>
                     I confirm that I read and understood Oikoteck’s{' '}
@@ -242,7 +247,12 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
                 control={control}
                 alignTop
                 name="share_consent"
-                label="I consent to the sharing of my contact information and search preferences with real estate agents who offer listings which may align with my interests"
+                labelStyle={{ color: '#ACACB9', fontSize: 14,fontFamily: 'LufgaMedium' }}
+                label={
+                  <>
+                    I consent to the sharing of my contact information and search preferences with real estate agents who offer listings which may align with my interests
+                  </>
+                }
               />
             </View>
           </View>
@@ -406,9 +416,9 @@ const ShareConsentSchema = z
 type ShareConsentTypes = z.infer<typeof ShareConsentSchema>;
 
 const displayNames: Record<keyof ShareConsentTypes, string> = {
-  privacy: 'Privacy Policy',
+  privacy: 'Privacy Policy Agreement',
   share_consent: 'Share Consent',
-  terms: 'Terms and Conditions',
+  terms: 'Terms Agreement',
 };
 
 const styles = StyleSheet.create({
@@ -447,7 +457,7 @@ const styles = StyleSheet.create({
   },
   subTitle: {
     fontSize: 16,
-    color: '#192234',
+    color: '#575775',
     marginBottom: 16,
   },
   ownerRow: {
@@ -494,7 +504,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(84, 18, 161, 0.15)',
   },
   badgeText: {
-    fontSize: 12,
+    fontSize: 10,
     fontFamily: 'LufgaMedium',
   },
   textAgent: {

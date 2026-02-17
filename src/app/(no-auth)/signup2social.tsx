@@ -85,9 +85,9 @@ const displayNames: Record<keyof SignupTypes, string> = {
   firstName: 'First Name',
   lastName: 'Last Name',
   phone: 'Phone',
-  privacy: 'Privacy Policy',
+  privacy: 'Privacy Policy Agreement',
   share_consent: 'Share Consent',
-  terms: 'Terms and Conditions',
+  terms: 'Terms Agreement',
   userType: 'User Type',
   vat: 'VAT',
 };

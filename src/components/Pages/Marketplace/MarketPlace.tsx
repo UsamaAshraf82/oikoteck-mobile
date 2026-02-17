@@ -40,7 +40,7 @@ type Props = {
 };
 
 const limit = 40;
-const topbarHeight = 170;
+const topbarHeight = 150;
 
 const district_images = [
   { district: 'Athens', image: 'district/pic1.png', url: 'Athens - Center' },
@@ -212,7 +212,7 @@ const MarketPlace = ({ listing_type }: Props) => {
       {
         filter: sortTitle,
         iconFirst: true,
-        icon: <SortAscendingIcon size={20} color="#192234" />,
+        icon: <SortAscendingIcon size={20} color="#192234" weight="bold" />,
         onPress: () => {
           openSelect({
             label: 'Sort by',
@@ -238,7 +238,7 @@ const MarketPlace = ({ listing_type }: Props) => {
       {
         filter: 'Filters',
         iconFirst: true,
-        icon: <FadersHorizontalIcon size={20} color="#192234" />,
+        icon: <FadersHorizontalIcon size={20} color="#192234" weight="bold" />,
         onPress: () => {
           setFiltersModal(true);
         },
@@ -379,8 +379,8 @@ const MarketPlace = ({ listing_type }: Props) => {
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}>
             {filters.map((i, idx) => {
-              if (i.filter === 'Sort' || i.filter === 'Filter') {
-                const isFilter = i.filter === 'Filter';
+              if (i.filter === 'Sort' || i.filter === 'Filters') {
+                const isFilter = i.filter === 'Filters';
                 return (
                   <TouchableWithoutFeedback key={i.filter + idx} onPress={i.onPress}>
                     <View style={styles.sortFilterBadge}>
@@ -394,6 +394,27 @@ const MarketPlace = ({ listing_type }: Props) => {
                       )}
                     </View>
                   </TouchableWithoutFeedback>
+                );
+              }
+              if (i.filter === sortTitle) {
+                return (
+                  <View key={i.filter + idx} style={styles.activeFilterBadge}>
+                    <TouchableWithoutFeedback onPress={i.onPress}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 0 }}>
+                        {i.iconFirst && <View>{i.icon}</View>}
+                        <AppText style={styles.activeFilterText}>{i.filter}</AppText>
+                      </View>
+                    </TouchableWithoutFeedback>
+
+                    <TouchableWithoutFeedback
+                      onPress={() => {
+                        setSort(null);
+                      }}>
+                      <View>
+                        <XIcon size={14} color="#82065e" weight="bold" />
+                      </View>
+                    </TouchableWithoutFeedback>
+                  </View>
                 );
               }
               return (
@@ -434,7 +455,9 @@ const MarketPlace = ({ listing_type }: Props) => {
                     size="180x180"
                     style={styles.districtImage}
                   />
-                  <AppText style={styles.districtName}>{i.district}</AppText>
+                  <AppText style={styles.districtName} numberOfLines={1}>
+                    {i.district}
+                  </AppText>
                 </Pressable>
               ))}
             </ScrollView>
@@ -466,7 +489,7 @@ const MarketPlace = ({ listing_type }: Props) => {
                 <AppText style={styles.headingText}>
                   {isMain
                     ? hasFilters
-                      ? `We found ${properties.length - 1} listings matching your criteria`
+                      ? `We found ${data?.pages?.[0]?.count} listings matching your criteria`
                       : 'Explore all listing'
                     : 'Similar listing according to your criteria'}
                 </AppText>
@@ -616,14 +639,14 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
+    // justifyContent: 'center',
     gap: 8,
     borderRadius: 16,
     borderWidth: 1,
     borderColor: '#E2E4E8',
     backgroundColor: 'white',
     paddingHorizontal: 4,
-    paddingBottom: 8,
+    paddingBottom: 4,
     paddingTop: 4,
   },
   districtImage: {
@@ -634,6 +657,8 @@ const styles = StyleSheet.create({
   districtName: {
     marginHorizontal: 8,
     fontSize: 14,
+    width: 75,
+    textAlign: 'center',
     color: '#192234',
   },
   listContainer: {
@@ -646,8 +671,7 @@ const styles = StyleSheet.create({
   },
   mainHeading: {
     paddingHorizontal: 16,
-    paddingBottom: 16,
-    paddingTop: 8,
+    paddingVertical: 16,
   },
   similarHeading: {
     paddingHorizontal: 16,

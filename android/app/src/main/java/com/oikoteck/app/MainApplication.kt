@@ -1,4 +1,4 @@
-package com.oikoteck.dev
+package com.oikoteck.app
 
 import android.app.Application
 import android.content.res.Configuration

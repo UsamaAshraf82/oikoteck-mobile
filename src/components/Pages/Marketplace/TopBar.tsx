@@ -23,10 +23,10 @@ export const HomeTopBar = () => {
             <UserCircleIcon
               size={25}
               color="#192234"
-              weight="duotone"
+              weight="fill"
               style={{ marginHorizontal: 0, marginVertical: 0 }}
             />
-            <AppText style={styles.loginText} numberOfLines={1}>
+            <AppText style={[styles.loginText, { width: 75 }]} numberOfLines={1}>
               Login Now
             </AppText>
           </View>

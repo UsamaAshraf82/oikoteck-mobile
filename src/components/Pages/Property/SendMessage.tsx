@@ -56,7 +56,7 @@ type SendMessageValues = z.infer<typeof SendMessageSchema>;
 
 const displayNames: Record<keyof SendMessageValues, string> = {
   country: 'Country',
-  email: 'Email Address',
+  email: 'Invalid Email Address',
   firstName: 'First Name',
   lastName: 'Last Name',
   message: 'Message',
@@ -371,7 +371,7 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 999,
     borderWidth: 1,
-    borderColor: '#C6CAD2',
+    borderColor: '#000',
     alignItems: 'center',
     justifyContent: 'center',
   },
