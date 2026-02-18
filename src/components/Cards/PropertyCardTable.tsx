@@ -383,17 +383,17 @@ const PropertyCard = ({
         {type === 'favorite' && (
           <Pressable
             style={[styles.menuButton, { top: 4 }]}
-            onPress={() => {
-              confirmPopup({
-                label: 'Remove Listing',
-                message: 'Are you sure you want to remove this listing from your favorites?',
-                confirm: {
-                  style: { backgroundColor: '#cc3f33' },
-                  // className: 'bg-red-700 border-red-700',
-                  // textClassName: 'text-white',
-                  text: 'Yes, Remove',
-                },
-                onConfirm: async () => {
+            onPress={async() => {
+              // confirmPopup({
+              //   label: 'Remove Listing',
+              //   message: 'Are you sure you want to remove this listing from your favorites?',
+              //   confirm: {
+              //     style: { backgroundColor: '#cc3f33' },
+              //     // className: 'bg-red-700 border-red-700',
+              //     // textClassName: 'text-white',
+              //     text: 'Yes, Remove',
+              //   },
+              //   onConfirm: async () => {
                   activity.startActivity();
                   const FavouriteQuery = new Parse.Query('Favourite');
                   FavouriteQuery.equalTo('Property', {
@@ -415,8 +415,8 @@ const PropertyCard = ({
                     queryKey: ['properties', 'faviorites'],
                   });
                   activity.stopActivity();
-                },
-              });
+                // },
+              // });
             }}>
             <HeartIcon weight={'fill'} color={'#cc3f33'} />
           </Pressable>
@@ -523,7 +523,7 @@ const styles = StyleSheet.create({
     alignItems: 'baseline',
   },
   priceText: {
-    fontFamily: 'LufgaBold',
+    fontFamily: 'LufgaMedium',
     fontSize: 18,
     color: '#82065e',
   },
