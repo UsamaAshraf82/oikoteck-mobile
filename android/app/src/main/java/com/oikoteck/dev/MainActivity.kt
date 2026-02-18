@@ -1,4 +1,4 @@
-package com.oikoteck.app
+package com.oikoteck.dev
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build

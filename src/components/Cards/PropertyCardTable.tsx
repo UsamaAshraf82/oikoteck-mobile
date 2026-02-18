@@ -344,7 +344,7 @@ const PropertyCard = ({
             <View style={styles.rowBaseline}>
               <AppText style={styles.priceText}>{'€ ' + thoasandseprator(property.price)}</AppText>
               {property.listing_for !== 'Sale' && (
-                <AppText style={styles.perMonthText}> /month</AppText>
+                <AppText style={styles.perMonthText}>/month</AppText>
               )}
             </View>
           </View>
@@ -380,45 +380,47 @@ const PropertyCard = ({
           </View>
         </View>
 
-        <Pressable
-          style={[styles.menuButton, { top: 4 }]}
-          onPress={() => {
-            confirmPopup({
-              label: 'Remove Listing',
-              message: 'Are you sure you want to remove this listing from your favorites?',
-              confirm: {
-                style: { backgroundColor: '#cc3f33' },
-                // className: 'bg-red-700 border-red-700',
-                // textClassName: 'text-white',
-                text: 'Yes, Remove',
-              },
-              onConfirm: async () => {
-                activity.startActivity();
-                const FavouriteQuery = new Parse.Query('Favourite');
-                FavouriteQuery.equalTo('Property', {
-                  __type: 'Pointer',
-                  className: 'Property',
-                  objectId: property.objectId,
-                });
-                FavouriteQuery.equalTo('User', {
-                  __type: 'Pointer',
-                  className: '_User',
-                  objectId: user?.id,
-                });
+        {type === 'favorite' && (
+          <Pressable
+            style={[styles.menuButton, { top: 4 }]}
+            onPress={() => {
+              confirmPopup({
+                label: 'Remove Listing',
+                message: 'Are you sure you want to remove this listing from your favorites?',
+                confirm: {
+                  style: { backgroundColor: '#cc3f33' },
+                  // className: 'bg-red-700 border-red-700',
+                  // textClassName: 'text-white',
+                  text: 'Yes, Remove',
+                },
+                onConfirm: async () => {
+                  activity.startActivity();
+                  const FavouriteQuery = new Parse.Query('Favourite');
+                  FavouriteQuery.equalTo('Property', {
+                    __type: 'Pointer',
+                    className: 'Property',
+                    objectId: property.objectId,
+                  });
+                  FavouriteQuery.equalTo('User', {
+                    __type: 'Pointer',
+                    className: '_User',
+                    objectId: user?.id,
+                  });
 
-                FavouriteQuery.equalTo('faviorite', true);
-                const faviorite = await FavouriteQuery.first();
+                  FavouriteQuery.equalTo('faviorite', true);
+                  const faviorite = await FavouriteQuery.first();
 
-                await faviorite?.destroy();
-                query_client.invalidateQueries({
-                  queryKey: ['properties', 'faviorites'],
-                });
-                activity.stopActivity();
-              },
-            });
-          }}>
-          <HeartIcon weight={'fill'} color={'#cc3f33'} />
-        </Pressable>
+                  await faviorite?.destroy();
+                  query_client.invalidateQueries({
+                    queryKey: ['properties', 'faviorites'],
+                  });
+                  activity.stopActivity();
+                },
+              });
+            }}>
+            <HeartIcon weight={'fill'} color={'#cc3f33'} />
+          </Pressable>
+        )}
         {options.length > 0 && (
           <Pressable
             style={styles.menuButton}
@@ -526,11 +528,12 @@ const styles = StyleSheet.create({
     color: '#82065e',
   },
   perMonthText: {
-    fontSize: 12,
+    fontSize: 14,
+    fontFamily: 'LufgaMedium',
     color: '#9191A1',
   },
   titleText: {
-    fontFamily: 'LufgaBold',
+    fontFamily: 'LufgaMedium',
     fontSize: 16,
     color: '#192234',
   },

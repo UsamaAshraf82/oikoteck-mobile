@@ -21,16 +21,14 @@ import { deviceHeight } from '~/utils/global';
 
 const SendMessageSchema = z
   .object({
-    firstName: z.string().min(1, { message: 'Enter First Name.' }),
-    lastName: z.string().min(1, { message: 'Enter Last Name' }),
+    firstName: z.string(),
+    lastName: z.string(),
     email: z.union([
       z.literal(''),
       z.string().toLowerCase().trim().pipe(z.email('Must be a valid email address.')),
     ]),
     phone: z.string().optional(),
-    message: z.string().min(1, {
-      message: 'Enter Your Message',
-    }),
+    message: z.string(),
     country: z.object({
       ISO: z.string(),
       Country: z.string(),
@@ -38,6 +36,28 @@ const SendMessageSchema = z
     }),
   })
   .superRefine((data: any, ctx: RefinementCtx) => {
+    if (!data.firstName) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['firstName'],
+        message: 'Enter First Name.',
+      });
+    }
+    if (!data.lastName) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['lastName'],
+        message: 'Enter Last Name',
+      });
+    }
+    if (!data.message) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['message'],
+        message: 'Enter Your Message',
+      });
+    }
+
     if (!data.email && !data.phone) {
       ctx.addIssue({
         code: 'custom',
@@ -101,7 +121,9 @@ const SendMessage = ({ onClose, property }: Props) => {
         className: 'Property',
         objectId: property.objectId,
       });
-      myNewObject.set('User', user);
+      if (user) {
+        myNewObject.set('User', user);
+      }
       myNewObject.set('owner', property.owner);
       myNewObject.set('first_name', data.firstName);
       myNewObject.set('last_name', data.lastName);

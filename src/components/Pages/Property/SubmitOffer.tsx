@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Link } from 'expo-router';
 import Parse from 'parse/react-native';
 import { XIcon } from 'phosphor-react-native';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -7,6 +8,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Modal from 'react-native-modal';
 import { RefinementCtx, z } from 'zod';
 import AppText from '~/components/Elements/AppText';
+import { ControlledCheckBox } from '~/components/Elements/Checkbox';
 import { flags, RenderFlagWithCode } from '~/components/Elements/Flags';
 import TextInput, { ControlledTextInput } from '~/components/Elements/TextInput';
 import Grid from '~/components/HOC/Grid';
@@ -34,23 +36,46 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
 
   const SendOfferSchema = z
     .object({
-      firstName: z.string().min(1, { message: 'Enter First Name.' }),
-      lastName: z.string().min(1, { message: 'Enter Last Name' }),
+      firstName: z.string(),
+      lastName: z.string(),
       email: z.union([
         z.literal(''),
         z.string().toLowerCase().trim().pipe(z.email('Must be a valid email address.')),
       ]),
       phone: z.string().optional(),
-      price: z.coerce.number().min(p20, {
-        message: `Your offer price is less than 20% (${p20.toFixed(0)}) of the asking price`,
-      }),
+      price: z.coerce.number(),
       country: z.object({
         ISO: z.string(),
         Country: z.string(),
         Code: z.number(),
       }),
+      terms: z.boolean(),
+      privacy: z.boolean(),
+      share_consent: z.boolean(),
     })
     .superRefine((data: any, ctx: RefinementCtx) => {
+      if (!data.firstName) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['firstName'],
+          message: 'Enter First Name.',
+        });
+      }
+      if (!data.lastName) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['lastName'],
+          message: 'Enter Last Name',
+        });
+      }
+      if (data.price < p20) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['price'],
+          message: `Your offer price is less than 20% (${p20.toFixed(0)}) of the asking price`,
+        });
+      }
+
       if (!data.email && !data.phone) {
         ctx.addIssue({
           code: 'custom',
@@ -63,9 +88,36 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
           message: 'Enter one or both contact methods',
         });
       }
+      if (!data.terms) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['terms'],
+          message: 'You Must Agree with Terms and Conditions',
+        });
+      }
+
+      if (!data.privacy) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['privacy'],
+          message: 'You Must Agree with Privacy Policy',
+        });
+      }
     });
 
   type SendOfferValues = z.infer<typeof SendOfferSchema>;
+
+  const displayNames: Record<keyof SendOfferValues, string> = {
+    country: 'Country',
+    email: 'Invalid Email Address',
+    firstName: 'First Name',
+    lastName: 'Last Name',
+    phone: 'Phone Number',
+    price: 'Unreasonable Offer',
+    privacy: 'Privacy Policy Agreement',
+    share_consent: 'Share Consent',
+    terms: 'Terms Agreement',
+  };
 
   const {
     control,
@@ -82,6 +134,9 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
       lastName: '',
       phone: '',
       price: property.price,
+      terms: false,
+      privacy: false,
+      share_consent: false,
     },
   });
 
@@ -94,7 +149,9 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
         className: 'Property',
         objectId: property.objectId,
       });
-      myNewObject.set('User', user);
+      if (user) {
+        myNewObject.set('User', user);
+      }
       myNewObject.set('owner', property.owner);
       myNewObject.set('first_name', data.firstName);
       myNewObject.set('last_name', data.lastName);
@@ -136,15 +193,17 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
   };
 
   const onError = () => {
-    Object.values(errors).forEach((err: any) => {
-      if (err?.message) {
+    const keys = Object.keys(errors) as (keyof SendOfferValues)[];
+    for (let index = 0; index < keys.length; index++) {
+      const element = errors[keys[index]];
+      if (element?.message) {
         addToast({
           type: 'error',
-          heading: 'Validation Error',
-          message: err.message,
+          heading: displayNames[keys[index]],
+          message: element.message,
         });
       }
-    });
+    }
   };
 
   return (
@@ -188,6 +247,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
                   name="price"
                   label="Your Offer"
                   placeholder="Enter your offer"
+                  keyboardType="number-pad"
                 />
               </Grid>
               <AppText style={styles.warningText}>
@@ -263,7 +323,56 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
                 placeholder="Enter email address"
               />
             </View>
-            <View style={styles.spacer40} />
+            <View style={styles.spacer20} />
+            <View style={styles.checkboxSection}>
+              <ControlledCheckBox
+                control={control}
+                alignTop
+                name="terms"
+                labelStyle={{ color: '#ACACB9', fontSize: 14, fontFamily: 'LufgaMedium' }}
+                label={
+                  <>
+                    I confirm that I read and I agree with Oikoteck’s{' '}
+                    <Link href="/terms-conditions" style={styles.linkText}>
+                      Terms & Conditions
+                    </Link>{' '}
+                    *
+                  </>
+                }
+              />
+              <ControlledCheckBox
+                control={control}
+                alignTop
+                name="privacy"
+                labelStyle={{ color: '#ACACB9', fontSize: 14, fontFamily: 'LufgaMedium' }}
+                label={
+                  <>
+                    I confirm that I read and understood Oikoteck’s{' '}
+                    <Link href="/privacy-policy" style={styles.linkText}>
+                      Data Protection Notice
+                    </Link>{' '}
+                    and the{' '}
+                    <Link href="/cookie-policy" style={styles.linkText}>
+                      Cookies Policy
+                    </Link>{' '}
+                    *
+                  </>
+                }
+              />
+              <ControlledCheckBox
+                control={control}
+                alignTop
+                name="share_consent"
+                labelStyle={{ color: '#ACACB9', fontSize: 14, fontFamily: 'LufgaMedium' }}
+                label={
+                  <>
+                    I consent to the sharing of my contact information and search preferences with
+                    real estate agents who offer listings which may align with my interests
+                  </>
+                }
+              />
+            </View>
+            <View style={styles.spacer20} />
             <Grid cols={2} gap={8}>
               <PressableView onPress={onClose} style={styles.cancelBtn}>
                 <View style={styles.footerBtnInner}>
@@ -272,7 +381,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
               </PressableView>
               <PressableView onPress={handleSubmit(onSubmit, onError)} style={styles.sendBtn}>
                 <View style={styles.footerBtnInner}>
-                  <AppText style={styles.sendBtnText}>Send Message</AppText>
+                  <AppText style={styles.sendBtnText}>Submit Offer</AppText>
                 </View>
               </PressableView>
             </Grid>
@@ -321,6 +430,12 @@ const styles = StyleSheet.create({
     marginTop: 4,
     flexDirection: 'column',
     gap: 8,
+  },
+  checkboxSection: {
+    marginBottom: 32,
+  },
+  linkText: {
+    color: '#82065e',
   },
   warningText: {
     marginTop: 0,
@@ -373,14 +488,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 12,
   },
-  spacer40: {
-    marginTop: 40,
+  spacer20: {
+    marginTop: 20,
   },
   cancelBtn: {
     height: 48,
     borderRadius: 999,
     borderWidth: 1,
-    borderColor: '#C6CAD2',
+    borderColor: '#000',
     alignItems: 'center',
     justifyContent: 'center',
   },

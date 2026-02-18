@@ -1,8 +1,8 @@
 import { FlashList } from '@shopify/flash-list';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import { useRouter } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import Parse from 'parse/react-native';
-import { ArrowLeftIcon } from 'phosphor-react-native';
+import { ArrowLeftIcon, FolderOpenIcon } from 'phosphor-react-native';
 import { useState } from 'react';
 import {
   ActivityIndicator,
@@ -393,52 +393,86 @@ const UserProperties = () => {
             </Pressable>
           ))}
         </ScrollView>
-        <View style={styles.listContainer}>
-          <FlashList
-            data={properties}
-            decelerationRate={'fast'}
-            showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}
-            estimatedItemSize={(deviceWidth - 16 * 2) / 1.4 + 8}
-            keyExtractor={(item) => item.objectId}
-            renderItem={({ item }) => {
-              if (isProperty(item)) {
-                return <PropertyCard property={item} type="dashboard" />;
+        {properties.length > 0 ? (
+          <View style={styles.listContainer}>
+            <FlashList
+              data={properties}
+              decelerationRate={'fast'}
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}
+              estimatedItemSize={(deviceWidth - 16 * 2) / 1.4 + 8}
+              keyExtractor={(item) => item.objectId}
+              renderItem={({ item }) => {
+                if (isProperty(item)) {
+                  return <PropertyCard property={item} type="dashboard" />;
+                }
+                return (
+                  <View style={styles.similarListingHeader}>
+                    <AppText style={styles.similarListingText}>
+                      Similar Listings According to Your Criteria
+                    </AppText>
+                  </View>
+                );
+              }}
+              onEndReached={() => {
+                if (!isFetchingNextPage && hasNextPage) {
+                  fetchNextPage();
+                }
+              }}
+              onEndReachedThreshold={0.5}
+              ListFooterComponent={
+                isFetchingNextPage ? (
+                  <View style={styles.footerLoader}>
+                    <ActivityIndicator size="large" color="#82065e" />
+                  </View>
+                ) : (
+                  <View style={styles.footerSpacer} />
+                )
               }
-              return (
-                <View style={styles.similarListingHeader}>
-                  <AppText style={styles.similarListingText}>
-                    Similar Listings According to Your Criteria
-                  </AppText>
-                </View>
-              );
-            }}
-            onEndReached={() => {
-              if (!isFetchingNextPage && hasNextPage) {
-                fetchNextPage();
-              }
-            }}
-            onEndReachedThreshold={0.5}
-            ListFooterComponent={
-              isFetchingNextPage ? (
-                <View style={styles.footerLoader}>
-                  <ActivityIndicator size="large" color="#82065e" />
-                </View>
-              ) : (
-                <View style={styles.footerSpacer} />
-              )
-            }
-          />
-        </View>
+            />
+          </View>
+        ) : (
+          <View style={styles.emptyState}>
+            <FolderOpenIcon size={100} color="#ACACB9" />
+            <AppText style={styles.emptyText}>Nothing here at the moment…</AppText>
+          </View>
+        )}
       </View>
+      <Link href={'/post'} style={styles.postBtn}>
+        Post a Listing
+      </Link>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  emptyState: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+  },
+  emptyText: {
+    color: '#5E5E6E',
+    fontFamily: 'LufgaMedium',
+    fontSize: 14,
+  },
+  postBtn: {
+    position: 'absolute',
+    bottom: 10,
+    right: 20,
+    backgroundColor: '#82065e',
+    color: 'white',
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderRadius: 999,
+    fontFamily: 'LufgaBold',
+    fontSize: 15,
+  },
   container: {
     flex: 1,
     backgroundColor: 'white',
+    position: 'relative',
   },
   topBar: {
     position: 'relative',
@@ -472,10 +506,11 @@ const styles = StyleSheet.create({
   tabText: {
     fontSize: 14,
     color: '#9191A1',
-    fontFamily: 'LufgaMedium',
+    // fontFamily: 'LufgaMedium',
   },
   tabTextActive: {
-    color: '#192234',
+    color: '#000',
+    fontFamily: 'LufgaBold',
   },
   content: {
     flex: 1,

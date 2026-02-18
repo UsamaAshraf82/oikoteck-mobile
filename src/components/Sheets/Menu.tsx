@@ -1,4 +1,5 @@
 import { FlashList } from '@shopify/flash-list';
+import { XIcon } from 'phosphor-react-native';
 import * as React from 'react';
 import { ScrollView, StyleSheet, TouchableNativeFeedback, View } from 'react-native';
 import Modal from 'react-native-modal';
@@ -32,6 +33,11 @@ const Menu = () => {
         <View style={styles.handle} />
         <View style={styles.header}>
           <AppText style={styles.headerText}>{value.label}</AppText>
+          <TouchableNativeFeedback onPress={value.onClose}>
+            <View style={styles.closeIcon}>
+              <XIcon color="#1A2436" size={24} weight="bold" />
+            </View>
+          </TouchableNativeFeedback>
         </View>
         {value.useFlatList ? (
           <View style={[styles.listWrapper, { height: deviceHeight * 0.9 - 80 }]}>
@@ -88,6 +94,13 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     margin: 0,
   },
+  closeIcon: {
+    position: 'absolute',
+    right: 20,
+    top: '50%',
+    zIndex: 10,
+    transform: [{ translateY: '-50%' }],
+  },
   container: {
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
@@ -107,12 +120,12 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 16,
+    // justifyContent: 'center',
+    marginBottom: 24,
   },
   headerText: {
-    fontFamily: 'LufgaSemiBold',
-    fontSize: 20,
+    fontFamily: 'LufgaBold',
+    fontSize: 24,
     color: '#192234',
   },
   listWrapper: {
@@ -122,13 +135,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    paddingVertical: 12,
+    paddingVertical: 15,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#f3f4f6',
   },
   optionText: {
-    fontFamily: 'LufgaMedium',
-    fontSize: 18,
+    // fontFamily: 'LufgaMedium',
+    fontSize: 15,
     color: '#192234',
   },
 });

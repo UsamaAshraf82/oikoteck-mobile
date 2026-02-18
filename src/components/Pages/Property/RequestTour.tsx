@@ -7,7 +7,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Modal from 'react-native-modal';
 import { RefinementCtx, z } from 'zod';
 import AppText from '~/components/Elements/AppText';
-import { ControlledDatePicker } from '~/components/Elements/DatePicker';
+import DatePicker from '~/components/Elements/DatePicker';
 import { flags, RenderFlagWithCode } from '~/components/Elements/Flags';
 import Select from '~/components/Elements/Select';
 import { ControlledTextInput } from '~/components/Elements/TextInput';
@@ -26,19 +26,15 @@ const Tour1Schema = z
     tour_type: z.enum(['In-Person', 'Video Call'], {
       message: 'Tour Type is Required.',
     }),
-    tour_date: z
-      .string({ message: 'Enter a visit date' })
-      .min(1, { message: 'Enter a visit date' }),
+    tour_date: z.string({ message: 'Enter a visit date' }),
     tour_time: z.enum(['Anytime', 'Morning', 'Evening'], {
       message: 'Tour Type is Required.',
     }),
-    firstName: z.string().min(1, { message: 'Enter First Name.' }),
-    lastName: z.string().min(1, { message: 'Enter Last Name' }),
+    firstName: z.string(),
+    lastName: z.string(),
     email: z.union([z.literal(''), z.string().email({ message: 'Email is Not Valid' })]),
     phone: z.string().optional(),
-    message: z.string().min(1, {
-      message: 'Enter Your Message',
-    }),
+    message: z.string(),
     country: z.object({
       ISO: z.string(),
       Country: z.string(),
@@ -46,14 +42,43 @@ const Tour1Schema = z
     }),
   })
   .superRefine((data: any, ctx: RefinementCtx) => {
+    if (!data.tour_date) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['tour_date'],
+        message: 'Enter a visit date',
+      });
+    }
+    if (!data.firstName) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['firstName'],
+        message: 'Enter First Name.',
+      });
+    }
+    if (!data.lastName) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['lastName'],
+        message: 'Enter Last Name',
+      });
+    }
+    if (!data.message) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['message'],
+        message: 'Enter Your Message',
+      });
+    }
+
     if (!data.email && !data.phone) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: 'custom',
         path: ['email'],
         message: 'Enter one or both contact methods',
       });
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: 'custom',
         path: ['phone'],
         message: 'Enter one or both contact methods',
       });
@@ -107,14 +132,19 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
 
   const onSubmit: SubmitHandler<Tour1Type> = async (data) => {
     startActivity();
+    console.log(user);
     try {
+      console.log(0);
       const myNewObject = new Parse.Object('Tours');
       myNewObject.set('Property', {
         __type: 'Pointer',
         className: 'Property',
         objectId: property.objectId,
       });
-      myNewObject.set('User', user);
+
+      if (user) {
+        myNewObject.set('User', user);
+      }
       myNewObject.set('owner', property.owner);
       myNewObject.set('first_name', data.firstName);
       myNewObject.set('last_name', data.lastName);
@@ -131,7 +161,10 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
       myNewObject.set('price', property.price);
       myNewObject.set('read', false);
 
+      console.log(1, myNewObject);
+
       await myNewObject.save();
+      console.log(2);
       addToast({
         heading: 'Tour Request',
         message:
@@ -151,6 +184,7 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
       });
       onClose();
     } catch (e: any) {
+      console.log(e);
       addToast({
         type: 'error',
         heading: 'Error',
@@ -219,10 +253,18 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
               onChange={(value) => setValue('tour_type', value?.value as Tour1Type['tour_type'])}
             />
 
-            <ControlledDatePicker
+            {/* <ControlledDatePicker
               control={control}
               name="tour_date"
               label="Select a preferred visit date"
+              withForm
+              minDate={minDate}
+            /> */}
+
+            <DatePicker
+              label="Select a preferred visit date"
+              value={watch('tour_date')}
+              onChange={(date: Date) => setValue('tour_date', date.toISOString())}
               withForm
               minDate={minDate}
             />
@@ -290,7 +332,6 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
                 <ControlledTextInput
                   control={control}
                   name="phone"
-
                   placeholder="Enter phone number"
                   textContentType="telephoneNumber"
                   keyboardType="phone-pad"
@@ -425,7 +466,7 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 999,
     borderWidth: 1,
-    borderColor: '#C6CAD2',
+    borderColor: '#000',
     alignItems: 'center',
     justifyContent: 'center',
   },
