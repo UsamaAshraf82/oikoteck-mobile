@@ -3,7 +3,7 @@ import { GOLD_PRICE, PLATINUM_PRICE, PROMOTE_PLUS_PRICE, PROMOTE_PRICE } from '.
 export const plans = [
   {
     link: '/post-listing',
-    pkgColor: 'bg-secondary',
+    pkgColor: '#82065e',
     name: 'Free',
     price: ['€ 0', '/month'],
     price_number: 0,
@@ -13,7 +13,7 @@ export const plans = [
   },
   {
     link: '/post-listing',
-    pkgColor: 'bg-promote',
+    pkgColor: '#5412a1',
     name: 'Promote',
     price: [`€ ${PROMOTE_PRICE}`, 'per listing/month'],
     price_number: PROMOTE_PRICE,
@@ -23,7 +23,7 @@ export const plans = [
   },
   {
     link: '/start-membership',
-    pkgColor: 'bg-promote_plus',
+    pkgColor: '#398be9',
     price_number: PROMOTE_PLUS_PRICE,
     name: 'Promote +',
     price: [`€ ${PROMOTE_PLUS_PRICE}`, '/per point'],
@@ -33,7 +33,7 @@ export const plans = [
   },
   {
     link: '/start-membership',
-    pkgColor: 'bg-gold',
+    pkgColor: '#e6c623',
     name: 'Gold',
     price_number: GOLD_PRICE,
     price: [`€ ${GOLD_PRICE}`, '/per point'],
@@ -43,7 +43,7 @@ export const plans = [
   },
   {
     link: '/start-membership',
-    pkgColor: 'bg-platinum',
+    pkgColor: '#ff9c46',
     name: 'Platinum',
     price_number: PLATINUM_PRICE,
     price: [`€ ${PLATINUM_PRICE}`, '/per point'],

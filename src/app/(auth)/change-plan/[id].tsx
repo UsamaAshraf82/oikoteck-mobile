@@ -18,17 +18,17 @@ import { Property_Type } from '~/type/property';
 
 const PaymentInfoSchema = z.object({
   plan: z.enum(['Free', 'Promote'], {
-    errorMap: (issue: z.ZodIssueBase, ctx: { defaultError: string }) => {
-      if (issue.code === z.ZodIssueCode.invalid_enum_value) {
-        return { message: 'Plan is Required.' };
-      }
-      return { message: ctx.defaultError };
-    },
+    message: 'Plan is Required.',
   }),
   promo: z.string().optional(),
 });
 
 export type PaymentInfoTypes = z.infer<typeof PaymentInfoSchema>;
+
+const displayNames: Record<keyof PaymentInfoTypes, string> = {
+  plan: 'Plan',
+  promo: 'Promo Code',
+};
 
 const ChangePlan = () => {
   const { addToast } = useToast();
@@ -97,15 +97,17 @@ const ChangePlan = () => {
   };
 
   const onError = () => {
-    Object.values(errors).forEach((err: any) => {
-      if (err?.message) {
+    const keys = Object.keys(errors) as (keyof PaymentInfoTypes)[];
+    for (let index = 0; index < keys.length; index++) {
+      const element = errors[keys[index]];
+      if (element?.message) {
         addToast({
           type: 'error',
-          heading: 'Validation Error',
-          message: err.message,
+          heading: displayNames[keys[index]],
+          message: element.message,
         });
       }
-    });
+    }
   };
 
   const { data: property, isLoading } = useQuery({

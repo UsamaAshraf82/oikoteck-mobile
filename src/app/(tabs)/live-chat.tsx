@@ -1,9 +1,8 @@
-import { StyleSheet } from 'react-native';
-import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 import { WebView } from 'react-native-webview';
+import KeyboardAvoidingView from '~/components/HOC/KeyboardAvoidingView';
 const LiveChat = () => {
   return (
-    <KeyboardAvoidingView style={styles.container}>
+    <KeyboardAvoidingView >
       <WebView
         source={{
           uri: 'https://secure.livechatinc.com/customer/action/open_chat?license_id=18135348',
@@ -16,10 +15,3 @@ const LiveChat = () => {
 };
 
 export default LiveChat;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
-});

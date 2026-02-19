@@ -52,9 +52,9 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   label: {
-    fontFamily: 'LufgaMedium',
-    fontSize: 13,
-    color: '#192234',
+    // fontFamily: 'LufgaMedium',
+    fontSize: 14,
+    color: '#9191A1',
   },
   inputWrapper: {
     position: 'relative',

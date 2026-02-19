@@ -99,28 +99,27 @@ const useUser = create<Store>()((set, get) => ({
 
       console.log(user.id);
 
-      try{
-      const response = await fetch(emailsAddress, {
-        method: 'POST',
-        body: JSON.stringify({ email: 'account_validation', id: user.id }),
-      });
+      try {
+        const response = await fetch(emailsAddress, {
+          method: 'POST',
+          body: JSON.stringify({ email: 'account_validation', id: user.id }),
+        });
 
-      const response2 = await fetch(emailsAddress, {
-        method: 'POST',
-        body: JSON.stringify({
-          email: 'account_greetings',
-          id: user?.id,
-        }),
-      });
+        const response2 = await fetch(emailsAddress, {
+          method: 'POST',
+          body: JSON.stringify({
+            email: 'account_greetings',
+            id: user?.id,
+          }),
+        });
 
-
-      const data3 = await response.json();
-      console.log('data', data3);
-      const data2 = await response2.json();
-      console.log('data2', data2);
-    }catch(e){
-      console.log('error',e);
-    }
+        const data3 = await response.json();
+        console.log('data', data3);
+        const data2 = await response2.json();
+        console.log('data2', data2);
+      } catch (e) {
+        console.log('error', e);
+      }
       if (user.attributes.sessionToken) {
         await AsyncStorage.setItem('session_token', user.attributes.sessionToken);
       }

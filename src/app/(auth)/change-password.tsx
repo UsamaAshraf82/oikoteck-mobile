@@ -49,6 +49,12 @@ const PasswordSchema = z
 
 type PasswordValues = z.infer<typeof PasswordSchema>;
 
+const displayNames: Record<keyof PasswordValues, string> = {
+  current_password: 'Current Password',
+  password: 'Password Formatting',
+  confirmPassword: 'Passwords Mismatch',
+};
+
 const ChangePassword = () => {
   const { user } = useUser();
   const router = useRouter();
@@ -86,7 +92,7 @@ const ChangePassword = () => {
         addToast({
           type: 'error',
           heading: 'Invalid Password',
-          message: e.message || 'Your current password is invalid. Please re-enter your password',
+          message: 'Your current password is invalid. Please re-enter your password',
         });
       }
     }
@@ -94,17 +100,18 @@ const ChangePassword = () => {
   };
 
   const onError = () => {
-    Object.values(errors).forEach((err) => {
-      if (err?.message) {
+    const keys = Object.keys(errors) as (keyof PasswordValues)[];
+    for (let index = 0; index < keys.length; index++) {
+      const element = errors[keys[index]];
+      if (element?.message) {
         addToast({
           type: 'error',
-          heading: 'Validation Error',
-          message: err.message,
+          heading: displayNames[keys[index]],
+          message: element.message,
         });
       }
-    });
+    }
   };
-
   return (
     <View style={styles.container}>
       <TopHeader onBackPress={() => router.back()} title="" />

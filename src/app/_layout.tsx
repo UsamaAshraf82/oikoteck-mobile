@@ -77,9 +77,9 @@ export default function RootLayout() {
           <Menu />
           <Popup />
           <ActivityIndicator />
+          <ToastContainer />
         </Provider>
       </StripeProvider>
-      <ToastContainer />
       <PortalHost name="toast-host" />
     </>
   );

@@ -8,12 +8,13 @@ import {
 } from 'phosphor-react-native';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Pressable, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import z from 'zod';
 import AppText from '~/components/Elements/AppText';
 import { flags, RenderFlagWithCode } from '~/components/Elements/Flags';
 import { ControlledTextInput } from '~/components/Elements/TextInput';
 import TopHeader from '~/components/Elements/TopHeader';
+import { emailsAddress } from '~/global';
 import useActivityIndicator from '~/store/useActivityIndicator';
 import useSelect from '~/store/useSelectHelper';
 import { useToast } from '~/store/useToast';
@@ -25,11 +26,11 @@ const EditUser = () => {
   return (
     <View style={styles.container}>
       <TopHeader onBackPress={() => router.back()} title="Edit Profile" />
-      <View style={styles.formWrapper}>
+      <ScrollView contentContainerStyle={styles.formWrapper} showsVerticalScrollIndicator={false}>
         <NameInput />
         <NumberInput />
         <EmailInput />
-      </View>
+      </ScrollView>
     </View>
   );
 };
@@ -44,6 +45,11 @@ const NameInputSchema = z.object({
 });
 
 type NameInputTypes = z.infer<typeof NameInputSchema>;
+
+const NameDisplayNames: Record<keyof NameInputTypes, string> = {
+  firstName: 'First Name',
+  lastName: 'Last Name',
+};
 
 const NameInput = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -90,15 +96,17 @@ const NameInput = () => {
   };
 
   const onError = () => {
-    Object.values(errors).forEach((err: any) => {
-      if (err?.message) {
+    const keys = Object.keys(errors) as (keyof NameInputTypes)[];
+    for (let index = 0; index < keys.length; index++) {
+      const element = errors[keys[index]];
+      if (element?.message) {
         addToast({
           type: 'error',
-          heading: 'Validation Error',
-          message: err.message,
+          heading: NameDisplayNames[keys[index]],
+          message: element.message,
         });
       }
-    });
+    }
   };
 
   return (
@@ -166,6 +174,11 @@ const NumberInputSchema = z.object({
 
 type NumberInputTypes = z.infer<typeof NumberInputSchema>;
 
+const NumberDisplayNames: Record<keyof NumberInputTypes, string> = {
+  country: 'Country',
+  phone: 'Phone',
+};
+
 const NumberInput = () => {
   const [isEditing, setIsEditing] = useState(false);
   const { user } = useUser();
@@ -224,17 +237,18 @@ const NumberInput = () => {
   };
 
   const onError = () => {
-    Object.values(errors).forEach((err: any) => {
-      if (err?.message) {
+    const keys = Object.keys(errors) as (keyof NumberInputTypes)[];
+    for (let index = 0; index < keys.length; index++) {
+      const element = errors[keys[index]];
+      if (element?.message) {
         addToast({
           type: 'error',
-          heading: 'Validation Error',
-          message: err.message,
+          heading: NumberDisplayNames[keys[index]],
+          message: element.message,
         });
       }
-    });
+    }
   };
-
   return (
     <View style={styles.inputRow}>
       <View style={styles.iconContainer}>
@@ -326,10 +340,14 @@ const EmailInputSchema = z.object({
     .toLowerCase()
     .trim()
     .min(1, { message: 'Email is required' })
-    .email({ message: 'Must be a valid email address.' }),
+    .pipe(z.email('Must be a valid email address.')),
 });
 
 type EmailInputTypes = z.infer<typeof EmailInputSchema>;
+
+const EmailDisplayNames: Record<keyof EmailInputTypes, string> = {
+  email: 'Email',
+};
 
 const EmailInput = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -360,29 +378,37 @@ const EmailInput = () => {
   const onSubmit = async (data: EmailInputTypes) => {
     startActivity();
     if (user) {
-      user.set('username', data.email.toLowerCase().trim());
-      user.set('email', data.email.toLowerCase().trim());
-      await user.save();
-      addToast({
-        type: 'success',
-        heading: 'Profile Updated',
-        message: 'Your email address has been updated successfully.',
-      });
+      if (user?.attributes.username.toLowerCase().trim() !== data.email.toLowerCase().trim()) {
+        user.set('username', data.email.toLowerCase().trim());
+        user.set('email', data.email.toLowerCase().trim());
+        await user.save();
+        const response = await fetch(emailsAddress, {
+          method: 'POST',
+          body: JSON.stringify({ email: 'account_validation', id: user.id }),
+        });
+      }
       setIsEditing(false);
     }
+    addToast({
+      type: 'success',
+      heading: 'Profile Updated',
+      message: 'Your email address has been updated successfully.',
+    });
     stopActivity();
   };
 
   const onError = () => {
-    Object.values(errors).forEach((err: any) => {
-      if (err?.message) {
+    const keys = Object.keys(errors) as (keyof EmailInputTypes)[];
+    for (let index = 0; index < keys.length; index++) {
+      const element = errors[keys[index]];
+      if (element?.message) {
         addToast({
           type: 'error',
-          heading: 'Validation Error',
-          message: err.message,
+          heading: EmailDisplayNames[keys[index]],
+          message: element.message,
         });
       }
-    });
+    }
   };
 
   return (

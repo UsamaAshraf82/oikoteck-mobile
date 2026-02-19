@@ -46,10 +46,10 @@ const Pricing = () => {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {onepricetable.map((i, j) => (
           <Grid cols={4} key={j} style={styles.gridRow}>
-            <View>
+            <View style={{ flex: 1, width: 100 }}>
               <AppText style={styles.rangeText}>
-                {thoasandseprator(i.low)}{' '}
-                {i.high === Number.MAX_SAFE_INTEGER ? '+' : ' - ' + thoasandseprator(i.high)}
+                {thoasandseprator(i.low)}
+                {i.high === Number.MAX_SAFE_INTEGER ? '+' : '- ' + thoasandseprator(i.high)}
               </AppText>
               {/* <AppText style={styles.pointsSubText}>Points</AppText> */}
             </View>

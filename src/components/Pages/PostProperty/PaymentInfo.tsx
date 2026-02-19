@@ -30,15 +30,17 @@ export default function PaymentInfo({ data, onSubmit }: Props) {
   };
 
   const onError = () => {
-    Object.values(errors).forEach((err: any) => {
-      if (err?.message) {
+    const keys = Object.keys(errors) as (keyof PaymentInfoTypes)[];
+    for (let index = 0; index < keys.length; index++) {
+      const element = errors[keys[index]];
+      if (element?.message) {
         addToast({
           type: 'error',
-          heading: 'Validation Error',
-          message: err.message,
+          heading: displayNames[keys[index]],
+          message: element.message,
         });
       }
-    });
+    }
   };
 
   const selectedPlan = watch('plan');
@@ -167,3 +169,8 @@ const PaymentInfoSchema = z.object({
 });
 
 export type PaymentInfoTypes = z.infer<typeof PaymentInfoSchema>;
+
+const displayNames: Record<keyof PaymentInfoTypes, string> = {
+ plan: 'Plan',
+ promo: 'Promo Code',
+};

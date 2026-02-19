@@ -50,7 +50,7 @@ const Services = () => {
                   <View
                     style={[
                       styles.pkgColorCircle,
-                      { backgroundColor: i.pkgColor.split('-')[1] || i.pkgColor },
+                      { backgroundColor: i.pkgColor },
                     ]}
                   />
                   <AppText style={styles.planName}>{i.name}</AppText>
@@ -110,14 +110,24 @@ const Services = () => {
           <Pressable
             style={styles.selectBtn}
             onPress={() => {
-              if (!user) {
-                router.push('/');
-                return;
-              }
+              // if (!user) {
+              //   router.push('/');
+              //   return;
+              // }
               if (['Free', 'Promote'].includes(plan)) {
+                if (!user) {
+                    addToast({
+                    heading: 'Plan Selection',
+                    message: 'To select this plan, you must sign in first',
+                    type: 'success',
+                  });
+                  router.push('/login');
+                  return;
+                }
+
                 router.push('/property/new');
               } else {
-                if (user.attributes.user_type !== 'agent') {
+                if (!user || user.attributes.user_type !== 'agent') {
                   addToast({
                     heading: 'Access Restriction',
                     message: 'Only real estate brokers can access those plans',
@@ -194,7 +204,7 @@ const styles = StyleSheet.create({
   pkgColorCircle: {
     width: 16,
     height: 16,
-    borderRadius: 8,
+    borderRadius: '100%'
   },
   planName: {
     fontFamily: 'LufgaSemiBold',
@@ -207,7 +217,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   priceValue: {
-    fontFamily: 'LufgaBlack',
+    fontFamily: 'LufgaSemiBold',
     fontSize: 22,
     color: '#192234',
   },
