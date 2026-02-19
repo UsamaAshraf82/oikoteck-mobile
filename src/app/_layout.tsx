@@ -26,6 +26,7 @@ import { ParseInit } from '~/utils/Parse';
 SplashScreen.preventAutoHideAsync();
 GoogleSignin.configure({
   webClientId: '249425615765-q3s8kt4ldpuf0u4dr7flmc9pm4n06ugi.apps.googleusercontent.com', // from Google Cloud Console
+  iosClientId: '249425615765-c3hb68cqlo6fcjd82bft3uqeq8t857bh.apps.googleusercontent.com', // from GoogleService-Info.plist or google-services.json
   offlineAccess: false, // so you can also get refresh tokens if needed
   scopes: ['profile', 'email'],
 });

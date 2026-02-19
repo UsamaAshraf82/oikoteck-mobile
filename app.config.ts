@@ -23,7 +23,14 @@ const appConfig: ExpoConfig = {
         'This app needs photo library access so users can select images from their gallery.',
       NSLocationWhenInUseUsageDescription:
         'This app uses your location to improve map and property accuracy.',
-      LSApplicationQueriesSchemes: ['whatsapp', 'whatsapp-business'],
+      LSApplicationQueriesSchemes: [
+        'whatsapp',
+        'whatsapp-business',
+        'fbapi',
+        'fb-messenger-share-api',
+        'fbauth2',
+        'fbshareextension',
+      ],
     },
     config: {
       googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,

@@ -6,6 +6,7 @@ import {
   isErrorWithCode,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import { Image as ExpoImage } from 'expo-image';
 import { useRouter } from 'expo-router';
 import Parse from 'parse/react-native';
@@ -26,7 +27,9 @@ const SocialSignin = () => {
   const startGoogleFlow = async () => {
     startActivity();
     try {
-      await GoogleSignin.hasPlayServices();
+      if (Platform.OS === 'android') {
+        await GoogleSignin.hasPlayServices();
+      }
       const response = await GoogleSignin.signIn();
 
       const data = response.data;
@@ -64,27 +67,38 @@ const SocialSignin = () => {
           case statusCodes.IN_PROGRESS:
             break;
           case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+            Alert.alert('Play services not available');
+            break;
+          case statusCodes.SIGN_IN_CANCELLED:
             break;
           default:
+            console.error('Google Sign-in error:', error);
             break;
         }
+      } else {
+        console.error('Google Sign-in error:', error);
       }
     }
     stopActivity();
   };
 
   const handleFacebookLogin = async () => {
+    startActivity();
     try {
+      if (Platform.OS === 'ios') {
+        LoginManager.setLoginBehavior('browser');
+      }
       const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
 
       if (result.isCancelled) {
-        Alert.alert('Login cancelled');
+        stopActivity();
         return;
       }
 
       const data = await AccessToken.getCurrentAccessToken();
       if (!data) {
-        Alert.alert('Something went wrong obtaining access token');
+        Alert.alert('Facebook Error', 'Something went wrong obtaining access token');
+        stopActivity();
         return;
       }
 
@@ -118,8 +132,55 @@ const SocialSignin = () => {
       } else {
         setUser(user as Parse.User<User_Type>);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Facebook login error:', error);
+      Alert.alert('Facebook Login Error', error.message || 'An unknown error occurred');
+    }
+    stopActivity();
+  };
+
+  const handleAppleLogin = async () => {
+    try {
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+      });
+
+      if (credential) {
+        const user = await Parse.User.logInWith('apple', {
+          authData: {
+            id: credential.user,
+            token: credential.identityToken,
+          },
+        });
+
+        if (
+          !user.existed() ||
+          !user.attributes.first_name ||
+          !user.attributes.last_name ||
+          !user.attributes.email ||
+          !user.attributes.phone
+        ) {
+          router.push({
+            pathname: '/signup2social',
+            params: {
+              email: credential.email?.toLowerCase() || '',
+              firstName: credential.fullName?.givenName || '',
+              lastName: credential.fullName?.familyName || '',
+            },
+          });
+        } else {
+          setUser(user as Parse.User<User_Type>);
+        }
+      }
+    } catch (e: any) {
+      if (e.code === 'ERR_CANCELED') {
+        // handle cancel
+      } else {
+        console.error('Apple Sign-in error:', e);
+      }
     }
   };
 
@@ -140,7 +201,7 @@ const SocialSignin = () => {
       </PressableView>
 
       {Platform.OS === 'ios' && (
-        <PressableView onPress={() => {}} style={styles.socialBtn}>
+        <PressableView onPress={handleAppleLogin} style={styles.socialBtn}>
           <View style={styles.btnContent}>
             <Image source={apple} style={styles.icon} />
             <AppText style={styles.btnText}>Continue with Apple</AppText>

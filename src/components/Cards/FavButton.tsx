@@ -12,9 +12,10 @@ type Props = {
   property_id: string;
   property: Property_Type;
   size?: number;
+  color?: string;
 };
 
-const FavButton = ({ size = 26, ...props }: Props) => {
+const FavButton = ({ size = 26, color = '#fff', ...props }: Props) => {
   const { user } = useUser();
   const router = useRouter();
 
@@ -71,8 +72,8 @@ const FavButton = ({ size = 26, ...props }: Props) => {
       <HeartIcon
         key={props.property_id + '_' + (faviorite ? 'fav' : 'not')}
         size={size}
-        weight={faviorite ? 'fill' : 'bold'}
-        color={faviorite ? '#cc3f33' : '#ffffff'}
+        weight={faviorite ? 'fill' : 'duotone'}
+        color={faviorite ? '#cc3f33' : color}
       />
     </TouchableWithoutFeedback>
   );

@@ -62,6 +62,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
   const [SubmitOfferVisible, setSubmitOfferVisible] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
   const [activePageIndex, setActivePageIndex] = useState(0);
+  const [scrolled, setScrolled] = useState(false);
   const carouselRef = useRef<ICarouselInstance>(null);
 
   const details = useMemo(() => {
@@ -126,82 +127,154 @@ export default function PropertyDetails({ property }: { property: Property_Type 
       {SubmitOfferVisible && (
         <SubmitOffer property={property} onClose={() => setSubmitOfferVisible(false)} />
       )}
-      <ContactOwner
-        property={property}
-        visible={contactOwnerVisible}
-        onClose={() => setContactOwnerVisible(false)}
-      />
+      {contactOwnerVisible && (
+        <ContactOwner
+          property={property}
+          visible={contactOwnerVisible}
+          onClose={() => setContactOwnerVisible(false)}
+        />
+      )}
 
-      <View>
-        <Modal visible={lightBoxVisible} transparent={true}>
-          <GestureHandlerRootView style={styles.lightboxBg}>
-            <Carousel
-              ref={carouselRef}
-              data={property.images}
-              loop={false}
-              width={deviceWidth}
-              height={deviceHeight}
-              defaultIndex={startIndex}
-              onProgressChange={(_: any, absoluteProgress: number) => {
-                progress2.value = absoluteProgress;
-              }}
-              onSnapToItem={(index) => setActivePageIndex(index)}
-              renderItem={({ item }: { item: string }) => {
-                return (
-                  <View style={styles.relative}>
-                    <ZoomableImage src={item} />
-                    {property.agent_icon && owner.logo && (
-                      <View style={styles.agentLogoCenter}>
-                        <AWSImage
-                          contentFit="cover"
-                          placeholderContentFit="cover"
-                          src={owner.logo}
-                          size="300x300"
-                          style={styles.agentLogoImage}
-                        />
-                      </View>
-                    )}
-                  </View>
-                );
-              }}
-            />
+      {lightBoxVisible && (
+        <View>
+          <Modal visible={lightBoxVisible} transparent={true}>
+            <GestureHandlerRootView style={styles.lightboxBg}>
+              <Carousel
+                ref={carouselRef}
+                data={property.images}
+                loop={false}
+                width={deviceWidth}
+                height={deviceHeight}
+                defaultIndex={startIndex}
+                onProgressChange={(_: any, absoluteProgress: number) => {
+                  progress2.value = absoluteProgress;
+                }}
+                onSnapToItem={(index) => setActivePageIndex(index)}
+                renderItem={({ item }: { item: string }) => {
+                  return (
+                    <View style={styles.relative}>
+                      <ZoomableImage src={item} />
+                      {property.agent_icon && owner.logo && (
+                        <View style={styles.agentLogoCenter}>
+                          <AWSImage
+                            contentFit="cover"
+                            placeholderContentFit="cover"
+                            src={owner.logo}
+                            size="300x300"
+                            style={styles.agentLogoImage}
+                          />
+                        </View>
+                      )}
+                    </View>
+                  );
+                }}
+              />
 
-            {/* Close button */}
-            <View style={styles.backButtonLightbox}>
-              <TouchableWithoutFeedback
-                hitSlop={20}
-                onPress={() => {
-                  setLightBoxVisible(false);
-                }}>
-                <ArrowLeftIcon size={24} color="white" weight="bold" />
-              </TouchableWithoutFeedback>
-            </View>
-            <View style={styles.numberLightbox}>
-              <AppText style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>
-                {activePageIndex + 1}/{property.images.length}
-              </AppText>
-            </View>
+              {/* Close button */}
+              <View style={styles.backButtonLightbox}>
+                <TouchableWithoutFeedback
+                  hitSlop={20}
+                  onPress={() => {
+                    setLightBoxVisible(false);
+                  }}>
+                  <ArrowLeftIcon size={24} color="white" weight="bold" />
+                </TouchableWithoutFeedback>
+              </View>
+              <View style={styles.numberLightbox}>
+                <AppText style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>
+                  {activePageIndex + 1}/{property.images.length}
+                </AppText>
+              </View>
 
-            <View style={styles.headerIconsLightbox}>
-              <TouchableWithoutFeedback
-                onPress={async () => {
-                  await Share.share({
-                    message: `Hi! I found this property. Enjoy reviewing its features on OikoTeck.\nhttps://www.oikoteck.com/property/${property.objectId}`,
-                  });
-                }}>
-                <ShareFatIcon color="#fff" weight="duotone" size={30} />
-              </TouchableWithoutFeedback>
-              <FavButton property={property} property_id={property.objectId} size={30} />
-            </View>
-            <View style={styles.dotsWrapper}>
-              {property.images.map((_, index) => {
-                return <Dot key={index} index={index} progress={progress2} activeColor="#82065e" />;
-              })}
-            </View>
-          </GestureHandlerRootView>
-        </Modal>
+              <View style={styles.headerIconsLightbox}>
+                <TouchableWithoutFeedback
+                  onPress={async () => {
+                    await Share.share({
+                      message: `Hi! I found this property. Enjoy reviewing its features on OikoTeck.\nhttps://www.oikoteck.com/property/${property.objectId}`,
+                    });
+                  }}>
+                  <ShareFatIcon color="#fff" weight="duotone" size={30} />
+                </TouchableWithoutFeedback>
+                <FavButton property={property} property_id={property.objectId} size={30} />
+              </View>
+              <View style={styles.dotsWrapper}>
+                {property.images.map((_, index) => {
+                  return (
+                    <Dot key={index} index={index} progress={progress2} activeColor="#82065e" />
+                  );
+                })}
+              </View>
+            </GestureHandlerRootView>
+          </Modal>
+        </View>
+      )}
+
+      <View
+        style={{
+          position: 'absolute',
+          zIndex: 10,
+          flex: 1,
+          top: scrolled ? 0 : 16,
+          paddingHorizontal: 12,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          width: '100%',
+          paddingVertical: 1,
+          backgroundColor: scrolled ? '#fff' : 'transparent',
+        }}>
+        <View
+          style={[
+            styles.backButtonMain,
+            { backgroundColor: scrolled ? 'transparent' : 'rgba(0,0,0,0.1)' },
+          ]}>
+          <TouchableWithoutFeedback
+            hitSlop={20}
+            onPress={() => {
+              router.back();
+            }}>
+            <ArrowLeftIcon size={24} color={scrolled ? '#000' : 'white'} weight="bold" />
+          </TouchableWithoutFeedback>
+        </View>
+        {scrolled && (
+          <AppText
+            numberOfLines={1}
+            style={{ color: '#000', fontSize: 16, fontWeight: 'bold', width: deviceWidth - 150 }}>
+            {property.title}
+          </AppText>
+        )}
+        <View
+          style={[
+            styles.headerIconsMain,
+            { backgroundColor: scrolled ? 'transparent' : 'rgba(0,0,0,0.1)' },
+          ]}>
+          <TouchableWithoutFeedback
+            onPress={async () => {
+              await Share.share({
+                message: `Hi! I found this property. Enjoy reviewing its features on OikoTeck.\nhttps://www.oikoteck.com/property/${property.objectId}`,
+              });
+            }}>
+            <ShareFatIcon color={scrolled ? '#000' : 'white'} weight="duotone" size={24} />
+          </TouchableWithoutFeedback>
+          <FavButton
+            property={property}
+            property_id={property.objectId}
+            size={24}
+            color={scrolled ? '#000' : 'white'}
+          />
+        </View>
       </View>
-      <ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>
+
+      <ScrollView
+        onScroll={(event) => {
+          if (event.nativeEvent.contentOffset.y > 200) {
+            setScrolled(true);
+          } else {
+            setScrolled(false);
+          }
+        }}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
         <View style={styles.content}>
           <View style={styles.carouselContainer}>
             <Carousel
@@ -250,26 +323,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                 );
               }}
             />
-            <View style={styles.backButtonMain}>
-              <TouchableWithoutFeedback
-                hitSlop={20}
-                onPress={() => {
-                  router.back();
-                }}>
-                <ArrowLeftIcon size={24} color="white" weight="bold" />
-              </TouchableWithoutFeedback>
-            </View>
-            <View style={styles.headerIconsMain}>
-              <TouchableWithoutFeedback
-                onPress={async () => {
-                  await Share.share({
-                    message: `Hi! I found this property. Enjoy reviewing its features on OikoTeck.\nhttps://www.oikoteck.com/property/${property.objectId}`,
-                  });
-                }}>
-                <ShareFatIcon color="#fff" weight="duotone" size={30} />
-              </TouchableWithoutFeedback>
-              <FavButton property={property} property_id={property.objectId} size={30} />
-            </View>
+
             <View style={styles.dotsWrapper}>
               {property.images.map((_, index) => {
                 return <Dot key={index} index={index} progress={progress} />;
@@ -633,20 +687,13 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   backButtonMain: {
-    position: 'absolute',
-    left: 16,
-    top: 16,
-    backgroundColor: 'rgba(0,0,0,0.1)',
+    zIndex: 10,
     padding: 8,
     borderRadius: 12,
   },
   headerIconsMain: {
-    position: 'absolute',
-    right: 16,
-    top: 16,
     zIndex: 10,
     flexDirection: 'row',
-    backgroundColor: 'rgba(0,0,0,0.1)',
     padding: 8,
     borderRadius: 12,
     gap: 12,
