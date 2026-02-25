@@ -102,7 +102,8 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
     }
   };
 
-  const isAgent = owner.user_type === 'agent';
+
+  const isAgent = owner?.user_type === 'agent';
 
   return (
     <>

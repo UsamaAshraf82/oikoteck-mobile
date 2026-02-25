@@ -112,6 +112,14 @@ const appConfig: ExpoConfig = {
     ],
     ['@react-native-google-signin/google-signin'],
     ['expo-apple-authentication'],
+    [
+      '@sentry/react-native/expo',
+      {
+        url: 'https://sentry.io/',
+        project: 'oikoteck-native',
+        organization: 'oikoteck',
+      },
+    ],
     // ['@stripe/stripe-react-native'],
   ],
 

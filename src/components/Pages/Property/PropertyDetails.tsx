@@ -122,6 +122,8 @@ export default function PropertyDetails({ property }: { property: Property_Type 
     owner = property.owner as User_Type;
   }
 
+  if(!owner) return null
+
   return (
     <View style={styles.container}>
       {SubmitOfferVisible && (

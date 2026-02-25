@@ -71,8 +71,6 @@ const DistrictArea = ({ visible, onClose, value = '', onPress }: Props) => {
 
   const allOptions = data?.pages.flatMap((page) => page.options) ?? [];
 
-  console.log(allOptions);
-
   return (
     <Modal
       isVisible={visible}

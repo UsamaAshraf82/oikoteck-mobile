@@ -8,10 +8,12 @@ import { useEffect, useState } from 'react';
 import {
   ActivityIndicator as ActivityIndicatorInternal,
   Modal,
+  Pressable,
   StyleSheet,
   View,
 } from 'react-native';
 import { Settings } from 'react-native-fbsdk-next';
+import AppText from '~/components/Elements/AppText';
 import Provider from '~/components/Provider';
 import Menu from '~/components/Sheets/Menu';
 import ModalContainer from '~/components/Sheets/Modal';
@@ -21,6 +23,27 @@ import { ToastContainer } from '~/components/ToastContainer';
 import useActivityIndicator from '~/store/useActivityIndicator';
 import useUser from '~/store/useUser';
 import { ParseInit } from '~/utils/Parse';
+
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({
+  dsn: 'https://f38cbcdf56bafebea8623bea0bf541c9@o4510437482233856.ingest.us.sentry.io/4510945850687488',
+
+  // Adds more context data to events (IP address, cookies, user, etc.)
+  // For more information, visit: https://docs.sentry.io/platforms/react-native/data-management/data-collected/
+  sendDefaultPii: true,
+
+  // Enable Logs
+  enableLogs: true,
+
+  // Configure Session Replay
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1,
+  integrations: [Sentry.mobileReplayIntegration(), Sentry.feedbackIntegration()],
+
+  // uncomment the line below to enable Spotlight (https://spotlightjs.com)
+  // spotlight: __DEV__,
+});
 
 // SystemUI.setBackgroundColorAsync('#fff');
 SplashScreen.preventAutoHideAsync();
@@ -32,7 +55,7 @@ GoogleSignin.configure({
 });
 Settings.initializeSDK();
 
-export default function RootLayout() {
+function RootLayout() {
   const [ready, setReady] = useState(false);
 
   const [fontsLoaded, fontError] = useFonts({
@@ -69,7 +92,16 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <>
+    <Sentry.ErrorBoundary
+      fallback={({ error, resetError }: { error: any; resetError: () => void }) => (
+        <View style={styles.errorContainer}>
+          <AppText style={styles.errorTitle}>Oops! Something went wrong.</AppText>
+          <AppText style={styles.errorMessage}>{error.message}</AppText>
+          <Pressable style={styles.resetButton} onPress={resetError}>
+            <AppText style={styles.resetButtonText}>Try Again</AppText>
+          </Pressable>
+        </View>
+      )}>
       <StripeProvider publishableKey="pk_test_51PSK7VP5GmAB6WhMTNNCySQpZwOVzUV3T7DJA6W25VrCnxom0KAJ3osQyZR6qXb2GZtO6oP8m33SI4pIoeV913Pf00RBNgWjCl">
         <Provider>
           <Screens fontsLoaded={fontsLoaded} ready={ready} />
@@ -82,7 +114,7 @@ export default function RootLayout() {
         </Provider>
       </StripeProvider>
       <PortalHost name="toast-host" />
-    </>
+    </Sentry.ErrorBoundary>
   );
 }
 
@@ -127,4 +159,36 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
   },
+  errorContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+    backgroundColor: '#fff',
+  },
+  errorTitle: {
+    fontSize: 20,
+    fontFamily: 'LufgaBold',
+    color: '#192234',
+    marginBottom: 10,
+  },
+  errorMessage: {
+    fontSize: 14,
+    color: '#9191A1',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  resetButton: {
+    backgroundColor: '#82065e',
+    paddingHorizontal: 30,
+    paddingVertical: 12,
+    borderRadius: 12,
+  },
+  resetButtonText: {
+    color: '#fff',
+    fontFamily: 'LufgaBold',
+    fontSize: 16,
+  },
 });
+
+export default Sentry.wrap(RootLayout);

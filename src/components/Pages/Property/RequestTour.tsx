@@ -132,9 +132,9 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
 
   const onSubmit: SubmitHandler<Tour1Type> = async (data) => {
     startActivity();
-    console.log(user);
+
     try {
-      console.log(0);
+
       const myNewObject = new Parse.Object('Tours');
       myNewObject.set('Property', {
         __type: 'Pointer',
@@ -161,10 +161,9 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
       myNewObject.set('price', property.price);
       myNewObject.set('read', false);
 
-      console.log(1, myNewObject);
 
       await myNewObject.save();
-      console.log(2);
+
       addToast({
         heading: 'Tour Request',
         message:
@@ -184,7 +183,6 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
       });
       onClose();
     } catch (e: any) {
-      console.log(e);
       addToast({
         type: 'error',
         heading: 'Error',

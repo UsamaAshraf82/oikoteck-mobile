@@ -33,6 +33,7 @@ import DistrictArea from '../../Sheets/District/DistrictArea';
 import FilterModal, { filterType } from './FilterModal';
 import { SearchView } from './SearchView';
 import { HomeTopBar } from './TopBar';
+
 const FlashList = ShopifyFlashList as any;
 
 type Props = {
@@ -514,7 +515,12 @@ const MarketPlace = ({ listing_type }: Props) => {
         />
 
         <View style={styles.floatingButtons}>
-          <Pressable style={styles.mapButton} onPress={() => {}}>
+          <Pressable
+            style={styles.mapButton}
+            onPress={() => {
+
+
+            }}>
             <GlobeHemisphereEastIcon color="#fff" weight="fill" size={18} />
             <AppText style={styles.mapButtonText}>Map</AppText>
           </Pressable>
