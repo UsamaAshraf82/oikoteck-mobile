@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   label: {
     // fontFamily: 'LufgaMedium',
     fontSize: 14,
-    color: '#9191A1',
+    color: '#192234',
   },
   inputWrapper: {
     position: 'relative',

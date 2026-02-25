@@ -37,7 +37,7 @@ const Select = () => {
           {value.hasXIcon && (
             <TouchableNativeFeedback onPress={value.onClose}>
               <View style={styles.closeIcon}>
-                <XIcon color="#1A2436" size={24} weight="bold" />
+                <XIcon color="#1A2436" size={24} />
               </View>
             </TouchableNativeFeedback>
           )}
@@ -52,17 +52,18 @@ const Select = () => {
               keyExtractor={(item: any, i: number) => i.toString()}
               contentContainerStyle={{ paddingBottom: 40 }}
               renderItem={({ item }: { item: any }) => {
+                const isEqual = isDeepEqual(item.value, value.value);
                 return (
                   <TouchableNativeFeedback onPress={() => value.onPress?.(item)}>
                     <View style={styles.optionWrapper}>
                       {typeof item.label === 'string' ? (
-                        <AppText style={styles.optionText}>{item.label}</AppText>
+                        <AppText style={[styles.optionText, isEqual && { color: '#82065e' }]}>
+                          {item.label}
+                        </AppText>
                       ) : React.isValidElement(item.label) ? (
                         item.label
                       ) : null}
-                      {isDeepEqual(item.value, value.value) && (
-                        <CheckCircleIcon size={25} color="#82065e" weight="fill" />
-                      )}
+                      {isEqual && <CheckCircleIcon size={25} color="#82065e" weight="fill" />}
                     </View>
                   </TouchableNativeFeedback>
                 );
@@ -72,17 +73,18 @@ const Select = () => {
         ) : (
           <ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>
             {value.options.map((item: any, i: number) => {
+              const isEqual = isDeepEqual(item.value, value.value);
               return (
                 <TouchableNativeFeedback key={i} onPress={() => value.onPress?.(item)}>
                   <View style={styles.optionWrapper}>
                     {typeof item.label === 'string' ? (
-                      <AppText style={styles.optionText}>{item.label}</AppText>
+                      <AppText style={[styles.optionText, isEqual && { color: '#82065e' }]}>
+                        {item.label}
+                      </AppText>
                     ) : React.isValidElement(item.label) ? (
                       item.label
                     ) : null}
-                    {isDeepEqual(item.value, value.value) && (
-                      <CheckCircleIcon size={23} color="#82065e" weight="fill" />
-                    )}
+                    {isEqual && <CheckCircleIcon size={23} color="#82065e" weight="fill" />}
                   </View>
                 </TouchableNativeFeedback>
               );

@@ -109,7 +109,10 @@ const Favorites = () => {
           <AppText style={styles.mainTitle}>My Favorites</AppText>
         </View>
         <View>
-          <AppText style={styles.subTitle}>{data?.pages[0]?.count || 0} favorite listing</AppText>
+          <AppText style={styles.subTitle}>
+            {data?.pages[0]?.count || 0} favorite{' '}
+            {data?.pages[0]?.count === 1 || data?.pages[0]?.count === 0 ? 'listing' : 'listings'}
+          </AppText>
         </View>
         <View style={styles.listContainer}>
           <FlashList

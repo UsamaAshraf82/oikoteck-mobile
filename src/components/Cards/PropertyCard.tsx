@@ -54,9 +54,9 @@ const PropertyCard = ({ property, shrink =1}: { property: Property_Type; shrink?
                 onProgressChange={(_: any, absoluteProgress: number) => {
                   progress.value = absoluteProgress;
                 }}
-                onConfigurePanGesture={(g: { enabled: (arg0: boolean) => any }) => {
+                onConfigurePanGesture={(g) => {
                   'worklet';
-                  g.enabled(false);
+                  g.activeOffsetX([-10, 10]);
                 }}
                 renderItem={({ item }: { item: string }) => {
                   return (

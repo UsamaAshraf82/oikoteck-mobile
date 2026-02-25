@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   },
   loginText: {
     color: '#192234',
-    fontFamily: 'LufgaBold',
+    fontFamily: 'LufgaMedium',
   },
   userSection: {
     flexDirection: 'row',

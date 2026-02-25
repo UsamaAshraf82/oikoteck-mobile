@@ -44,10 +44,10 @@ const topbarHeight = 150;
 
 const district_images = [
   { district: 'Athens', image: 'district/pic1.png', url: 'Athens - Center' },
+  { district: 'Thessaloniki', image: 'district/pic5.png', url: 'Thessaloniki' },
   { district: 'Cyclades', image: 'district/pic2.png', url: 'Cyclades Islands' },
   { district: 'Piraeus', image: 'district/pic3.png', url: 'Piraeus' },
   { district: 'Ionian Islands', image: 'district/pic4.png', url: 'Ioannina Prefecture' },
-  { district: 'Thessaloniki', image: 'district/pic5.png', url: 'Thessaloniki' },
   { district: 'Crete', image: 'district/pic6.png', url: 'Crete' },
 ];
 
@@ -655,11 +655,12 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   districtName: {
-    marginHorizontal: 8,
+    marginHorizontal: 0,
     fontSize: 14,
-    width: 75,
+    width: 90,
     textAlign: 'center',
     color: '#192234',
+    // borderWidth: 1,
   },
   listContainer: {
     flex: 1,

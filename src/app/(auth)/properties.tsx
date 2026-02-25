@@ -506,7 +506,7 @@ const styles = StyleSheet.create({
   tabText: {
     fontSize: 14,
     color: '#9191A1',
-    // fontFamily: 'LufgaMedium',
+    fontFamily: 'LufgaMedium',
   },
   tabTextActive: {
     color: '#000',

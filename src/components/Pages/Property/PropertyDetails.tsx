@@ -68,23 +68,23 @@ export default function PropertyDetails({ property }: { property: Property_Type 
   const details = useMemo(() => {
     const base = [
       {
-        icon: <BedIcon width={18} height={18} strokeWidth={2} />,
+        icon: <BedIcon width={18} height={18} strokeWidth={1.2} />,
         heading: 'Bedrooms',
         detail: property.property_type === 'Land' ? 'N/A' : property.bedrooms,
       },
       {
-        icon: <BathIcon width={18} height={18} strokeWidth={2} />,
+        icon: <BathIcon width={18} height={18} strokeWidth={1.2} />,
         heading: 'Bathrooms',
         detail: property.property_type === 'Land' ? 'N/A' : property.bathrooms,
       },
       {
-        icon: <SizeIcon width={18} height={18} strokeWidth={2} />,
+        icon: <SizeIcon width={18} height={18} strokeWidth={1.2} />,
         heading: property.property_type === 'Land' ? 'Plot Size' : 'Size',
         detail: property.size + ' m²',
       },
       {
         heading: 'Type',
-        icon: <HouseLineIcon size={20} weight="bold" />,
+        icon: <HouseLineIcon size={20} weight="regular" />,
         detail: property.property_type,
       },
     ];
@@ -93,7 +93,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
     if (property.property_type !== 'Land') {
       base.push({
         heading: 'Floor No',
-        icon: <StairsIcon size={20} weight="bold" />,
+        icon: <StairsIcon size={20} weight="regular" />,
         detail: property.floor === 0 ? 'Ground' : property.floor,
       });
     }
@@ -101,12 +101,12 @@ export default function PropertyDetails({ property }: { property: Property_Type 
     base.push(
       {
         heading: 'Listing Date',
-        icon: <CalendarIcon size={20} weight="bold" />,
+        icon: <CalendarIcon size={20} weight="regular" />,
         detail: new Date(property.createdAt).toLocaleDateString('en-GB'),
       },
       {
         heading: 'Furnished',
-        icon: <CouchIcon size={20} weight="bold" />,
+        icon: <CouchIcon size={20} weight="regular" />,
         detail: property.furnished ? 'Yes' : 'No',
       }
     );
@@ -287,9 +287,9 @@ export default function PropertyDetails({ property }: { property: Property_Type 
               onProgressChange={(_: any, absoluteProgress: number) => {
                 progress.value = absoluteProgress;
               }}
-              onConfigurePanGesture={(g: { enabled: (arg0: boolean) => any }) => {
+              onConfigurePanGesture={(g) => {
                 'worklet';
-                g.enabled(false);
+                g.activeOffsetX([-10, 10]);
               }}
               renderItem={({ item, index }: { item: string; index: number }) => {
                 return (

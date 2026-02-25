@@ -3,7 +3,12 @@ import { Link } from 'expo-router';
 import Parse from 'parse/react-native';
 import { XIcon } from 'phosphor-react-native';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { StyleSheet, TouchableNativeFeedback, TouchableWithoutFeedback, View } from 'react-native';
+import {
+  StyleSheet,
+  TouchableNativeFeedback,
+  TouchableWithoutFeedback,
+  View
+} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Modal from 'react-native-modal';
 import { RefinementCtx, z } from 'zod';
@@ -385,6 +390,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
                 </View>
               </PressableView>
             </Grid>
+            <View style={styles.spacer20} />
           </KeyboardAwareScrollView>
         </View>
       </View>

@@ -57,7 +57,8 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
       hardwareAccelerated
       coverScreen={false}
       avoidKeyboard={false}
-      style={styles.modal}>
+      style={styles.modal}
+      propagateSwipe>
       <View
         style={[
           styles.container,
@@ -75,7 +76,7 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
               </View>
             </TouchableNativeFeedback>
           </View>
-          <View style={{ maxHeight: deviceHeight * 0.775 }}>
+          <View style={{ flex: 1 }}>
             <ScrollView
               keyboardShouldPersistTaps="handled"
               keyboardDismissMode="on-drag"
@@ -479,7 +480,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     backgroundColor: 'white',
     paddingHorizontal: 16,
-    paddingBottom: 24,
+    paddingBottom: 10,
     paddingTop: 16,
   },
   handle: {

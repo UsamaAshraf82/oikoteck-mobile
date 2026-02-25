@@ -383,7 +383,7 @@ const PropertyCard = ({
         {type === 'favorite' && (
           <Pressable
             style={[styles.menuButton, { top: 4 }]}
-            onPress={async() => {
+            onPress={async () => {
               // confirmPopup({
               //   label: 'Remove Listing',
               //   message: 'Are you sure you want to remove this listing from your favorites?',
@@ -394,28 +394,28 @@ const PropertyCard = ({
               //     text: 'Yes, Remove',
               //   },
               //   onConfirm: async () => {
-                  activity.startActivity();
-                  const FavouriteQuery = new Parse.Query('Favourite');
-                  FavouriteQuery.equalTo('Property', {
-                    __type: 'Pointer',
-                    className: 'Property',
-                    objectId: property.objectId,
-                  });
-                  FavouriteQuery.equalTo('User', {
-                    __type: 'Pointer',
-                    className: '_User',
-                    objectId: user?.id,
-                  });
+              activity.startActivity();
+              const FavouriteQuery = new Parse.Query('Favourite');
+              FavouriteQuery.equalTo('Property', {
+                __type: 'Pointer',
+                className: 'Property',
+                objectId: property.objectId,
+              });
+              FavouriteQuery.equalTo('User', {
+                __type: 'Pointer',
+                className: '_User',
+                objectId: user?.id,
+              });
 
-                  FavouriteQuery.equalTo('faviorite', true);
-                  const faviorite = await FavouriteQuery.first();
+              FavouriteQuery.equalTo('faviorite', true);
+              const faviorite = await FavouriteQuery.first();
 
-                  await faviorite?.destroy();
-                  query_client.invalidateQueries({
-                    queryKey: ['properties', 'faviorites'],
-                  });
-                  activity.stopActivity();
-                // },
+              await faviorite?.destroy();
+              await query_client.invalidateQueries({
+                queryKey: ['properties', 'favorites'],
+              });
+              activity.stopActivity();
+              // },
               // });
             }}>
             <HeartIcon weight={'fill'} color={'#cc3f33'} />
