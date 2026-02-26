@@ -25,16 +25,19 @@ const SocialSignin = () => {
   const { startActivity, stopActivity } = useActivityIndicator();
 
   const startGoogleFlow = async () => {
-    startActivity();
     try {
       if (Platform.OS === 'android') {
+        startActivity();
         await GoogleSignin.hasPlayServices();
       }
       const response = await GoogleSignin.signIn();
 
       const data = response.data;
 
-      if (data) {
+      if (data && data.idToken) {
+        if (Platform.OS === 'ios') {
+          startActivity();
+        }
         const user = await Parse.User.logInWith('google', {
           authData: {
             id: data.user.id,

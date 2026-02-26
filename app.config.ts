@@ -23,6 +23,13 @@ const appConfig: ExpoConfig = {
         'This app needs photo library access so users can select images from their gallery.',
       NSLocationWhenInUseUsageDescription:
         'This app uses your location to improve map and property accuracy.',
+      CFBundleURLTypes: [
+        {
+          CFBundleURLSchemes: [
+            'com.googleusercontent.apps.249425615765-c3hb68cqlo6fcjd82bft3uqeq8t857bh',
+          ],
+        },
+      ],
       LSApplicationQueriesSchemes: [
         'whatsapp',
         'whatsapp-business',
@@ -110,7 +117,12 @@ const appConfig: ExpoConfig = {
             scheme: 'fb511062105081745',
           },
     ],
-    ['@react-native-google-signin/google-signin'],
+    [
+      '@react-native-google-signin/google-signin',
+      {
+        iosClientId: '249425615765-c3hb68cqlo6fcjd82bft3uqeq8t857bh.apps.googleusercontent.com',
+      },
+    ],
     ['expo-apple-authentication'],
     [
       '@sentry/react-native/expo',

@@ -359,6 +359,8 @@ const MarketPlace = ({ listing_type }: Props) => {
     height: topHeight.value,
   }));
 
+  console.log('properties', data?.pages?.[0]?.results);
+
   return (
     <View style={styles.container}>
       <View style={styles.topBarWrapper}>
