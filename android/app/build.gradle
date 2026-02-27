@@ -88,9 +88,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.oikoteck.dev'
+    namespace 'com.oikoteck.app'
     defaultConfig {
-        applicationId 'com.oikoteck.dev'
+        applicationId 'com.oikoteck.app'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
