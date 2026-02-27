@@ -1,72 +1,77 @@
-import { FlashList as ShopifyFlashList } from '@shopify/flash-list';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { LinearGradient } from 'expo-linear-gradient';
 import { DateTime } from 'luxon';
 import Parse from 'parse/react-native';
 import {
-  CaretDoubleUpIcon,
   FadersHorizontalIcon,
-  GlobeHemisphereEastIcon,
+  ListNumbersIcon,
   SortAscendingIcon,
   XIcon,
 } from 'phosphor-react-native';
 import * as React from 'react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import {
-  ActivityIndicator,
+  FlatList,
   Pressable,
   ScrollView,
   StyleSheet,
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import AppText from '~/components/Elements/AppText';
-import AWSImage from '~/components/Elements/AWSImage';
 import { stringify_area_district } from '~/lib/stringify_district_area';
 import useSelect from '~/store/useSelectHelper';
 import { Property_Type } from '~/type/property';
 import { deviceWidth } from '~/utils/global';
-import { isProperty } from '~/utils/property';
 import PropertyCard from '../../Cards/PropertyCard';
 import DistrictArea from '../../Sheets/District/DistrictArea';
 import FilterModal, { filterType } from './FilterModal';
 import { SearchView } from './SearchView';
-import { HomeTopBar } from './TopBar';
-
-const FlashList = ShopifyFlashList as any;
 
 type Props = {
   listing_type: 'Rental' | 'Sale';
-  onMapPress:()=>void
+  onListPress: () => void;
 };
-
-const limit = 40;
-const topbarHeight = 150;
-
-const district_images = [
-  { district: 'Athens', image: 'district/pic1.png', url: 'Athens - Center' },
-  { district: 'Thessaloniki', image: 'district/pic5.png', url: 'Thessaloniki' },
-  { district: 'Cyclades', image: 'district/pic2.png', url: 'Cyclades Islands' },
-  { district: 'Piraeus', image: 'district/pic3.png', url: 'Piraeus' },
-  { district: 'Ionian Islands', image: 'district/pic4.png', url: 'Ioannina Prefecture' },
-  { district: 'Crete', image: 'district/pic6.png', url: 'Crete' },
-];
 
 type sortType = {
   sort: string;
   sort_order: string;
 };
 
-type HeadingItem = { objectId: string; type: 'heading' };
-type ListItem = Property_Type | HeadingItem;
+const MapMarker = React.memo(
+  ({
+    item,
+    selected,
+    onMarkerPress,
+  }: {
+    item: Property_Type;
+    selected: boolean;
+    onMarkerPress: (id: string) => void;
+  }) => {
+    return (
+      <Marker
+        coordinate={{
+          latitude: item.marker.latitude,
+          longitude: item.marker.longitude,
+        }}
+        zIndex={selected ? 1 : 0}
+        pinColor={selected ? '#192234' : '#82005f'}
+        onPress={() => onMarkerPress(item.objectId)}
+      />
+    );
+  }
+);
 
-const MarketPlace = ({ listing_type,onMapPress }: Props) => {
+const MarketPlace = ({ listing_type, onListPress }: Props) => {
   const { openSelect } = useSelect();
-  const [showScrollTop, setShowScrollTop] = useState(false);
-  const [showTopCities, setShowTopCities] = useState(true);
-  const listRef = useRef<ShopifyFlashList<any>>(null);
+  const mapRef = useRef<MapView>(null);
+  const propertyListRef = useRef<FlatList>(null);
 
+  const cardWidth = deviceWidth * 0.86;
+
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [isScrollEnabled, setIsScrollEnabled] = useState(false);
   const [districtModal, setDistrictModal] = useState(false);
   const [filtersModal, setFiltersModal] = useState(false);
   const [sort, setSort] = useState<{ sort: string; sort_order: string } | null>(null);
@@ -87,68 +92,55 @@ const MarketPlace = ({ listing_type,onMapPress }: Props) => {
     keywords: null,
     property_type: null,
     property_category: null,
+    ne_lat: null,
+    ne_lng: null,
+    sw_lat: null,
+    sw_lng: null,
   });
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ['latest-properties', listing_type, { ...search, ...sort }],
-    queryFn: async ({ pageParam }) => {
+  const { data } = useQuery({
+    queryKey: ['map-properties', listing_type, { ...search, ...sort }],
+    queryFn: async () => {
       try {
-        const skip = (pageParam as number) * limit;
-        const pro = await Parse.Cloud.run('search', {
-          skip: skip,
-          limit: limit,
+        const pro = await Parse.Cloud.run('search-map', {
+          limit: 300,
           search: {
-            ...search,
+            district: search.district,
+            area_2: search.area_2,
+            area_1: search.area_1,
+            minPrice: search.minPrice,
+            maxPrice: search.maxPrice,
+            minSize: search.minSize,
+            maxSize: search.maxSize,
+            minDate: search.minDate,
+            maxDate: search.maxDate,
+            bedroom: search.bedroom,
+            furnished: search.furnished,
+            bathroom: search.bathroom,
             keywords: search.keywords ? search.keywords?.split(' ') : null,
+            property_type: search.property_type,
+            property_category: search.property_category,
+            ne_lat: search.ne_lat,
+            ne_lng: search.ne_lng,
+            sw_lat: search.sw_lat,
+            sw_lng: search.sw_lng,
           },
           sort_order: sort?.sort_order,
           sort: sort?.sort,
           listing_type: listing_type,
         });
-        return { ...pro.properties, hasmore: pro.properties.results.length === limit } as {
+        return { ...pro.properties } as {
           count: number;
           results: Property_Type[];
-          hasmore: boolean;
         };
       } catch {}
       return { count: 0, results: [], hasmore: false };
     },
-    getNextPageParam: (lastPage, _, lastPageParam) => {
-      return lastPage.hasmore ? (lastPageParam as number) + 1 : undefined;
-    },
-    initialPageParam: 0,
-  });
-
-  const { data: similar } = useQuery({
-    queryKey: [
-      'similar-properties',
-      listing_type,
-      {
-        ...search,
-        ...sort,
-      },
-    ],
-    enabled: data?.pages[data.pages.length - 1].hasmore === false,
-    staleTime: 600000,
-    queryFn: async () => {
-      try {
-        const pro = await Parse.Cloud.run('similar', {
-          limit: limit * 5,
-          search: {
-            search: {
-              ...search,
-              keywords: search.keywords ? search.keywords?.split(' ') : null,
-            },
-          },
-          sort_order: sort?.sort_order,
-          sort: sort?.sort,
-          listing_type: listing_type,
-        });
-
-        return pro.properties as { count: number; results: Property_Type[] };
-      } catch {}
-
-      return { count: 0, results: [] };
+    placeholderData: keepPreviousData,
+    initialData: {
+      count: 0,
+      results: [],
+      hasmore: false,
     },
   });
 
@@ -156,18 +148,25 @@ const MarketPlace = ({ listing_type,onMapPress }: Props) => {
     setSearch((i) => ({ ...i, ...filter }));
   };
 
-  const properties: ListItem[] = useMemo(() => {
-    const main = data?.pages.flatMap((page) => page.results) ?? [];
-    if (similar?.results?.length) {
-      return [
-        { objectId: 'main-heading', type: 'heading' as const },
-        ...main,
-        { objectId: 'similar-heading', type: 'heading' as const },
-        ...similar.results,
-      ];
-    }
-    return [{ objectId: 'main-heading', type: 'heading' as const }, ...main];
-  }, [data, similar]);
+  const renderPropertyItem = useCallback(
+    ({ item }: { item: Property_Type }) => (
+      <View style={{ width: cardWidth }}>
+        <PropertyCard property={item} shrink={0.9} />
+      </View>
+    ),
+    [cardWidth]
+  );
+
+  const handleMarkerPress = useCallback(
+    (id: string) => {
+      setSelectedId(id);
+      const index = data.results.findIndex((p) => p.objectId === id);
+      if (index !== -1) {
+        propertyListRef.current?.scrollToIndex({ index, animated: true });
+      }
+    },
+    [data.results]
+  );
 
   const stringified_area = useMemo(
     () =>
@@ -178,10 +177,6 @@ const MarketPlace = ({ listing_type,onMapPress }: Props) => {
       }),
     [search.district, search.area_1, search.area_2]
   );
-
-  const hasFilters = useMemo(() => {
-    return Object.keys(search).some((i) => search[i as keyof filterType] !== null);
-  }, [search]);
 
   const sortTitle = useMemo(() => {
     if (!sort?.sort) return 'Sort';
@@ -348,23 +343,16 @@ const MarketPlace = ({ listing_type,onMapPress }: Props) => {
     return filter;
   }, [sort, search]);
 
-  const topHeight = useSharedValue(topbarHeight);
+  // const topHeight = useSharedValue(topbarHeight);
 
-  useEffect(() => {
-    topHeight.value = withTiming(showTopCities ? topbarHeight : 0, {
-      duration: 250,
-    });
-  }, [showTopCities]);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    height: topHeight.value,
-  }));
+  // useEffect(() => {
+  //   topHeight.value = withTiming(showTopCities ? topbarHeight : 0, {
+  //     duration: 250,
+  //   });
+  // }, [showTopCities]);
 
   return (
     <View style={styles.container}>
-      <View style={styles.topBarWrapper}>
-        <HomeTopBar />
-      </View>
       <LinearGradient colors={['#fff', '#EEF1F7']} style={styles.headerGradient}>
         <SearchView
           listing_type={listing_type}
@@ -373,161 +361,165 @@ const MarketPlace = ({ listing_type,onMapPress }: Props) => {
           onFilter={() => setFiltersModal(true)}
           onClear={() => changeSearch({ district: null, area_1: null, area_2: null })}
         />
-        {hasFilters ? (
-          <ScrollView
-            horizontal
-            key="filter"
-            style={styles.filterScroll}
-            showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}>
-            {filters.map((i, idx) => {
-              if (i.filter === 'Sort' || i.filter === 'Filters') {
-                const isFilter = i.filter === 'Filters';
-                return (
-                  <TouchableWithoutFeedback key={i.filter + idx} onPress={i.onPress}>
-                    <View style={styles.sortFilterBadge}>
-                      {i.iconFirst && i.icon}
-                      <AppText style={styles.sortFilterText}>{i.filter}</AppText>
-                      {!i.iconFirst && i.icon}
-                      {isFilter && filters.length > 1 && (
-                        <View style={styles.filterCount}>
-                          <AppText style={styles.filterCountText}>{filters.length - 1}</AppText>
-                        </View>
-                      )}
-                    </View>
-                  </TouchableWithoutFeedback>
-                );
-              }
-              if (i.filter === sortTitle) {
-                return (
-                  <View key={i.filter + idx} style={styles.activeFilterBadge}>
-                    <TouchableWithoutFeedback onPress={i.onPress}>
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 0 }}>
-                        {i.iconFirst && <View>{i.icon}</View>}
-                        <AppText style={styles.activeFilterText}>{i.filter}</AppText>
-                      </View>
-                    </TouchableWithoutFeedback>
 
-                    <TouchableWithoutFeedback
-                      onPress={() => {
-                        setSort(null);
-                      }}>
-                      <View>
-                        <XIcon size={14} color="#82065e" weight="bold" />
-                      </View>
-                    </TouchableWithoutFeedback>
-                  </View>
-                );
+        <ScrollView
+          horizontal
+          key="filter"
+          style={styles.filterScroll}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}>
+          {filters.map((i, idx) => {
+            if (i.filter === 'Sort' || i.filter === 'Filters') {
+              const isFilter = i.filter === 'Filters';
+
+              let displayFilterCount = filters.length - 2;
+              if (stringified_area) {
+                displayFilterCount = filters.length - 1;
               }
+
+              return (
+                <TouchableWithoutFeedback key={i.filter + idx} onPress={i.onPress}>
+                  <View style={styles.sortFilterBadge}>
+                    {i.iconFirst && i.icon}
+                    <AppText style={styles.sortFilterText}>{i.filter}</AppText>
+                    {!i.iconFirst && i.icon}
+                    {isFilter && displayFilterCount > 0 && (
+                      <View style={styles.filterCount}>
+                        <AppText style={styles.filterCountText}>{displayFilterCount}</AppText>
+                      </View>
+                    )}
+                  </View>
+                </TouchableWithoutFeedback>
+              );
+            }
+            if (i.filter === sortTitle) {
               return (
                 <View key={i.filter + idx} style={styles.activeFilterBadge}>
-                  {i.iconFirst && (
-                    <TouchableWithoutFeedback onPress={i.onPress}>
-                      <View>{i.icon}</View>
-                    </TouchableWithoutFeedback>
-                  )}
-                  <AppText style={styles.activeFilterText}>{i.filter}</AppText>
-                  {!i.iconFirst && (
-                    <TouchableWithoutFeedback onPress={i.onPress}>
-                      <View>{i.icon}</View>
-                    </TouchableWithoutFeedback>
-                  )}
+                  <TouchableWithoutFeedback onPress={i.onPress}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 0 }}>
+                      {i.iconFirst && <View>{i.icon}</View>}
+                      <AppText style={styles.activeFilterText}>{i.filter}</AppText>
+                    </View>
+                  </TouchableWithoutFeedback>
+
+                  <TouchableWithoutFeedback
+                    onPress={() => {
+                      setSort(null);
+                    }}>
+                    <View>
+                      <XIcon size={14} color="#82065e" weight="bold" />
+                    </View>
+                  </TouchableWithoutFeedback>
                 </View>
               );
-            })}
-          </ScrollView>
-        ) : (
-          <Animated.View style={[animatedStyle, { overflow: 'hidden' }]}>
-            {/* <AppText style={styles.exploreHeading}>Explore Popular Cities</AppText> */}
-            <ScrollView
-              horizontal
-              key="district"
-              style={styles.districtScroll}
-              showsVerticalScrollIndicator={false}
-              showsHorizontalScrollIndicator={false}>
-              {district_images.map((i) => (
-                <Pressable
-                  key={i.district}
-                  android_ripple={{ color: '#E2E4E8' }}
-                  style={styles.districtCard}
-                  onPress={() => changeSearch({ district: i.url })}>
-                  <AWSImage
-                    contentFit="cover"
-                    src={i.image || ''}
-                    size="180x180"
-                    style={styles.districtImage}
-                  />
-                  <AppText style={styles.districtName} numberOfLines={1}>
-                    {i.district}
-                  </AppText>
-                </Pressable>
-              ))}
-            </ScrollView>
-          </Animated.View>
-        )}
+            }
+            return (
+              <View key={i.filter + idx} style={styles.activeFilterBadge}>
+                {i.iconFirst && (
+                  <TouchableWithoutFeedback onPress={i.onPress}>
+                    <View>{i.icon}</View>
+                  </TouchableWithoutFeedback>
+                )}
+                <AppText style={styles.activeFilterText}>{i.filter}</AppText>
+                {!i.iconFirst && (
+                  <TouchableWithoutFeedback onPress={i.onPress}>
+                    <View>{i.icon}</View>
+                  </TouchableWithoutFeedback>
+                )}
+              </View>
+            );
+          })}
+        </ScrollView>
       </LinearGradient>
 
       <View style={styles.listContainer}>
-        <FlashList
-          ref={listRef}
-          data={properties}
-          decelerationRate="normal"
-          onScroll={(e: any) => {
-            const y = e.nativeEvent.contentOffset.y;
-            setShowTopCities(showTopCities ? y < 200 : y < 20);
-            setShowScrollTop(y > 2500);
+        <MapView
+          ref={mapRef as any}
+          provider={PROVIDER_GOOGLE}
+          style={{ flex: 1 }}
+          initialRegion={{
+            latitude: 37.9755,
+            longitude: 23.735,
+            latitudeDelta: 0.15,
+            longitudeDelta: 0.15,
           }}
-          showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}
-          estimatedItemSize={(deviceWidth - 32) / 1.2 + 14}
-          keyExtractor={(item: any) => item.objectId}
-          renderItem={({ item }: { item: any }) => {
-            if (isProperty(item)) {
-              return <PropertyCard property={item} />;
-            }
-            const isMain = item.objectId === 'main-heading';
-            return (
-              <View style={isMain ? styles.mainHeading : styles.similarHeading}>
-                <AppText style={styles.headingText}>
-                  {isMain
-                    ? hasFilters
-                      ? `We found ${data?.pages?.[0]?.count} listings matching your criteria`
-                      : 'Explore all listing'
-                    : 'Similar listing according to your criteria'}
-                </AppText>
-              </View>
-            );
-          }}
-          onEndReached={() => {
-            if (!isFetchingNextPage && hasNextPage) {
-              fetchNextPage();
+          onMapReady={async () => {
+            const boundaries = await (mapRef.current as any)?.getMapBoundaries();
+            if (boundaries) {
+              changeSearch({
+                ne_lat: boundaries.northEast.latitude,
+                ne_lng: boundaries.northEast.longitude,
+                sw_lat: boundaries.southWest.latitude,
+                sw_lng: boundaries.southWest.longitude,
+              });
             }
           }}
-          onEndReachedThreshold={0.5}
-          ListFooterComponent={
-            isFetchingNextPage ? (
-              <View style={styles.footerLoader}>
-                <ActivityIndicator size="large" color="#82065e" />
-              </View>
-            ) : (
-              <View style={styles.footerSpacer} />
-            )
-          }
-        />
-      </View>
-      <View style={styles.floatingButtons}>
-        <Pressable style={styles.mapButton} onPress={onMapPress}>
-          <GlobeHemisphereEastIcon color="#fff" weight="fill" size={18} />
-          <AppText style={styles.mapButtonText}>Map</AppText>
-        </Pressable>
-
-        {showScrollTop && (
-          <Pressable
-            onPress={() => listRef.current?.scrollToOffset({ offset: 0, animated: true })}
-            style={styles.scrollTopButton}>
-            <CaretDoubleUpIcon size={22} color="white" />
+          onRegionChangeComplete={async (region) => {
+            const boundaries = await (mapRef.current as any)?.getMapBoundaries();
+            if (boundaries) {
+              changeSearch({
+                ne_lat: boundaries.northEast.latitude,
+                ne_lng: boundaries.northEast.longitude,
+                sw_lat: boundaries.southWest.latitude,
+                sw_lng: boundaries.southWest.longitude,
+              });
+            }
+          }}
+          scrollEnabled={isScrollEnabled}
+          onTouchStart={(e) => {
+            if (e.nativeEvent.touches.length > 1) {
+              setIsScrollEnabled(true);
+            }
+          }}
+          onTouchEnd={() => {
+            setIsScrollEnabled(false);
+          }}
+          moveOnMarkerPress={false}>
+          {data.results.map((i) => (
+            <MapMarker
+              key={`${i.objectId}-${selectedId === i.objectId}`}
+              item={i}
+              selected={selectedId === i.objectId}
+              onMarkerPress={handleMarkerPress}
+            />
+          ))}
+        </MapView>
+        <View style={styles.floatingButtons}>
+          <Pressable style={styles.mapButton} onPress={onListPress}>
+            <ListNumbersIcon color="#fff" size={20} />
+            <AppText style={styles.mapButtonText}>List</AppText>
           </Pressable>
-        )}
+        </View>
+        <View style={styles.propertyListWrapper}>
+          {useMemo(() => (
+            <FlatList
+              ref={propertyListRef}
+              data={data.results}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              snapToInterval={cardWidth}
+              decelerationRate="fast"
+              keyExtractor={(item: Property_Type) => item.objectId}
+              renderItem={renderPropertyItem}
+              getItemLayout={(_, index) => ({
+                length: cardWidth,
+                offset: cardWidth * index,
+                index,
+              })}
+              onMomentumScrollEnd={(e) => {
+                const index = Math.round(e.nativeEvent.contentOffset.x / cardWidth);
+                const p = data.results[index];
+                if (p) {
+                  setSelectedId(p.objectId);
+                }
+              }}
+              initialNumToRender={5}
+              windowSize={5}
+              maxToRenderPerBatch={5}
+              removeClippedSubviews={true}
+            />
+          ), [data.results, renderPropertyItem, cardWidth])}
+        </View>
       </View>
 
       <DistrictArea
@@ -666,6 +658,7 @@ const styles = StyleSheet.create({
   listContainer: {
     flex: 1,
     backgroundColor: '#EEF1F7',
+    position: 'relative',
   },
   flashList: {
     width: '100%',
@@ -692,8 +685,9 @@ const styles = StyleSheet.create({
   },
   floatingButtons: {
     position: 'absolute',
-    bottom: 12,
-    right: 20,
+    top: 10,
+    left: '50%',
+    transform: [{ translateX: '-50%' }],
     flexDirection: 'row',
     gap: 8,
   },
@@ -728,6 +722,12 @@ const styles = StyleSheet.create({
     padding: 12,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  propertyListWrapper: {
+    position: 'absolute',
+    bottom: 20,
+    left: 0,
+    right: 0,
   },
 });
 

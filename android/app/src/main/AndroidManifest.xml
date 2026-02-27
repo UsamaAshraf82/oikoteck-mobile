@@ -19,7 +19,7 @@
     <meta-data android:name="com.facebook.sdk.AutoInitEnabled" android:value="false"/>
     <meta-data android:name="com.facebook.sdk.AutoLogAppEventsEnabled" android:value="false"/>
     <meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>
-    <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyBS72wUaiCFEZtWgE3YoCxS7w5sdk1NuxU"/>
+    <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyDPPxOOzDj9fwziqNCKUsVDXraJ7SbQ6JY"/>
     <meta-data android:name="expo.modules.updates.ENABLED" android:value="false"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH" android:value="ALWAYS"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_LAUNCH_WAIT_MS" android:value="0"/>

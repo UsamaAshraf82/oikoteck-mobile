@@ -126,6 +126,7 @@ const appConfig: ExpoConfig = {
         organization: 'oikoteck',
       },
     ],
+
     // ['@stripe/stripe-react-native'],
   ],
 

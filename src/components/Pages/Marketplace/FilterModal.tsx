@@ -27,6 +27,10 @@ export type filterType = {
   keywords: string | null;
   property_type: Property_Type['property_type'] | null;
   property_category: Property_Type['property_category'] | null;
+  ne_lat?: number | null;
+  ne_lng?: number | null;
+  sw_lat?: number | null;
+  sw_lng?: number | null;
 };
 
 type Props = {

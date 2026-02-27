@@ -1,4 +1,4 @@
-import ParseGeoPoint from 'parse/types/ParseGeoPoint';
+
 import { User_Type } from './user';
 export type statusEnum = 'Approved' | 'Pending Approval' | 'Expired' | 'Rejected' | 'Deleted';
 export type planEnum = 'Free' | 'Promote' | 'Promote +' | 'Gold' | 'Platinum';
@@ -6,7 +6,7 @@ export type planEnum = 'Free' | 'Promote' | 'Promote +' | 'Gold' | 'Platinum';
 export type Property_Type = {
   images: string[];
   special_feature: string[];
-  marker: ParseGeoPoint | { __type: 'GeoPoint'; latitude: number; longitude: number };
+  marker: Parse.GeoPoint | { __type: 'GeoPoint'; latitude: number; longitude: number };
   listing_for: string;
   title: string;
   reject_reason: string;

@@ -1,5 +1,6 @@
 import { useRouter } from 'expo-router';
 import Parse from 'parse/react-native';
+import { memo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
@@ -18,7 +19,7 @@ import FavButton from './FavButton';
 const wide = deviceWidth - 16 * 2;
 const height = wide / 1.2;
 
-const PropertyCard = ({ property, shrink =1}: { property: Property_Type; shrink?: number }) => {
+const PropertyCard = memo(({ property, shrink = 1 }: { property: Property_Type; shrink?: number }) => {
   const progress = useSharedValue(0);
   const router = useRouter();
   let owner: User_Type;
@@ -49,7 +50,7 @@ const PropertyCard = ({ property, shrink =1}: { property: Property_Type; shrink?
                 loop={false}
                 pagingEnabled={true}
                 snapEnabled={true}
-                width={wide* shrink}
+                width={wide * shrink}
                 style={styles.fullWidth}
                 onProgressChange={(_: any, absoluteProgress: number) => {
                   progress.value = absoluteProgress;
@@ -64,7 +65,7 @@ const PropertyCard = ({ property, shrink =1}: { property: Property_Type; shrink?
                       <AWSImage
                         contentFit="cover"
                         placeholderContentFit="cover"
-                        style={{ width: wide* shrink, height: '100%' }}
+                        style={{ width: wide * shrink, height: '100%' }}
                         src={item}
                         size="800x800"
                       />
@@ -149,11 +150,11 @@ const PropertyCard = ({ property, shrink =1}: { property: Property_Type; shrink?
       </Pressable>
     </View>
   );
-};
+});
 
 export default PropertyCard;
 
-function Dot({ index, progress }: any) {
+const Dot = memo(({ index, progress }: any) => {
   const animatedStyle = useAnimatedStyle(() => {
     const selectedIndex = Math.round(progress.value);
 
@@ -171,7 +172,7 @@ function Dot({ index, progress }: any) {
   });
 
   return <Animated.View key={index} style={[animatedStyle, styles.dotBase]} />;
-}
+});
 
 const styles = StyleSheet.create({
   cardWrapper: {
