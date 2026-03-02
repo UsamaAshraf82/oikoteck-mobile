@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'expo-router';
 import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { SubmitErrorHandler, useForm } from 'react-hook-form';
 import { StyleSheet, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { z } from 'zod';
@@ -37,7 +37,6 @@ export default function Login() {
   const {
     control,
     handleSubmit,
-    formState: { errors },
   } = useForm<ForgetPasswordValues>({ resolver: zodResolver(ForgetPasswordSchema) });
 
   useEffect(() => {
@@ -61,7 +60,7 @@ export default function Login() {
    router.push('/')
   };
 
-  const onError = () => {
+  const onError: SubmitErrorHandler<ForgetPasswordValues> = (errors) => {
     const keys = Object.keys(errors) as (keyof ForgetPasswordValues)[];
     for (let index = 0; index < keys.length; index++) {
       const element = errors[keys[index]];

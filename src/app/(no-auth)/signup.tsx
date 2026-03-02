@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useRouter } from 'expo-router';
 import Parse from 'parse/react-native';
 import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { SubmitErrorHandler, useForm } from 'react-hook-form';
 import { StyleSheet, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { z } from 'zod';
@@ -67,7 +67,6 @@ export default function Signup() {
   const {
     control,
     handleSubmit,
-    formState: { errors },
   } = useForm<SignupTypes>({ resolver: zodResolver(SignupSchema) });
 
   const onSubmit = async (formData: SignupTypes) => {
@@ -98,7 +97,7 @@ export default function Signup() {
     }
   }, [user]);
 
-  const onError = () => {
+  const onError: SubmitErrorHandler<SignupTypes> = (errors) => {
     const keys = Object.keys(errors) as (keyof SignupTypes)[];
     for (let index = 0; index < keys.length; index++) {
       const element = errors[keys[index]];

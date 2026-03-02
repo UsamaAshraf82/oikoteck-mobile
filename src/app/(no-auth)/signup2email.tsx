@@ -4,7 +4,7 @@ import { Image } from 'expo-image';
 import { Link, useLocalSearchParams, useRouter } from 'expo-router';
 import { CheckCircleIcon, UserIcon } from 'phosphor-react-native';
 import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { SubmitErrorHandler, useForm } from 'react-hook-form';
 import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { z } from 'zod';
@@ -102,7 +102,6 @@ export default function Signup2Email() {
     setValue,
     watch,
     handleSubmit,
-    formState: { errors },
   } = useForm<SignupTypes>({
     resolver: zodResolver(SignupSchema),
     defaultValues: {
@@ -138,7 +137,7 @@ export default function Signup2Email() {
     router.push('/rent');
   };
 
-  const onError = () => {
+  const onError: SubmitErrorHandler<SignupTypes> = (errors) => {
     const keys = Object.keys(errors) as (keyof SignupTypes)[];
     for (let index = 0; index < keys.length; index++) {
       const element = errors[keys[index]];
@@ -417,9 +416,8 @@ const styles = StyleSheet.create({
     top: 8,
   },
   phoneLabel: {
-    fontFamily: 'LufgaMedium',
     fontSize: 14,
-    color: '#192234',
+    color: '#9191A1',
     marginBottom: -8,
   },
   phoneRow: {

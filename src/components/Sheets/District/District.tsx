@@ -105,7 +105,7 @@ const District = ({ visible, onClose, value = '', onPress }: Props) => {
         {/* FlashList with infinite scroll */}
         <FlashList
           data={allOptions}
-          estimatedItemSize={38}
+          // estimatedItemSize={38}
           keyExtractor={(item: string) => item}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}

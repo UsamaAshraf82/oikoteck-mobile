@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { SubmitErrorHandler, useForm } from 'react-hook-form';
 import { StyleSheet, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { z } from 'zod';
@@ -19,7 +19,7 @@ export default function PaymentInfo({ data, onSubmit }: Props) {
     setValue,
     handleSubmit,
     watch,
-    formState: { errors },
+
   } = useForm<PaymentInfoTypes>({
     resolver: zodResolver(PaymentInfoSchema) as any,
     defaultValues: data,
@@ -29,7 +29,7 @@ export default function PaymentInfo({ data, onSubmit }: Props) {
     onSubmit(formData);
   };
 
-  const onError = () => {
+  const onError: SubmitErrorHandler<PaymentInfoTypes> = (errors) => {
     const keys = Object.keys(errors) as (keyof PaymentInfoTypes)[];
     for (let index = 0; index < keys.length; index++) {
       const element = errors[keys[index]];

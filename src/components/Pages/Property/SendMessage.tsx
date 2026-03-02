@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import Parse from 'parse/react-native';
 import { XIcon } from 'phosphor-react-native';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import { StyleSheet, TouchableNativeFeedback, TouchableWithoutFeedback, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Modal from 'react-native-modal';
@@ -94,13 +94,7 @@ const SendMessage = ({ onClose, property }: Props) => {
   const { openSelect } = useSelect();
   const { startActivity, stopActivity } = useActivityIndicator();
 
-  const {
-    control,
-    handleSubmit,
-    watch,
-    setValue,
-    formState: { errors },
-  } = useForm<SendMessageValues>({
+  const { control, handleSubmit, watch, setValue } = useForm<SendMessageValues>({
     resolver: zodResolver(SendMessageSchema),
     defaultValues: {
       country: { Code: flags[0].Code, Country: flags[0].Country, ISO: flags[0].ISO },
@@ -163,7 +157,7 @@ const SendMessage = ({ onClose, property }: Props) => {
     }
   };
 
-  const onError = () => {
+  const onError: SubmitErrorHandler<SendMessageValues> = (errors) => {
     const keys = Object.keys(errors) as (keyof SendMessageValues)[];
     for (let index = 0; index < keys.length; index++) {
       const element = errors[keys[index]];
@@ -351,9 +345,9 @@ const styles = StyleSheet.create({
     color: '#192234',
   },
   label: {
+    fontSize: 14,
+    color: '#192234',
     marginBottom: -8,
-    fontFamily: 'LufgaMedium',
-    fontSize: 13,
   },
   phoneRow: {
     flexDirection: 'row',
@@ -379,12 +373,12 @@ const styles = StyleSheet.create({
   },
   flagBox: {
     marginTop: 8,
-    borderRadius: 16,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: '#C6CAD2',
     backgroundColor: 'white',
     paddingHorizontal: 8,
-    paddingVertical: 12,
+    paddingVertical: 13,
   },
   footer: {
     marginTop: 12,

@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import Parse from 'parse/react-native';
 import { XIcon } from 'phosphor-react-native';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import { StyleSheet, TouchableNativeFeedback, TouchableWithoutFeedback, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Modal from 'react-native-modal';
@@ -115,7 +115,6 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
     handleSubmit,
     watch,
     setValue,
-    formState: { errors },
   } = useForm<Tour1Type>({
     resolver: zodResolver(Tour1Schema),
     defaultValues: {
@@ -193,7 +192,7 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
     }
   };
 
-  const onError = () => {
+  const onError: SubmitErrorHandler<Tour1Type> = (errors) => {
     const keys = Object.keys(errors) as (keyof Tour1Type)[];
     for (let index = 0; index < keys.length; index++) {
       const element = errors[keys[index]];
@@ -443,12 +442,12 @@ const styles = StyleSheet.create({
   },
   flagBox: {
     marginTop: 8,
-    borderRadius: 16,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: '#C6CAD2',
     backgroundColor: 'white',
     paddingHorizontal: 8,
-    paddingVertical: 12,
+    paddingVertical: 13,
   },
   textArea: {
     height: 208, // h-52

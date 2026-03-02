@@ -1,4 +1,4 @@
-import { FlashList as ShopifyFlashList } from '@shopify/flash-list';
+import { FlashList, FlashListRef } from '@shopify/flash-list';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { LinearGradient } from 'expo-linear-gradient';
 import { DateTime } from 'luxon';
@@ -26,7 +26,6 @@ import AWSImage from '~/components/Elements/AWSImage';
 import { stringify_area_district } from '~/lib/stringify_district_area';
 import useSelect from '~/store/useSelectHelper';
 import { Property_Type } from '~/type/property';
-import { deviceWidth } from '~/utils/global';
 import { isProperty } from '~/utils/property';
 import PropertyCard from '../../Cards/PropertyCard';
 import DistrictArea from '../../Sheets/District/DistrictArea';
@@ -34,7 +33,6 @@ import FilterModal, { filterType } from './FilterModal';
 import { SearchView } from './SearchView';
 import { HomeTopBar } from './TopBar';
 
-const FlashList = ShopifyFlashList as any;
 
 type Props = {
   listing_type: 'Rental' | 'Sale';
@@ -65,7 +63,7 @@ const MarketPlace = ({ listing_type,onMapPress }: Props) => {
   const { openSelect } = useSelect();
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [showTopCities, setShowTopCities] = useState(true);
-  const listRef = useRef<ShopifyFlashList<any>>(null);
+  const listRef = useRef<FlashListRef<any>>(null);
 
   const [districtModal, setDistrictModal] = useState(false);
   const [filtersModal, setFiltersModal] = useState(false);
@@ -479,7 +477,7 @@ const MarketPlace = ({ listing_type,onMapPress }: Props) => {
           }}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
-          estimatedItemSize={(deviceWidth - 32) / 1.2 + 14}
+          // estimatedItemSize={(deviceWidth - 32) / 1.2 + 14}
           keyExtractor={(item: any) => item.objectId}
           renderItem={({ item }: { item: any }) => {
             if (isProperty(item)) {

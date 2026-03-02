@@ -104,7 +104,7 @@ const Area = ({ visible, onClose, district, value = '', onPress }: Props) => {
         {/* FlashList with infinite scroll */}
         <FlashList
           data={allOptions}
-          estimatedItemSize={38}
+          // estimatedItemSize={38}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
           keyExtractor={(item: AreaOption) => item.area_1 + item.area_2}

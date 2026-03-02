@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CheckCircleIcon } from 'phosphor-react-native';
 import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { SubmitErrorHandler, useForm } from 'react-hook-form';
 import { StyleSheet, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import z from 'zod';
@@ -23,7 +23,6 @@ export default function Basic1({ data, onSubmit }: Props) {
     reset,
     handleSubmit,
     watch,
-    formState: { errors },
   } = useForm<Basic1Values>({
     resolver: zodResolver(Basic1Schema),
     defaultValues: data,
@@ -37,7 +36,7 @@ export default function Basic1({ data, onSubmit }: Props) {
     onSubmit(formData);
   };
 
-  const onError = () => {
+  const onError: SubmitErrorHandler<Basic1Values> = (errors) => {
     const keys = Object.keys(errors) as (keyof Basic1Values)[];
     for (let index = 0; index < keys.length; index++) {
       const element = errors[keys[index]];

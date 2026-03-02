@@ -43,7 +43,7 @@ const Menu = () => {
           <View style={[styles.listWrapper, { height: deviceHeight * 0.9 - 80 }]}>
             <FlashList
               data={value.options}
-              estimatedItemSize={38}
+              // estimatedItemSize={38}
               showsVerticalScrollIndicator={false}
               showsHorizontalScrollIndicator={false}
               keyExtractor={(item: any, i: number) => i.toString()}
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   },
   closeIcon: {
     position: 'absolute',
-    right: 20,
+    right: 0,
     top: '50%',
     zIndex: 10,
     transform: [{ translateY: '-50%' }],

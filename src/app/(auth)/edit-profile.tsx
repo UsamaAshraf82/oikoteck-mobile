@@ -7,7 +7,7 @@ import {
   UserIcon,
 } from 'phosphor-react-native';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { SubmitErrorHandler, useForm } from 'react-hook-form';
 import { Pressable, ScrollView, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import z from 'zod';
 import AppText from '~/components/Elements/AppText';
@@ -61,7 +61,6 @@ const NameInput = () => {
     control,
     handleSubmit,
     reset,
-    formState: { errors },
   } = useForm<NameInputTypes>({
     resolver: zodResolver(NameInputSchema),
     defaultValues: {
@@ -95,7 +94,7 @@ const NameInput = () => {
     stopActivity();
   };
 
-  const onError = () => {
+  const onError: SubmitErrorHandler<NameInputTypes> = (errors) => {
     const keys = Object.keys(errors) as (keyof NameInputTypes)[];
     for (let index = 0; index < keys.length; index++) {
       const element = errors[keys[index]];
@@ -192,7 +191,6 @@ const NumberInput = () => {
     reset,
     watch,
     setValue,
-    formState: { errors },
   } = useForm<NumberInputTypes>({
     resolver: zodResolver(NumberInputSchema),
     defaultValues: {
@@ -219,6 +217,7 @@ const NumberInput = () => {
   }, [isEditing, user]);
 
   const onSubmit = async (data: NumberInputTypes) => {
+
     startActivity();
     if (user) {
       user.set('country', data.country.Country);
@@ -236,7 +235,7 @@ const NumberInput = () => {
     stopActivity();
   };
 
-  const onError = () => {
+  const onError: SubmitErrorHandler<NumberInputTypes> = (errors) => {
     const keys = Object.keys(errors) as (keyof NumberInputTypes)[];
     for (let index = 0; index < keys.length; index++) {
       const element = errors[keys[index]];
@@ -359,7 +358,6 @@ const EmailInput = () => {
     control,
     handleSubmit,
     reset,
-    formState: { errors },
   } = useForm<EmailInputTypes>({
     resolver: zodResolver(EmailInputSchema),
     defaultValues: {
@@ -397,7 +395,7 @@ const EmailInput = () => {
     stopActivity();
   };
 
-  const onError = () => {
+  const onError: SubmitErrorHandler<EmailInputTypes> = (errors) => {
     const keys = Object.keys(errors) as (keyof EmailInputTypes)[];
     for (let index = 0; index < keys.length; index++) {
       const element = errors[keys[index]];
@@ -539,12 +537,12 @@ const styles = StyleSheet.create({
   },
   flagBox: {
     marginTop: 8,
-    borderRadius: 16,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: '#C6CAD2',
     backgroundColor: 'white',
     paddingHorizontal: 8,
-    paddingVertical: 12,
+    paddingVertical: 1,
   },
   actionButtons: {
     marginTop: 8,

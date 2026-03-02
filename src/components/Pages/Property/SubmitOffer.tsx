@@ -2,13 +2,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link } from 'expo-router';
 import Parse from 'parse/react-native';
 import { XIcon } from 'phosphor-react-native';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import {
-  StyleSheet,
-  TouchableNativeFeedback,
-  TouchableWithoutFeedback,
-  View
-} from 'react-native';
+import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
+import { StyleSheet, TouchableNativeFeedback, TouchableWithoutFeedback, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Modal from 'react-native-modal';
 import { RefinementCtx, z } from 'zod';
@@ -129,7 +124,6 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
     handleSubmit,
     watch,
     setValue,
-    formState: { errors },
   } = useForm<SendOfferValues>({
     resolver: zodResolver(SendOfferSchema) as any,
     defaultValues: {
@@ -197,7 +191,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
     }
   };
 
-  const onError = () => {
+  const onError: SubmitErrorHandler<SendOfferValues> = (errors) => {
     const keys = Object.keys(errors) as (keyof SendOfferValues)[];
     for (let index = 0; index < keys.length; index++) {
       const element = errors[keys[index]];
@@ -334,7 +328,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
                 control={control}
                 alignTop
                 name="terms"
-                labelStyle={{ color: '#ACACB9', fontSize: 14, fontFamily: 'LufgaMedium' }}
+                labelStyle={{ color: '#ACACB9', fontSize: 14 }}
                 label={
                   <>
                     I confirm that I read and I agree with Oikoteck’s{' '}
@@ -349,7 +343,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
                 control={control}
                 alignTop
                 name="privacy"
-                labelStyle={{ color: '#ACACB9', fontSize: 14, fontFamily: 'LufgaMedium' }}
+                labelStyle={{ color: '#ACACB9', fontSize: 14 }}
                 label={
                   <>
                     I confirm that I read and understood Oikoteck’s{' '}
@@ -460,9 +454,9 @@ const styles = StyleSheet.create({
     color: '#192234',
   },
   label: {
+    fontSize: 14,
+    color: '#192234',
     marginBottom: -8,
-    fontFamily: 'LufgaMedium',
-    fontSize: 13,
   },
   phoneRow: {
     flexDirection: 'row',
@@ -487,12 +481,12 @@ const styles = StyleSheet.create({
   },
   flagBox: {
     marginTop: 8,
-    borderRadius: 16,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: '#C6CAD2',
     backgroundColor: 'white',
     paddingHorizontal: 8,
-    paddingVertical: 12,
+    paddingVertical: 13,
   },
   spacer20: {
     marginTop: 20,

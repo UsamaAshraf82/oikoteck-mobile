@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
-import { useForm, useWatch } from 'react-hook-form';
+import { SubmitErrorHandler, useForm, useWatch } from 'react-hook-form';
 import { StyleSheet, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
@@ -26,7 +26,6 @@ export default function LocationInfo({ data, onSubmit }: Props) {
     setValue,
     handleSubmit,
     watch,
-    formState: { errors },
   } = useForm<LocationInfoTypes>({
     resolver: zodResolver(LocationInfoSchema) as any,
     defaultValues: data,
@@ -36,7 +35,7 @@ export default function LocationInfo({ data, onSubmit }: Props) {
     onSubmit(formData);
   };
 
-  const onError = () => {
+  const onError: SubmitErrorHandler<LocationInfoTypes> = (errors) => {
     const keys = Object.keys(errors) as (keyof LocationInfoTypes)[];
     for (let index = 0; index < keys.length; index++) {
       const element = errors[keys[index]];

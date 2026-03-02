@@ -114,7 +114,7 @@ const DistrictArea = ({ visible, onClose, value = '', onPress }: Props) => {
         {/* FlashList with infinite scroll */}
         <FlashList
           data={allOptions}
-          estimatedItemSize={38}
+          // estimatedItemSize={38}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"

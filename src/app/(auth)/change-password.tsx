@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'expo-router';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import { Pressable, StyleSheet, View } from 'react-native';
 import z, { RefinementCtx } from 'zod';
 import AppText from '~/components/Elements/AppText';
@@ -64,7 +64,6 @@ const ChangePassword = () => {
   const {
     handleSubmit,
     control,
-    formState: { errors },
   } = useForm<PasswordValues>({
     resolver: zodResolver(PasswordSchema),
     defaultValues: {
@@ -99,7 +98,7 @@ const ChangePassword = () => {
     stopActivity();
   };
 
-  const onError = () => {
+  const onError: SubmitErrorHandler<PasswordValues> = (errors) => {
     const keys = Object.keys(errors) as (keyof PasswordValues)[];
     for (let index = 0; index < keys.length; index++) {
       const element = errors[keys[index]];

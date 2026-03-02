@@ -27,7 +27,7 @@ export const HomeTopBar = () => {
               style={{ marginHorizontal: 0, marginVertical: 0 }}
             />
             <AppText style={[styles.loginText, { width: 75 }]} numberOfLines={1}>
-              Login Now
+              Login now
             </AppText>
           </View>
         </PressableView>

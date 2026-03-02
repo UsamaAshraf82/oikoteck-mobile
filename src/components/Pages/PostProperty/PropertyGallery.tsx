@@ -5,7 +5,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { Link } from 'expo-router';
 import { ImagesIcon, ImageSquareIcon, TrashIcon } from 'phosphor-react-native';
 import { useEffect } from 'react';
-import { useFieldArray, useForm, useWatch } from 'react-hook-form';
+import { SubmitErrorHandler, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { ActivityIndicator, ScrollView, StyleSheet, TouchableHighlight, View } from 'react-native';
 import Sortable from 'react-native-sortables';
 import z from 'zod';
@@ -33,7 +33,6 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
     setValue,
     getValues,
     handleSubmit,
-    formState: { errors },
   } = useForm<PropertyGalleryTypes>({
     resolver: zodResolver(PropertyGallerySchema) as any,
     defaultValues: { ...data, ...extra_data },
@@ -48,7 +47,7 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
     onSubmit(formData);
   };
 
-  const onError = () => {
+  const onError: SubmitErrorHandler<PropertyGalleryTypes> = (errors) => {
     const keys = Object.keys(errors) as (keyof PropertyGalleryTypes)[];
     for (let index = 0; index < keys.length; index++) {
       const element = errors[keys[index]];

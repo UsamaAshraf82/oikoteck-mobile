@@ -19,6 +19,7 @@ import { useMemo, useRef, useState } from 'react';
 import {
   ColorValue,
   Modal,
+  Platform,
   Pressable,
   ScrollView,
   Share,
@@ -36,6 +37,7 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import FavButton from '~/components/Cards/FavButton';
 import AppText from '~/components/Elements/AppText';
 import AWSImage from '~/components/Elements/AWSImage';
@@ -54,6 +56,7 @@ import ContactOwner from './ContactOwner';
 import SubmitOffer from './SubmitOffer';
 
 export default function PropertyDetails({ property }: { property: Property_Type }) {
+  const insets = useSafeAreaInsets();
   const router = useRouter();
   const progress = useSharedValue(0);
   const progress2 = useSharedValue(0);
@@ -65,26 +68,50 @@ export default function PropertyDetails({ property }: { property: Property_Type 
   const [scrolled, setScrolled] = useState(false);
   const carouselRef = useRef<ICarouselInstance>(null);
 
+  const topOffset = Platform.OS === 'ios' ? insets.top : insets.top + 10;
+  const bottomOffset = Platform.OS === 'ios' ? insets.bottom : insets.bottom + 10;
+
   const details = useMemo(() => {
     const base = [
       {
-        icon: <BedIcon width={18} height={18} strokeWidth={1.2} />,
+        icon: (
+          <BedIcon
+            width={18}
+            height={18}
+            strokeWidth={1.2}
+            style={{ transform: [{ scale: 1.2 }] }}
+          />
+        ),
         heading: 'Bedrooms',
         detail: property.property_type === 'Land' ? 'N/A' : property.bedrooms,
       },
       {
-        icon: <BathIcon width={18} height={18} strokeWidth={1.2} />,
+        icon: (
+          <BathIcon
+            width={18}
+            height={18}
+            strokeWidth={1.2}
+            style={{ transform: [{ scale: 1.2 }] }}
+          />
+        ),
         heading: 'Bathrooms',
         detail: property.property_type === 'Land' ? 'N/A' : property.bathrooms,
       },
       {
-        icon: <SizeIcon width={18} height={18} strokeWidth={1.2} />,
+        icon: (
+          <SizeIcon
+            width={18}
+            height={18}
+            strokeWidth={1.2}
+            style={{ transform: [{ scale: 1.2 }] }}
+          />
+        ),
         heading: property.property_type === 'Land' ? 'Plot Size' : 'Size',
         detail: property.size + ' m²',
       },
       {
         heading: 'Type',
-        icon: <HouseLineIcon size={20} weight="regular" />,
+        icon: <HouseLineIcon size={22} weight="regular" />,
         detail: property.property_type,
       },
     ];
@@ -93,7 +120,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
     if (property.property_type !== 'Land') {
       base.push({
         heading: 'Floor No',
-        icon: <StairsIcon size={20} weight="regular" />,
+        icon: <StairsIcon size={22} weight="regular" />,
         detail: property.floor === 0 ? 'Ground' : property.floor,
       });
     }
@@ -101,12 +128,12 @@ export default function PropertyDetails({ property }: { property: Property_Type 
     base.push(
       {
         heading: 'Listing Date',
-        icon: <CalendarIcon size={20} weight="regular" />,
+        icon: <CalendarIcon size={22} weight="regular" />,
         detail: new Date(property.createdAt).toLocaleDateString('en-GB'),
       },
       {
         heading: 'Furnished',
-        icon: <CouchIcon size={20} weight="regular" />,
+        icon: <CouchIcon size={22} weight="regular" />,
         detail: property.furnished ? 'Yes' : 'No',
       }
     );
@@ -122,7 +149,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
     owner = property.owner as User_Type;
   }
 
-  if(!owner) return null
+  if (!owner) return null;
 
   return (
     <View style={styles.container}>
@@ -140,7 +167,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
       {lightBoxVisible && (
         <View>
           <Modal visible={lightBoxVisible} transparent={true}>
-            <GestureHandlerRootView style={styles.lightboxBg}>
+            <GestureHandlerRootView style={styles.lightboxBg} >
               <Carousel
                 ref={carouselRef}
                 data={property.images}
@@ -173,7 +200,8 @@ export default function PropertyDetails({ property }: { property: Property_Type 
               />
 
               {/* Close button */}
-              <View style={styles.backButtonLightbox}>
+
+              <View style={[styles.backButtonLightbox, { top: topOffset }]}>
                 <TouchableWithoutFeedback
                   hitSlop={20}
                   onPress={() => {
@@ -182,13 +210,13 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                   <ArrowLeftIcon size={24} color="white" weight="bold" />
                 </TouchableWithoutFeedback>
               </View>
-              <View style={styles.numberLightbox}>
+              <View style={[styles.numberLightbox, { top: topOffset }]}>
                 <AppText style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>
                   {activePageIndex + 1}/{property.images.length}
                 </AppText>
               </View>
 
-              <View style={styles.headerIconsLightbox}>
+              <View style={[styles.headerIconsLightbox, { top: topOffset }]}>
                 <TouchableWithoutFeedback
                   onPress={async () => {
                     await Share.share({
@@ -199,7 +227,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
                 </TouchableWithoutFeedback>
                 <FavButton property={property} property_id={property.objectId} size={30} />
               </View>
-              <View style={styles.dotsWrapper}>
+              <View style={[styles.dotsWrapper, { bottom: bottomOffset }]}>
                 {property.images.map((_, index) => {
                   return (
                     <Dot key={index} index={index} progress={progress2} activeColor="#82065e" />
@@ -214,7 +242,7 @@ export default function PropertyDetails({ property }: { property: Property_Type 
       <View
         style={{
           position: 'absolute',
-          zIndex: 10,
+          zIndex: 1,
           flex: 1,
           top: scrolled ? 0 : 16,
           paddingHorizontal: 12,

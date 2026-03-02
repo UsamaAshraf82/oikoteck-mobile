@@ -3,7 +3,7 @@ import { useStripe } from '@stripe/stripe-react-native';
 import { useQuery } from '@tanstack/react-query';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import Parse from 'parse/react-native';
-import { useForm } from 'react-hook-form';
+import { SubmitErrorHandler, useForm } from 'react-hook-form';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import z from 'zod';
 import PropertyCard from '~/components/Cards/PropertyCardTable';
@@ -42,7 +42,6 @@ const ChangePlan = () => {
     setValue,
     handleSubmit,
     watch,
-    formState: { errors },
   } = useForm<PaymentInfoTypes>({
     resolver: zodResolver(PaymentInfoSchema),
     defaultValues: {
@@ -96,7 +95,7 @@ const ChangePlan = () => {
     }
   };
 
-  const onError = () => {
+const onError: SubmitErrorHandler<PaymentInfoTypes> = (errors) => {
     const keys = Object.keys(errors) as (keyof PaymentInfoTypes)[];
     for (let index = 0; index < keys.length; index++) {
       const element = errors[keys[index]];

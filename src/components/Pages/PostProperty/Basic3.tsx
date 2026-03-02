@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { SubmitErrorHandler, useForm } from 'react-hook-form';
 import { StyleSheet, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import z from 'zod';
@@ -28,7 +28,6 @@ export default function Basic3({ data, extra_data, onSubmit }: Props) {
     handleSubmit,
     watch,
     reset,
-    formState: { errors },
   } = useForm<Basic3Values>({
     resolver: zodResolver(Basic3Schema) as any,
     defaultValues: { ...data, ...extra_data },
@@ -42,7 +41,7 @@ export default function Basic3({ data, extra_data, onSubmit }: Props) {
     onSubmit(formData);
   };
 
-  const onError = () => {
+  const onError: SubmitErrorHandler<Basic3Values> = (errors) => {
     const keys = Object.keys(errors) as (keyof Basic3Values)[];
     for (let index = 0; index < keys.length; index++) {
       const element = errors[keys[index]];

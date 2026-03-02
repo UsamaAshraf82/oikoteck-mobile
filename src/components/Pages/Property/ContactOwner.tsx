@@ -14,7 +14,7 @@ import {
   XIcon,
 } from 'phosphor-react-native';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { SubmitErrorHandler, useForm } from 'react-hook-form';
 import { StyleSheet, TouchableNativeFeedback, View } from 'react-native';
 import Modal from 'react-native-modal';
 import z, { RefinementCtx } from 'zod';
@@ -78,7 +78,6 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
   const {
     control,
     handleSubmit,
-    formState: { errors },
   } = useForm<ShareConsentTypes>({
     resolver: zodResolver(ShareConsentSchema),
     defaultValues: {
@@ -88,7 +87,7 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
     },
   });
 
-  const onError = () => {
+  const onError: SubmitErrorHandler<ShareConsentTypes> = (errors) => {
     const keys = Object.keys(errors) as (keyof ShareConsentTypes)[];
     for (let index = 0; index < keys.length; index++) {
       const element = errors[keys[index]];
@@ -214,7 +213,7 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
                 control={control}
                 alignTop
                 name="terms"
-                labelStyle={{ color: '#ACACB9', fontSize: 14,fontFamily: 'LufgaMedium' }}
+                labelStyle={{ color: '#ACACB9', fontSize: 14, }}
                 label={
                   <>
                     I confirm that I read and I agree with Oikoteck’s{' '}
@@ -229,7 +228,7 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
                 control={control}
                 alignTop
                 name="privacy"
-                labelStyle={{ color: '#ACACB9', fontSize: 14,fontFamily: 'LufgaMedium' }}
+                labelStyle={{ color: '#ACACB9', fontSize: 14, }}
                 label={
                   <>
                     I confirm that I read and understood Oikoteck’s{' '}
@@ -528,7 +527,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   smallBtnText: {
-    fontSize: 12,
+    fontSize: 10,
     color: '#192234',
   },
   mainActions: {

@@ -15,7 +15,6 @@ import PropertyCard from '~/components/Cards/PropertyCardTable';
 import AppText from '~/components/Elements/AppText';
 import useUser from '~/store/useUser';
 import { Property_Type } from '~/type/property';
-import { deviceWidth } from '~/utils/global';
 import { isProperty } from '~/utils/property';
 
 const limit = 50;
@@ -120,7 +119,7 @@ const Favorites = () => {
             decelerationRate={'fast'}
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
-            estimatedItemSize={(deviceWidth - 16 * 2) / 1.4 + 8}
+            // estimatedItemSize={(deviceWidth - 16 * 2) / 1.4 + 8}
             keyExtractor={(item) => item.objectId}
             renderItem={({ item }) => {
               if (isProperty(item)) {

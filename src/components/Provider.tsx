@@ -18,7 +18,7 @@ export default function Provider({ children }: { children: ReactNode }) {
       <GestureHandlerRootView style={styles.flex1}>
         <KeyboardProvider>
           <View style={styles.container}>
-            <StatusBar style="dark" animated networkActivityIndicatorVisible />
+            <StatusBar style="dark" animated  />
             <SafeAreaProvider initialMetrics={initialWindowMetrics}>
               <SafeAreaView edges={['top', 'left', 'right', 'bottom']} style={styles.flex1}>
                 <View style={styles.content}>{children}</View>
