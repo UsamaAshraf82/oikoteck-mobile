@@ -523,15 +523,15 @@ const MarketPlace = ({ listing_type, onListPress }: Props) => {
               });
             }
           }}
-          scrollEnabled={isScrollEnabled}
-          onTouchStart={(e) => {
-            if (e.nativeEvent.touches.length > 1) {
-              setIsScrollEnabled(true);
-            }
-          }}
-          onTouchEnd={() => {
-            setIsScrollEnabled(false);
-          }}
+          // scrollEnabled={isScrollEnabled}
+          // onTouchStart={(e) => {
+          //   if (e.nativeEvent.touches.length > 1) {
+          //     setIsScrollEnabled(true);
+          //   }
+          // }}
+          // onTouchEnd={() => {
+          //   setIsScrollEnabled(false);
+          // }}
           moveOnMarkerPress={false}
         >
           {data.results.map((i) => (

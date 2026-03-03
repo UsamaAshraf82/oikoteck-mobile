@@ -441,8 +441,8 @@ const styles = StyleSheet.create({
   },
   label: {
     marginBottom: -20,
-    fontFamily: 'LufgaMedium',
-    fontSize: 13,
+    // fontFamily: 'LufgaMedium',
+    fontSize: 14,
   },
   phoneRow: {
     flexDirection: 'row',

@@ -516,7 +516,7 @@ const styles = StyleSheet.create({
   },
   checkboxText: {
     fontFamily: 'LufgaRegular',
-    fontSize: 13,
+    fontSize: 14,
     color: '#575775',
     lineHeight: 18,
   },

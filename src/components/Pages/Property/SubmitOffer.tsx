@@ -395,7 +395,6 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
                 labelStyle={{
                   color: '#ACACB9',
                   fontSize: 14,
-                  fontFamily: 'LufgaMedium',
                 }}
                 label={
                   <>
