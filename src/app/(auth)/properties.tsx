@@ -82,138 +82,157 @@ const UserProperties = () => {
   const [debouncedValue] = useDebounceValue(filter, 500);
   const [debouncedSort] = useDebounceValue(sort, 500);
 
-  const { data, isFetchingNextPage, hasNextPage, fetchNextPage } = useInfiniteQuery({
-    queryKey: [
-      'properties',
-      'user_all',
-      pageParam,
-      {
-        limit,
-        user: user?.id,
-        listing_for,
-        ...debouncedSort,
-        'min-price': debouncedValue['min-price'],
-        'max-price': debouncedValue['max-price'],
-        'min-size': debouncedValue['min-size'],
-        'max-size': debouncedValue['max-size'],
-        bedroom: debouncedValue.bedroom,
-        bathroom: debouncedValue.bathroom,
-        furnished: debouncedValue.furnished,
-        keywords: debouncedValue.keywords,
-        keywords_length: debouncedValue.keywords.length,
-        property_type: debouncedValue.property_type,
-        property_category: debouncedValue.property_category,
-        status,
-        search: debouncedValue.search,
-        visobility: debouncedValue.visibility,
-        plan: debouncedValue.plan,
-        sort: debouncedSort?.sort,
-        order: debouncedSort?.order,
-      },
-    ],
-    queryFn: async () => {
-      const skip = pageParam * limit;
+  const { data, isFetchingNextPage, hasNextPage, fetchNextPage } =
+    useInfiniteQuery({
+      queryKey: [
+        'properties',
+        'user_all',
+        pageParam,
+        {
+          limit,
+          user: user?.id,
+          listing_for,
+          ...debouncedSort,
+          'min-price': debouncedValue['min-price'],
+          'max-price': debouncedValue['max-price'],
+          'min-size': debouncedValue['min-size'],
+          'max-size': debouncedValue['max-size'],
+          bedroom: debouncedValue.bedroom,
+          bathroom: debouncedValue.bathroom,
+          furnished: debouncedValue.furnished,
+          keywords: debouncedValue.keywords,
+          keywords_length: debouncedValue.keywords.length,
+          property_type: debouncedValue.property_type,
+          property_category: debouncedValue.property_category,
+          status,
+          search: debouncedValue.search,
+          visobility: debouncedValue.visibility,
+          plan: debouncedValue.plan,
+          sort: debouncedSort?.sort,
+          order: debouncedSort?.order,
+        },
+      ],
+      queryFn: async () => {
+        const skip = pageParam * limit;
 
-      if (!user?.id) return { count: 0, results: [], hasmore: false };
+        if (!user?.id) return { count: 0, results: [], hasmore: false };
 
-      const query = new Parse.Query('Property');
-      query.equalTo('owner', {
-        __type: 'Pointer',
-        className: '_User',
-        objectId: user?.id,
-      });
+        const query = new Parse.Query('Property');
+        query.equalTo('owner', {
+          __type: 'Pointer',
+          className: '_User',
+          objectId: user?.id,
+        });
 
-      if (debouncedValue['min-price']) {
-        query.greaterThanOrEqualTo('price', parseInt(debouncedValue['min-price'], 10));
-      }
-      if (debouncedValue['max-price']) {
-        query.lessThanOrEqualTo('price', parseInt(debouncedValue['max-price'], 10));
-      }
+        if (debouncedValue['min-price']) {
+          query.greaterThanOrEqualTo(
+            'price',
+            parseInt(debouncedValue['min-price'], 10)
+          );
+        }
+        if (debouncedValue['max-price']) {
+          query.lessThanOrEqualTo(
+            'price',
+            parseInt(debouncedValue['max-price'], 10)
+          );
+        }
 
-      if (debouncedValue['min-size']) {
-        query.greaterThanOrEqualTo('size', parseInt(debouncedValue['min-size'], 10));
-      }
-      if (debouncedValue['max-size']) {
-        query.lessThanOrEqualTo('size', parseInt(debouncedValue['max-size'], 10));
-      }
-      if (debouncedValue.bedroom) {
-        query.greaterThanOrEqualTo('bedrooms', parseInt(debouncedValue.bedroom, 10));
-      }
-      if (debouncedValue.plan) {
-        query.equalTo('plan', debouncedValue.plan);
-      }
-      if (debouncedValue.visibility !== null) {
-        query.equalTo('visible', debouncedValue.visibility);
-      }
-      if (debouncedValue.bathroom) {
-        query.greaterThanOrEqualTo('bathrooms', parseInt(debouncedValue.bathroom, 10));
-      }
-      if (debouncedValue.furnished) {
-        query.equalTo('furnished', debouncedValue.furnished === 'true');
-      }
+        if (debouncedValue['min-size']) {
+          query.greaterThanOrEqualTo(
+            'size',
+            parseInt(debouncedValue['min-size'], 10)
+          );
+        }
+        if (debouncedValue['max-size']) {
+          query.lessThanOrEqualTo(
+            'size',
+            parseInt(debouncedValue['max-size'], 10)
+          );
+        }
+        if (debouncedValue.bedroom) {
+          query.greaterThanOrEqualTo(
+            'bedrooms',
+            parseInt(debouncedValue.bedroom, 10)
+          );
+        }
+        if (debouncedValue.plan) {
+          query.equalTo('plan', debouncedValue.plan);
+        }
+        if (debouncedValue.visibility !== null) {
+          query.equalTo('visible', debouncedValue.visibility);
+        }
+        if (debouncedValue.bathroom) {
+          query.greaterThanOrEqualTo(
+            'bathrooms',
+            parseInt(debouncedValue.bathroom, 10)
+          );
+        }
+        if (debouncedValue.furnished) {
+          query.equalTo('furnished', debouncedValue.furnished === 'true');
+        }
 
-      if (debouncedValue.keywords && debouncedValue.keywords.length !== 0) {
-        query.containsAll('keywords', debouncedValue.keywords.split(' '));
-      }
+        if (debouncedValue.keywords && debouncedValue.keywords.length !== 0) {
+          query.containsAll('keywords', debouncedValue.keywords.split(' '));
+        }
 
-      if (debouncedValue.property_type) {
-        query.equalTo('property_type', debouncedValue.property_type);
-      }
-      if (debouncedValue.property_category) {
-        query.equalTo('property_category', debouncedValue.property_category);
-      }
-      query.limit(limit);
-      query.skip(skip);
+        if (debouncedValue.property_type) {
+          query.equalTo('property_type', debouncedValue.property_type);
+        }
+        if (debouncedValue.property_category) {
+          query.equalTo('property_category', debouncedValue.property_category);
+        }
+        query.limit(limit);
+        query.skip(skip);
 
-      query.equalTo('listing_for', listing_for);
-      if (status) {
-        query.equalTo('status', status);
-      } else {
-        query.notEqualTo('status', 'Deleted Permanent');
-      }
-      if (debouncedSort) {
-        if (debouncedSort.order === 'asc') {
-          query.addAscending(debouncedSort.sort);
+        query.equalTo('listing_for', listing_for);
+        if (status) {
+          query.equalTo('status', status);
         } else {
-          query.addDescending(debouncedSort.sort);
+          query.notEqualTo('status', 'Deleted Permanent');
         }
-      } else {
-        switch (status) {
-          case 'Approved':
-            query.addDescending('approved_on');
-            break;
-          case 'Pending Approval':
-            query.addDescending('flag_time');
-            break;
-          case 'Expired':
-            query.addDescending('expires_on');
-            break;
-          case 'Deleted':
-            query.addDescending('deleted_on');
-            break;
-          case 'Rejected':
-            query.addDescending('rejected_on');
-            break;
-          default:
-            query.addAscending('status_priority');
-            query.addDescending('flag_time');
-            query.addDescending('created_on');
-            break;
+        if (debouncedSort) {
+          if (debouncedSort.order === 'asc') {
+            query.addAscending(debouncedSort.sort);
+          } else {
+            query.addDescending(debouncedSort.sort);
+          }
+        } else {
+          switch (status) {
+            case 'Approved':
+              query.addDescending('approved_on');
+              break;
+            case 'Pending Approval':
+              query.addDescending('flag_time');
+              break;
+            case 'Expired':
+              query.addDescending('expires_on');
+              break;
+            case 'Deleted':
+              query.addDescending('deleted_on');
+              break;
+            case 'Rejected':
+              query.addDescending('rejected_on');
+              break;
+            default:
+              query.addAscending('status_priority');
+              query.addDescending('flag_time');
+              query.addDescending('created_on');
+              break;
+          }
         }
-      }
 
-      query.withCount();
+        query.withCount();
 
-      const property = (await query.find({
-        json: true,
-      })) as unknown as { count: number; results: Property_Type[] };
+        const property = (await query.find({
+          json: true,
+        })) as unknown as { count: number; results: Property_Type[] };
 
-      return { ...property, hasmore: property.results.length === limit };
-    },
-    getNextPageParam: (lastPage, _, lastPageParam) =>
-      lastPage.hasmore ? lastPageParam + 1 : undefined,
-    initialPageParam: 0,
-  });
+        return { ...property, hasmore: property.results.length === limit };
+      },
+      getNextPageParam: (lastPage, _, lastPageParam) =>
+        lastPage.hasmore ? lastPageParam + 1 : undefined,
+      initialPageParam: 0,
+    });
 
   const { data: _stats_2 } = useQuery({
     queryKey: [
@@ -253,19 +272,31 @@ const UserProperties = () => {
         q.equalTo('listing_for', listing_for);
 
         if (debouncedValue['min-price']) {
-          q.greaterThanOrEqualTo('price', parseInt(debouncedValue['min-price'], 10));
+          q.greaterThanOrEqualTo(
+            'price',
+            parseInt(debouncedValue['min-price'], 10)
+          );
         }
         if (debouncedValue['max-price']) {
-          q.lessThanOrEqualTo('price', parseInt(debouncedValue['max-price'], 10));
+          q.lessThanOrEqualTo(
+            'price',
+            parseInt(debouncedValue['max-price'], 10)
+          );
         }
         if (debouncedValue['min-size']) {
-          q.greaterThanOrEqualTo('size', parseInt(debouncedValue['min-size'], 10));
+          q.greaterThanOrEqualTo(
+            'size',
+            parseInt(debouncedValue['min-size'], 10)
+          );
         }
         if (debouncedValue['max-size']) {
           q.lessThanOrEqualTo('size', parseInt(debouncedValue['max-size'], 10));
         }
         if (debouncedValue.bedroom) {
-          q.greaterThanOrEqualTo('bedrooms', parseInt(debouncedValue.bedroom, 10));
+          q.greaterThanOrEqualTo(
+            'bedrooms',
+            parseInt(debouncedValue.bedroom, 10)
+          );
         }
         if (debouncedValue.plan) {
           q.equalTo('plan', debouncedValue.plan);
@@ -274,7 +305,10 @@ const UserProperties = () => {
           q.equalTo('visible', debouncedValue.visibility);
         }
         if (debouncedValue.bathroom) {
-          q.greaterThanOrEqualTo('bathrooms', parseInt(debouncedValue.bathroom, 10));
+          q.greaterThanOrEqualTo(
+            'bathrooms',
+            parseInt(debouncedValue.bathroom, 10)
+          );
         }
         if (debouncedValue.furnished) {
           q.equalTo('furnished', debouncedValue.furnished === 'true');
@@ -331,16 +365,28 @@ const UserProperties = () => {
           style={styles.backBtn}
           onPress={() => {
             router.back();
-          }}>
-          <ArrowLeftIcon size={20} weight="bold" color="#192234" />
+          }}
+        >
+          <ArrowLeftIcon size={20} weight='bold' color='#192234' />
         </Pressable>
         <View style={styles.tabSwitcher}>
           <TouchableWithoutFeedback
             onPress={() => {
               setListingFor('Rental');
-            }}>
-            <View style={[styles.tabBtn, listing_for === 'Rental' && styles.tabBtnActive]}>
-              <AppText style={[styles.tabText, listing_for === 'Rental' && styles.tabTextActive]}>
+            }}
+          >
+            <View
+              style={[
+                styles.tabBtn,
+                listing_for === 'Rental' && styles.tabBtnActive,
+              ]}
+            >
+              <AppText
+                style={[
+                  styles.tabText,
+                  listing_for === 'Rental' && styles.tabTextActive,
+                ]}
+              >
                 Rent
               </AppText>
             </View>
@@ -348,9 +394,20 @@ const UserProperties = () => {
           <TouchableWithoutFeedback
             onPress={() => {
               setListingFor('Sale');
-            }}>
-            <View style={[styles.tabBtn, listing_for === 'Sale' && styles.tabBtnActive]}>
-              <AppText style={[styles.tabText, listing_for === 'Sale' && styles.tabTextActive]}>
+            }}
+          >
+            <View
+              style={[
+                styles.tabBtn,
+                listing_for === 'Sale' && styles.tabBtnActive,
+              ]}
+            >
+              <AppText
+                style={[
+                  styles.tabText,
+                  listing_for === 'Sale' && styles.tabTextActive,
+                ]}
+              >
                 Sale
               </AppText>
             </View>
@@ -366,7 +423,8 @@ const UserProperties = () => {
           style={styles.statusScroll}
           contentContainerStyle={styles.statusScrollContent}
           showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}>
+          showsHorizontalScrollIndicator={false}
+        >
           {[
             { label: 'All', status: null, id: 'all' },
             { label: 'Active', status: 'Approved', id: 'active' },
@@ -380,13 +438,25 @@ const UserProperties = () => {
               onPress={() => {
                 setStatus(i.status);
               }}
-              style={[styles.statusBadge, status === i.status && styles.statusBadgeActive]}>
+              style={[
+                styles.statusBadge,
+                status === i.status && styles.statusBadgeActive,
+              ]}
+            >
               <AppText
-                style={[styles.statusLabel, status === i.status && styles.statusLabelActive]}>
+                style={[
+                  styles.statusLabel,
+                  status === i.status && styles.statusLabelActive,
+                ]}
+              >
                 {i.label}
               </AppText>
               <AppText
-                style={[styles.statusCount, status === i.status && styles.statusCountActive]}>
+                style={[
+                  styles.statusCount,
+                  status === i.status && styles.statusCountActive,
+                ]}
+              >
                 {_stats_2[i.id as keyof typeof _stats_2]}
               </AppText>
             </Pressable>
@@ -403,7 +473,7 @@ const UserProperties = () => {
               keyExtractor={(item) => item.objectId}
               renderItem={({ item }) => {
                 if (isProperty(item)) {
-                  return <PropertyCard property={item} type="dashboard" />;
+                  return <PropertyCard property={item} type='dashboard' />;
                 }
                 return (
                   <View style={styles.similarListingHeader}>
@@ -422,7 +492,7 @@ const UserProperties = () => {
               ListFooterComponent={
                 isFetchingNextPage ? (
                   <View style={styles.footerLoader}>
-                    <ActivityIndicator size="large" color="#82065e" />
+                    <ActivityIndicator size='large' color='#82065e' />
                   </View>
                 ) : (
                   <View style={styles.footerSpacer} />
@@ -432,8 +502,10 @@ const UserProperties = () => {
           </View>
         ) : (
           <View style={styles.emptyState}>
-            <FolderOpenIcon size={100} color="#ACACB9" />
-            <AppText style={styles.emptyText}>Nothing here at the moment…</AppText>
+            <FolderOpenIcon size={100} color='#ACACB9' />
+            <AppText style={styles.emptyText}>
+              Nothing here at the moment…
+            </AppText>
           </View>
         )}
       </View>

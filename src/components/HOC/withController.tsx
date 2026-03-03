@@ -11,10 +11,16 @@ type WithControllerProps<TFieldValues extends FieldValues> = {
 // HOC
 export function withController<TFieldValues extends FieldValues, P>(
   InputComponent: React.ComponentType<
-    P & { value?: any; onChangeText?: (val: string) => void; onBlur?: () => void }
+    P & {
+      value?: any;
+      onChangeText?: (val: string) => void;
+      onBlur?: () => void;
+    }
   >
 ) {
-  return function ControlledInput(props: P & WithControllerProps<TFieldValues>) {
+  return function ControlledInput(
+    props: P & WithControllerProps<TFieldValues>
+  ) {
     const { control, name, rules, ...rest } = props;
 
     return (

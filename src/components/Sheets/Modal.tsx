@@ -13,19 +13,21 @@ const ModalSheet = () => {
       isVisible={value !== null}
       onBackdropPress={value.onClose}
       onSwipeComplete={value.onClose}
-      swipeDirection="down"
+      swipeDirection='down'
       hardwareAccelerated
       coverScreen={false}
       avoidKeyboard={false}
       style={styles.modal}
-      propagateSwipe>
+      propagateSwipe
+    >
       <View
         style={[
           styles.container,
           {
             maxHeight: deviceHeight * 0.9,
           },
-        ]}>
+        ]}
+      >
         <View style={styles.handle} />
         {value.modal}
       </View>

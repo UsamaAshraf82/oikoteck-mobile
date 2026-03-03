@@ -12,21 +12,25 @@ export const HomeTopBar = () => {
   const { user } = useUser();
   return (
     <View style={styles.container}>
-      <Image source={Logo} style={styles.logo} contentFit="contain" />
+      <Image source={Logo} style={styles.logo} contentFit='contain' />
       {!user ? (
         <PressableView
           onPress={() => {
             router.push('/login');
           }}
-          style={styles.loginButton}>
+          style={styles.loginButton}
+        >
           <View style={styles.loginInner}>
             <UserCircleIcon
               size={25}
-              color="#192234"
-              weight="fill"
+              color='#192234'
+              weight='fill'
               style={{ marginHorizontal: 0, marginVertical: 0 }}
             />
-            <AppText style={[styles.loginText, { width: 75 }]} numberOfLines={1}>
+            <AppText
+              style={[styles.loginText, { width: 75 }]}
+              numberOfLines={1}
+            >
               Login now
             </AppText>
           </View>
@@ -35,16 +39,19 @@ export const HomeTopBar = () => {
         <TouchableWithoutFeedback
           onPress={() => {
             router.push('/account');
-          }}>
+          }}
+        >
           <View style={styles.userSection}>
             <View>
               <AppText style={styles.welcomeText}>Welcome Back!</AppText>
               <AppText style={styles.userNameText}>
-                {user ? `${user.attributes.first_name} ${user.attributes.last_name}` : ''}
+                {user
+                  ? `${user.attributes.first_name} ${user.attributes.last_name}`
+                  : ''}
               </AppText>
             </View>
             <View style={styles.userAvatar}>
-              <UserIcon color="#7D7D7D" size={20} />
+              <UserIcon color='#7D7D7D' size={20} />
             </View>
           </View>
         </TouchableWithoutFeedback>

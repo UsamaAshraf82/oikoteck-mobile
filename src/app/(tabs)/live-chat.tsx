@@ -2,7 +2,7 @@ import { WebView } from 'react-native-webview';
 import KeyboardAvoidingView from '~/components/HOC/KeyboardAvoidingView';
 const LiveChat = () => {
   return (
-    <KeyboardAvoidingView >
+    <KeyboardAvoidingView>
       <WebView
         source={{
           uri: 'https://secure.livechatinc.com/customer/action/open_chat?license_id=18135348',

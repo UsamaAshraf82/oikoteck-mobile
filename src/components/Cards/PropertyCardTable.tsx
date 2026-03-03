@@ -16,7 +16,13 @@ import {
   TrashIcon,
 } from 'phosphor-react-native';
 import { useMemo } from 'react';
-import { Alert, Pressable, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import {
+  Alert,
+  Pressable,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import { stringify_area_district } from '~/lib/stringify_district_area';
 import useActivityIndicator from '~/store/useActivityIndicator';
 import useMenu from '~/store/useMenuHelper';
@@ -102,7 +108,11 @@ const PropertyCard = ({
         {
           icon: <CoinIcon />,
           label: 'Apply Credit',
-          display: applyCredit(property.plan, property.status, property.futurePromote),
+          display: applyCredit(
+            property.plan,
+            property.status,
+            property.futurePromote
+          ),
           onPress: () => {
             Alert.alert('TODO');
           },
@@ -110,7 +120,11 @@ const PropertyCard = ({
         {
           icon: <CoinIcon />,
           label: 'Edit Credit',
-          display: editCredits(property.plan, property.status, property.futurePromote),
+          display: editCredits(
+            property.plan,
+            property.status,
+            property.futurePromote
+          ),
           onPress: () => {
             Alert.alert('TODO');
           },
@@ -118,7 +132,11 @@ const PropertyCard = ({
         {
           icon: <LightningIcon />,
           label: 'Boost Listing',
-          display: boostListing(property.plan, property.status, property.promote_bosted),
+          display: boostListing(
+            property.plan,
+            property.status,
+            property.promote_bosted
+          ),
           onPress: () => {
             confirmPopup({
               label: 'Boost Listing',
@@ -145,7 +163,11 @@ const PropertyCard = ({
         {
           icon: <CursorClickIcon />,
           label: 'Activate Listing',
-          display: activateListing(property.plan, property.status, property.visible),
+          display: activateListing(
+            property.plan,
+            property.status,
+            property.visible
+          ),
           onPress: async () => {
             activity.startActivity();
             const query = new Parse.Query('Property');
@@ -168,7 +190,11 @@ const PropertyCard = ({
         {
           icon: <ProhibitIcon />,
           label: 'Rejection Reason',
-          display: rejectionReason(property.plan, property.status, property.visible),
+          display: rejectionReason(
+            property.plan,
+            property.status,
+            property.visible
+          ),
           onPress: () => {
             confirmPopup({
               label: 'Rejection Reason',
@@ -230,10 +256,12 @@ const PropertyCard = ({
           onPress: () => {
             confirmPopup({
               label: 'Remove Listing',
-              message: 'Are you sure you want to remove this listing from your dashboard?',
+              message:
+                'Are you sure you want to remove this listing from your dashboard?',
               notice: {
                 label: 'Warning',
-                message: 'You will not be able to access your listing after removing it',
+                message:
+                  'You will not be able to access your listing after removing it',
               },
               confirm: {
                 text: 'Yes, Remove',
@@ -268,16 +296,24 @@ const PropertyCard = ({
           label: 'Featured On',
           value: property.approved_on
             ? property.approved_on instanceof Date
-              ? DateTime.fromJSDate(property.approved_on).toLocaleString(DateTime.DATE_MED)
-              : DateTime.fromISO(property.approved_on.iso).toLocaleString(DateTime.DATE_MED)
+              ? DateTime.fromJSDate(property.approved_on).toLocaleString(
+                  DateTime.DATE_MED
+                )
+              : DateTime.fromISO(property.approved_on.iso).toLocaleString(
+                  DateTime.DATE_MED
+                )
             : 'TBD',
         },
         {
           label: 'Expires On',
           value: property.expires_on
             ? property.expires_on instanceof Date
-              ? DateTime.fromJSDate(property.expires_on).toLocaleString(DateTime.DATE_MED)
-              : DateTime.fromISO(property.expires_on.iso).toLocaleString(DateTime.DATE_MED)
+              ? DateTime.fromJSDate(property.expires_on).toLocaleString(
+                  DateTime.DATE_MED
+                )
+              : DateTime.fromISO(property.expires_on.iso).toLocaleString(
+                  DateTime.DATE_MED
+                )
             : 'TBD',
         },
       ];
@@ -320,15 +356,24 @@ const PropertyCard = ({
   }, [property.plan]);
 
   return (
-    <View style={[styles.cardContainer, type === 'change_plan' && styles.borderSecondary]}>
+    <View
+      style={[
+        styles.cardContainer,
+        type === 'change_plan' && styles.borderSecondary,
+      ]}
+    >
       <View style={styles.contentRow}>
-        <TouchableWithoutFeedback onPress={() => router.push(`/property/${property.objectId}`)}>
+        <TouchableWithoutFeedback
+          onPress={() => router.push(`/property/${property.objectId}`)}
+        >
           <View style={styles.imageWrapper}>
             <AWSImage src={property.images[0]} style={styles.image} />
             {['dashboard', 'change_plan'].includes(type) && (
               <View style={[styles.statusBadge, statusStyle]}>
                 <AppText style={styles.badgeTextSmall}>
-                  {property.status === 'Pending Approval' ? 'Pending' : property.status + ''}
+                  {property.status === 'Pending Approval'
+                    ? 'Pending'
+                    : property.status + ''}
                 </AppText>
               </View>
             )}
@@ -342,21 +387,29 @@ const PropertyCard = ({
         <View style={styles.detailsContainer}>
           <View style={styles.rowBetween}>
             <View style={styles.rowBaseline}>
-              <AppText style={styles.priceText}>{'€ ' + thoasandseprator(property.price)}</AppText>
+              <AppText style={styles.priceText}>
+                {'€ ' + thoasandseprator(property.price)}
+              </AppText>
               {property.listing_for !== 'Sale' && (
                 <AppText style={styles.perMonthText}>/month</AppText>
               )}
             </View>
           </View>
-          <TouchableWithoutFeedback onPress={() => router.push(`/property/${property.objectId}`)}>
+          <TouchableWithoutFeedback
+            onPress={() => router.push(`/property/${property.objectId}`)}
+          >
             <AppText
               style={[styles.titleText, { maxWidth: wide }]}
               numberOfLines={1}
-              ellipsizeMode="tail">
+              ellipsizeMode='tail'
+            >
               {property.title}
             </AppText>
           </TouchableWithoutFeedback>
-          <AppText style={[styles.locationText, { maxWidth: wide }]} numberOfLines={1}>
+          <AppText
+            style={[styles.locationText, { maxWidth: wide }]}
+            numberOfLines={1}
+          >
             {stringify_area_district({
               district: property.district,
               area_1: property.area_1,
@@ -366,15 +419,15 @@ const PropertyCard = ({
 
           <View style={styles.featuresRow}>
             <View style={styles.featureItem}>
-              <BedIcon height={17} width={17} color="#7D7D7D" />
+              <BedIcon height={17} width={17} color='#7D7D7D' />
               <AppText style={styles.featureText}>{property.bedrooms}</AppText>
             </View>
             <View style={styles.featureItem}>
-              <BathIcon height={17} width={17} color="#7D7D7D" />
+              <BathIcon height={17} width={17} color='#7D7D7D' />
               <AppText style={styles.featureText}>{property.bathrooms}</AppText>
             </View>
             <View style={styles.featureItem}>
-              <SizeIcon height={18} width={18} color="#7D7D7D" />
+              <SizeIcon height={18} width={18} color='#7D7D7D' />
               <AppText style={styles.featureText}>{property.size} m²</AppText>
             </View>
           </View>
@@ -417,7 +470,8 @@ const PropertyCard = ({
               activity.stopActivity();
               // },
               // });
-            }}>
+            }}
+          >
             <HeartIcon weight={'fill'} color={'#cc3f33'} />
           </Pressable>
         )}
@@ -430,8 +484,9 @@ const PropertyCard = ({
                 useFlatList: false,
                 label: 'Options',
               });
-            }}>
-            <DotsThreeCircleIcon color="#7D7D7D" />
+            }}
+          >
+            <DotsThreeCircleIcon color='#7D7D7D' />
           </Pressable>
         )}
       </View>

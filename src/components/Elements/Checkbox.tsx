@@ -39,12 +39,20 @@ const Checkbox: React.FC<Props> = ({
   };
 
   return (
-    <View style={[styles.container, labelLast && styles.justifyStart, alignTop && styles.alignTop]}>
-      {!labelLast && <AppText style={[styles.labelTextLeft, labelStyle]}>{label}</AppText>}
+    <View
+      style={[
+        styles.container,
+        labelLast && styles.justifyStart,
+        alignTop && styles.alignTop,
+      ]}
+    >
+      {!labelLast && (
+        <AppText style={[styles.labelTextLeft, labelStyle]}>{label}</AppText>
+      )}
       <Pressable onPress={() => handleChange(!isChecked)}>
         <ExpoCheckbox
           value={isChecked}
-          pointerEvents="none"
+          pointerEvents='none'
           color={isChecked ? '#82065e' : '#8d95a5'}
           style={{
             borderRadius: 5,
@@ -55,7 +63,9 @@ const Checkbox: React.FC<Props> = ({
           disabled={disabled}
         />
       </Pressable>
-      {labelLast && <AppText style={[styles.labelTextRight, labelStyle]}>{label}</AppText>}
+      {labelLast && (
+        <AppText style={[styles.labelTextRight, labelStyle]}>{label}</AppText>
+      )}
     </View>
   );
 };

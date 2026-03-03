@@ -70,7 +70,7 @@ const RenewPlan = () => {
   if (isLoading) {
     return (
       <View style={styles.loaderContainer}>
-        <ActivityIndicator size="large" color="#82065e" />
+        <ActivityIndicator size='large' color='#82065e' />
       </View>
     );
   }
@@ -78,7 +78,7 @@ const RenewPlan = () => {
   if (!property) {
     return (
       <View style={styles.container}>
-        <TopHeader title="Renew Membership" onBackPress={() => router.back()} />
+        <TopHeader title='Renew Membership' onBackPress={() => router.back()} />
         <View style={styles.emptyContainer}>
           <AppText style={styles.subTitle}>Property not found.</AppText>
         </View>
@@ -89,7 +89,7 @@ const RenewPlan = () => {
   return (
     <View style={styles.container}>
       <TopHeader
-        title="Renew Membership"
+        title='Renew Membership'
         onBackPress={() => {
           router.back();
         }}
@@ -98,14 +98,16 @@ const RenewPlan = () => {
       <View style={styles.content}>
         <View style={styles.headerSection}>
           <AppText style={styles.mainTitle}>Membership Renewal</AppText>
-          <AppText style={styles.subTitle}>Manage and renew your membership here.</AppText>
+          <AppText style={styles.subTitle}>
+            Manage and renew your membership here.
+          </AppText>
         </View>
 
-        <PropertyCard property={property} type="change_plan" />
+        <PropertyCard property={property} type='change_plan' />
 
         <View style={styles.inputSection}>
           <TextInput
-            label="Membership Renewal Through"
+            label='Membership Renewal Through'
             value={DateTime.fromJSDate(date).toLocaleString(DateTime.DATE_MED)}
             readOnly
           />

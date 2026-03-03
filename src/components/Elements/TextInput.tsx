@@ -1,6 +1,11 @@
 import { EyeClosedIcon, EyeIcon } from 'phosphor-react-native';
 import { useState } from 'react';
-import { StyleSheet, TextInput as TextBaseInput, TouchableOpacity, View } from 'react-native';
+import {
+  StyleSheet,
+  TextInput as TextBaseInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { withController } from '../HOC/withController';
 import AppText from './AppText';
 
@@ -9,8 +14,15 @@ type Props = TextBaseInput['props'] & {
   getValue?: (text: string) => void;
 };
 
-const TextInput = ({ label, style, secureTextEntry, getValue, ...props }: Props) => {
-  const [secureTextEntryHack, setSecureTextEntryHack] = useState(secureTextEntry);
+const TextInput = ({
+  label,
+  style,
+  secureTextEntry,
+  getValue,
+  ...props
+}: Props) => {
+  const [secureTextEntryHack, setSecureTextEntryHack] =
+    useState(secureTextEntry);
   const [isFocused, setIsFocused] = useState(false);
 
   return (
@@ -20,7 +32,7 @@ const TextInput = ({ label, style, secureTextEntry, getValue, ...props }: Props)
         <TextBaseInput
           {...props}
           value={props.value ? props.value + '' : ''}
-          placeholderTextColor="#6B7280"
+          placeholderTextColor='#6B7280'
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           style={[styles.input, isFocused && styles.inputFocused, style]}
@@ -34,9 +46,9 @@ const TextInput = ({ label, style, secureTextEntry, getValue, ...props }: Props)
           <View style={styles.iconWrapper}>
             <TouchableOpacity onPress={() => setSecureTextEntryHack((i) => !i)}>
               {secureTextEntryHack ? (
-                <EyeClosedIcon size={20} color="#6B7280" />
+                <EyeClosedIcon size={20} color='#6B7280' />
               ) : (
-                <EyeIcon size={20} color="#6B7280" />
+                <EyeIcon size={20} color='#6B7280' />
               )}
             </TouchableOpacity>
           </View>

@@ -18,7 +18,7 @@ export default function AuthLayout() {
           filter: 'blur(80px)',
         }}
         blurRadius={50}
-        contentFit="cover"
+        contentFit='cover'
       />
       <Slot />
     </View>

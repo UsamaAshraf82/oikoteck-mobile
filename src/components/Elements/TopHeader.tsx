@@ -16,8 +16,9 @@ const TopHeader = ({ onBackPress, title, right }: Props) => {
         style={styles.backButton}
         onPress={() => {
           onBackPress();
-        }}>
-        <ArrowLeftIcon size={18} weight="bold" color="#192234" />
+        }}
+      >
+        <ArrowLeftIcon size={18} weight='bold' color='#192234' />
       </Pressable>
       <View>
         <AppText style={styles.title}>{title}</AppText>

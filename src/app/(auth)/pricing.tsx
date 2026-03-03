@@ -9,7 +9,7 @@ import { thoasandseprator } from '~/utils/number';
 const Pricing = () => {
   return (
     <View style={styles.container}>
-      <TopHeader onBackPress={() => router.back()} title="Pricing" />
+      <TopHeader onBackPress={() => router.back()} title='Pricing' />
       <View style={styles.header}>
         <View>
           <AppText style={styles.title}>Pricing Breakdown</AppText>
@@ -49,14 +49,18 @@ const Pricing = () => {
             <View style={{ flex: 1, width: 100 }}>
               <AppText style={styles.rangeText}>
                 {thoasandseprator(i.low)}
-                {i.high === Number.MAX_SAFE_INTEGER ? '+' : '- ' + thoasandseprator(i.high)}
+                {i.high === Number.MAX_SAFE_INTEGER
+                  ? '+'
+                  : '- ' + thoasandseprator(i.high)}
               </AppText>
               {/* <AppText style={styles.pointsSubText}>Points</AppText> */}
             </View>
 
             <AppText style={styles.priceText}>€ {i.promote.toFixed(3)}</AppText>
             <AppText style={styles.priceText}>€ {i.gold.toFixed(3)}</AppText>
-            <AppText style={styles.priceText}>€ {i.platinum.toFixed(3)}</AppText>
+            <AppText style={styles.priceText}>
+              € {i.platinum.toFixed(3)}
+            </AppText>
           </Grid>
         ))}
       </ScrollView>

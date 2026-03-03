@@ -39,7 +39,10 @@ Sentry.init({
   // Configure Session Replay
   replaysSessionSampleRate: 0.1,
   replaysOnErrorSampleRate: 1,
-  integrations: [Sentry.mobileReplayIntegration(), Sentry.feedbackIntegration()],
+  integrations: [
+    Sentry.mobileReplayIntegration(),
+    Sentry.feedbackIntegration(),
+  ],
 
   // uncomment the line below to enable Spotlight (https://spotlightjs.com)
   // spotlight: __DEV__,
@@ -48,8 +51,10 @@ Sentry.init({
 // SystemUI.setBackgroundColorAsync('#fff');
 SplashScreen.preventAutoHideAsync();
 GoogleSignin.configure({
-  webClientId: '249425615765-q3s8kt4ldpuf0u4dr7flmc9pm4n06ugi.apps.googleusercontent.com', // from Google Cloud Console
-  iosClientId: '249425615765-c3hb68cqlo6fcjd82bft3uqeq8t857bh.apps.googleusercontent.com', // from GoogleService-Info.plist or google-services.json
+  webClientId:
+    '249425615765-q3s8kt4ldpuf0u4dr7flmc9pm4n06ugi.apps.googleusercontent.com', // from Google Cloud Console
+  iosClientId:
+    '249425615765-c3hb68cqlo6fcjd82bft3uqeq8t857bh.apps.googleusercontent.com', // from GoogleService-Info.plist or google-services.json
   offlineAccess: false, // so you can also get refresh tokens if needed
   scopes: ['profile', 'email'],
 });
@@ -93,16 +98,25 @@ function RootLayout() {
 
   return (
     <Sentry.ErrorBoundary
-      fallback={({ error, resetError }: { error: any; resetError: () => void }) => (
+      fallback={({
+        error,
+        resetError,
+      }: {
+        error: any;
+        resetError: () => void;
+      }) => (
         <View style={styles.errorContainer}>
-          <AppText style={styles.errorTitle}>Oops! Something went wrong.</AppText>
+          <AppText style={styles.errorTitle}>
+            Oops! Something went wrong.
+          </AppText>
           <AppText style={styles.errorMessage}>{error.message}</AppText>
           <Pressable style={styles.resetButton} onPress={resetError}>
             <AppText style={styles.resetButtonText}>Try Again</AppText>
           </Pressable>
         </View>
-      )}>
-      <StripeProvider publishableKey="pk_test_51PSK7VP5GmAB6WhMTNNCySQpZwOVzUV3T7DJA6W25VrCnxom0KAJ3osQyZR6qXb2GZtO6oP8m33SI4pIoeV913Pf00RBNgWjCl">
+      )}
+    >
+      <StripeProvider publishableKey='pk_test_51PSK7VP5GmAB6WhMTNNCySQpZwOVzUV3T7DJA6W25VrCnxom0KAJ3osQyZR6qXb2GZtO6oP8m33SI4pIoeV913Pf00RBNgWjCl'>
         <Provider>
           <Screens fontsLoaded={fontsLoaded} ready={ready} />
           <ModalContainer />
@@ -113,24 +127,30 @@ function RootLayout() {
           <ToastContainer />
         </Provider>
       </StripeProvider>
-      <PortalHost name="toast-host" />
+      <PortalHost name='toast-host' />
     </Sentry.ErrorBoundary>
   );
 }
 
-const Screens = ({ ready, fontsLoaded }: { ready: boolean; fontsLoaded: boolean }) => {
+const Screens = ({
+  ready,
+  fontsLoaded,
+}: {
+  ready: boolean;
+  fontsLoaded: boolean;
+}) => {
   const { user } = useUser();
   if (!ready) return <Slot />;
   if (!fontsLoaded) return <Slot />;
   return (
     <Stack screenOptions={{ headerShown: false, animation: 'fade' }}>
-      <Stack.Screen name="(tabs)" />
-      <Stack.Screen name="property/[id]" />
+      <Stack.Screen name='(tabs)' />
+      <Stack.Screen name='property/[id]' />
       <Stack.Protected guard={!user}>
-        <Stack.Screen name="(no-auth)" />
+        <Stack.Screen name='(no-auth)' />
       </Stack.Protected>
       <Stack.Protected guard={!!user}>
-        <Stack.Screen name="(auth)" />
+        <Stack.Screen name='(auth)' />
       </Stack.Protected>
     </Stack>
   );
@@ -140,12 +160,12 @@ const ActivityIndicator = () => {
   const { isInActivity } = useActivityIndicator();
   // if (!isInActivity) return null;
   return (
-    <Modal transparent visible={isInActivity} animationType="fade">
+    <Modal transparent visible={isInActivity} animationType='fade'>
       <View style={styles.activityOverlay}>
         <ActivityIndicatorInternal
-          size="large"
+          size='large'
           style={{ transform: [{ scale: 2 }] }}
-          color="#82065e"
+          color='#82065e'
         />
       </View>
     </Modal>

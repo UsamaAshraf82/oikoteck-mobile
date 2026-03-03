@@ -11,7 +11,12 @@ import { Image as ExpoImage } from 'expo-image';
 import { useRouter } from 'expo-router';
 import Parse from 'parse/react-native';
 import { Alert, Platform, StyleSheet, View } from 'react-native';
-import { AccessToken, AuthenticationToken, LoginManager, Profile } from 'react-native-fbsdk-next';
+import {
+  AccessToken,
+  AuthenticationToken,
+  LoginManager,
+  Profile,
+} from 'react-native-fbsdk-next';
 import AppText from '~/components/Elements/AppText';
 import PressableView from '~/components/HOC/PressableView';
 import useActivityIndicator from '~/store/useActivityIndicator';
@@ -91,7 +96,10 @@ const SocialSignin = () => {
       if (Platform.OS === 'ios') {
         LoginManager.setLoginBehavior('native_with_fallback');
       }
-      const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
+      const result = await LoginManager.logInWithPermissions([
+        'public_profile',
+        'email',
+      ]);
 
       if (result.isCancelled) {
         stopActivity();
@@ -107,7 +115,8 @@ const SocialSignin = () => {
 
       if (Platform.OS === 'ios') {
         data = await AccessToken.getCurrentAccessToken();
-        authenticationToken = await AuthenticationToken.getAuthenticationTokenIOS();
+        authenticationToken =
+          await AuthenticationToken.getAuthenticationTokenIOS();
         profile = await Profile.getCurrentProfile();
       } else {
         data = await AccessToken.getCurrentAccessToken();
@@ -115,7 +124,10 @@ const SocialSignin = () => {
       }
 
       if (!data && !authenticationToken) {
-        Alert.alert('Facebook Error', 'Something went wrong obtaining access token');
+        Alert.alert(
+          'Facebook Error',
+          'Something went wrong obtaining access token'
+        );
         stopActivity();
         return;
       }
@@ -190,7 +202,10 @@ const SocialSignin = () => {
       }
     } catch (error: any) {
       console.error('Facebook login error:', error);
-      Alert.alert('Facebook Login Error', error.message || 'An unknown error occurred');
+      Alert.alert(
+        'Facebook Login Error',
+        error.message || 'An unknown error occurred'
+      );
     }
     stopActivity();
   };
@@ -223,11 +238,17 @@ const SocialSignin = () => {
           // Apple only provides email and name on the FIRST successful login for a given app.
           // We must fallback to Parse User attributes if they were synchronized.
           const email =
-            credential.email?.toLowerCase() || (user.get('email') as string)?.toLowerCase() || '';
+            credential.email?.toLowerCase() ||
+            (user.get('email') as string)?.toLowerCase() ||
+            '';
           const firstName =
-            credential.fullName?.givenName || (user.get('first_name') as string) || '';
+            credential.fullName?.givenName ||
+            (user.get('first_name') as string) ||
+            '';
           const lastName =
-            credential.fullName?.familyName || (user.get('last_name') as string) || '';
+            credential.fullName?.familyName ||
+            (user.get('last_name') as string) ||
+            '';
 
           router.push({
             pathname: '/signup2social',
@@ -246,7 +267,10 @@ const SocialSignin = () => {
         // handle cancel
       } else {
         console.error('Apple Sign-in error:', e);
-        Alert.alert('Apple Login Error', e.message || 'An unknown error occurred');
+        Alert.alert(
+          'Apple Login Error',
+          e.message || 'An unknown error occurred'
+        );
       }
     }
     stopActivity();

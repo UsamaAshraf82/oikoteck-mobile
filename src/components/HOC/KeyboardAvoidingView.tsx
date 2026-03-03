@@ -7,7 +7,8 @@ const KeyboardAvoidingView = ({ children }: PropsWithChildren) => {
     <InternalKeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
       keyboardVerticalOffset={20}
-      style={{ flex: 1, backgroundColor: 'white' }}>
+      style={{ flex: 1, backgroundColor: 'white' }}
+    >
       {children}
     </InternalKeyboardAvoidingView>
   );

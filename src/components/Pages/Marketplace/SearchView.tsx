@@ -1,5 +1,14 @@
-import { FunnelSimpleIcon, GlobeHemisphereEastIcon, XIcon } from 'phosphor-react-native';
-import { Platform, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import {
+  FunnelSimpleIcon,
+  GlobeHemisphereEastIcon,
+  XIcon,
+} from 'phosphor-react-native';
+import {
+  Platform,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import AppText from '~/components/Elements/AppText';
 
 type Props = {
@@ -10,20 +19,27 @@ type Props = {
   onClear: () => void;
 };
 
-export const SearchView = ({ listing_type, text, onPress, onClear, onFilter }: Props) => {
+export const SearchView = ({
+  listing_type,
+  text,
+  onPress,
+  onClear,
+  onFilter,
+}: Props) => {
   return (
     <View style={styles.container}>
       <View style={styles.searchSection}>
         <TouchableWithoutFeedback onPress={onPress}>
           <View style={styles.innerSearch}>
-            <GlobeHemisphereEastIcon weight="fill" color="#192234" />
+            <GlobeHemisphereEastIcon weight='fill' color='#192234' />
             <AppText
               style={[
                 styles.searchText,
                 {
                   color: text ? '#000' : '#999',
                 },
-              ]}>
+              ]}
+            >
               {text ||
                 (listing_type === 'Sale'
                   ? 'Where are you buying in Greece?'
@@ -37,13 +53,13 @@ export const SearchView = ({ listing_type, text, onPress, onClear, onFilter }: P
         {!text ? (
           <TouchableWithoutFeedback onPress={onFilter}>
             <View style={styles.iconButton}>
-              <FunnelSimpleIcon color="#cad2df" />
+              <FunnelSimpleIcon color='#cad2df' />
             </View>
           </TouchableWithoutFeedback>
         ) : (
           <TouchableWithoutFeedback hitSlop={10} onPress={onClear}>
             <View style={styles.iconButton}>
-              <XIcon color="#192234" size={20} />
+              <XIcon color='#192234' size={20} />
             </View>
           </TouchableWithoutFeedback>
         )}

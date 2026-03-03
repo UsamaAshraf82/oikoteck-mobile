@@ -1,5 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CheckCircleIcon, InfoIcon, MinusIcon, PlusIcon } from 'phosphor-react-native';
+import {
+  CheckCircleIcon,
+  InfoIcon,
+  MinusIcon,
+  PlusIcon,
+} from 'phosphor-react-native';
 import { useEffect } from 'react';
 import { SubmitErrorHandler, useForm } from 'react-hook-form';
 import { StyleSheet, View } from 'react-native';
@@ -28,17 +33,11 @@ type Props = {
 export default function Basic2({ data, extra_data, onSubmit }: Props) {
   const { addToast } = useToast();
   const { openModal } = useModal();
-  const {
-    control,
-    setValue,
-    handleSubmit,
-    watch,
-    getValues,
-    reset,
-  } = useForm<Basic2Values>({
-    resolver: zodResolver(Basic2Schema) as any,
-    defaultValues: { ...data, ...extra_data },
-  });
+  const { control, setValue, handleSubmit, watch, getValues, reset } =
+    useForm<Basic2Values>({
+      resolver: zodResolver(Basic2Schema) as any,
+      defaultValues: { ...data, ...extra_data },
+    });
 
   useEffect(() => {
     reset({ ...data, ...extra_data });
@@ -74,28 +73,33 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
     <View style={styles.container}>
       <View style={styles.mainContent}>
         <AppText style={styles.title}>Property details 🏠</AppText>
-        <AppText style={styles.subtitle}>Tell us more about your property in details</AppText>
+        <AppText style={styles.subtitle}>
+          Tell us more about your property in details
+        </AppText>
 
         <KeyboardAwareScrollView
           bottomOffset={50}
           contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
+          keyboardShouldPersistTaps='handled'
           showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}>
+          showsHorizontalScrollIndicator={false}
+        >
           {/* Bedrooms */}
           <View style={styles.counterRow}>
             <AppText style={styles.counterLabel}>No. of Bedrooms</AppText>
             <View style={styles.counterControls}>
               <PressableView
                 style={styles.counterBtn}
-                onPress={() => setValue('bedrooms', bedrooms - 1)}>
-                <MinusIcon size={14} color="#192234" />
+                onPress={() => setValue('bedrooms', bedrooms - 1)}
+              >
+                <MinusIcon size={14} color='#192234' />
               </PressableView>
               <AppText style={styles.counterValue}>{bedrooms}</AppText>
               <PressableView
                 style={styles.counterBtn}
-                onPress={() => setValue('bedrooms', bedrooms + 1)}>
-                <PlusIcon size={14} color="#192234" />
+                onPress={() => setValue('bedrooms', bedrooms + 1)}
+              >
+                <PlusIcon size={14} color='#192234' />
               </PressableView>
             </View>
           </View>
@@ -106,14 +110,16 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
             <View style={styles.counterControls}>
               <PressableView
                 style={styles.counterBtn}
-                onPress={() => setValue('bathrooms', bathrooms - 1)}>
-                <MinusIcon size={14} color="#192234" />
+                onPress={() => setValue('bathrooms', bathrooms - 1)}
+              >
+                <MinusIcon size={14} color='#192234' />
               </PressableView>
               <AppText style={styles.counterValue}>{bathrooms}</AppText>
               <PressableView
                 style={styles.counterBtn}
-                onPress={() => setValue('bathrooms', bathrooms + 1)}>
-                <PlusIcon size={14} color="#192234" />
+                onPress={() => setValue('bathrooms', bathrooms + 1)}
+              >
+                <PlusIcon size={14} color='#192234' />
               </PressableView>
             </View>
           </View>
@@ -122,29 +128,37 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
           <View style={styles.counterRow}>
             <AppText style={styles.counterLabel}>Floor</AppText>
             <View style={styles.counterControls}>
-              <PressableView style={styles.counterBtn} onPress={() => setValue('floor', floor - 1)}>
-                <MinusIcon size={14} color="#192234" />
+              <PressableView
+                style={styles.counterBtn}
+                onPress={() => setValue('floor', floor - 1)}
+              >
+                <MinusIcon size={14} color='#192234' />
               </PressableView>
               <AppText style={styles.counterValue}>{floor}</AppText>
-              <PressableView style={styles.counterBtn} onPress={() => setValue('floor', floor + 1)}>
-                <PlusIcon size={14} color="#192234" />
+              <PressableView
+                style={styles.counterBtn}
+                onPress={() => setValue('floor', floor + 1)}
+              >
+                <PlusIcon size={14} color='#192234' />
               </PressableView>
             </View>
           </View>
 
           <ControlledTextInput
             control={control}
-            name="size"
-            keyboardType="number-pad"
-            label={propertyType === 'Residential' ? 'Home Size, m²' : 'Size, m²'}
+            name='size'
+            keyboardType='number-pad'
+            label={
+              propertyType === 'Residential' ? 'Home Size, m²' : 'Size, m²'
+            }
           />
 
           {['Detached House', 'Villa'].includes(propertyCategory) && (
             <ControlledTextInput
               control={control}
-              name="plot_size"
-              keyboardType="number-pad"
-              label="Plot Size, m²"
+              name='plot_size'
+              keyboardType='number-pad'
+              label='Plot Size, m²'
             />
           )}
 
@@ -154,24 +168,44 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
             <Grid gap={8} cols={2}>
               <PressableView
                 onPress={() => setValue('furnished', true)}
-                style={[styles.radioBtn, furnished === true && styles.radioBtnActive]}>
+                style={[
+                  styles.radioBtn,
+                  furnished === true && styles.radioBtnActive,
+                ]}
+              >
                 <View style={styles.radioBtnContent}>
                   <AppText
-                    style={[styles.radioBtnText, furnished === true && styles.radioBtnTextActive]}>
+                    style={[
+                      styles.radioBtnText,
+                      furnished === true && styles.radioBtnTextActive,
+                    ]}
+                  >
                     Yes
                   </AppText>
-                  {furnished === true && <CheckCircleIcon weight="fill" color="#82065e" />}
+                  {furnished === true && (
+                    <CheckCircleIcon weight='fill' color='#82065e' />
+                  )}
                 </View>
               </PressableView>
               <PressableView
                 onPress={() => setValue('furnished', false)}
-                style={[styles.radioBtn, furnished === false && styles.radioBtnActive]}>
+                style={[
+                  styles.radioBtn,
+                  furnished === false && styles.radioBtnActive,
+                ]}
+              >
                 <View style={styles.radioBtnContent}>
                   <AppText
-                    style={[styles.radioBtnText, furnished === false && styles.radioBtnTextActive]}>
+                    style={[
+                      styles.radioBtnText,
+                      furnished === false && styles.radioBtnTextActive,
+                    ]}
+                  >
                     No
                   </AppText>
-                  {furnished === false && <CheckCircleIcon weight="fill" color="#82065e" />}
+                  {furnished === false && (
+                    <CheckCircleIcon weight='fill' color='#82065e' />
+                  )}
                 </View>
               </PressableView>
             </Grid>
@@ -179,15 +213,21 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
 
           <Select
             varient
-            options={[1, 2, 3, 4, 5].map((i) => ({ label: level_of_finish(i), value: i }))}
-            label="Level of Finish"
+            options={[1, 2, 3, 4, 5].map((i) => ({
+              label: level_of_finish(i),
+              value: i,
+            }))}
+            label='Level of Finish'
             value={{
               label: level_of_finish(watch('level_of_finish')),
               value: watch('level_of_finish') || null,
             }}
-            placeholder="Select Level of Finish"
+            placeholder='Select Level of Finish'
             onChange={(value) => {
-              setValue('level_of_finish', value?.value as Basic2Values['level_of_finish']);
+              setValue(
+                'level_of_finish',
+                value?.value as Basic2Values['level_of_finish']
+              );
             }}
           />
 
@@ -197,36 +237,47 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
                 modal: (
                   <View style={styles.modalContent}>
                     <AppText style={styles.modalInfoText}>
-                      OikoTeck will not display level of finish to users in the marketplace
+                      OikoTeck will not display level of finish to users in the
+                      marketplace
                     </AppText>
                     <View style={styles.modalSteps}>
                       <AppText style={styles.modalStepTitle}>
                         Below are some level of finish examples:
                       </AppText>
-                      <AppText style={styles.finishLevelTitle}>Poor end</AppText>
+                      <AppText style={styles.finishLevelTitle}>
+                        Poor end
+                      </AppText>
                       <AppText style={styles.finishLevelDesc}>
-                        Laminate countertops, vinyl flooring, basic fixtures, thin paint, basic
-                        appliances.
+                        Laminate countertops, vinyl flooring, basic fixtures,
+                        thin paint, basic appliances.
                       </AppText>
                       <AppText style={styles.finishLevelTitle}>Low end</AppText>
                       <AppText style={styles.finishLevelDesc}>
-                        Basic tile, laminate wood flooring, standard stainless steel appliances,
-                        mid-range cabinetry.
+                        Basic tile, laminate wood flooring, standard stainless
+                        steel appliances, mid-range cabinetry.
                       </AppText>
-                      <AppText style={styles.finishLevelTitle}>Medium end</AppText>
-                      <AppText style={styles.finishLevelDesc}>
-                        Granite countertops, hardwood flooring, quality fixtures, upgraded
-                        appliances, solid wood cabinetry.
+                      <AppText style={styles.finishLevelTitle}>
+                        Medium end
                       </AppText>
-                      <AppText style={styles.finishLevelTitle}>High end</AppText>
                       <AppText style={styles.finishLevelDesc}>
-                        Marble countertops, custom-designed cabinetry, high-end appliances, designer
-                        tile, solid wood flooring, unique lighting fixtures.
+                        Granite countertops, hardwood flooring, quality
+                        fixtures, upgraded appliances, solid wood cabinetry.
                       </AppText>
-                      <AppText style={styles.finishLevelTitle}>Luxury end</AppText>
+                      <AppText style={styles.finishLevelTitle}>
+                        High end
+                      </AppText>
                       <AppText style={styles.finishLevelDesc}>
-                        Rare stone countertops, bespoke cabinetry, top-of-the-line appliances,
-                        handcrafted elements, integrated smart home technology, designer fixtures
+                        Marble countertops, custom-designed cabinetry, high-end
+                        appliances, designer tile, solid wood flooring, unique
+                        lighting fixtures.
+                      </AppText>
+                      <AppText style={styles.finishLevelTitle}>
+                        Luxury end
+                      </AppText>
+                      <AppText style={styles.finishLevelDesc}>
+                        Rare stone countertops, bespoke cabinetry,
+                        top-of-the-line appliances, handcrafted elements,
+                        integrated smart home technology, designer fixtures
                       </AppText>
                     </View>
                   </View>
@@ -234,21 +285,23 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
                 onClose: () => {},
               });
             }}
-            style={styles.infoBanner}>
+            style={styles.infoBanner}
+          >
             <View style={styles.infoBannerContent}>
-              <InfoIcon size={18} color="#192234" />
+              <InfoIcon size={18} color='#192234' />
               <AppText style={styles.infoBannerText}>
-                OikoTeck will not display level of finish to users in the marketplace
+                OikoTeck will not display level of finish to users in the
+                marketplace
               </AppText>
             </View>
           </PressableView>
 
           <ControlledTextInput
             control={control}
-            name="construction_year"
-            placeholder="Select Construction Year"
-            label="Construction Year"
-            keyboardType="decimal-pad"
+            name='construction_year'
+            placeholder='Select Construction Year'
+            label='Construction Year'
+            keyboardType='decimal-pad'
           />
 
           <Select
@@ -256,9 +309,9 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
             options={Basic2Schema.shape.heating
               .unwrap()
               .options.map((i: string) => ({ label: i, value: i }))}
-            label="Heating System"
+            label='Heating System'
             value={{ label: watch('heating'), value: watch('heating') || null }}
-            placeholder="Select Heating System"
+            placeholder='Select Heating System'
             onChange={(value) => {
               setValue('heating', value?.value as Basic2Values['heating']);
             }}
@@ -266,10 +319,10 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
 
           <ControlledTextInput
             control={control}
-            name="heating_expense"
-            label="Monthly Heating Expenses"
-            placeholder="Select monthly expenses"
-            keyboardType="number-pad"
+            name='heating_expense'
+            label='Monthly Heating Expenses'
+            placeholder='Select monthly expenses'
+            keyboardType='number-pad'
           />
 
           <Select
@@ -277,16 +330,24 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
             options={Basic2Schema.shape.energy_class
               .unwrap()
               .options.map((i: string) => ({ label: i, value: i }))}
-            label="Energy Class"
-            value={{ label: watch('energy_class'), value: watch('energy_class') || null }}
-            placeholder="Select Energy Class"
+            label='Energy Class'
+            value={{
+              label: watch('energy_class'),
+              value: watch('energy_class') || null,
+            }}
+            placeholder='Select Energy Class'
             onChange={(value) => {
-              setValue('energy_class', value?.value as Basic2Values['energy_class']);
+              setValue(
+                'energy_class',
+                value?.value as Basic2Values['energy_class']
+              );
             }}
           />
 
           <View>
-            <AppText style={styles.specialFeaturesLabel}>Special Features</AppText>
+            <AppText style={styles.specialFeaturesLabel}>
+              Special Features
+            </AppText>
             <Grid gap={8} cols={1}>
               {special_feature(propertyType).map((i: string) => (
                 <Checkbox
@@ -313,7 +374,10 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
         </KeyboardAwareScrollView>
       </View>
       <View style={styles.footer}>
-        <PressableView onPress={handleSubmit(onSubmitInternal, onError)} style={styles.continueBtn}>
+        <PressableView
+          onPress={handleSubmit(onSubmitInternal, onError)}
+          style={styles.continueBtn}
+        >
           <AppText style={styles.continueBtnText}>Continue</AppText>
         </PressableView>
       </View>
@@ -541,7 +605,10 @@ export const Basic2Schema = z
       })
       .min(1, 'Bathrooms is Required.'),
     floor: z.number({}).optional(),
-    special_feature: z.string().array().min(1, { message: 'Special features are required.' }),
+    special_feature: z
+      .string()
+      .array()
+      .min(1, { message: 'Special features are required.' }),
 
     heating: z
       .enum([

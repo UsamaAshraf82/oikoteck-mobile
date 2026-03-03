@@ -20,7 +20,12 @@ import {
   UserIcon,
   WarehouseIcon,
 } from 'phosphor-react-native';
-import { ScrollView, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import AppText from '~/components/Elements/AppText';
 import Grid from '~/components/HOC/Grid';
 import useUser from '~/store/useUser';
@@ -59,7 +64,7 @@ const Account = () => {
       {user && (
         <View style={styles.header}>
           <AppText style={styles.headerTitle}>My Account</AppText>
-          <Link href="/edit-profile" style={styles.editProfileBtn}>
+          <Link href='/edit-profile' style={styles.editProfileBtn}>
             <AppText style={styles.editProfileBtnText}>Edit Profile</AppText>
           </Link>
         </View>
@@ -68,21 +73,27 @@ const Account = () => {
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}>
+        showsVerticalScrollIndicator={false}
+      >
         {user ? (
           <View style={styles.profileSection}>
             <View style={styles.avatarWrapper}>
               <LinearGradient
                 colors={[typeColor, '#fff']}
                 locations={[0.3, 0.9]}
-                style={styles.avatarGradient}>
+                style={styles.avatarGradient}
+              >
                 <View style={styles.avatarInner}>
-                  <Image source={house} contentFit="fill" style={styles.avatarImage} />
+                  <Image
+                    source={house}
+                    contentFit='fill'
+                    style={styles.avatarImage}
+                  />
                 </View>
               </LinearGradient>
             </View>
             <View style={[styles.typeBadge, { borderColor: typeColor }]}>
-              <UserIcon size={17} weight="bold" color={typeColor} />
+              <UserIcon size={17} weight='bold' color={typeColor} />
               <AppText style={[styles.typeBadgeText, { color: typeColor }]}>
                 {isAgent ? 'Agent' : 'Individual'}
               </AppText>
@@ -90,7 +101,9 @@ const Account = () => {
             <AppText style={styles.userName}>
               {user.attributes.first_name} {user.attributes.last_name}
             </AppText>
-            <AppText style={styles.userEmail}>{user.attributes.username}</AppText>
+            <AppText style={styles.userEmail}>
+              {user.attributes.username}
+            </AppText>
             <Grid cols={2} gap={8}>
               <View style={styles.statsCard}>
                 <View style={styles.statsIconWrapper}>
@@ -98,8 +111,9 @@ const Account = () => {
                     colors={['#82065e', '#192234']}
                     start={[0, 0]}
                     end={[1, 1]}
-                    style={styles.statsIconGradient}>
-                    <HouseLineIcon color="#fff" weight="fill" size={18} />
+                    style={styles.statsIconGradient}
+                  >
+                    <HouseLineIcon color='#fff' weight='fill' size={18} />
                   </LinearGradient>
                 </View>
                 <View style={styles.statsSpacer} />
@@ -112,8 +126,9 @@ const Account = () => {
                     colors={['#82065e', '#192234']}
                     start={[0, 0]}
                     end={[1, 1]}
-                    style={styles.statsIconGradient}>
-                    <KeyIcon color="#fff" weight="fill" size={18} />
+                    style={styles.statsIconGradient}
+                  >
+                    <KeyIcon color='#fff' weight='fill' size={18} />
                   </LinearGradient>
                 </View>
                 <View style={styles.statsSpacer} />
@@ -128,16 +143,21 @@ const Account = () => {
               colors={['#82065e', '#192234']}
               start={[0, 0]}
               end={[1, 1]}
-              style={styles.loginCard}>
+              style={styles.loginCard}
+            >
               <View style={styles.loginIconWrapper}>
-                <UserCircleIcon color="#fff" size={32} />
+                <UserCircleIcon color='#fff' size={32} />
               </View>
-              <AppText style={styles.loginTitle}>Log In to your account</AppText>
+              <AppText style={styles.loginTitle}>
+                Log In to your account
+              </AppText>
               <AppText style={styles.loginSubtitle}>
                 Login or Signup to access all the features
               </AppText>
-              <Link href="/login" style={styles.loginBtn}>
-                <AppText style={styles.loginBtnText}>Log In to my account</AppText>
+              <Link href='/login' style={styles.loginBtn}>
+                <AppText style={styles.loginBtnText}>
+                  Log In to my account
+                </AppText>
               </Link>
             </LinearGradient>
           </View>
@@ -147,12 +167,34 @@ const Account = () => {
           <View>
             {(user
               ? [
-                  { icon: <WarehouseIcon />, label: 'My Properties', path: '/properties' },
-                  { icon: <HandCoinsIcon />, label: 'Services', path: '/services' },
-                  { icon: <HeartIcon />, label: 'My Favorites', path: '/favorities' },
-                  { icon: <PasswordIcon />, label: 'Change Password', path: '/change-password' },
+                  {
+                    icon: <WarehouseIcon />,
+                    label: 'My Properties',
+                    path: '/properties',
+                  },
+                  {
+                    icon: <HandCoinsIcon />,
+                    label: 'Services',
+                    path: '/services',
+                  },
+                  {
+                    icon: <HeartIcon />,
+                    label: 'My Favorites',
+                    path: '/favorities',
+                  },
+                  {
+                    icon: <PasswordIcon />,
+                    label: 'Change Password',
+                    path: '/change-password',
+                  },
                 ]
-              : [{ icon: <HandCoinsIcon />, label: 'Services', path: '/services' }]
+              : [
+                  {
+                    icon: <HandCoinsIcon />,
+                    label: 'Services',
+                    path: '/services',
+                  },
+                ]
             ).map((item, index, arr) => (
               <Link href={item.path as any} key={item.label}>
                 <View
@@ -160,20 +202,37 @@ const Account = () => {
                     styles.menuItem,
                     index === 0 && styles.menuItemFirst,
                     index === arr.length - 1 && styles.menuItemLast,
-                  ]}>
+                  ]}
+                >
                   {item.icon}
                   <AppText style={styles.menuItemLabel}>{item.label}</AppText>
-                  <CaretRightIcon color="#75758A" size={20} />
+                  <CaretRightIcon color='#75758A' size={20} />
                 </View>
               </Link>
             ))}
           </View>
           <View>
             {[
-              { icon: <QuestionIcon />, label: 'Frequently Asked Questions', path: '/faqs' },
-              { icon: <BriefcaseIcon />, label: 'Terms and Conditions', path: '/terms-conditions' },
-              { icon: <ShieldWarningIcon />, label: 'Privacy Policy', path: '/privacy-policy' },
-              { icon: <HandshakeIcon />, label: 'Service Plan Terms', path: '/service-plan-terms' },
+              {
+                icon: <QuestionIcon />,
+                label: 'Frequently Asked Questions',
+                path: '/faqs',
+              },
+              {
+                icon: <BriefcaseIcon />,
+                label: 'Terms and Conditions',
+                path: '/terms-conditions',
+              },
+              {
+                icon: <ShieldWarningIcon />,
+                label: 'Privacy Policy',
+                path: '/privacy-policy',
+              },
+              {
+                icon: <HandshakeIcon />,
+                label: 'Service Plan Terms',
+                path: '/service-plan-terms',
+              },
             ].map((item, index, arr) => (
               <Link href={item.path as any} key={item.label}>
                 <View
@@ -181,10 +240,11 @@ const Account = () => {
                     styles.menuItem,
                     index === 0 && styles.menuItemFirst,
                     index === arr.length - 1 && styles.menuItemLast,
-                  ]}>
+                  ]}
+                >
                   {item.icon}
                   <AppText style={styles.menuItemLabel}>{item.label}</AppText>
-                  <CaretRightIcon color="#75758A" size={20} />
+                  <CaretRightIcon color='#75758A' size={20} />
                 </View>
               </Link>
             ))}
@@ -193,9 +253,9 @@ const Account = () => {
             <View>
               <TouchableWithoutFeedback onPress={() => logout()}>
                 <View style={styles.logoutBtn}>
-                  <SignOutIcon color="#DC2626" />
+                  <SignOutIcon color='#DC2626' />
                   <AppText style={styles.logoutBtnText}>Logout</AppText>
-                  <CaretRightIcon color="#DC2626" size={20} />
+                  <CaretRightIcon color='#DC2626' size={20} />
                 </View>
               </TouchableWithoutFeedback>
             </View>

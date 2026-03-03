@@ -35,29 +35,30 @@ const Area = ({ visible, onClose, district, value = '', onPress }: Props) => {
   }, [value]);
 
   // Query for districts/areas
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-    enabled: visible,
-    queryKey: ['areas', district || '', text],
-    queryFn: async ({ pageParam = 0 }) => {
-      try {
-        const res = (await Parse.Cloud.run('areas', {
-          input: text,
-          district: district,
-          pageParam,
-        })) as {
-          options: AreaOption[];
-          hasmore: boolean;
-        };
-        return res;
-      } catch {
-        return { options: [], hasmore: false };
-      }
-    },
-    getNextPageParam: (lastPage, _, lastPageParam) =>
-      lastPage.hasmore ? (lastPageParam as number) + 1 : undefined,
-    initialPageParam: 0,
-    staleTime: Infinity,
-  });
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      enabled: visible,
+      queryKey: ['areas', district || '', text],
+      queryFn: async ({ pageParam = 0 }) => {
+        try {
+          const res = (await Parse.Cloud.run('areas', {
+            input: text,
+            district: district,
+            pageParam,
+          })) as {
+            options: AreaOption[];
+            hasmore: boolean;
+          };
+          return res;
+        } catch {
+          return { options: [], hasmore: false };
+        }
+      },
+      getNextPageParam: (lastPage, _, lastPageParam) =>
+        lastPage.hasmore ? (lastPageParam as number) + 1 : undefined,
+      initialPageParam: 0,
+      staleTime: Infinity,
+    });
 
   const allOptions = data?.pages.flatMap((page) => page.options) ?? [];
 
@@ -66,37 +67,39 @@ const Area = ({ visible, onClose, district, value = '', onPress }: Props) => {
       isVisible={visible}
       onBackdropPress={onClose}
       onSwipeComplete={onClose}
-      swipeDirection="down"
+      swipeDirection='down'
       hardwareAccelerated
       coverScreen={false}
       style={styles.modal}
-      propagateSwipe>
+      propagateSwipe
+    >
       <View
         style={[
           styles.container,
           {
             height: deviceHeight * 0.9,
           },
-        ]}>
+        ]}
+      >
         {/* Handle bar */}
         <View style={styles.handle} />
 
         {/* Search bar */}
         <View style={styles.header}>
           <View style={styles.searchBox}>
-            <GlobeHemisphereEastIcon weight="fill" color="#192234" />
+            <GlobeHemisphereEastIcon weight='fill' color='#192234' />
             <TextInput
               style={styles.input}
               value={text}
               onChangeText={setText}
-              placeholder="Search areas"
-              placeholderTextColor="#999"
+              placeholder='Search areas'
+              placeholderTextColor='#999'
               autoFocus
             />
           </View>
           <TouchableNativeFeedback hitSlop={10} onPress={onClose}>
             <View style={styles.closeIcon}>
-              <XIcon color="#192234" size={24} />
+              <XIcon color='#192234' size={24} />
             </View>
           </TouchableNativeFeedback>
         </View>
@@ -118,8 +121,14 @@ const Area = ({ visible, onClose, district, value = '', onPress }: Props) => {
                   onPress(item);
                   onClose();
                 }}
-                style={styles.item}>
-                <AppText style={[styles.itemText, isSelected && styles.itemTextSelected]}>
+                style={styles.item}
+              >
+                <AppText
+                  style={[
+                    styles.itemText,
+                    isSelected && styles.itemTextSelected,
+                  ]}
+                >
                   {label}
                 </AppText>
               </TouchableOpacity>
@@ -134,7 +143,7 @@ const Area = ({ visible, onClose, district, value = '', onPress }: Props) => {
           ListFooterComponent={
             isFetchingNextPage ? (
               <View style={styles.loader}>
-                <ActivityIndicator size="large" color="#82065e" />
+                <ActivityIndicator size='large' color='#82065e' />
               </View>
             ) : null
           }

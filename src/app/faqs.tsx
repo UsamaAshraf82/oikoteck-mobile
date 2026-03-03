@@ -1,7 +1,12 @@
 import { router } from 'expo-router';
 import { CaretDownIcon, CaretUpIcon } from 'phosphor-react-native';
 import { useState } from 'react';
-import { ScrollView, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import AppText from '~/components/Elements/AppText';
 import TopHeader from '~/components/Elements/TopHeader';
 import faqs from '~/global/faqs';
@@ -22,25 +27,41 @@ const Faqs = () => {
           Explore frequently asked questions about our service plans
         </AppText>
       </View>
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
         {faqs.map((faq, i) => (
           <TouchableWithoutFeedback
             key={i}
             onPress={() => {
               setSelectedFaq((prev) => (prev === i ? -1 : i));
-            }}>
-            <View style={[styles.faqCard, i === selectedFaq && styles.faqCardActive]}>
+            }}
+          >
+            <View
+              style={[
+                styles.faqCard,
+                i === selectedFaq && styles.faqCardActive,
+              ]}
+            >
               <View style={styles.faqHeader}>
-                <AppText style={[styles.faqQuestion, i === selectedFaq && styles.faqActiveText]}>
+                <AppText
+                  style={[
+                    styles.faqQuestion,
+                    i === selectedFaq && styles.faqActiveText,
+                  ]}
+                >
                   {faq.que}
                 </AppText>
                 {i === selectedFaq ? (
-                  <CaretUpIcon size={20} color="#82065e" />
+                  <CaretUpIcon size={20} color='#82065e' />
                 ) : (
-                  <CaretDownIcon size={20} color="#ACACB9" />
+                  <CaretDownIcon size={20} color='#ACACB9' />
                 )}
               </View>
-              {i === selectedFaq && <AppText style={styles.faqAnswer}>{faq.ans}</AppText>}
+              {i === selectedFaq && (
+                <AppText style={styles.faqAnswer}>{faq.ans}</AppText>
+              )}
             </View>
           </TouchableWithoutFeedback>
         ))}

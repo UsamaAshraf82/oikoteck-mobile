@@ -5,8 +5,19 @@ import * as ImagePicker from 'expo-image-picker';
 import { Link } from 'expo-router';
 import { ImagesIcon, ImageSquareIcon, TrashIcon } from 'phosphor-react-native';
 import { useEffect } from 'react';
-import { SubmitErrorHandler, useFieldArray, useForm, useWatch } from 'react-hook-form';
-import { ActivityIndicator, ScrollView, StyleSheet, TouchableHighlight, View } from 'react-native';
+import {
+  SubmitErrorHandler,
+  useFieldArray,
+  useForm,
+  useWatch,
+} from 'react-hook-form';
+import {
+  ActivityIndicator,
+  ScrollView,
+  StyleSheet,
+  TouchableHighlight,
+  View,
+} from 'react-native';
 import Sortable from 'react-native-sortables';
 import z from 'zod';
 import AppText from '~/components/Elements/AppText';
@@ -28,15 +39,11 @@ type Props = {
 
 export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
   const { addToast } = useToast();
-  const {
-    control,
-    setValue,
-    getValues,
-    handleSubmit,
-  } = useForm<PropertyGalleryTypes>({
-    resolver: zodResolver(PropertyGallerySchema) as any,
-    defaultValues: { ...data, ...extra_data },
-  });
+  const { control, setValue, getValues, handleSubmit } =
+    useForm<PropertyGalleryTypes>({
+      resolver: zodResolver(PropertyGallerySchema) as any,
+      defaultValues: { ...data, ...extra_data },
+    });
 
   const { fields, remove, append, replace } = useFieldArray({
     control,
@@ -61,13 +68,20 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
     }
   };
 
-  const watchedFiles = useWatch({ control, name: 'files' }) as PropertyGalleryTypes['files'];
+  const watchedFiles = useWatch({
+    control,
+    name: 'files',
+  }) as PropertyGalleryTypes['files'];
 
   useEffect(() => {
     if (!watchedFiles) return;
 
     watchedFiles.forEach((f, idx) => {
-      if (f?.isUploading && f.file && typeof (f.file as any).then === 'function') {
+      if (
+        f?.isUploading &&
+        f.file &&
+        typeof (f.file as any).then === 'function'
+      ) {
         (f.file as Promise<any>)
           .then((uploaded) => {
             setValue(
@@ -89,7 +103,9 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
             setValue(
               'files',
               getValues('files').map((x, i) =>
-                i === idx ? { ...x, isUploading: false, error: 'Upload failed' } : x
+                i === idx
+                  ? { ...x, isUploading: false, error: 'Upload failed' }
+                  : x
               ),
               { shouldValidate: true }
             );
@@ -106,22 +122,29 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
         <View style={styles.imageContainer}>
           {file.isUploading ? (
             <>
-              <Image source={file.temp} contentFit="contain" style={styles.image} />
+              <Image
+                source={file.temp}
+                contentFit='contain'
+                style={styles.image}
+              />
               <View style={styles.uploadOverlay}>
-                <ActivityIndicator size="large" color="#82065e" />
+                <ActivityIndicator size='large' color='#82065e' />
               </View>
             </>
           ) : (
             <>
               <AWSImage
                 src={file.url!}
-                placeholderContentFit="contain"
-                contentFit="contain"
+                placeholderContentFit='contain'
+                contentFit='contain'
                 style={styles.image}
               />
-              <TouchableHighlight onPress={() => remove(index)} style={styles.deleteBtn}>
+              <TouchableHighlight
+                onPress={() => remove(index)}
+                style={styles.deleteBtn}
+              >
                 <View>
-                  <TrashIcon size={15} color="white" />
+                  <TrashIcon size={15} color='white' />
                 </View>
               </TouchableHighlight>
             </>
@@ -133,20 +156,29 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
         <View>
           <AppText style={styles.title}>Property Gallery 📸</AppText>
-          <AppText style={styles.subtitle}>Upload pictures of your property</AppText>
+          <AppText style={styles.subtitle}>
+            Upload pictures of your property
+          </AppText>
 
           <View style={styles.overlayOption}>
             <AppText style={styles.overlayText}>
-              Do you want to overlay your company logo on all pictures for this listing? You can
-              upload the logo in{' '}
-              <Link href="/settings" style={styles.settingsLink}>
+              Do you want to overlay your company logo on all pictures for this
+              listing? You can upload the logo in{' '}
+              <Link href='/settings' style={styles.settingsLink}>
                 settings
               </Link>
             </AppText>
-            <ControlledCheckBox name="agent_icon" control={control} label="Add Overlay Logo" />
+            <ControlledCheckBox
+              name='agent_icon'
+              control={control}
+              label='Add Overlay Logo'
+            />
           </View>
 
           <PressableView
@@ -173,7 +205,10 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
                       const image = await resizeImage(asset, 3000);
                       const indexToUpdate = currentFilesCount + i;
 
-                      const uploadPromise = uploadFile({ file: image.base64!, name: 'image' });
+                      const uploadPromise = uploadFile({
+                        file: image.base64!,
+                        name: 'image',
+                      });
 
                       setValue(`files.${indexToUpdate}.file`, uploadPromise, {
                         shouldValidate: true,
@@ -188,23 +223,26 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
                 // console.error(e);
               }
             }}
-            style={styles.uploadBtn}>
+            style={styles.uploadBtn}
+          >
             <View style={styles.uploadBtnContent}>
               <AppText style={styles.uploadBtnText}>Upload Images</AppText>
-              <ImageSquareIcon color="#192234" />
+              <ImageSquareIcon color='#192234' />
             </View>
           </PressableView>
 
           <AppText style={styles.imagesLabel}>Images ({fields.length})</AppText>
           <AppText style={styles.imagesSubtitle}>
-            You can change the priority of the images displayed in the marketplace by sliding the
-            images to reshuffle their rank
+            You can change the priority of the images displayed in the
+            marketplace by sliding the images to reshuffle their rank
           </AppText>
 
           {fields.length === 0 && (
             <View style={styles.emptyState}>
-              <ImagesIcon size={100} weight="light" color="#ACACB9" />
-              <AppText style={styles.emptyStateText}>No Images at the moment...</AppText>
+              <ImagesIcon size={100} weight='light' color='#ACACB9' />
+              <AppText style={styles.emptyStateText}>
+                No Images at the moment...
+              </AppText>
             </View>
           )}
         </View>
@@ -213,7 +251,11 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
           data={fields}
           renderItem={renderItem}
           columns={2}
-          onDragEnd={({ data: sortedData }: { data: PropertyGalleryTypes['files'] }) => {
+          onDragEnd={({
+            data: sortedData,
+          }: {
+            data: PropertyGalleryTypes['files'];
+          }) => {
             replace(sortedData);
           }}
           // @ts-ignore
@@ -222,7 +264,10 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
       </ScrollView>
 
       <View style={styles.footer}>
-        <PressableView onPress={handleSubmit(onSubmitInternal, onError)} style={styles.continueBtn}>
+        <PressableView
+          onPress={handleSubmit(onSubmitInternal, onError)}
+          style={styles.continueBtn}
+        >
           <AppText style={styles.continueBtnText}>Continue</AppText>
         </PressableView>
       </View>
@@ -378,7 +423,9 @@ export const PropertyGallerySchema = z.object({
         url: z.string().optional(), // final uploaded S3 URL
         temp: z.string().optional(), // local temp URI (expo-image-picker, etc.)
         isUploading: z.boolean().optional(),
-        file: z.custom<Promise<CompleteMultipartUploadCommandOutput>>().optional(),
+        file: z
+          .custom<Promise<CompleteMultipartUploadCommandOutput>>()
+          .optional(),
       })
     )
     .min(1, { message: 'At least One Image is Required' })

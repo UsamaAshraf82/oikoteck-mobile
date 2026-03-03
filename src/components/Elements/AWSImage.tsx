@@ -9,9 +9,15 @@ type Props = Omit<Image['props'], 'source' | 'placeholder'> & {
   debug?: boolean;
 };
 
-export default function AWSImage({ src, fitin = true, size, sharpen, debug, ...props }: Props) {
+export default function AWSImage({
+  src,
+  fitin = true,
+  size,
+  sharpen,
+  debug,
+  ...props
+}: Props) {
   const { src: transformed, lazy } = cloudfront(src, fitin, size, sharpen);
-
 
   return <Image {...props} source={transformed} placeholder={lazy} />;
 }

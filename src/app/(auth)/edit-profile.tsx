@@ -8,7 +8,13 @@ import {
 } from 'phosphor-react-native';
 import { useEffect, useState } from 'react';
 import { SubmitErrorHandler, useForm } from 'react-hook-form';
-import { Pressable, ScrollView, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import z from 'zod';
 import AppText from '~/components/Elements/AppText';
 import { flags, RenderFlagWithCode } from '~/components/Elements/Flags';
@@ -25,8 +31,11 @@ const EditUser = () => {
 
   return (
     <View style={styles.container}>
-      <TopHeader onBackPress={() => router.back()} title="Edit Profile" />
-      <ScrollView contentContainerStyle={styles.formWrapper} showsVerticalScrollIndicator={false}>
+      <TopHeader onBackPress={() => router.back()} title='Edit Profile' />
+      <ScrollView
+        contentContainerStyle={styles.formWrapper}
+        showsVerticalScrollIndicator={false}
+      >
         <NameInput />
         <NumberInput />
         <EmailInput />
@@ -57,11 +66,7 @@ const NameInput = () => {
   const { startActivity, stopActivity } = useActivityIndicator();
   const { addToast } = useToast();
 
-  const {
-    control,
-    handleSubmit,
-    reset,
-  } = useForm<NameInputTypes>({
+  const { control, handleSubmit, reset } = useForm<NameInputTypes>({
     resolver: zodResolver(NameInputSchema),
     defaultValues: {
       firstName: user?.attributes.first_name,
@@ -111,7 +116,7 @@ const NameInput = () => {
   return (
     <View style={styles.inputRow}>
       <View style={styles.iconContainer}>
-        <UserIcon size={16} weight="bold" color="#82065e" />
+        <UserIcon size={16} weight='bold' color='#82065e' />
       </View>
       <View style={styles.inputContent}>
         {isEditing && <AppText style={styles.editTitle}>Update Name</AppText>}
@@ -123,15 +128,15 @@ const NameInput = () => {
           <>
             <ControlledTextInput
               control={control}
-              name="firstName"
-              label="First Name"
-              placeholder="First Name"
+              name='firstName'
+              label='First Name'
+              placeholder='First Name'
             />
             <ControlledTextInput
               control={control}
-              name="lastName"
-              label="Last Name"
-              placeholder="Last Name"
+              name='lastName'
+              label='Last Name'
+              placeholder='Last Name'
             />
             <View style={styles.actionButtons}>
               <Pressable
@@ -139,10 +144,14 @@ const NameInput = () => {
                 onPress={() => {
                   setIsEditing(false);
                   reset();
-                }}>
+                }}
+              >
                 <AppText style={styles.cancelBtnText}>Cancel</AppText>
               </Pressable>
-              <Pressable style={styles.saveBtn} onPress={handleSubmit(onSubmit, onError)}>
+              <Pressable
+                style={styles.saveBtn}
+                onPress={handleSubmit(onSubmit, onError)}
+              >
                 <AppText style={styles.saveBtnText}>Save Changes</AppText>
               </Pressable>
             </View>
@@ -154,8 +163,9 @@ const NameInput = () => {
           style={styles.editBtn}
           onPress={() => {
             setIsEditing(true);
-          }}>
-          <PencilSimpleIcon size={16} weight="fill" color={'#acacb9'} />
+          }}
+        >
+          <PencilSimpleIcon size={16} weight='fill' color={'#acacb9'} />
         </Pressable>
       )}
     </View>
@@ -185,23 +195,18 @@ const NumberInput = () => {
   const { addToast } = useToast();
   const { openSelect } = useSelect();
 
-  const {
-    control,
-    handleSubmit,
-    reset,
-    watch,
-    setValue,
-  } = useForm<NumberInputTypes>({
-    resolver: zodResolver(NumberInputSchema),
-    defaultValues: {
-      country: {
-        Code: user?.attributes.country_code,
-        Country: user?.attributes.country,
-        ISO: user?.attributes.country_iso,
+  const { control, handleSubmit, reset, watch, setValue } =
+    useForm<NumberInputTypes>({
+      resolver: zodResolver(NumberInputSchema),
+      defaultValues: {
+        country: {
+          Code: user?.attributes.country_code,
+          Country: user?.attributes.country,
+          ISO: user?.attributes.country_iso,
+        },
+        phone: user?.attributes.phone,
       },
-      phone: user?.attributes.phone,
-    },
-  });
+    });
 
   useEffect(() => {
     if (user) {
@@ -217,7 +222,6 @@ const NumberInput = () => {
   }, [isEditing, user]);
 
   const onSubmit = async (data: NumberInputTypes) => {
-
     startActivity();
     if (user) {
       user.set('country', data.country.Country);
@@ -251,10 +255,12 @@ const NumberInput = () => {
   return (
     <View style={styles.inputRow}>
       <View style={styles.iconContainer}>
-        <PhoneIcon size={16} weight="bold" color="#82065e" />
+        <PhoneIcon size={16} weight='bold' color='#82065e' />
       </View>
       <View style={styles.inputContent}>
-        {isEditing && <AppText style={styles.editTitle}>Update Phone Number</AppText>}
+        {isEditing && (
+          <AppText style={styles.editTitle}>Update Phone Number</AppText>
+        )}
         <AppText style={styles.inputLabel}>Phone Number</AppText>
         <AppText style={styles.inputValue}>
           + {user?.attributes.country_code} {user?.attributes.phone}
@@ -285,10 +291,15 @@ const NumberInput = () => {
                       onPress: (value: any) =>
                         setValue(
                           'country',
-                          value.value as { Code: number; Country: string; ISO: string }
+                          value.value as {
+                            Code: number;
+                            Country: string;
+                            ISO: string;
+                          }
                         ),
                     });
-                  }}>
+                  }}
+                >
                   <View style={styles.flagBox}>
                     <RenderFlagWithCode ISO={watch('country').ISO} />
                   </View>
@@ -297,10 +308,10 @@ const NumberInput = () => {
               <View style={styles.phoneInputBox}>
                 <ControlledTextInput
                   control={control}
-                  name="phone"
-                  placeholder="Enter your Phone Number"
-                  textContentType="telephoneNumber"
-                  keyboardType="phone-pad"
+                  name='phone'
+                  placeholder='Enter your Phone Number'
+                  textContentType='telephoneNumber'
+                  keyboardType='phone-pad'
                 />
               </View>
             </View>
@@ -310,10 +321,14 @@ const NumberInput = () => {
                 onPress={() => {
                   setIsEditing(false);
                   reset();
-                }}>
+                }}
+              >
                 <AppText style={styles.cancelBtnText}>Cancel</AppText>
               </Pressable>
-              <Pressable style={styles.saveBtn} onPress={handleSubmit(onSubmit, onError)}>
+              <Pressable
+                style={styles.saveBtn}
+                onPress={handleSubmit(onSubmit, onError)}
+              >
                 <AppText style={styles.saveBtnText}>Save Changes</AppText>
               </Pressable>
             </View>
@@ -325,8 +340,9 @@ const NumberInput = () => {
           style={styles.editBtn}
           onPress={() => {
             setIsEditing(true);
-          }}>
-          <PencilSimpleIcon size={16} weight="fill" color={'#acacb9'} />
+          }}
+        >
+          <PencilSimpleIcon size={16} weight='fill' color={'#acacb9'} />
         </Pressable>
       )}
     </View>
@@ -354,11 +370,7 @@ const EmailInput = () => {
   const { startActivity, stopActivity } = useActivityIndicator();
   const { addToast } = useToast();
 
-  const {
-    control,
-    handleSubmit,
-    reset,
-  } = useForm<EmailInputTypes>({
+  const { control, handleSubmit, reset } = useForm<EmailInputTypes>({
     resolver: zodResolver(EmailInputSchema),
     defaultValues: {
       email: user?.attributes.username,
@@ -376,7 +388,10 @@ const EmailInput = () => {
   const onSubmit = async (data: EmailInputTypes) => {
     startActivity();
     if (user) {
-      if (user?.attributes.username.toLowerCase().trim() !== data.email.toLowerCase().trim()) {
+      if (
+        user?.attributes.username.toLowerCase().trim() !==
+        data.email.toLowerCase().trim()
+      ) {
         user.set('username', data.email.toLowerCase().trim());
         user.set('email', data.email.toLowerCase().trim());
         await user.save();
@@ -412,21 +427,23 @@ const EmailInput = () => {
   return (
     <View style={styles.inputRow}>
       <View style={styles.iconContainer}>
-        <EnvelopeSimpleOpenIcon size={16} weight="bold" color="#82065e" />
+        <EnvelopeSimpleOpenIcon size={16} weight='bold' color='#82065e' />
       </View>
       <View style={styles.inputContent}>
-        {isEditing && <AppText style={styles.editTitle}>Update Email Address</AppText>}
+        {isEditing && (
+          <AppText style={styles.editTitle}>Update Email Address</AppText>
+        )}
         <AppText style={styles.inputLabel}>Email Address</AppText>
         <AppText style={styles.inputValue}>{user?.attributes.username}</AppText>
         {isEditing && (
           <>
             <ControlledTextInput
               control={control}
-              name="email"
-              label="New Email Address"
-              placeholder="Enter your Email Address"
-              textContentType="emailAddress"
-              keyboardType="email-address"
+              name='email'
+              label='New Email Address'
+              placeholder='Enter your Email Address'
+              textContentType='emailAddress'
+              keyboardType='email-address'
             />
             <AppText style={styles.labelBelow}>
               This email will be use for account verification
@@ -437,10 +454,14 @@ const EmailInput = () => {
                 onPress={() => {
                   setIsEditing(false);
                   reset();
-                }}>
+                }}
+              >
                 <AppText style={styles.cancelBtnText}>Cancel</AppText>
               </Pressable>
-              <Pressable style={styles.saveBtn} onPress={handleSubmit(onSubmit, onError)}>
+              <Pressable
+                style={styles.saveBtn}
+                onPress={handleSubmit(onSubmit, onError)}
+              >
                 <AppText style={styles.saveBtnText}>Save Changes</AppText>
               </Pressable>
             </View>
@@ -452,8 +473,9 @@ const EmailInput = () => {
           style={styles.editBtn}
           onPress={() => {
             setIsEditing(true);
-          }}>
-          <PencilSimpleIcon size={16} weight="fill" color={'#acacb9'} />
+          }}
+        >
+          <PencilSimpleIcon size={16} weight='fill' color={'#acacb9'} />
         </Pressable>
       )}
     </View>

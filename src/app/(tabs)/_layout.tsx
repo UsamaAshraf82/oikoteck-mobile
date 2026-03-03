@@ -12,7 +12,7 @@ import AppText from '~/components/Elements/AppText';
 export default function TabsLayout() {
   return (
     <Tabs
-      initialRouteName="rent"
+      initialRouteName='rent'
       detachInactiveScreens
       screenOptions={{
         lazy: true,
@@ -27,48 +27,49 @@ export default function TabsLayout() {
         tabBarItemStyle: {
           borderColor: '#FFFFFF',
         },
-      }}>
+      }}
+    >
       <Tabs.Screen
-        name="rent"
+        name='rent'
         options={{
           tabBarLabel: (props) => {
-            return <Label focused={props.focused} label="Rent" />;
+            return <Label focused={props.focused} label='Rent' />;
           },
           tabBarIcon: ({ color }) => <HouseLineIcon color={color} size={22} />,
         }}
       />
       <Tabs.Screen
-        name="buy"
+        name='buy'
         options={{
           tabBarLabel: (props) => {
-            return <Label focused={props.focused} label="Buy" />;
+            return <Label focused={props.focused} label='Buy' />;
           },
           tabBarIcon: ({ color }) => <KeyIcon color={color} />,
         }}
       />
       <Tabs.Screen
-        name="post-listing"
+        name='post-listing'
         options={{
           tabBarLabel: (props) => {
-            return <Label focused={props.focused} label="Post Listing" />;
+            return <Label focused={props.focused} label='Post Listing' />;
           },
           tabBarIcon: ({ color }) => <PlusCircleIcon color={color} />,
         }}
       />
       <Tabs.Screen
-        name="live-chat"
+        name='live-chat'
         options={{
           tabBarLabel: (props) => {
-            return <Label focused={props.focused} label="Live Chat" />;
+            return <Label focused={props.focused} label='Live Chat' />;
           },
           tabBarIcon: ({ color }) => <ChatCircleIcon color={color} />,
         }}
       />
       <Tabs.Screen
-        name="account"
+        name='account'
         options={{
           tabBarLabel: (props) => {
-            return <Label focused={props.focused} label="Account" />;
+            return <Label focused={props.focused} label='Account' />;
           },
           tabBarIcon: ({ color }) => <UserIcon color={color} />,
         }}
@@ -81,8 +82,12 @@ const Label = ({ focused, label }: { focused: boolean; label: string }) => {
   return (
     <View style={styles.labelContainer}>
       <AppText
-        style={[styles.labelText, focused ? styles.labelFocused : styles.labelInactive]}
-        numberOfLines={1}>
+        style={[
+          styles.labelText,
+          focused ? styles.labelFocused : styles.labelInactive,
+        ]}
+        numberOfLines={1}
+      >
         {label}
       </AppText>
     </View>

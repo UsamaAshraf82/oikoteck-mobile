@@ -3,7 +3,13 @@ import { router } from 'expo-router';
 import Parse from 'parse/react-native';
 import { XIcon } from 'phosphor-react-native';
 import { useEffect, useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import ReactNativeModal from 'react-native-modal';
 import AppText from '~/components/Elements/AppText';
 import TextInput from '~/components/Elements/TextInput';
@@ -11,7 +17,11 @@ import TopHeader from '~/components/Elements/TopHeader';
 import PressableView from '~/components/HOC/PressableView';
 import { DISCOUNT, TAX } from '~/global/global';
 import { plans } from '~/global/plan';
-import { goldpricetable, platpricetable, prmotepricetable } from '~/global/plan_price';
+import {
+  goldpricetable,
+  platpricetable,
+  prmotepricetable,
+} from '~/global/plan_price';
 import useActivityIndicator from '~/store/useActivityIndicator';
 import { useToast } from '~/store/useToast';
 import { deviceHeight } from '~/utils/global';
@@ -70,7 +80,8 @@ const StartMembership = () => {
         onBackdropPress={() => setModal(false)}
         onSwipeComplete={() => setModal(false)}
         style={styles.modalFull}
-        avoidKeyboard={false}>
+        avoidKeyboard={false}
+      >
         <MemberShipModal
           month={month}
           onClose={() => setModal(false)}
@@ -82,11 +93,13 @@ const StartMembership = () => {
         />
       </ReactNativeModal>
 
-      <TopHeader title="Start Membership" onBackPress={() => router.back()} />
+      <TopHeader title='Start Membership' onBackPress={() => router.back()} />
 
       <View style={styles.header}>
         <View>
-          <AppText style={styles.title}>Create a plan that suits your needs!</AppText>
+          <AppText style={styles.title}>
+            Create a plan that suits your needs!
+          </AppText>
           <AppText style={styles.subTitle}>
             Customize any plan of your choice depending on your evolving needs
           </AppText>
@@ -94,16 +107,30 @@ const StartMembership = () => {
 
         <View style={styles.monthSwitcher}>
           <TouchableWithoutFeedback onPress={() => setMonth(3)}>
-            <View style={[styles.monthBtn, month === 3 && styles.monthBtnActive]}>
-              <AppText style={[styles.monthText, month === 3 && styles.monthTextActive]}>
+            <View
+              style={[styles.monthBtn, month === 3 && styles.monthBtnActive]}
+            >
+              <AppText
+                style={[
+                  styles.monthText,
+                  month === 3 && styles.monthTextActive,
+                ]}
+              >
                 3-month
               </AppText>
             </View>
           </TouchableWithoutFeedback>
 
           <TouchableWithoutFeedback onPress={() => setMonth(6)}>
-            <View style={[styles.monthBtn, month === 6 && styles.monthBtnActive]}>
-              <AppText style={[styles.monthText, month === 6 && styles.monthTextActive]}>
+            <View
+              style={[styles.monthBtn, month === 6 && styles.monthBtnActive]}
+            >
+              <AppText
+                style={[
+                  styles.monthText,
+                  month === 6 && styles.monthTextActive,
+                ]}
+              >
                 6-month
               </AppText>
               <View style={styles.discountBadge}>
@@ -126,7 +153,8 @@ const StartMembership = () => {
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}>
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.plansList}>
           {plans.map((plan) => {
             if (['Free', 'Promote'].includes(plan.name)) return null;
@@ -151,7 +179,9 @@ const StartMembership = () => {
                     <View>
                       <AppText style={styles.planItemName}>{plan.name}</AppText>
                       <AppText style={styles.planItemPrice}>
-                        € {month === 6 ? discounted.toFixed(3) : value.toFixed(3)} {plan.price[1]}
+                        €{' '}
+                        {month === 6 ? discounted.toFixed(3) : value.toFixed(3)}{' '}
+                        {plan.price[1]}
                       </AppText>
                     </View>
                   </View>
@@ -174,16 +204,22 @@ const StartMembership = () => {
         </View>
 
         <View style={styles.summaryCard}>
-          <AppText style={styles.summaryPromoText}>(Save 15% on a 6-month plan)</AppText>
+          <AppText style={styles.summaryPromoText}>
+            (Save 15% on a 6-month plan)
+          </AppText>
           <AppText style={styles.summaryHeaderText}>Custom plan</AppText>
           <View style={styles.spacer16} />
-          <AppText style={styles.summaryBillLabel}>Billed upfront at a rate of</AppText>
+          <AppText style={styles.summaryBillLabel}>
+            Billed upfront at a rate of
+          </AppText>
           <AppText style={styles.summaryBillValue}>
             € {thoasandseprator(actualPrice.toFixed(2), { digits: 2 })}
           </AppText>
           <View style={styles.spacer16} />
           <AppText style={styles.summaryEndLabel}>Ends on</AppText>
-          <AppText style={styles.summaryEndValue}>{subdate.toDateString()}</AppText>
+          <AppText style={styles.summaryEndValue}>
+            {subdate.toDateString()}
+          </AppText>
         </View>
 
         <View style={styles.totalsTable}>
@@ -210,8 +246,8 @@ const StartMembership = () => {
             </AppText>
           </View>
           <AppText style={styles.termsText}>
-            By clicking proceed to payment, you agree to OikoTeck's Privacy Policy and Terms &
-            Conditions.
+            By clicking proceed to payment, you agree to OikoTeck's Privacy
+            Policy and Terms & Conditions.
           </AppText>
         </View>
       </ScrollView>
@@ -236,7 +272,8 @@ const StartMembership = () => {
                 }
 
                 activity.stopActivity();
-                const { error: paymentSheetError } = await presentPaymentSheet();
+                const { error: paymentSheetError } =
+                  await presentPaymentSheet();
 
                 activity.startActivity();
                 if (paymentSheetError) {
@@ -245,9 +282,13 @@ const StartMembership = () => {
                 } else {
                   const calculatedSubdate = new Date();
                   if (month === 6) {
-                    calculatedSubdate.setMonth(calculatedSubdate.getMonth() + 6);
+                    calculatedSubdate.setMonth(
+                      calculatedSubdate.getMonth() + 6
+                    );
                   } else {
-                    calculatedSubdate.setMonth(calculatedSubdate.getMonth() + 3);
+                    calculatedSubdate.setMonth(
+                      calculatedSubdate.getMonth() + 3
+                    );
                   }
 
                   const Subscription = new Parse.Object('Subscription');
@@ -262,7 +303,11 @@ const StartMembership = () => {
                   Subscription.set('Expiry', calculatedSubdate);
                   await Subscription.save();
 
-                  const plansToProcess: PlanTypes[] = ['Promote +', 'Gold', 'Platinum'];
+                  const plansToProcess: PlanTypes[] = [
+                    'Promote +',
+                    'Gold',
+                    'Platinum',
+                  ];
                   for (const pName of plansToProcess) {
                     if (points[pName] !== 0) {
                       const Credits = new Parse.Object('Credits');
@@ -289,10 +334,12 @@ const StartMembership = () => {
                 addToast({
                   type: 'error',
                   heading: 'Payment Error',
-                  message: e.message || 'There was an issue processing your payment.',
+                  message:
+                    e.message || 'There was an issue processing your payment.',
                 });
               }
-            }}>
+            }}
+          >
             <AppText style={styles.payBtnText}>Proceed to payment</AppText>
           </Pressable>
         </View>
@@ -316,7 +363,9 @@ const calculateIndividualPrice = (point: number, plan: PlanTypes) => {
   if (plan === 'Gold') table = goldpricetable;
   if (plan === 'Platinum') table = platpricetable;
 
-  const promoteIndex = table.findIndex((i) => point >= i.low && point <= i.high);
+  const promoteIndex = table.findIndex(
+    (i) => point >= i.low && point <= i.high
+  );
   const matchedRow = promoteIndex !== -1 ? table[promoteIndex] : table[0];
   const _price_ = matchedRow.pointprice * point;
 
@@ -344,24 +393,28 @@ const MemberShipModal = ({ onClose, month, onPress, value }: ModalProps) => {
         <View style={styles.modalHeaderRow}>
           <AppText style={styles.modalTitle}>Customize Plan</AppText>
           <Pressable hitSlop={20} onPress={onClose}>
-            <XIcon color="#192234" size={24} />
+            <XIcon color='#192234' size={24} />
           </Pressable>
         </View>
         <AppText style={styles.modalSubTitle}>
-          Choose a plan to create a customized plan, you can add multiple plans at once.
+          Choose a plan to create a customized plan, you can add multiple plans
+          at once.
         </AppText>
 
         <View style={styles.modalScrollWrapper}>
           <ScrollView
-            keyboardShouldPersistTaps="handled"
-            keyboardDismissMode="on-drag"
-            showsVerticalScrollIndicator={false}>
+            keyboardShouldPersistTaps='handled'
+            keyboardDismissMode='on-drag'
+            showsVerticalScrollIndicator={false}
+          >
             <View style={styles.modalListContainer}>
               {plans.map((plan) => {
-                if (plan.name === 'Free' || plan.name === 'Promote') return null;
+                if (plan.name === 'Free' || plan.name === 'Promote')
+                  return null;
 
                 const basePriceValue = plan.price_number;
-                const discountedPrice = basePriceValue - (basePriceValue * DISCOUNT) / 100;
+                const discountedPrice =
+                  basePriceValue - (basePriceValue * DISCOUNT) / 100;
 
                 return (
                   <View key={plan.name} style={styles.modalPlanCard}>
@@ -378,21 +431,32 @@ const MemberShipModal = ({ onClose, month, onPress, value }: ModalProps) => {
                           ]}
                         />
                         <View>
-                          <AppText style={styles.planItemName}>{plan.name}</AppText>
-                          <AppText style={styles.modalPlanTag}>Pay per point used</AppText>
+                          <AppText style={styles.planItemName}>
+                            {plan.name}
+                          </AppText>
+                          <AppText style={styles.modalPlanTag}>
+                            Pay per point used
+                          </AppText>
                         </View>
                       </View>
                       <View style={styles.modalPlanPriceCol}>
                         <AppText style={styles.modalPlanBasePrice}>
-                          € {month === 6 ? discountedPrice.toFixed(3) : basePriceValue.toFixed(3)}{' '}
-                          <AppText style={styles.modalPlanPriceUnit}>{plan.price[1]}</AppText>
+                          €{' '}
+                          {month === 6
+                            ? discountedPrice.toFixed(3)
+                            : basePriceValue.toFixed(3)}{' '}
+                          <AppText style={styles.modalPlanPriceUnit}>
+                            {plan.price[1]}
+                          </AppText>
                         </AppText>
-                        <AppText style={styles.modalPlanLowAs}>As Low as</AppText>
+                        <AppText style={styles.modalPlanLowAs}>
+                          As Low as
+                        </AppText>
                       </View>
                     </View>
                     <TextInput
-                      label="Amount of Points"
-                      placeholder="0"
+                      label='Amount of Points'
+                      placeholder='0'
                       value={String(points[plan.name as PlanTypes])}
                       onChangeText={(e) => {
                         const num = Number(e);
@@ -412,7 +476,10 @@ const MemberShipModal = ({ onClose, month, onPress, value }: ModalProps) => {
         </View>
 
         <View style={styles.modalFooter}>
-          <PressableView style={styles.modalSaveBtn} onPress={() => onPress(points)}>
+          <PressableView
+            style={styles.modalSaveBtn}
+            onPress={() => onPress(points)}
+          >
             <AppText style={styles.modalSaveBtnText}>Save Plan</AppText>
           </PressableView>
         </View>

@@ -25,47 +25,48 @@ const Favorites = () => {
 
   const [listing_for, setListingFor] = useState<'Rental' | 'Sale'>('Rental');
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ['properties', 'favorites', listing_for],
-    queryFn: async ({ pageParam }) => {
-      try {
-        const skip = pageParam * limit;
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey: ['properties', 'favorites', listing_for],
+      queryFn: async ({ pageParam }) => {
+        try {
+          const skip = pageParam * limit;
 
-        if (!user?.id) return { count: 0, property: [], hasmore: false };
+          if (!user?.id) return { count: 0, property: [], hasmore: false };
 
-        const query = new Parse.Query('Favourite');
-        query.equalTo('User', user);
-        query.equalTo('listing_for', listing_for);
+          const query = new Parse.Query('Favourite');
+          query.equalTo('User', user);
+          query.equalTo('listing_for', listing_for);
 
-        query.limit(limit);
-        query.skip(skip);
-        query.withCount();
+          query.limit(limit);
+          query.skip(skip);
+          query.withCount();
 
-        query.include('Property');
-        query.addDescending('createdAt');
-        const property = (await query.find({
-          json: true,
-        })) as unknown as {
-          count: number;
-          results: { Property: Property_Type }[];
-        };
-        return {
-          count: property.count,
-          property: property.results.map((item) => item.Property),
-          hasmore: property.results.length === limit,
-        } as {
-          count: number;
-          property: Property_Type[];
-          hasmore: boolean;
-        };
-      } catch (e: any) {
-        return { count: 0, property: [], hasmore: false };
-      }
-    },
-    getNextPageParam: (lastPage, _, lastPageParam) =>
-      lastPage.hasmore ? lastPageParam + 1 : undefined,
-    initialPageParam: 0,
-  });
+          query.include('Property');
+          query.addDescending('createdAt');
+          const property = (await query.find({
+            json: true,
+          })) as unknown as {
+            count: number;
+            results: { Property: Property_Type }[];
+          };
+          return {
+            count: property.count,
+            property: property.results.map((item) => item.Property),
+            hasmore: property.results.length === limit,
+          } as {
+            count: number;
+            property: Property_Type[];
+            hasmore: boolean;
+          };
+        } catch (e: any) {
+          return { count: 0, property: [], hasmore: false };
+        }
+      },
+      getNextPageParam: (lastPage, _, lastPageParam) =>
+        lastPage.hasmore ? lastPageParam + 1 : undefined,
+      initialPageParam: 0,
+    });
 
   const properties = data?.pages.flatMap((page) => page.property) || [];
 
@@ -77,16 +78,28 @@ const Favorites = () => {
           style={styles.backBtn}
           onPress={() => {
             router.back();
-          }}>
-          <ArrowLeftIcon size={20} weight="bold" color="#192234" />
+          }}
+        >
+          <ArrowLeftIcon size={20} weight='bold' color='#192234' />
         </Pressable>
         <View style={styles.tabSwitcher}>
           <TouchableWithoutFeedback
             onPress={() => {
               setListingFor('Rental');
-            }}>
-            <View style={[styles.tabBtn, listing_for === 'Rental' && styles.tabBtnActive]}>
-              <AppText style={[styles.tabText, listing_for === 'Rental' && styles.tabTextActive]}>
+            }}
+          >
+            <View
+              style={[
+                styles.tabBtn,
+                listing_for === 'Rental' && styles.tabBtnActive,
+              ]}
+            >
+              <AppText
+                style={[
+                  styles.tabText,
+                  listing_for === 'Rental' && styles.tabTextActive,
+                ]}
+              >
                 Rent
               </AppText>
             </View>
@@ -94,9 +107,20 @@ const Favorites = () => {
           <TouchableWithoutFeedback
             onPress={() => {
               setListingFor('Sale');
-            }}>
-            <View style={[styles.tabBtn, listing_for === 'Sale' && styles.tabBtnActive]}>
-              <AppText style={[styles.tabText, listing_for === 'Sale' && styles.tabTextActive]}>
+            }}
+          >
+            <View
+              style={[
+                styles.tabBtn,
+                listing_for === 'Sale' && styles.tabBtnActive,
+              ]}
+            >
+              <AppText
+                style={[
+                  styles.tabText,
+                  listing_for === 'Sale' && styles.tabTextActive,
+                ]}
+              >
                 Sale
               </AppText>
             </View>
@@ -110,7 +134,9 @@ const Favorites = () => {
         <View>
           <AppText style={styles.subTitle}>
             {data?.pages[0]?.count || 0} favorite{' '}
-            {data?.pages[0]?.count === 1 || data?.pages[0]?.count === 0 ? 'listing' : 'listings'}
+            {data?.pages[0]?.count === 1 || data?.pages[0]?.count === 0
+              ? 'listing'
+              : 'listings'}
           </AppText>
         </View>
         <View style={styles.listContainer}>
@@ -123,7 +149,7 @@ const Favorites = () => {
             keyExtractor={(item) => item.objectId}
             renderItem={({ item }) => {
               if (isProperty(item)) {
-                return <PropertyCard property={item} type="favorite" />;
+                return <PropertyCard property={item} type='favorite' />;
               }
               return (
                 <View style={styles.similarListingHeader}>
@@ -142,7 +168,7 @@ const Favorites = () => {
             ListFooterComponent={
               isFetchingNextPage ? (
                 <View style={styles.footerLoader}>
-                  <ActivityIndicator size="large" color="#82065e" />
+                  <ActivityIndicator size='large' color='#82065e' />
                 </View>
               ) : (
                 <View style={styles.footerSpacer} />

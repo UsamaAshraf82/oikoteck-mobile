@@ -2,7 +2,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Parse from 'parse/react-native';
 import { XIcon } from 'phosphor-react-native';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
-import { StyleSheet, TouchableNativeFeedback, TouchableWithoutFeedback, View } from 'react-native';
+import {
+  StyleSheet,
+  TouchableNativeFeedback,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Modal from 'react-native-modal';
 import { RefinementCtx, z } from 'zod';
@@ -25,7 +30,11 @@ const SendMessageSchema = z
     lastName: z.string(),
     email: z.union([
       z.literal(''),
-      z.string().toLowerCase().trim().pipe(z.email('Must be a valid email address.')),
+      z
+        .string()
+        .toLowerCase()
+        .trim()
+        .pipe(z.email('Must be a valid email address.')),
     ]),
     phone: z.string().optional(),
     message: z.string(),
@@ -94,17 +103,23 @@ const SendMessage = ({ onClose, property }: Props) => {
   const { openSelect } = useSelect();
   const { startActivity, stopActivity } = useActivityIndicator();
 
-  const { control, handleSubmit, watch, setValue } = useForm<SendMessageValues>({
-    resolver: zodResolver(SendMessageSchema),
-    defaultValues: {
-      country: { Code: flags[0].Code, Country: flags[0].Country, ISO: flags[0].ISO },
-      email: '',
-      firstName: '',
-      lastName: '',
-      phone: '',
-      message: 'I would like to know more about this property.',
-    },
-  });
+  const { control, handleSubmit, watch, setValue } = useForm<SendMessageValues>(
+    {
+      resolver: zodResolver(SendMessageSchema),
+      defaultValues: {
+        country: {
+          Code: flags[0].Code,
+          Country: flags[0].Country,
+          ISO: flags[0].ISO,
+        },
+        email: '',
+        firstName: '',
+        lastName: '',
+        phone: '',
+        message: 'I would like to know more about this property.',
+      },
+    }
+  );
 
   const onSubmit: SubmitHandler<SendMessageValues> = async (data) => {
     startActivity();
@@ -132,7 +147,8 @@ const SendMessage = ({ onClose, property }: Props) => {
       await myNewObject.save();
       addToast({
         heading: 'Message submission',
-        message: 'Your message is now sent. Listing owner will contact you soon',
+        message:
+          'Your message is now sent. Listing owner will contact you soon',
       });
       await fetch(emailsAddress, {
         method: 'POST',
@@ -179,19 +195,21 @@ const SendMessage = ({ onClose, property }: Props) => {
       coverScreen={false}
       hardwareAccelerated
       avoidKeyboard={false}
-      style={styles.modal}>
+      style={styles.modal}
+    >
       <View
         style={[
           styles.container,
           {
             maxHeight: deviceHeight * 0.9,
           },
-        ]}>
+        ]}
+      >
         <View style={styles.header}>
           <AppText style={styles.headerTitle}>Send a Message</AppText>
           <TouchableNativeFeedback hitSlop={10} onPress={onClose}>
             <View style={styles.closeBtn}>
-              <XIcon color="#192234" size={24} />
+              <XIcon color='#192234' size={24} />
             </View>
           </TouchableNativeFeedback>
         </View>
@@ -200,29 +218,34 @@ const SendMessage = ({ onClose, property }: Props) => {
           <KeyboardAwareScrollView
             bottomOffset={50}
             showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}>
-            <AppText style={styles.headerSub}>Send a message to the listing owner</AppText>
+            showsHorizontalScrollIndicator={false}
+          >
+            <AppText style={styles.headerSub}>
+              Send a message to the listing owner
+            </AppText>
             <View style={styles.formSection}>
               <ControlledTextInput
                 control={control}
-                name="message"
+                name='message'
                 multiline={true}
-                label="Message to the Owner"
+                label='Message to the Owner'
                 style={styles.textArea}
               />
-              <AppText style={styles.contactHeading}>How can we get back to you?</AppText>
+              <AppText style={styles.contactHeading}>
+                How can we get back to you?
+              </AppText>
               <Grid cols={2} gap={8}>
                 <ControlledTextInput
                   control={control}
-                  name="firstName"
-                  label="First Name"
-                  placeholder="Enter first name"
+                  name='firstName'
+                  label='First Name'
+                  placeholder='Enter first name'
                 />
                 <ControlledTextInput
                   control={control}
-                  name="lastName"
-                  label="Last Name"
-                  placeholder="Enter last name"
+                  name='lastName'
+                  label='Last Name'
+                  placeholder='Enter last name'
                 />
               </Grid>
               <AppText style={styles.label}>Phone Number</AppText>
@@ -243,16 +266,25 @@ const SendMessage = ({ onClose, property }: Props) => {
                               <AppText>+{i.Code}</AppText>
                             </View>
                           ),
-                          value: { Code: i.Code, Country: i.Country, ISO: i.ISO },
+                          value: {
+                            Code: i.Code,
+                            Country: i.Country,
+                            ISO: i.ISO,
+                          },
                         })),
                         value: watch('country'),
                         onPress: (value: any) =>
                           setValue(
                             'country',
-                            value.value as { Code: number; Country: string; ISO: string }
+                            value.value as {
+                              Code: number;
+                              Country: string;
+                              ISO: string;
+                            }
                           ),
                       });
-                    }}>
+                    }}
+                  >
                     <View style={styles.flagBox}>
                       <RenderFlagWithCode ISO={watch('country').ISO} />
                     </View>
@@ -261,18 +293,18 @@ const SendMessage = ({ onClose, property }: Props) => {
                 <View style={styles.phoneInputBox}>
                   <ControlledTextInput
                     control={control}
-                    name="phone"
-                    placeholder="Enter phone number"
-                    textContentType="telephoneNumber"
-                    keyboardType="phone-pad"
+                    name='phone'
+                    placeholder='Enter phone number'
+                    textContentType='telephoneNumber'
+                    keyboardType='phone-pad'
                   />
                 </View>
               </View>
               <ControlledTextInput
                 control={control}
-                name="email"
-                label="Email Address"
-                placeholder="Enter email address"
+                name='email'
+                label='Email Address'
+                placeholder='Enter email address'
               />
             </View>
             <View style={styles.spacer20} />
@@ -283,7 +315,10 @@ const SendMessage = ({ onClose, property }: Props) => {
                     <AppText style={styles.cancelBtnText}>Cancel</AppText>
                   </View>
                 </PressableView>
-                <PressableView onPress={handleSubmit(onSubmit, onError)} style={styles.sendBtn}>
+                <PressableView
+                  onPress={handleSubmit(onSubmit, onError)}
+                  style={styles.sendBtn}
+                >
                   <View style={styles.footerBtnInner}>
                     <AppText style={styles.sendBtnText}>Send Message</AppText>
                   </View>

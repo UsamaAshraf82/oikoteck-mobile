@@ -36,10 +36,11 @@ const SimilarListing = ({ property }: { property: Property_Type }) => {
       <ScrollView
         horizontal
         showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}>
+        showsHorizontalScrollIndicator={false}
+      >
         <View style={styles.listContainer}>
           {data.map((i) => (
-            <PropertyCard property={i} key={i.objectId} shrink={0.90} />
+            <PropertyCard property={i} key={i.objectId} shrink={0.9} />
           ))}
         </View>
       </ScrollView>

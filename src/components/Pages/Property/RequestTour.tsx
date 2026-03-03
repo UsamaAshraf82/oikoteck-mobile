@@ -2,7 +2,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Parse from 'parse/react-native';
 import { XIcon } from 'phosphor-react-native';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
-import { StyleSheet, TouchableNativeFeedback, TouchableWithoutFeedback, View } from 'react-native';
+import {
+  StyleSheet,
+  TouchableNativeFeedback,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Modal from 'react-native-modal';
 import { RefinementCtx, z } from 'zod';
@@ -32,7 +37,10 @@ const Tour1Schema = z
     }),
     firstName: z.string(),
     lastName: z.string(),
-    email: z.union([z.literal(''), z.string().email({ message: 'Email is Not Valid' })]),
+    email: z.union([
+      z.literal(''),
+      z.string().email({ message: 'Email is Not Valid' }),
+    ]),
     phone: z.string().optional(),
     message: z.string(),
     country: z.object({
@@ -110,17 +118,16 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
   const { openSelect } = useSelect();
   const { startActivity, stopActivity } = useActivityIndicator();
 
-  const {
-    control,
-    handleSubmit,
-    watch,
-    setValue,
-  } = useForm<Tour1Type>({
+  const { control, handleSubmit, watch, setValue } = useForm<Tour1Type>({
     resolver: zodResolver(Tour1Schema),
     defaultValues: {
       tour_time: 'Anytime',
       tour_type: 'In-Person',
-      country: { Code: flags[0].Code, Country: flags[0].Country, ISO: flags[0].ISO },
+      country: {
+        Code: flags[0].Code,
+        Country: flags[0].Country,
+        ISO: flags[0].ISO,
+      },
       message: 'I would like to know more about this property.',
       email: '',
       firstName: '',
@@ -133,7 +140,6 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
     startActivity();
 
     try {
-
       const myNewObject = new Parse.Object('Tours');
       myNewObject.set('Property', {
         __type: 'Pointer',
@@ -159,7 +165,6 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
       myNewObject.set('email', data.email.toLowerCase());
       myNewObject.set('price', property.price);
       myNewObject.set('read', false);
-
 
       await myNewObject.save();
 
@@ -215,19 +220,21 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
       coverScreen={false}
       hardwareAccelerated
       avoidKeyboard={false}
-      style={styles.modal}>
+      style={styles.modal}
+    >
       <View
         style={[
           styles.container,
           {
             maxHeight: deviceHeight * 0.9,
           },
-        ]}>
+        ]}
+      >
         <View style={styles.header}>
           <AppText style={styles.headerTitle}>Request a Tour</AppText>
           <TouchableNativeFeedback hitSlop={10} onPress={onClose}>
             <View style={styles.closeBtn}>
-              <XIcon color="#192234" size={24} />
+              <XIcon color='#192234' size={24} />
             </View>
           </TouchableNativeFeedback>
         </View>
@@ -235,8 +242,11 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
         <KeyboardAwareScrollView
           bottomOffset={50}
           showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}>
-          <AppText style={styles.headerSub}>Send a tour request to the listing owner</AppText>
+          showsHorizontalScrollIndicator={false}
+        >
+          <AppText style={styles.headerSub}>
+            Send a tour request to the listing owner
+          </AppText>
           <View style={styles.formSection}>
             <Select
               varient
@@ -244,10 +254,12 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
                 label: i,
                 value: i,
               }))}
-              label="Select a tour type"
-              title="Tour Type"
+              label='Select a tour type'
+              title='Tour Type'
               value={{ label: watch('tour_type'), value: watch('tour_type') }}
-              onChange={(value) => setValue('tour_type', value?.value as Tour1Type['tour_type'])}
+              onChange={(value) =>
+                setValue('tour_type', value?.value as Tour1Type['tour_type'])
+              }
             />
 
             {/* <ControlledDatePicker
@@ -259,9 +271,11 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
             /> */}
 
             <DatePicker
-              label="Select a preferred visit date"
+              label='Select a preferred visit date'
               value={watch('tour_date')}
-              onChange={(date: Date) => setValue('tour_date', date.toISOString())}
+              onChange={(date: Date) =>
+                setValue('tour_date', date.toISOString())
+              }
               withForm
               minDate={minDate}
             />
@@ -272,24 +286,28 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
                 label: i,
                 value: i,
               }))}
-              label="Select a preferred visit time"
-              title="Visit Type"
+              label='Select a preferred visit time'
+              title='Visit Type'
               value={{ label: watch('tour_time'), value: watch('tour_time') }}
-              onChange={(value) => setValue('tour_time', value?.value as Tour1Type['tour_time'])}
+              onChange={(value) =>
+                setValue('tour_time', value?.value as Tour1Type['tour_time'])
+              }
             />
-            <AppText style={styles.contactHeading}>How can we get back to you?</AppText>
+            <AppText style={styles.contactHeading}>
+              How can we get back to you?
+            </AppText>
             <Grid cols={2} gap={8}>
               <ControlledTextInput
                 control={control}
-                name="firstName"
-                label="First Name"
-                placeholder="Enter first name"
+                name='firstName'
+                label='First Name'
+                placeholder='Enter first name'
               />
               <ControlledTextInput
                 control={control}
-                name="lastName"
-                label="Last Name"
-                placeholder="Enter last name"
+                name='lastName'
+                label='Last Name'
+                placeholder='Enter last name'
               />
             </Grid>
             <AppText style={styles.label}>Phone Number</AppText>
@@ -316,10 +334,15 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
                       onPress: (value: any) =>
                         setValue(
                           'country',
-                          value.value as { Code: number; Country: string; ISO: string }
+                          value.value as {
+                            Code: number;
+                            Country: string;
+                            ISO: string;
+                          }
                         ),
                     });
-                  }}>
+                  }}
+                >
                   <View style={styles.flagBox}>
                     <RenderFlagWithCode ISO={watch('country').ISO} />
                   </View>
@@ -328,24 +351,24 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
               <View style={styles.phoneInputBox}>
                 <ControlledTextInput
                   control={control}
-                  name="phone"
-                  placeholder="Enter phone number"
-                  textContentType="telephoneNumber"
-                  keyboardType="phone-pad"
+                  name='phone'
+                  placeholder='Enter phone number'
+                  textContentType='telephoneNumber'
+                  keyboardType='phone-pad'
                 />
               </View>
             </View>
             <ControlledTextInput
               control={control}
-              name="email"
-              label="Email Address"
-              placeholder="Enter email address"
+              name='email'
+              label='Email Address'
+              placeholder='Enter email address'
             />
             <ControlledTextInput
               control={control}
-              name="message"
+              name='message'
               multiline={true}
-              label="Message to the Owner"
+              label='Message to the Owner'
               style={styles.textArea}
             />
           </View>
@@ -359,7 +382,10 @@ const RequestTour = ({ onClose, property }: SendOfferModalType) => {
                 <AppText style={styles.cancelBtnText}>Cancel</AppText>
               </View>
             </PressableView>
-            <PressableView onPress={handleSubmit(onSubmit, onError)} style={styles.sendBtn}>
+            <PressableView
+              onPress={handleSubmit(onSubmit, onError)}
+              style={styles.sendBtn}
+            >
               <View style={styles.footerBtnInner}>
                 <AppText style={styles.sendBtnText}>Request Tour</AppText>
               </View>

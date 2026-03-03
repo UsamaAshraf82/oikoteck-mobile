@@ -5,7 +5,10 @@ let _Parse: typeof Parseini | null = null;
 
 export const ParseInit = async () => {
   if (_Parse) return _Parse;
-  Parseini.initialize(process.env.EXPO_PUBLIC_APP_ID!, process.env.EXPO_PUBLIC_JS_KEY!);
+  Parseini.initialize(
+    process.env.EXPO_PUBLIC_APP_ID!,
+    process.env.EXPO_PUBLIC_JS_KEY!
+  );
   Parseini.serverURL = process.env.EXPO_PUBLIC_PARSE_API_ADDRESS;
   Parseini.setAsyncStorage(AsyncStorage);
 

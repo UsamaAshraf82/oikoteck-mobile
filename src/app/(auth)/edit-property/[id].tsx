@@ -6,7 +6,9 @@ import { BackHandler, View } from 'react-native';
 import Basic1, { Basic1Values } from '~/components/Pages/PostProperty/Basic1';
 import Basic2, { Basic2Values } from '~/components/Pages/PostProperty/Basic2';
 import Basic3, { Basic3Values } from '~/components/Pages/PostProperty/Basic3';
-import LocationInfo, { LocationInfoTypes } from '~/components/Pages/PostProperty/LocationInfo';
+import LocationInfo, {
+  LocationInfoTypes,
+} from '~/components/Pages/PostProperty/LocationInfo';
 import { PaymentInfoTypes } from '~/components/Pages/PostProperty/PaymentInfo';
 import PropertyGallery, {
   PropertyGalleryTypes,
@@ -69,10 +71,12 @@ export default function Index() {
         basic: {
           description: property.description,
           listing_for: property.listing_for as Basic1Values['listing_for'],
-          property_category: property.property_category as Basic1Values['property_category'],
+          property_category:
+            property.property_category as Basic1Values['property_category'],
           property_oriantation:
             property.property_oriantation as Basic1Values['property_oriantation'],
-          property_type: property.property_type as Basic1Values['property_type'],
+          property_type:
+            property.property_type as Basic1Values['property_type'],
           title: property.title,
         },
         basic2: {
@@ -83,17 +87,21 @@ export default function Index() {
           floor: property.floor,
           furnished: property.furnished,
           heating: property.heating,
-          heating_expense: property.heating_expense as Basic2Values['heating_expense'],
+          heating_expense:
+            property.heating_expense as Basic2Values['heating_expense'],
           level_of_finish: property.level_of_finish,
           plot_size: property.plot_size,
-          property_category: property.property_category as Basic2Values['property_category'],
-          property_type: property.property_type as Basic1Values['property_type'],
+          property_category:
+            property.property_category as Basic2Values['property_category'],
+          property_type:
+            property.property_type as Basic1Values['property_type'],
           reference_number: property.reference_number,
           size: property.size,
           special_feature: property.special_feature,
         },
         basic3: {
-          contact_method: property.contact_method as Basic3Values['contact_method'],
+          contact_method:
+            property.contact_method as Basic3Values['contact_method'],
           deposit: property.deposit,
           level_of_finish: property.level_of_finish,
           listing_for: property.listing_for as Basic1Values['listing_for'],
@@ -141,7 +149,10 @@ export default function Index() {
       return false; // allow default (exit / navigate back) if already at first step
     };
 
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction
+    );
 
     return () => backHandler.remove();
   }, [tab]);

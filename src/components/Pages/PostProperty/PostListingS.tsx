@@ -8,7 +8,10 @@ import Checkbox from '~/components/Elements/Checkbox';
 import PressableView from '~/components/HOC/PressableView';
 import { PaymentInfoTypes } from './PaymentInfo';
 
-type Props = { extraData: { plan: PaymentInfoTypes['plan'] }; onSubmit: () => void };
+type Props = {
+  extraData: { plan: PaymentInfoTypes['plan'] };
+  onSubmit: () => void;
+};
 
 export default function PostListingS({ extraData, onSubmit }: Props) {
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
@@ -42,20 +45,23 @@ export default function PostListingS({ extraData, onSubmit }: Props) {
     <View style={styles.container}>
       <View style={styles.mainContent}>
         <AppText style={styles.title}>Publish Listing</AppText>
-        <AppText style={styles.subtitle}>Confirm your details and publish your listing</AppText>
+        <AppText style={styles.subtitle}>
+          Confirm your details and publish your listing
+        </AppText>
 
         <KeyboardAwareScrollView
           bottomOffset={50}
           contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
+          keyboardShouldPersistTaps='handled'
           showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}>
+          showsHorizontalScrollIndicator={false}
+        >
           <AppText style={styles.sectionTitle}>Service Plan Terms</AppText>
           <View style={styles.webviewContainer}>
             <WebView />
           </View>
           <Checkbox
-            label="I, Walid Smith, understand and agree to the “Service Plan Terms” above associated with this purchase, the Terms and Conditions, and the Privacy Policy."
+            label='I, Walid Smith, understand and agree to the “Service Plan Terms” above associated with this purchase, the Terms and Conditions, and the Privacy Policy.'
             labelStyle={styles.checkboxLabel}
           />
         </KeyboardAwareScrollView>

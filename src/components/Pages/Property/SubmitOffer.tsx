@@ -3,14 +3,21 @@ import { Link } from 'expo-router';
 import Parse from 'parse/react-native';
 import { XIcon } from 'phosphor-react-native';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
-import { StyleSheet, TouchableNativeFeedback, TouchableWithoutFeedback, View } from 'react-native';
+import {
+  StyleSheet,
+  TouchableNativeFeedback,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Modal from 'react-native-modal';
 import { RefinementCtx, z } from 'zod';
 import AppText from '~/components/Elements/AppText';
 import { ControlledCheckBox } from '~/components/Elements/Checkbox';
 import { flags, RenderFlagWithCode } from '~/components/Elements/Flags';
-import TextInput, { ControlledTextInput } from '~/components/Elements/TextInput';
+import TextInput, {
+  ControlledTextInput,
+} from '~/components/Elements/TextInput';
 import Grid from '~/components/HOC/Grid';
 import PressableView from '~/components/HOC/PressableView';
 import { emailsAddress } from '~/global';
@@ -40,7 +47,11 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
       lastName: z.string(),
       email: z.union([
         z.literal(''),
-        z.string().toLowerCase().trim().pipe(z.email('Must be a valid email address.')),
+        z
+          .string()
+          .toLowerCase()
+          .trim()
+          .pipe(z.email('Must be a valid email address.')),
       ]),
       phone: z.string().optional(),
       price: z.coerce.number(),
@@ -119,15 +130,14 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
     terms: 'Terms Agreement',
   };
 
-  const {
-    control,
-    handleSubmit,
-    watch,
-    setValue,
-  } = useForm<SendOfferValues>({
+  const { control, handleSubmit, watch, setValue } = useForm<SendOfferValues>({
     resolver: zodResolver(SendOfferSchema) as any,
     defaultValues: {
-      country: { Code: flags[0].Code, Country: flags[0].Country, ISO: flags[0].ISO },
+      country: {
+        Code: flags[0].Code,
+        Country: flags[0].Country,
+        ISO: flags[0].ISO,
+      },
       email: '',
       firstName: '',
       lastName: '',
@@ -166,7 +176,8 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
       await myNewObject.save();
       addToast({
         heading: 'Offer submission',
-        message: 'Your offer is now submitted. Listing owner will contact you soon',
+        message:
+          'Your offer is now submitted. Listing owner will contact you soon',
       });
       await fetch(emailsAddress, {
         method: 'POST',
@@ -213,22 +224,26 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
       coverScreen={false}
       hardwareAccelerated
       avoidKeyboard={false}
-      style={styles.modal}>
+      style={styles.modal}
+    >
       <View
         style={[
           styles.container,
           {
             maxHeight: deviceHeight * 0.9,
           },
-        ]}>
+        ]}
+      >
         <View style={styles.header}>
           <View style={styles.headerTextCol}>
             <AppText style={styles.headerTitle}>Submit Offer</AppText>
-            <AppText style={styles.headerSub}>Submit an offer to the listing owner</AppText>
+            <AppText style={styles.headerSub}>
+              Submit an offer to the listing owner
+            </AppText>
           </View>
           <TouchableNativeFeedback hitSlop={10} onPress={onClose}>
             <View style={styles.closeBtn}>
-              <XIcon color="#192234" size={24} />
+              <XIcon color='#192234' size={24} />
             </View>
           </TouchableNativeFeedback>
         </View>
@@ -237,16 +252,21 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
           <KeyboardAwareScrollView
             bottomOffset={50}
             showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}>
+            showsHorizontalScrollIndicator={false}
+          >
             <View style={styles.priceSection}>
               <Grid cols={2} gap={8}>
-                <TextInput readOnly label="Asking Price" value={property.price + ''} />
+                <TextInput
+                  readOnly
+                  label='Asking Price'
+                  value={property.price + ''}
+                />
                 <ControlledTextInput
                   control={control}
-                  name="price"
-                  label="Your Offer"
-                  placeholder="Enter your offer"
-                  keyboardType="number-pad"
+                  name='price'
+                  label='Your Offer'
+                  placeholder='Enter your offer'
+                  keyboardType='number-pad'
                 />
               </Grid>
               <AppText style={styles.warningText}>
@@ -254,21 +274,23 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
               </AppText>
             </View>
             <View style={styles.contactSection}>
-              <AppText style={styles.contactHeading}>How can we get back to you?</AppText>
+              <AppText style={styles.contactHeading}>
+                How can we get back to you?
+              </AppText>
               <Grid cols={2} gap={8}>
                 <ControlledTextInput
                   control={control}
-                  name="firstName"
+                  name='firstName'
                   multiline={true}
-                  label="First Name"
-                  placeholder="Enter first name"
+                  label='First Name'
+                  placeholder='Enter first name'
                 />
                 <ControlledTextInput
                   control={control}
-                  name="lastName"
+                  name='lastName'
                   multiline={true}
-                  label="Last Name"
-                  placeholder="Enter last name"
+                  label='Last Name'
+                  placeholder='Enter last name'
                 />
               </Grid>
               <AppText style={styles.label}>Phone Number</AppText>
@@ -289,16 +311,25 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
                               <AppText>+{i.Code}</AppText>
                             </View>
                           ),
-                          value: { Code: i.Code, Country: i.Country, ISO: i.ISO },
+                          value: {
+                            Code: i.Code,
+                            Country: i.Country,
+                            ISO: i.ISO,
+                          },
                         })),
                         value: watch('country'),
                         onPress: (value: any) =>
                           setValue(
                             'country',
-                            value.value as { Code: number; Country: string; ISO: string }
+                            value.value as {
+                              Code: number;
+                              Country: string;
+                              ISO: string;
+                            }
                           ),
                       });
-                    }}>
+                    }}
+                  >
                     <View style={styles.flagBox}>
                       <RenderFlagWithCode ISO={watch('country').ISO} />
                     </View>
@@ -307,19 +338,19 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
                 <View style={styles.phoneInputBox}>
                   <ControlledTextInput
                     control={control}
-                    name="phone"
-                    placeholder="Enter phone number"
-                    textContentType="telephoneNumber"
-                    keyboardType="phone-pad"
+                    name='phone'
+                    placeholder='Enter phone number'
+                    textContentType='telephoneNumber'
+                    keyboardType='phone-pad'
                   />
                 </View>
               </View>
               <ControlledTextInput
                 control={control}
-                name="email"
+                name='email'
                 multiline={true}
-                label="Email Address"
-                placeholder="Enter email address"
+                label='Email Address'
+                placeholder='Enter email address'
               />
             </View>
             <View style={styles.spacer20} />
@@ -327,12 +358,12 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
               <ControlledCheckBox
                 control={control}
                 alignTop
-                name="terms"
+                name='terms'
                 labelStyle={{ color: '#ACACB9', fontSize: 14 }}
                 label={
                   <>
                     I confirm that I read and I agree with Oikoteck’s{' '}
-                    <Link href="/terms-conditions" style={styles.linkText}>
+                    <Link href='/terms-conditions' style={styles.linkText}>
                       Terms & Conditions
                     </Link>{' '}
                     *
@@ -342,16 +373,16 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
               <ControlledCheckBox
                 control={control}
                 alignTop
-                name="privacy"
+                name='privacy'
                 labelStyle={{ color: '#ACACB9', fontSize: 14 }}
                 label={
                   <>
                     I confirm that I read and understood Oikoteck’s{' '}
-                    <Link href="/privacy-policy" style={styles.linkText}>
+                    <Link href='/privacy-policy' style={styles.linkText}>
                       Data Protection Notice
                     </Link>{' '}
                     and the{' '}
-                    <Link href="/cookie-policy" style={styles.linkText}>
+                    <Link href='/cookie-policy' style={styles.linkText}>
                       Cookies Policy
                     </Link>{' '}
                     *
@@ -361,12 +392,17 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
               <ControlledCheckBox
                 control={control}
                 alignTop
-                name="share_consent"
-                labelStyle={{ color: '#ACACB9', fontSize: 14, fontFamily: 'LufgaMedium' }}
+                name='share_consent'
+                labelStyle={{
+                  color: '#ACACB9',
+                  fontSize: 14,
+                  fontFamily: 'LufgaMedium',
+                }}
                 label={
                   <>
-                    I consent to the sharing of my contact information and search preferences with
-                    real estate agents who offer listings which may align with my interests
+                    I consent to the sharing of my contact information and
+                    search preferences with real estate agents who offer
+                    listings which may align with my interests
                   </>
                 }
               />
@@ -378,7 +414,10 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
                   <AppText style={styles.cancelBtnText}>Cancel</AppText>
                 </View>
               </PressableView>
-              <PressableView onPress={handleSubmit(onSubmit, onError)} style={styles.sendBtn}>
+              <PressableView
+                onPress={handleSubmit(onSubmit, onError)}
+                style={styles.sendBtn}
+              >
                 <View style={styles.footerBtnInner}>
                   <AppText style={styles.sendBtnText}>Submit Offer</AppText>
                 </View>

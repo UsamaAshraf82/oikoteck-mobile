@@ -15,7 +15,13 @@ import AppText from './Elements/AppText';
 
 const DISMISS_THRESHOLD = 100;
 
-const ToastItem = ({ toast, removeToast }: { toast: any; removeToast: (id: string) => void }) => {
+const ToastItem = ({
+  toast,
+  removeToast,
+}: {
+  toast: any;
+  removeToast: (id: string) => void;
+}) => {
   const translateX = useSharedValue(0);
   const opacity = useSharedValue(1);
 
@@ -25,9 +31,13 @@ const ToastItem = ({ toast, removeToast }: { toast: any; removeToast: (id: strin
     })
     .onEnd((event) => {
       if (Math.abs(event.translationX) > DISMISS_THRESHOLD) {
-        translateX.value = withTiming(event.translationX > 0 ? deviceWidth : -deviceWidth, {}, () => {
-          runOnJS(removeToast)(toast.id);
-        });
+        translateX.value = withTiming(
+          event.translationX > 0 ? deviceWidth : -deviceWidth,
+          {},
+          () => {
+            runOnJS(removeToast)(toast.id);
+          }
+        );
         opacity.value = withTiming(0);
       } else {
         translateX.value = withSpring(0);
@@ -49,12 +59,12 @@ const ToastItem = ({ toast, removeToast }: { toast: any; removeToast: (id: strin
           toast.type === 'error' && styles.errorBorder,
           toast.type === 'info' && styles.infoBorder,
           animatedStyle,
-        ]}>
+        ]}
+      >
         <View style={styles.textContent}>
           <AppText style={styles.heading}>{toast.heading}</AppText>
           <AppText style={styles.message}>{toast.message}</AppText>
         </View>
-
       </Animated.View>
     </GestureDetector>
   );
@@ -68,18 +78,19 @@ export const ToastContainer = () => {
   return (
     <ReactNativeModal
       isVisible={true}
-      animationIn="fadeInDown"
-      animationOut="fadeOutUp"
+      animationIn='fadeInDown'
+      animationOut='fadeOutUp'
       backdropOpacity={0}
       coverScreen={false}
       hasBackdrop={false}
       statusBarTranslucent
-      presentationStyle="overFullScreen"
-      pointerEvents="box-none"
+      presentationStyle='overFullScreen'
+      pointerEvents='box-none'
       hardwareAccelerated
       propagateSwipe
-      style={styles.modal}>
-      <View style={styles.container} pointerEvents="box-none">
+      style={styles.modal}
+    >
+      <View style={styles.container} pointerEvents='box-none'>
         {toasts.map((toast: any) => (
           <ToastItem key={toast.id} toast={toast} removeToast={removeToast} />
         ))}

@@ -7,7 +7,7 @@ const Sale = () => {
   if (mapModal) {
     return (
       <MapMarketplace
-        listing_type="Sale"
+        listing_type='Sale'
         onListPress={() => {
           setMapModal(false);
         }}
@@ -16,7 +16,7 @@ const Sale = () => {
   }
   return (
     <MarketPlace
-      listing_type="Sale"
+      listing_type='Sale'
       onMapPress={() => {
         setMapModal(true);
       }}

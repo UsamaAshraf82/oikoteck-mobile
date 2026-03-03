@@ -34,10 +34,9 @@ export default function Login() {
   const router = useRouter();
   const { startActivity, stopActivity } = useActivityIndicator();
   const { login, user } = useUser();
-  const {
-    control,
-    handleSubmit,
-  } = useForm<ForgetPasswordValues>({ resolver: zodResolver(ForgetPasswordSchema) });
+  const { control, handleSubmit } = useForm<ForgetPasswordValues>({
+    resolver: zodResolver(ForgetPasswordSchema),
+  });
 
   useEffect(() => {
     if (user) {
@@ -53,11 +52,11 @@ export default function Login() {
     });
     stopActivity();
     addToast({
-     heading: 'Password Reset',
-     message:
-       "Check your email to access password reset instructions. Emails won't be sent for unregistered users",
-   });
-   router.push('/')
+      heading: 'Password Reset',
+      message:
+        "Check your email to access password reset instructions. Emails won't be sent for unregistered users",
+    });
+    router.push('/');
   };
 
   const onError: SubmitErrorHandler<ForgetPasswordValues> = (errors) => {
@@ -80,35 +79,41 @@ export default function Login() {
         onBackPress={() => {
           router.back();
         }}
-        title=""
+        title=''
       />
 
       <KeyboardAwareScrollView
         bottomOffset={50}
         contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
+        keyboardShouldPersistTaps='handled'
         showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}>
+        showsHorizontalScrollIndicator={false}
+      >
         <View style={styles.formWrapper}>
           <AppText style={styles.title}>🔒</AppText>
           <AppText style={styles.title}>Forgot password?</AppText>
-          <AppText style={styles.subtext}>No worries, we’ll send you reset instructions.</AppText>
+          <AppText style={styles.subtext}>
+            No worries, we’ll send you reset instructions.
+          </AppText>
 
           <View style={styles.inputGroup}>
             <ControlledTextInput
               control={control}
-              name="email"
-              label="Email Address"
-              autoComplete="email"
-              keyboardType="email-address"
-              placeholder="Enter your email address"
+              name='email'
+              label='Email Address'
+              autoComplete='email'
+              keyboardType='email-address'
+              placeholder='Enter your email address'
             />
           </View>
         </View>
       </KeyboardAwareScrollView>
 
       <View style={styles.footer}>
-        <PressableView onPress={handleSubmit(onSubmit, onError)} style={styles.submitBtn}>
+        <PressableView
+          onPress={handleSubmit(onSubmit, onError)}
+          style={styles.submitBtn}
+        >
           <AppText style={styles.submitBtnText}>Reset password</AppText>
         </PressableView>
       </View>

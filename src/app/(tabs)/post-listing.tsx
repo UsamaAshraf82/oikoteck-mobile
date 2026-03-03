@@ -13,32 +13,38 @@ const PostListing = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Pressable onPress={() => router.back()}>
-          <XIcon color="#192234" />
+          <XIcon color='#192234' />
         </Pressable>
       </View>
 
       <View style={styles.imageSection}>
-        <Image source={PostLisitngIcon} contentFit="contain" style={styles.bannerImage} />
+        <Image
+          source={PostLisitngIcon}
+          contentFit='contain'
+          style={styles.bannerImage}
+        />
       </View>
 
       <View style={styles.contentSection}>
         <AppText style={styles.title}>Post a listing</AppText>
         <AppText style={styles.subtitle}>
-          Post a listing on OikoTeck in just 3 simple and easy steps, and enjoy hassle free property
-          management
+          Post a listing on OikoTeck in just 3 simple and easy steps, and enjoy
+          hassle free property management
         </AppText>
 
         <View style={styles.stepsContainer}>
-          {['Add your property details', 'Upload property images', 'And you’re done!!!'].map(
-            (i, j) => (
-              <View key={j} style={styles.stepItem}>
-                <View style={styles.stepNumberWrapper}>
-                  <AppText style={styles.stepNumberText}>{j + 1}</AppText>
-                </View>
-                <AppText style={styles.stepTitle}>{i}</AppText>
+          {[
+            'Add your property details',
+            'Upload property images',
+            'And you’re done!!!',
+          ].map((i, j) => (
+            <View key={j} style={styles.stepItem}>
+              <View style={styles.stepNumberWrapper}>
+                <AppText style={styles.stepNumberText}>{j + 1}</AppText>
               </View>
-            )
-          )}
+              <AppText style={styles.stepTitle}>{i}</AppText>
+            </View>
+          ))}
           <View style={styles.timelineLine}>
             <View style={styles.timelineInner} />
           </View>
@@ -46,7 +52,10 @@ const PostListing = () => {
       </View>
 
       <View style={styles.footer}>
-        <PressableView onPress={() => router.push('/property/new')} style={styles.submitBtn}>
+        <PressableView
+          onPress={() => router.push('/property/new')}
+          style={styles.submitBtn}
+        >
           <AppText style={styles.submitBtnText}>Post my listing</AppText>
         </PressableView>
       </View>

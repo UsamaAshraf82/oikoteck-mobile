@@ -64,10 +64,9 @@ export default function Signup() {
   const router = useRouter();
   const activity = useActivityIndicator();
   const { user } = useUser();
-  const {
-    control,
-    handleSubmit,
-  } = useForm<SignupTypes>({ resolver: zodResolver(SignupSchema) });
+  const { control, handleSubmit } = useForm<SignupTypes>({
+    resolver: zodResolver(SignupSchema),
+  });
 
   const onSubmit = async (formData: SignupTypes) => {
     activity.startActivity();
@@ -117,19 +116,22 @@ export default function Signup() {
         onBackPress={() => {
           router.back();
         }}
-        title=""
+        title=''
       />
       <KeyboardAwareScrollView
         bottomOffset={50}
         contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
+        keyboardShouldPersistTaps='handled'
         showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}>
+        showsHorizontalScrollIndicator={false}
+      >
         <View style={styles.formWrapper}>
-          <AppText style={styles.title}>Let's create your free account!</AppText>
+          <AppText style={styles.title}>
+            Let's create your free account!
+          </AppText>
           <AppText style={styles.subtext}>
             Already have an account?{' '}
-            <Link href="/login" style={styles.linkText}>
+            <Link href='/login' style={styles.linkText}>
               Sign In
             </Link>
           </AppText>
@@ -141,33 +143,36 @@ export default function Signup() {
           <View style={styles.inputGroup}>
             <ControlledTextInput
               control={control}
-              name="email"
-              label="Email Address"
-              autoComplete="email"
-              keyboardType="email-address"
-              placeholder="Enter your email address"
+              name='email'
+              label='Email Address'
+              autoComplete='email'
+              keyboardType='email-address'
+              placeholder='Enter your email address'
             />
             <ControlledTextInput
               control={control}
-              name="password"
-              label="Password"
-              autoComplete="new-password"
+              name='password'
+              label='Password'
+              autoComplete='new-password'
               secureTextEntry
-              placeholder="Create your password"
+              placeholder='Create your password'
             />
             <ControlledTextInput
               control={control}
-              name="confirmPassword"
-              label="Confirm Password"
-              autoComplete="new-password"
+              name='confirmPassword'
+              label='Confirm Password'
+              autoComplete='new-password'
               secureTextEntry
-              placeholder="Retype your password"
+              placeholder='Retype your password'
             />
           </View>
         </View>
       </KeyboardAwareScrollView>
       <View style={styles.footer}>
-        <PressableView onPress={handleSubmit(onSubmit, onError)} style={styles.submitBtn}>
+        <PressableView
+          onPress={handleSubmit(onSubmit, onError)}
+          style={styles.submitBtn}
+        >
           <AppText style={styles.submitBtnText}>Sign up</AppText>
         </PressableView>
       </View>

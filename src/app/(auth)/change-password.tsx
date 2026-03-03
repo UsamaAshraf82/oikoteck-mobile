@@ -61,10 +61,7 @@ const ChangePassword = () => {
   const { addToast } = useToast();
   const { startActivity, stopActivity } = useActivityIndicator();
 
-  const {
-    handleSubmit,
-    control,
-  } = useForm<PasswordValues>({
+  const { handleSubmit, control } = useForm<PasswordValues>({
     resolver: zodResolver(PasswordSchema),
     defaultValues: {
       current_password: '',
@@ -91,7 +88,8 @@ const ChangePassword = () => {
         addToast({
           type: 'error',
           heading: 'Invalid Password',
-          message: 'Your current password is invalid. Please re-enter your password',
+          message:
+            'Your current password is invalid. Please re-enter your password',
         });
       }
     }
@@ -113,36 +111,41 @@ const ChangePassword = () => {
   };
   return (
     <View style={styles.container}>
-      <TopHeader onBackPress={() => router.back()} title="" />
+      <TopHeader onBackPress={() => router.back()} title='' />
       <View style={styles.header}>
         <AppText style={styles.title}>Change Password 🔒</AppText>
-        <AppText style={styles.subTitle}>Update your current password here</AppText>
+        <AppText style={styles.subTitle}>
+          Update your current password here
+        </AppText>
       </View>
       <View style={styles.form}>
         <ControlledTextInput
           control={control}
-          name="current_password"
-          label="Current Password"
+          name='current_password'
+          label='Current Password'
           secureTextEntry
-          placeholder="Enter Current Password"
+          placeholder='Enter Current Password'
         />
         <ControlledTextInput
           control={control}
-          name="password"
-          label="New Password"
+          name='password'
+          label='New Password'
           secureTextEntry
-          placeholder="Enter New Password"
+          placeholder='Enter New Password'
         />
         <ControlledTextInput
           control={control}
-          name="confirmPassword"
-          label="Confirm Password"
+          name='confirmPassword'
+          label='Confirm Password'
           secureTextEntry
-          placeholder="Repeat New Password"
+          placeholder='Repeat New Password'
         />
       </View>
       <View style={styles.footer}>
-        <Pressable style={styles.submitBtn} onPress={handleSubmit(onSubmitInternal, onError)}>
+        <Pressable
+          style={styles.submitBtn}
+          onPress={handleSubmit(onSubmitInternal, onError)}
+        >
           <AppText style={styles.submitBtnText}>Change Password</AppText>
         </Pressable>
       </View>

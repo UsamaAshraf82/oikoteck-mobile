@@ -1,6 +1,12 @@
 import { CaretDownIcon, XIcon } from 'phosphor-react-native';
 import { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, TextInput, TouchableNativeFeedback, View } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  TouchableNativeFeedback,
+  View,
+} from 'react-native';
 import Modal from 'react-native-modal';
 import AppText from '~/components/Elements/AppText';
 import useSelect from '~/store/useSelectHelper';
@@ -41,7 +47,13 @@ type Props = {
   value: filterType;
 };
 
-const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) => {
+const FilterModal = ({
+  visible,
+  onClose,
+  value,
+  onPress,
+  listing_type,
+}: Props) => {
   const [filter, setFilters] = useState<filterType>(value);
   const { openSelect } = useSelect();
   const changeSearch = (f: Partial<filterType>) => {
@@ -57,35 +69,38 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
       isVisible={visible}
       onBackdropPress={onClose}
       onSwipeComplete={onClose}
-      swipeDirection="down"
+      swipeDirection='down'
       hardwareAccelerated
       coverScreen={false}
       avoidKeyboard={false}
       style={styles.modal}
-      propagateSwipe>
+      propagateSwipe
+    >
       <View
         style={[
           styles.container,
           {
             height: deviceHeight * 0.8,
           },
-        ]}>
+        ]}
+      >
         <View style={styles.handle} />
         <View style={styles.content}>
           <View style={styles.header}>
             <AppText style={styles.headerTitle}>Filters</AppText>
             <TouchableNativeFeedback hitSlop={10} onPress={onClose}>
               <View>
-                <XIcon color="#192234" size={24} />
+                <XIcon color='#192234' size={24} />
               </View>
             </TouchableNativeFeedback>
           </View>
           <View style={{ flex: 1 }}>
             <ScrollView
-              keyboardShouldPersistTaps="handled"
-              keyboardDismissMode="on-drag"
+              keyboardShouldPersistTaps='handled'
+              keyboardDismissMode='on-drag'
               showsVerticalScrollIndicator={false}
-              showsHorizontalScrollIndicator={false}>
+              showsHorizontalScrollIndicator={false}
+            >
               {/* Price Range */}
               <View style={styles.section}>
                 <AppText style={styles.sectionLabel}>Price Range</AppText>
@@ -121,20 +136,25 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                         },
                       });
                     }}
-                    style={styles.inputBox}>
+                    style={styles.inputBox}
+                  >
                     <View style={styles.inputInner}>
                       <AppText
                         style={[
                           styles.inputText,
-                          { color: filter.minPrice === null ? '#8D95A5' : '#192234' },
-                        ]}>
+                          {
+                            color:
+                              filter.minPrice === null ? '#8D95A5' : '#192234',
+                          },
+                        ]}
+                      >
                         {filter.minPrice
                           ? listing_type === 'Sale'
                             ? '€ ' + numberminify(filter.minPrice)
                             : '€ ' + thoasandseprator(filter.minPrice)
                           : 'No Min'}
                       </AppText>
-                      <CaretDownIcon color="#000" size={16} />
+                      <CaretDownIcon color='#000' size={16} />
                     </View>
                   </PressableView>
                   <AppText style={styles.separator}> - </AppText>
@@ -169,20 +189,25 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                           changeSearch({ maxPrice: e.value as number | null });
                         },
                       });
-                    }}>
+                    }}
+                  >
                     <View style={styles.inputInner}>
                       <AppText
                         style={[
                           styles.inputText,
-                          { color: filter.maxPrice === null ? '#8D95A5' : '#192234' },
-                        ]}>
+                          {
+                            color:
+                              filter.maxPrice === null ? '#8D95A5' : '#192234',
+                          },
+                        ]}
+                      >
                         {filter.maxPrice
                           ? listing_type === 'Sale'
                             ? '€ ' + numberminify(filter.maxPrice)
                             : '€ ' + thoasandseprator(filter.maxPrice)
                           : 'No Max'}
                       </AppText>
-                      <CaretDownIcon color="#000" size={16} />
+                      <CaretDownIcon color='#000' size={16} />
                     </View>
                   </PressableView>
                 </View>
@@ -196,7 +221,8 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                       let options = [
                         { label: 'No Min', value: null },
                         ...[
-                          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+                          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+                          17, 18, 19, 20,
                         ].map((i) => ({
                           label: thoasandseprator(i * 50) + ' m²',
                           value: i * 50,
@@ -211,16 +237,23 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                         },
                       });
                     }}
-                    style={styles.inputBox}>
+                    style={styles.inputBox}
+                  >
                     <View style={styles.inputInner}>
                       <AppText
                         style={[
                           styles.inputText,
-                          { color: filter.minSize === null ? '#8D95A5' : '#192234' },
-                        ]}>
-                        {filter.minSize ? numberminify(filter.minSize) + ' m²' : 'No Min'}
+                          {
+                            color:
+                              filter.minSize === null ? '#8D95A5' : '#192234',
+                          },
+                        ]}
+                      >
+                        {filter.minSize
+                          ? numberminify(filter.minSize) + ' m²'
+                          : 'No Min'}
                       </AppText>
-                      <CaretDownIcon color="#000" size={16} />
+                      <CaretDownIcon color='#000' size={16} />
                     </View>
                   </PressableView>
                   <AppText style={styles.separator}> - </AppText>
@@ -230,7 +263,8 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                       let options = [
                         { label: 'No Min', value: null },
                         ...[
-                          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+                          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+                          17, 18, 19, 20,
                         ].map((i) => ({
                           label: thoasandseprator(i * 50) + ' m²',
                           value: i * 50,
@@ -244,23 +278,32 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                           changeSearch({ maxSize: e.value as number | null });
                         },
                       });
-                    }}>
+                    }}
+                  >
                     <View style={styles.inputInner}>
                       <AppText
                         style={[
                           styles.inputText,
-                          { color: filter.maxSize === null ? '#8D95A5' : '#192234' },
-                        ]}>
-                        {filter.maxSize ? numberminify(filter.maxSize) + ' m²' : 'No Max'}
+                          {
+                            color:
+                              filter.maxSize === null ? '#8D95A5' : '#192234',
+                          },
+                        ]}
+                      >
+                        {filter.maxSize
+                          ? numberminify(filter.maxSize) + ' m²'
+                          : 'No Max'}
                       </AppText>
-                      <CaretDownIcon color="#000" size={16} />
+                      <CaretDownIcon color='#000' size={16} />
                     </View>
                   </PressableView>
                 </View>
               </View>
               {/* Bedrooms */}
               <View style={styles.section}>
-                <AppText style={styles.sectionLabel}>Bedrooms (R) / Rooms (C)</AppText>
+                <AppText style={styles.sectionLabel}>
+                  Bedrooms (R) / Rooms (C)
+                </AppText>
                 <View style={styles.segmentedRow}>
                   {[
                     { label: 'Any', value: null },
@@ -282,11 +325,16 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                             i === arr.length - 1 ? styles.segmentedRight : {},
                             isActive ? styles.segmentedActive : {},
                           ] as any
-                        }>
+                        }
+                      >
                         <AppText
                           style={
-                            [styles.segmentedText, isActive ? styles.textSecondary : {}] as any
-                          }>
+                            [
+                              styles.segmentedText,
+                              isActive ? styles.textSecondary : {},
+                            ] as any
+                          }
+                        >
                           {item.label}
                         </AppText>
                       </PressableView>
@@ -318,11 +366,16 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                             i === arr.length - 1 ? styles.segmentedRight : {},
                             isActive ? styles.segmentedActive : {},
                           ] as any
-                        }>
+                        }
+                      >
                         <AppText
                           style={
-                            [styles.segmentedText, isActive ? styles.textSecondary : {}] as any
-                          }>
+                            [
+                              styles.segmentedText,
+                              isActive ? styles.textSecondary : {},
+                            ] as any
+                          }
+                        >
                           {item.label}
                         </AppText>
                       </PressableView>
@@ -344,9 +397,21 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                       <PressableView
                         key={item.label}
                         onPress={() => changeSearch({ furnished: item.value })}
-                        style={[styles.tabButton, isActive ? styles.tabActive : {}] as any}>
+                        style={
+                          [
+                            styles.tabButton,
+                            isActive ? styles.tabActive : {},
+                          ] as any
+                        }
+                      >
                         <AppText
-                          style={[styles.tabText, isActive ? styles.textPrimary : {}] as any}>
+                          style={
+                            [
+                              styles.tabText,
+                              isActive ? styles.textPrimary : {},
+                            ] as any
+                          }
+                        >
                           {item.label}
                         </AppText>
                       </PressableView>
@@ -382,8 +447,8 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                 <AppText style={styles.sectionLabel}>Keywords</AppText>
                 <TextInput
                   style={styles.keywordInput}
-                  placeholder="Pool, Gym, Solar Panel, etc."
-                  placeholderTextColor="#8D95A5"
+                  placeholder='Pool, Gym, Solar Panel, etc.'
+                  placeholderTextColor='#8D95A5'
                   value={filter.keywords || undefined}
                   onChangeText={(text) => changeSearch({ keywords: text })}
                 />
@@ -406,7 +471,9 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                       value={filter.property_type === item.value}
                       onChange={() =>
                         changeSearch({
-                          property_type: item.value as Property_Type['property_type'] | null,
+                          property_type: item.value as
+                            | Property_Type['property_type']
+                            | null,
                         })
                       }
                     />
@@ -426,7 +493,9 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                       value={filter.property_category === item}
                       onChange={() =>
                         changeSearch({
-                          property_category: item as Property_Type['property_category'] | null,
+                          property_category: item as
+                            | Property_Type['property_category']
+                            | null,
                         })
                       }
                     />
@@ -458,14 +527,16 @@ const FilterModal = ({ visible, onClose, value, onPress, listing_type }: Props) 
                 property_type: null,
                 property_category: null,
               });
-            }}>
+            }}
+          >
             <AppText style={styles.resetText}>Reset All</AppText>
           </PressableView>
           <PressableView
             style={styles.applyButton}
             onPress={() => {
               onPress(filter);
-            }}>
+            }}
+          >
             <AppText style={styles.applyText}>Apply Filter</AppText>
           </PressableView>
         </View>

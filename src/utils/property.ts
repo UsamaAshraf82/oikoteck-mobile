@@ -2,7 +2,10 @@ import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
 import { planEnum, Property_Type, statusEnum } from '~/type/property';
 
-export function property_category(property_type: string | null, withAny = false) {
+export function property_category(
+  property_type: string | null,
+  withAny = false
+) {
   let category: (string | null)[] = [];
   switch (property_type) {
     case 'Residential':
@@ -18,7 +21,14 @@ export function property_category(property_type: string | null, withAny = false)
       ];
       break;
     case 'Commercial':
-      category = ['Office', 'Store', 'Warehouse', 'Industrial Space', 'Hotel', 'Business Building'];
+      category = [
+        'Office',
+        'Store',
+        'Warehouse',
+        'Industrial Space',
+        'Hotel',
+        'Business Building',
+      ];
       break;
     case 'Land':
       category = [
@@ -57,7 +67,9 @@ export function level_of_finish(level_of_finish?: number) {
   }
 }
 
-export const special_feature = (property_type: 'Residential' | 'Commercial' | 'Land') => {
+export const special_feature = (
+  property_type: 'Residential' | 'Commercial' | 'Land'
+) => {
   if (property_type === 'Land') {
     return [
       'Power access',
@@ -91,7 +103,10 @@ export const special_feature = (property_type: 'Residential' | 'Commercial' | 'L
   ];
 };
 
-export async function resizeImage(asset: ImagePicker.ImagePickerAsset, size: number) {
+export async function resizeImage(
+  asset: ImagePicker.ImagePickerAsset,
+  size: number
+) {
   const uri = asset.uri;
   const origW = asset.width;
   const origH = asset.height;
@@ -146,7 +161,11 @@ export const viewListing = (plan: planEnum, status: statusEnum) => {
       return false;
   }
 };
-export const applyCredit = (plan: planEnum, status: statusEnum, future_promote: boolean) => {
+export const applyCredit = (
+  plan: planEnum,
+  status: statusEnum,
+  future_promote: boolean
+) => {
   switch (plan) {
     case 'Free':
       switch (status) {
@@ -163,7 +182,11 @@ export const applyCredit = (plan: planEnum, status: statusEnum, future_promote: 
       return false;
   }
 };
-export const editCredits = (plan: planEnum, status: statusEnum, future_promote: boolean) => {
+export const editCredits = (
+  plan: planEnum,
+  status: statusEnum,
+  future_promote: boolean
+) => {
   switch (plan) {
     case 'Free':
       switch (status) {
@@ -259,7 +282,11 @@ export const cancelMembership = (plan: planEnum, status: statusEnum) => {
       return false;
   }
 };
-export const rejectionReason = (plan: planEnum, status: statusEnum, visible: boolean) => {
+export const rejectionReason = (
+  plan: planEnum,
+  status: statusEnum,
+  visible: boolean
+) => {
   switch (status) {
     case 'Rejected':
       return true;
@@ -268,7 +295,11 @@ export const rejectionReason = (plan: planEnum, status: statusEnum, visible: boo
       return false;
   }
 };
-export const activateListing = (plan: planEnum, status: statusEnum, visible: boolean) => {
+export const activateListing = (
+  plan: planEnum,
+  status: statusEnum,
+  visible: boolean
+) => {
   switch (plan) {
     case 'Free':
     case 'Promote':
@@ -293,7 +324,11 @@ export const permanentDelete = (status: statusEnum) => {
   }
 };
 
-export const boostListing = (plan: planEnum, status: statusEnum, bosted: boolean) => {
+export const boostListing = (
+  plan: planEnum,
+  status: statusEnum,
+  bosted: boolean
+) => {
   switch (plan) {
     case 'Promote':
       switch (status) {
@@ -308,7 +343,11 @@ export const boostListing = (plan: planEnum, status: statusEnum, bosted: boolean
   }
 };
 
-export const viewInsight = (plan: planEnum, status: statusEnum, visible: boolean) => {
+export const viewInsight = (
+  plan: planEnum,
+  status: statusEnum,
+  visible: boolean
+) => {
   switch (status) {
     case 'Approved':
       return true;

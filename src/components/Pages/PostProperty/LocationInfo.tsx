@@ -15,21 +15,21 @@ import District from '~/components/Sheets/District/District';
 import { stringify_area_district } from '~/lib/stringify_district_area';
 import { useToast } from '~/store/useToast';
 
-type Props = { data: Partial<LocationInfoTypes>; onSubmit: (data: LocationInfoTypes) => void };
+type Props = {
+  data: Partial<LocationInfoTypes>;
+  onSubmit: (data: LocationInfoTypes) => void;
+};
 
 export default function LocationInfo({ data, onSubmit }: Props) {
   const { addToast } = useToast();
   const [district, setDistrict] = useState(false);
   const [area, setArea] = useState(false);
-  const {
-    control,
-    setValue,
-    handleSubmit,
-    watch,
-  } = useForm<LocationInfoTypes>({
-    resolver: zodResolver(LocationInfoSchema) as any,
-    defaultValues: data,
-  });
+  const { control, setValue, handleSubmit, watch } = useForm<LocationInfoTypes>(
+    {
+      resolver: zodResolver(LocationInfoSchema) as any,
+      defaultValues: data,
+    }
+  );
 
   const onSubmitInternal = async (formData: LocationInfoTypes) => {
     onSubmit(formData);
@@ -63,19 +63,20 @@ export default function LocationInfo({ data, onSubmit }: Props) {
         <KeyboardAwareScrollView
           bottomOffset={50}
           contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
+          keyboardShouldPersistTaps='handled'
           showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}>
+          showsHorizontalScrollIndicator={false}
+        >
           <Select
-            label="District"
+            label='District'
             onPress={() => {
               setDistrict(true);
             }}
             value={{ label: currentDistrict, value: currentDistrict }}
-            placeholder="Select District"
+            placeholder='Select District'
           />
           <Select
-            label="Area"
+            label='Area'
             onPress={() => {
               setArea(true);
             }}
@@ -86,23 +87,27 @@ export default function LocationInfo({ data, onSubmit }: Props) {
               }),
               value: { area_1: currentArea1, area_2: currentArea2 },
             }}
-            placeholder="Select Area"
+            placeholder='Select Area'
           />
           <ControlledTextInput
             control={control}
-            name="address"
-            label="Street Address"
-            placeholder="Street Address"
+            name='address'
+            label='Street Address'
+            placeholder='Street Address'
           />
-          <ControlledCheckBox control={control} name="exact_location" label="Show exact address" />
+          <ControlledCheckBox
+            control={control}
+            name='exact_location'
+            label='Show exact address'
+          />
           <AppText style={styles.infoText}>
-            This enables exact property location pin on the map, if disabled we will show a circle
-            with a range of 100m on the property location
+            This enables exact property location pin on the map, if disabled we
+            will show a circle with a range of 100m on the property location
           </AppText>
 
           <AppText style={styles.infoText}>
-            If Google maps find a partial match, drag the pin in the appropriate area to locate your
-            property.
+            If Google maps find a partial match, drag the pin in the appropriate
+            area to locate your property.
           </AppText>
           <View style={styles.mapContainer}>
             <MapView
@@ -113,10 +118,14 @@ export default function LocationInfo({ data, onSubmit }: Props) {
                 longitude: marker?.lng || 0,
                 latitudeDelta: 0.05,
                 longitudeDelta: 0.05,
-              }}>
+              }}
+            >
               <Marker
                 draggable
-                coordinate={{ latitude: marker?.lat || 0, longitude: marker?.lng || 0 }}
+                coordinate={{
+                  latitude: marker?.lat || 0,
+                  longitude: marker?.lng || 0,
+                }}
                 onDragEnd={(e) =>
                   setValue('marker', {
                     lat: e.nativeEvent.coordinate.latitude,
@@ -129,7 +138,10 @@ export default function LocationInfo({ data, onSubmit }: Props) {
         </KeyboardAwareScrollView>
       </View>
       <View style={styles.footer}>
-        <PressableView onPress={handleSubmit(onSubmitInternal, onError)} style={styles.continueBtn}>
+        <PressableView
+          onPress={handleSubmit(onSubmitInternal, onError)}
+          style={styles.continueBtn}
+        >
           <AppText style={styles.continueBtnText}>Continue</AppText>
         </PressableView>
       </View>
@@ -151,7 +163,10 @@ export default function LocationInfo({ data, onSubmit }: Props) {
           setValue('area_2', areaData.area_2);
         }}
         district={currentDistrict}
-        value={stringify_area_district({ area_1: currentArea1, area_2: currentArea2 })}
+        value={stringify_area_district({
+          area_1: currentArea1,
+          area_2: currentArea2,
+        })}
       />
     </View>
   );

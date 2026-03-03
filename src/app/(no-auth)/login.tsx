@@ -39,10 +39,9 @@ export default function Login() {
   const router = useRouter();
   const { startActivity, stopActivity } = useActivityIndicator();
   const { login, user } = useUser();
-  const {
-    control,
-    handleSubmit,
-  } = useForm<SignInValues>({ resolver: zodResolver(SignInSchema) });
+  const { control, handleSubmit } = useForm<SignInValues>({
+    resolver: zodResolver(SignInSchema),
+  });
 
   useEffect(() => {
     if (user) {
@@ -76,54 +75,60 @@ export default function Login() {
         onBackPress={() => {
           router.back();
         }}
-        title=""
+        title=''
       />
 
       <KeyboardAwareScrollView
         bottomOffset={50}
         contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
+        keyboardShouldPersistTaps='handled'
         showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}>
+        showsHorizontalScrollIndicator={false}
+      >
         <View style={styles.formWrapper}>
           <AppText style={styles.title}>Sign in to your account!</AppText>
           <AppText style={styles.subtext}>
             Don&apos;t have an account?{' '}
-            <Link href="signup" style={styles.linkText}>
+            <Link href='signup' style={styles.linkText}>
               Sign up
             </Link>
           </AppText>
 
           <SocialSignin />
 
-          <AppText style={styles.dividerText}>- - - or sign in with email - - -</AppText>
+          <AppText style={styles.dividerText}>
+            - - - or sign in with email - - -
+          </AppText>
 
           <View style={styles.inputGroup}>
             <ControlledTextInput
               control={control}
-              name="email"
-              label="Email Address"
-              autoComplete="email"
-              keyboardType="email-address"
-              placeholder="Enter your email address"
+              name='email'
+              label='Email Address'
+              autoComplete='email'
+              keyboardType='email-address'
+              placeholder='Enter your email address'
             />
             <ControlledTextInput
               control={control}
-              name="password"
-              label="Password"
-              autoComplete="password"
+              name='password'
+              label='Password'
+              autoComplete='password'
               secureTextEntry
-              placeholder="Enter your password"
+              placeholder='Enter your password'
             />
           </View>
-          <Link href="reset-password" style={styles.forgotPassword}>
+          <Link href='reset-password' style={styles.forgotPassword}>
             Forgot Password?
           </Link>
         </View>
       </KeyboardAwareScrollView>
 
       <View style={styles.footer}>
-        <PressableView onPress={handleSubmit(onSubmit, onError)} style={styles.submitBtn}>
+        <PressableView
+          onPress={handleSubmit(onSubmit, onError)}
+          style={styles.submitBtn}
+        >
           <AppText style={styles.submitBtnText}>Sign in</AppText>
         </PressableView>
       </View>

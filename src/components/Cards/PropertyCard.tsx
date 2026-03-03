@@ -2,7 +2,10 @@ import { useRouter } from 'expo-router';
 import Parse from 'parse/react-native';
 import { memo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+} from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
 import { stringify_area_district } from '~/lib/stringify_district_area';
 import { Property_Type } from '~/type/property';
@@ -19,138 +22,154 @@ import FavButton from './FavButton';
 const wide = deviceWidth - 16 * 2;
 const height = wide / 1.2;
 
-const PropertyCard = memo(({ property, shrink = 1 }: { property: Property_Type; shrink?: number }) => {
-  const progress = useSharedValue(0);
-  const router = useRouter();
-  let owner: User_Type;
-  if (property.owner instanceof Parse.User) {
-    // @ts-ignore
-    owner = property.owner.toJSON();
-  } else {
-    owner = property.owner as User_Type;
-  }
-  return (
-    <View style={styles.cardWrapper}>
-      <Pressable
-        onPress={() => {
-          router.push(`/property/${property.objectId}`);
-        }}>
-        <View
-          style={[
-            styles.cardContainer,
-            {
-              width: wide * shrink,
-              height: height * shrink,
-            },
-          ]}>
-          <View style={styles.contentWrapper}>
-            <View style={styles.imageContainer}>
-              <Carousel
-                data={property.images}
-                loop={false}
-                pagingEnabled={true}
-                snapEnabled={true}
-                width={wide * shrink}
-                style={styles.fullWidth}
-                onProgressChange={(_: any, absoluteProgress: number) => {
-                  progress.value = absoluteProgress;
-                }}
-                onConfigurePanGesture={(g) => {
-                  'worklet';
-                  g.activeOffsetX([-10, 10]);
-                }}
-                renderItem={({ item }: { item: string }) => {
-                  return (
-                    <View style={styles.relative}>
-                      <AWSImage
-                        contentFit="cover"
-                        placeholderContentFit="cover"
-                        style={{ width: wide * shrink, height: '100%' }}
-                        src={item}
-                        size="800x800"
-                      />
-                      {property.agent_icon && owner.logo && (
-                        <View style={styles.agentLogoWrapper}>
-                          <AWSImage
-                            contentFit="cover"
-                            placeholderContentFit="cover"
-                            src={owner.logo}
-                            size="300x300"
-                            debug
-                            style={{ width: 70, height: 70, opacity: 0.7 }}
-                          />
-                        </View>
-                      )}
-                    </View>
-                  );
-                }}
-              />
+const PropertyCard = memo(
+  ({ property, shrink = 1 }: { property: Property_Type; shrink?: number }) => {
+    const progress = useSharedValue(0);
+    const router = useRouter();
+    let owner: User_Type;
+    if (property.owner instanceof Parse.User) {
+      // @ts-ignore
+      owner = property.owner.toJSON();
+    } else {
+      owner = property.owner as User_Type;
+    }
+    return (
+      <View style={styles.cardWrapper}>
+        <Pressable
+          onPress={() => {
+            router.push(`/property/${property.objectId}`);
+          }}
+        >
+          <View
+            style={[
+              styles.cardContainer,
+              {
+                width: wide * shrink,
+                height: height * shrink,
+              },
+            ]}
+          >
+            <View style={styles.contentWrapper}>
+              <View style={styles.imageContainer}>
+                <Carousel
+                  data={property.images}
+                  loop={false}
+                  pagingEnabled={true}
+                  snapEnabled={true}
+                  width={wide * shrink}
+                  style={styles.fullWidth}
+                  onProgressChange={(_: any, absoluteProgress: number) => {
+                    progress.value = absoluteProgress;
+                  }}
+                  onConfigurePanGesture={(g) => {
+                    'worklet';
+                    g.activeOffsetX([-10, 10]);
+                  }}
+                  renderItem={({ item }: { item: string }) => {
+                    return (
+                      <View style={styles.relative}>
+                        <AWSImage
+                          contentFit='cover'
+                          placeholderContentFit='cover'
+                          style={{ width: wide * shrink, height: '100%' }}
+                          src={item}
+                          size='800x800'
+                        />
+                        {property.agent_icon && owner.logo && (
+                          <View style={styles.agentLogoWrapper}>
+                            <AWSImage
+                              contentFit='cover'
+                              placeholderContentFit='cover'
+                              src={owner.logo}
+                              size='300x300'
+                              debug
+                              style={{ width: 70, height: 70, opacity: 0.7 }}
+                            />
+                          </View>
+                        )}
+                      </View>
+                    );
+                  }}
+                />
 
-              {/* Dots */}
-              <View style={styles.dotsWrapper}>
-                {property.images.map((_: any, index: number) => {
-                  return <Dot key={index} index={index} progress={progress} />;
-                })}
-              </View>
+                {/* Dots */}
+                <View style={styles.dotsWrapper}>
+                  {property.images.map((_: any, index: number) => {
+                    return (
+                      <Dot key={index} index={index} progress={progress} />
+                    );
+                  })}
+                </View>
 
-              {property.plan !== 'Free' && (
-                <View
-                  style={[
-                    styles.badge,
-                    property.plan === 'Gold' && styles.bgGold,
-                    property.plan === 'Promote' && styles.bgPromote,
-                    property.plan === 'Promote +' && styles.bgPromotePlus,
-                    property.plan === 'Platinum' && styles.bgPlatinum,
-                  ]}>
-                  <AppText style={styles.badgeText}>{property.plan}</AppText>
-                </View>
-              )}
-              <View style={styles.favButtonWrapper}>
-                <FavButton property_id={property.objectId} property={property} />
-              </View>
-            </View>
-            <View style={styles.detailsContainer}>
-              <View style={styles.rowBetween}>
-                <View style={styles.rowBaseline}>
-                  <AppText style={styles.priceText}>
-                    {'€ ' + thoasandseprator(property.price)}
-                  </AppText>
-                  {property.listing_for !== 'Sale' && (
-                    <AppText style={styles.perMonthText}>/month</AppText>
-                  )}
+                {property.plan !== 'Free' && (
+                  <View
+                    style={[
+                      styles.badge,
+                      property.plan === 'Gold' && styles.bgGold,
+                      property.plan === 'Promote' && styles.bgPromote,
+                      property.plan === 'Promote +' && styles.bgPromotePlus,
+                      property.plan === 'Platinum' && styles.bgPlatinum,
+                    ]}
+                  >
+                    <AppText style={styles.badgeText}>{property.plan}</AppText>
+                  </View>
+                )}
+                <View style={styles.favButtonWrapper}>
+                  <FavButton
+                    property_id={property.objectId}
+                    property={property}
+                  />
                 </View>
               </View>
-              <View style={styles.rowBetween}>
-                <AppText style={styles.titleText}>{property.title}</AppText>
-              </View>
-              <AppText style={styles.locationText}>
-                {stringify_area_district({
-                  district: property.district,
-                  area_1: property.area_1,
-                  area_2: property.area_2,
-                })}
-              </AppText>
-              <View style={styles.featuresContainer}>
-                <View style={styles.featureItem}>
-                  <BedIcon height={17} width={17} color="#7D7D7D" />
-                  <AppText style={styles.featureText}>{property.bedrooms} beds</AppText>
+              <View style={styles.detailsContainer}>
+                <View style={styles.rowBetween}>
+                  <View style={styles.rowBaseline}>
+                    <AppText style={styles.priceText}>
+                      {'€ ' + thoasandseprator(property.price)}
+                    </AppText>
+                    {property.listing_for !== 'Sale' && (
+                      <AppText style={styles.perMonthText}>/month</AppText>
+                    )}
+                  </View>
                 </View>
-                <View style={styles.featureItem}>
-                  <BathIcon height={17} width={17} color="#7D7D7D" />
-                  <AppText style={styles.featureText}>{property.bathrooms} baths</AppText>
+                <View style={styles.rowBetween}>
+                  <AppText style={styles.titleText}>{property.title}</AppText>
                 </View>
-                <View style={styles.featureItem}>
-                  <SizeIcon height={18} width={18} color="#7D7D7D" />
-                  <AppText style={styles.featureText}>{property.size} m²</AppText>
+                <AppText style={styles.locationText}>
+                  {stringify_area_district({
+                    district: property.district,
+                    area_1: property.area_1,
+                    area_2: property.area_2,
+                  })}
+                </AppText>
+                <View style={styles.featuresContainer}>
+                  <View style={styles.featureItem}>
+                    <BedIcon height={17} width={17} color='#7D7D7D' />
+                    <AppText style={styles.featureText}>
+                      {property.bedrooms} beds
+                    </AppText>
+                  </View>
+                  <View style={styles.featureItem}>
+                    <BathIcon height={17} width={17} color='#7D7D7D' />
+                    <AppText style={styles.featureText}>
+                      {property.bathrooms} baths
+                    </AppText>
+                  </View>
+                  <View style={styles.featureItem}>
+                    <SizeIcon height={18} width={18} color='#7D7D7D' />
+                    <AppText style={styles.featureText}>
+                      {property.size} m²
+                    </AppText>
+                  </View>
                 </View>
               </View>
             </View>
           </View>
-        </View>
-      </Pressable>
-    </View>
-  );
-});
+        </Pressable>
+      </View>
+    );
+  }
+);
 
 export default PropertyCard;
 
@@ -167,7 +186,9 @@ const Dot = memo(({ index, progress }: any) => {
       opacity: isMain || isNear || isFar ? 1 : 0,
       width: isMain ? 8 : isNear ? 6 : isFar ? 4 : 0,
       height: isMain ? 8 : isNear ? 6 : isFar ? 4 : 0,
-      backgroundColor: isMain ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.7)',
+      backgroundColor: isMain
+        ? 'rgba(255,255,255,0.9)'
+        : 'rgba(255,255,255,0.7)',
     };
   });
 

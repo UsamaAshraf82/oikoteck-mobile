@@ -9,7 +9,9 @@ import z from 'zod';
 import PropertyCard from '~/components/Cards/PropertyCardTable';
 import AppText from '~/components/Elements/AppText';
 import Checkbox from '~/components/Elements/Checkbox';
-import TextInput, { ControlledTextInput } from '~/components/Elements/TextInput';
+import TextInput, {
+  ControlledTextInput,
+} from '~/components/Elements/TextInput';
 import TopHeader from '~/components/Elements/TopHeader';
 import PressableView from '~/components/HOC/PressableView';
 import useActivityIndicator from '~/store/useActivityIndicator';
@@ -37,12 +39,7 @@ const ChangePlan = () => {
   const local = useLocalSearchParams<{ id: string }>();
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
 
-  const {
-    control,
-    setValue,
-    handleSubmit,
-    watch,
-  } = useForm<PaymentInfoTypes>({
+  const { control, setValue, handleSubmit, watch } = useForm<PaymentInfoTypes>({
     resolver: zodResolver(PaymentInfoSchema),
     defaultValues: {
       plan: 'Free',
@@ -95,7 +92,7 @@ const ChangePlan = () => {
     }
   };
 
-const onError: SubmitErrorHandler<PaymentInfoTypes> = (errors) => {
+  const onError: SubmitErrorHandler<PaymentInfoTypes> = (errors) => {
     const keys = Object.keys(errors) as (keyof PaymentInfoTypes)[];
     for (let index = 0; index < keys.length; index++) {
       const element = errors[keys[index]];
@@ -166,7 +163,7 @@ const onError: SubmitErrorHandler<PaymentInfoTypes> = (errors) => {
   if (isLoading) {
     return (
       <View style={styles.loaderContainer}>
-        <ActivityIndicator size="large" color="#82065e" />
+        <ActivityIndicator size='large' color='#82065e' />
       </View>
     );
   }
@@ -174,7 +171,10 @@ const onError: SubmitErrorHandler<PaymentInfoTypes> = (errors) => {
   if (!property) {
     return (
       <View style={styles.container}>
-        <TopHeader title="Change Membership" onBackPress={() => router.back()} />
+        <TopHeader
+          title='Change Membership'
+          onBackPress={() => router.back()}
+        />
         <View style={styles.emptyContainer}>
           <AppText style={styles.subTitle}>Property not found.</AppText>
         </View>
@@ -187,7 +187,7 @@ const onError: SubmitErrorHandler<PaymentInfoTypes> = (errors) => {
   return (
     <View style={styles.container}>
       <TopHeader
-        title="Change Membership"
+        title='Change Membership'
         onBackPress={() => {
           router.back();
         }}
@@ -196,13 +196,17 @@ const onError: SubmitErrorHandler<PaymentInfoTypes> = (errors) => {
       <View style={styles.content}>
         <View style={styles.headerSection}>
           <AppText style={styles.mainTitle}>Change of Membership</AppText>
-          <AppText style={styles.subTitle}>Manage your listing membership here.</AppText>
+          <AppText style={styles.subTitle}>
+            Manage your listing membership here.
+          </AppText>
         </View>
 
-        <PropertyCard property={property} type="change_plan" />
+        <PropertyCard property={property} type='change_plan' />
 
         <View style={styles.selectionSection}>
-          <AppText style={styles.sectionTitle}>Select OikoTeck Service Plan</AppText>
+          <AppText style={styles.sectionTitle}>
+            Select OikoTeck Service Plan
+          </AppText>
           <AppText style={styles.sectionSubTitle}>
             Click on a service name to view more details
           </AppText>
@@ -211,7 +215,7 @@ const onError: SubmitErrorHandler<PaymentInfoTypes> = (errors) => {
         <View style={styles.optionsWrapper}>
           <Checkbox
             labelLast
-            label="Free"
+            label='Free'
             disabled={property.plan === 'Free'}
             labelStyle={styles.checkboxLabel}
             getValue={() => setValue('plan', 'Free')}
@@ -219,7 +223,7 @@ const onError: SubmitErrorHandler<PaymentInfoTypes> = (errors) => {
           />
           <Checkbox
             labelLast
-            label="Promote"
+            label='Promote'
             disabled={property.plan === 'Promote'}
             labelStyle={styles.checkboxLabel}
             getValue={() => setValue('plan', 'Promote')}
@@ -231,17 +235,20 @@ const onError: SubmitErrorHandler<PaymentInfoTypes> = (errors) => {
           <View style={styles.promoWrapper}>
             <ControlledTextInput
               control={control}
-              name="promo"
-              label="Promo Code"
-              placeholder="Promo Code"
+              name='promo'
+              label='Promo Code'
+              placeholder='Promo Code'
             />
-            <TextInput label="One-Time Payment" value="30 €" readOnly />
+            <TextInput label='One-Time Payment' value='30 €' readOnly />
           </View>
         )}
       </View>
 
       <View style={styles.footer}>
-        <PressableView onPress={handleSubmit(onSubmitInternal, onError)} style={styles.submitBtn}>
+        <PressableView
+          onPress={handleSubmit(onSubmitInternal, onError)}
+          style={styles.submitBtn}
+        >
           <AppText style={styles.submitBtnText}>Continue</AppText>
         </PressableView>
       </View>

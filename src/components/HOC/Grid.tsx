@@ -9,7 +9,12 @@ export type GridProps = {
   style?: ViewStyle;
 };
 
-export default function Grid({ cols = 2, gap = 4, children, style }: GridProps) {
+export default function Grid({
+  cols = 2,
+  gap = 4,
+  children,
+  style,
+}: GridProps) {
   return (
     <View
       style={[
@@ -19,13 +24,15 @@ export default function Grid({ cols = 2, gap = 4, children, style }: GridProps) 
           margin: -gap, // cancel outer spacing
         },
         style,
-      ]}>
+      ]}
+    >
       {React.Children.map(children, (child: any) => (
         <View
           style={{
             width: `${100 / cols}%`, // col width
             padding: gap, // inner spacing
-          }}>
+          }}
+        >
           {child}
         </View>
       ))}

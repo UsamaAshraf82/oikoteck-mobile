@@ -75,10 +75,7 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
     }
   };
 
-  const {
-    control,
-    handleSubmit,
-  } = useForm<ShareConsentTypes>({
+  const { control, handleSubmit } = useForm<ShareConsentTypes>({
     resolver: zodResolver(ShareConsentSchema),
     defaultValues: {
       terms: false,
@@ -101,7 +98,6 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
     }
   };
 
-
   const isAgent = owner?.user_type === 'agent';
 
   return (
@@ -110,25 +106,27 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
         isVisible={visible}
         onBackdropPress={onClose}
         onSwipeComplete={onClose}
-        swipeDirection="down"
+        swipeDirection='down'
         coverScreen={false}
         hardwareAccelerated
         avoidKeyboard={false}
         propagateSwipe={false}
-        style={styles.modal}>
+        style={styles.modal}
+      >
         <View
           style={[
             styles.container,
             {
               maxHeight: deviceHeight * 0.9,
             },
-          ]}>
+          ]}
+        >
           <View style={styles.handle} />
           <View style={styles.header}>
             <AppText style={styles.headerTitle}>Contact Owner</AppText>
             <TouchableNativeFeedback hitSlop={10} onPress={onClose}>
               <View style={styles.closeIcon}>
-                <XIcon color="#192234" size={24} />
+                <XIcon color='#192234' size={24} />
               </View>
             </TouchableNativeFeedback>
           </View>
@@ -138,7 +136,7 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
             </AppText>
             <View style={styles.ownerRow}>
               <View style={styles.avatar}>
-                <UserIcon color="#192234" />
+                <UserIcon color='#192234' />
               </View>
               <View style={styles.ownerInfo}>
                 <View style={styles.ownerNameRow}>
@@ -146,20 +144,25 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
                     {owner.first_name} {owner.last_name}
                   </AppText>
                   <View
-                    style={[styles.badge, isAgent ? styles.badgeAgent : styles.badgeIndividual]}>
+                    style={[
+                      styles.badge,
+                      isAgent ? styles.badgeAgent : styles.badgeIndividual,
+                    ]}
+                  >
                     {isAgent ? (
                       <ExpoImage
                         source={agent}
                         style={{ width: 14, height: 14, color: '#0E6DF1' }}
                       />
                     ) : (
-                      <UserIcon size={14} color="#5412A1" />
+                      <UserIcon size={14} color='#5412A1' />
                     )}
                     <AppText
                       style={[
                         styles.badgeText,
                         isAgent ? styles.textAgent : styles.textIndividual,
-                      ]}>
+                      ]}
+                    >
                       {isAgent ? 'Broker' : 'Homeowner'}
                     </AppText>
                   </View>
@@ -167,16 +170,22 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
                 <View style={styles.actionRow}>
                   <PressableView
                     onPress={handleSubmit(() => setPhone(true), onError)}
-                    style={styles.smallBtn}>
+                    style={styles.smallBtn}
+                  >
                     <View style={styles.smallBtnPadding}>
-                      <AppText style={styles.smallBtnText}>Show Phone Number</AppText>
+                      <AppText style={styles.smallBtnText}>
+                        Show Phone Number
+                      </AppText>
                     </View>
                   </PressableView>
                   <PressableView
                     onPress={handleSubmit(() => setEmail(true), onError)}
-                    style={styles.smallBtn}>
+                    style={styles.smallBtn}
+                  >
                     <View style={styles.smallBtnPadding}>
-                      <AppText style={styles.smallBtnText}>Show Email Address</AppText>
+                      <AppText style={styles.smallBtnText}>
+                        Show Email Address
+                      </AppText>
                     </View>
                   </PressableView>
                 </View>
@@ -185,26 +194,33 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
             <View style={styles.mainActions}>
               <PressableView
                 onPress={handleSubmit(openWhatsApp, onError)}
-                style={styles.whatsappBtn}>
+                style={styles.whatsappBtn}
+              >
                 <View style={styles.btnInner}>
-                  <AppText style={styles.btnTextWhite}>Chat on WhatsApp</AppText>
-                  <WhatsappLogoIcon color="white" size={20} />
+                  <AppText style={styles.btnTextWhite}>
+                    Chat on WhatsApp
+                  </AppText>
+                  <WhatsappLogoIcon color='white' size={20} />
                 </View>
               </PressableView>
               <PressableView
                 onPress={handleSubmit(() => setMessage(true), onError)}
-                style={styles.messageBtn}>
+                style={styles.messageBtn}
+              >
                 <View style={styles.btnInner}>
                   <AppText style={styles.btnTextWhite}>Send a message</AppText>
-                  <ChatTeardropIcon color="white" size={20} />
+                  <ChatTeardropIcon color='white' size={20} />
                 </View>
               </PressableView>
               <PressableView
                 onPress={handleSubmit(() => setrequest_tour(true), onError)}
-                style={styles.tourBtn}>
+                style={styles.tourBtn}
+              >
                 <View style={styles.btnInner}>
-                  <AppText style={styles.btnTextPrimary}>Request a tour</AppText>
-                  <HouseLineIcon color="#192234" size={20} />
+                  <AppText style={styles.btnTextPrimary}>
+                    Request a tour
+                  </AppText>
+                  <HouseLineIcon color='#192234' size={20} />
                 </View>
               </PressableView>
             </View>
@@ -212,12 +228,12 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
               <ControlledCheckBox
                 control={control}
                 alignTop
-                name="terms"
-                labelStyle={{ color: '#ACACB9', fontSize: 14, }}
+                name='terms'
+                labelStyle={{ color: '#ACACB9', fontSize: 14 }}
                 label={
                   <>
                     I confirm that I read and I agree with Oikoteck’s{' '}
-                    <Link href="/terms-conditions" style={styles.linkText}>
+                    <Link href='/terms-conditions' style={styles.linkText}>
                       Terms & Conditions
                     </Link>{' '}
                     *
@@ -227,16 +243,16 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
               <ControlledCheckBox
                 control={control}
                 alignTop
-                name="privacy"
-                labelStyle={{ color: '#ACACB9', fontSize: 14, }}
+                name='privacy'
+                labelStyle={{ color: '#ACACB9', fontSize: 14 }}
                 label={
                   <>
                     I confirm that I read and understood Oikoteck’s{' '}
-                    <Link href="/privacy-policy" style={styles.linkText}>
+                    <Link href='/privacy-policy' style={styles.linkText}>
                       Data Protection Notice
                     </Link>{' '}
                     and the{' '}
-                    <Link href="/cookie-policy" style={styles.linkText}>
+                    <Link href='/cookie-policy' style={styles.linkText}>
                       Cookies Policy
                     </Link>{' '}
                     *
@@ -246,11 +262,17 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
               <ControlledCheckBox
                 control={control}
                 alignTop
-                name="share_consent"
-                labelStyle={{ color: '#ACACB9', fontSize: 14,fontFamily: 'LufgaMedium' }}
+                name='share_consent'
+                labelStyle={{
+                  color: '#ACACB9',
+                  fontSize: 14,
+                  fontFamily: 'LufgaMedium',
+                }}
                 label={
                   <>
-                    I consent to the sharing of my contact information and search preferences with real estate agents who offer listings which may align with my interests
+                    I consent to the sharing of my contact information and
+                    search preferences with real estate agents who offer
+                    listings which may align with my interests
                   </>
                 }
               />
@@ -258,10 +280,29 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
           </View>
         </View>
       </Modal>
-      {phone && <PhoneNumberModal visible={phone} onClose={() => setPhone(false)} owner={owner} />}
-      {email && <EmailModal visible={email} onClose={() => setEmail(false)} owner={owner} />}
-      {message && <SendMessage onClose={() => setMessage(false)} property={property} />}
-      {request_tour && <RequestTour onClose={() => setrequest_tour(false)} property={property} />}
+      {phone && (
+        <PhoneNumberModal
+          visible={phone}
+          onClose={() => setPhone(false)}
+          owner={owner}
+        />
+      )}
+      {email && (
+        <EmailModal
+          visible={email}
+          onClose={() => setEmail(false)}
+          owner={owner}
+        />
+      )}
+      {message && (
+        <SendMessage onClose={() => setMessage(false)} property={property} />
+      )}
+      {request_tour && (
+        <RequestTour
+          onClose={() => setrequest_tour(false)}
+          property={property}
+        />
+      )}
     </>
   );
 };
@@ -293,24 +334,28 @@ const PhoneNumberModal = ({
       hardwareAccelerated
       avoidKeyboard={false}
       propagateSwipe={false}
-      style={styles.modal}>
+      style={styles.modal}
+    >
       <View
         style={[
           styles.container,
           {
             maxHeight: deviceHeight * 0.9,
           },
-        ]}>
+        ]}
+      >
         <View style={styles.header}>
           <AppText style={styles.headerTitle}>Phone Number</AppText>
           <TouchableNativeFeedback hitSlop={10} onPress={onClose}>
             <View style={styles.closeIcon}>
-              <XIcon color="#192234" size={24} />
+              <XIcon color='#192234' size={24} />
             </View>
           </TouchableNativeFeedback>
         </View>
         <View style={{ maxHeight: deviceHeight * 0.775 }}>
-          <AppText style={styles.subTitle}>Property owner’s phone number</AppText>
+          <AppText style={styles.subTitle}>
+            Property owner’s phone number
+          </AppText>
           <View style={styles.numberBox}>
             <AppText style={styles.numberText}>
               +{owner.country_code} {owner.phone}
@@ -318,10 +363,13 @@ const PhoneNumberModal = ({
           </View>
           <View style={styles.modalActions}>
             <PressableView
-              onPress={() => Linking.openURL(`tel:+${owner.country_code} ${owner.phone}`)}
-              style={styles.callNowBtn}>
+              onPress={() =>
+                Linking.openURL(`tel:+${owner.country_code} ${owner.phone}`)
+              }
+              style={styles.callNowBtn}
+            >
               <View style={styles.btnInner}>
-                <PhoneCallIcon color="#192234" size={20} />
+                <PhoneCallIcon color='#192234' size={20} />
                 <AppText style={styles.btnTextPrimary}>Call Now</AppText>
               </View>
             </PressableView>
@@ -351,33 +399,38 @@ const EmailModal = ({
       hardwareAccelerated
       avoidKeyboard={false}
       propagateSwipe={false}
-      style={styles.modal}>
+      style={styles.modal}
+    >
       <View
         style={[
           styles.container,
           {
             maxHeight: deviceHeight * 0.9,
           },
-        ]}>
+        ]}
+      >
         <View style={styles.header}>
           <AppText style={styles.headerTitle}>Email address</AppText>
           <TouchableNativeFeedback hitSlop={10} onPress={onClose}>
             <View style={styles.closeIcon}>
-              <XIcon color="#192234" size={24} />
+              <XIcon color='#192234' size={24} />
             </View>
           </TouchableNativeFeedback>
         </View>
         <View style={{ maxHeight: deviceHeight * 0.775 }}>
-          <AppText style={styles.subTitle}>Property owner's email address</AppText>
+          <AppText style={styles.subTitle}>
+            Property owner's email address
+          </AppText>
           <View style={styles.numberBox}>
             <AppText style={styles.numberText}>{owner.username}</AppText>
           </View>
           <View style={styles.modalActions}>
             <PressableView
               onPress={() => Linking.openURL(`mailto:${owner.username}`)}
-              style={styles.emailNowBtn}>
+              style={styles.emailNowBtn}
+            >
               <View style={styles.btnInner}>
-                <EnvelopeIcon color="#192234" size={20} />
+                <EnvelopeIcon color='#192234' size={20} />
                 <AppText style={styles.btnTextPrimary}>Send Email</AppText>
               </View>
             </PressableView>

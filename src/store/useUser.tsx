@@ -45,7 +45,8 @@ const useUser = create<Store>()((set, get) => ({
         // await Parse.User
         useToast.getState().addToast({
           heading: 'Unverified Email',
-          message: 'User email is not verified. Check email to validate your account.',
+          message:
+            'User email is not verified. Check email to validate your account.',
           type: 'error',
         });
 
@@ -54,7 +55,10 @@ const useUser = create<Store>()((set, get) => ({
       }
 
       if (user.attributes.sessionToken) {
-        await AsyncStorage.setItem('session_token', user.attributes.sessionToken);
+        await AsyncStorage.setItem(
+          'session_token',
+          user.attributes.sessionToken
+        );
       }
       set(() => ({ user: user }));
     } catch (e) {
@@ -112,7 +116,10 @@ const useUser = create<Store>()((set, get) => ({
         });
       } catch (e) {}
       if (user.attributes.sessionToken) {
-        await AsyncStorage.setItem('session_token', user.attributes.sessionToken);
+        await AsyncStorage.setItem(
+          'session_token',
+          user.attributes.sessionToken
+        );
       }
 
       await get().logout();

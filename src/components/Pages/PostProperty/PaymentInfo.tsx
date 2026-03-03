@@ -5,22 +5,21 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { z } from 'zod';
 import AppText from '~/components/Elements/AppText';
 import Checkbox from '~/components/Elements/Checkbox';
-import TextInput, { ControlledTextInput } from '~/components/Elements/TextInput';
+import TextInput, {
+  ControlledTextInput,
+} from '~/components/Elements/TextInput';
 import PressableView from '~/components/HOC/PressableView';
 import { useToast } from '~/store/useToast';
 
-type Props = { data: Partial<PaymentInfoTypes>; onSubmit: (data: PaymentInfoTypes) => void };
+type Props = {
+  data: Partial<PaymentInfoTypes>;
+  onSubmit: (data: PaymentInfoTypes) => void;
+};
 
 export default function PaymentInfo({ data, onSubmit }: Props) {
   const { addToast } = useToast();
 
-  const {
-    control,
-    setValue,
-    handleSubmit,
-    watch,
-
-  } = useForm<PaymentInfoTypes>({
+  const { control, setValue, handleSubmit, watch } = useForm<PaymentInfoTypes>({
     resolver: zodResolver(PaymentInfoSchema) as any,
     defaultValues: data,
   });
@@ -49,27 +48,30 @@ export default function PaymentInfo({ data, onSubmit }: Props) {
     <View style={styles.container}>
       <View style={styles.mainContent}>
         <AppText style={styles.title}>Payments</AppText>
-        <AppText style={styles.subtitle}>Select your option plan and setup payments</AppText>
+        <AppText style={styles.subtitle}>
+          Select your option plan and setup payments
+        </AppText>
         <KeyboardAwareScrollView
           bottomOffset={50}
           contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
+          keyboardShouldPersistTaps='handled'
           showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}>
+          showsHorizontalScrollIndicator={false}
+        >
           <AppText style={styles.sectionTitle}>OikoTeck Service Plan</AppText>
           <AppText style={styles.sectionSubtitle}>
             Click on a service name to view more details
           </AppText>
           <Checkbox
             labelLast
-            label="Free"
+            label='Free'
             labelStyle={styles.checkboxLabel}
             getValue={() => setValue('plan', 'Free')}
             value={selectedPlan === 'Free'}
           />
           <Checkbox
             labelLast
-            label="Promote "
+            label='Promote '
             labelStyle={styles.checkboxLabel}
             getValue={() => setValue('plan', 'Promote')}
             value={selectedPlan === 'Promote'}
@@ -78,17 +80,20 @@ export default function PaymentInfo({ data, onSubmit }: Props) {
             <>
               <ControlledTextInput
                 control={control}
-                name="promo"
-                label="Promo Code"
-                placeholder="Promo Code"
+                name='promo'
+                label='Promo Code'
+                placeholder='Promo Code'
               />
-              <TextInput label="One-Time Payment" value="30 €" readOnly />
+              <TextInput label='One-Time Payment' value='30 €' readOnly />
             </>
           )}
         </KeyboardAwareScrollView>
       </View>
       <View style={styles.footer}>
-        <PressableView onPress={handleSubmit(onSubmitInternal, onError)} style={styles.continueBtn}>
+        <PressableView
+          onPress={handleSubmit(onSubmitInternal, onError)}
+          style={styles.continueBtn}
+        >
           <AppText style={styles.continueBtnText}>Continue</AppText>
         </PressableView>
       </View>
@@ -171,6 +176,6 @@ const PaymentInfoSchema = z.object({
 export type PaymentInfoTypes = z.infer<typeof PaymentInfoSchema>;
 
 const displayNames: Record<keyof PaymentInfoTypes, string> = {
- plan: 'Plan',
- promo: 'Promo Code',
+  plan: 'Plan',
+  promo: 'Promo Code',
 };

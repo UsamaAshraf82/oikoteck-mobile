@@ -68,7 +68,8 @@ const FavButton = ({ size = 26, color = '#fff', ...props }: Props) => {
           await FavouriteObject.save();
         }
         refetch();
-      }}>
+      }}
+    >
       <HeartIcon
         key={props.property_id + '_' + (faviorite ? 'fav' : 'not')}
         size={size}

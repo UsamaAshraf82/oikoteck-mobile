@@ -1,6 +1,12 @@
 import * as React from 'react';
 import { ReactNode } from 'react';
-import { StyleProp, StyleSheet, TouchableNativeFeedback, View, ViewStyle } from 'react-native';
+import {
+  StyleProp,
+  StyleSheet,
+  TouchableNativeFeedback,
+  View,
+  ViewStyle,
+} from 'react-native';
 
 type Props = {
   children: ReactNode;

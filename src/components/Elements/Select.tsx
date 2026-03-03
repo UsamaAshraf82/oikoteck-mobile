@@ -45,7 +45,10 @@ const Select = ({
                   // Note: These classNames will need translation in the Sheet/Select component
                   className: {
                     label: { wrapper: 'justify-start mb-4', text: 'text-2xl' },
-                    option_label: { wrapper: 'py-4', text: 'text-[15px]  font-normal' },
+                    option_label: {
+                      wrapper: 'py-4',
+                      text: 'text-[15px]  font-normal',
+                    },
                   },
                   hasXIcon: true,
                 });
@@ -59,14 +62,17 @@ const Select = ({
                 });
               }
             }
-          }}>
+          }}
+        >
           <View style={styles.selectBox}>
             {value?.label ? (
               <AppText style={styles.valueText}>{value?.label}</AppText>
             ) : (
-              <AppText style={styles.placeholderText}>{placeholder || ''}</AppText>
+              <AppText style={styles.placeholderText}>
+                {placeholder || ''}
+              </AppText>
             )}
-            <CaretDownIcon size={20} color="#192234" />
+            <CaretDownIcon size={20} color='#192234' />
           </View>
         </TouchableWithoutFeedback>
       </View>

@@ -7,8 +7,12 @@ import AppText from '~/components/Elements/AppText';
 import Basic1, { Basic1Values } from '~/components/Pages/PostProperty/Basic1';
 import Basic2, { Basic2Values } from '~/components/Pages/PostProperty/Basic2';
 import Basic3, { Basic3Values } from '~/components/Pages/PostProperty/Basic3';
-import LocationInfo, { LocationInfoTypes } from '~/components/Pages/PostProperty/LocationInfo';
-import PaymentInfo, { PaymentInfoTypes } from '~/components/Pages/PostProperty/PaymentInfo';
+import LocationInfo, {
+  LocationInfoTypes,
+} from '~/components/Pages/PostProperty/LocationInfo';
+import PaymentInfo, {
+  PaymentInfoTypes,
+} from '~/components/Pages/PostProperty/PaymentInfo';
 import PostListingS from '~/components/Pages/PostProperty/PostListingS';
 import PropertyGallery, {
   PropertyGalleryTypes,
@@ -63,7 +67,10 @@ export default function PostProperty() {
       return false;
     };
 
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction
+    );
     return () => backHandler.remove();
   }, [tab]);
 
@@ -152,11 +159,11 @@ export default function PostProperty() {
   const renderHeader = (onBack: () => void) => (
     <View style={styles.header}>
       <Pressable hitSlop={20} onPress={onBack}>
-        <ArrowLeftIcon color="#192234" size={24} />
+        <ArrowLeftIcon color='#192234' size={24} />
       </Pressable>
       <AppText style={styles.headerTitle}>Post a listing</AppText>
       <Pressable hitSlop={20} onPress={() => router.back()}>
-        <XIcon color="#192234" size={24} />
+        <XIcon color='#192234' size={24} />
       </Pressable>
     </View>
   );

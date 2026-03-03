@@ -3,7 +3,13 @@ import { ImageBackground } from 'expo-image';
 import { router } from 'expo-router';
 import { CheckIcon, XIcon } from 'phosphor-react-native';
 import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import AppText from '~/components/Elements/AppText';
 import TopHeader from '~/components/Elements/TopHeader';
 import { plans } from '~/global/plan';
@@ -25,8 +31,8 @@ const Services = () => {
       <View style={styles.titleWrapper}>
         <AppText style={styles.heading}>Choose a Plan 📄</AppText>
         <AppText style={styles.subHeading}>
-          Discover how our Innovative approach can save you money and boost your business
-          performance!
+          Discover how our Innovative approach can save you money and boost your
+          business performance!
         </AppText>
       </View>
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -35,14 +41,20 @@ const Services = () => {
             key={j}
             onPress={() => {
               setPlan(i.name);
-            }}>
-            <View style={[styles.planCard, plan === i.name && styles.planCardActive]}>
+            }}
+          >
+            <View
+              style={[
+                styles.planCard,
+                plan === i.name && styles.planCardActive,
+              ]}
+            >
               {plan === i.name && (
                 <ImageBackground
                   source={blobs}
                   style={styles.blobBackground}
                   blurRadius={100}
-                  contentFit="cover"
+                  contentFit='cover'
                 />
               )}
               <View style={styles.planCardInner}>
@@ -62,15 +74,21 @@ const Services = () => {
                 <AppText style={styles.description}>{i.description}</AppText>
                 <View style={styles.featuresList}>
                   {i.features.map((f, featureIdx) => (
-                    <View key={i.name + '-' + featureIdx} style={styles.featureItemWrapper}>
-                      {i.name === 'Free' && (featureIdx === 2 || featureIdx === 1) ? (
+                    <View
+                      key={i.name + '-' + featureIdx}
+                      style={styles.featureItemWrapper}
+                    >
+                      {i.name === 'Free' &&
+                      (featureIdx === 2 || featureIdx === 1) ? (
                         <View style={styles.featureItem}>
-                          <XIcon color="#CCCFD6" size={18} />
-                          <AppText style={styles.featureTextDisabled}>{f}</AppText>
+                          <XIcon color='#CCCFD6' size={18} />
+                          <AppText style={styles.featureTextDisabled}>
+                            {f}
+                          </AppText>
                         </View>
                       ) : (
                         <View style={styles.featureItem}>
-                          <CheckIcon color="black" size={18} />
+                          <CheckIcon color='black' size={18} />
                           <AppText style={styles.featureText}>{f}</AppText>
                         </View>
                       )}
@@ -84,20 +102,30 @@ const Services = () => {
                         if (!user || user.attributes.user_type !== 'agent') {
                           addToast({
                             heading: 'Access Restriction',
-                            message: 'Only real estate brokers can access those plans',
+                            message:
+                              'Only real estate brokers can access those plans',
                             type: 'error',
                           });
                           return;
                         }
                         router.push('/pricing');
-                      }}>
-                      <AppText style={styles.pricingLink}>Access Pricing Options</AppText>
+                      }}
+                    >
+                      <AppText style={styles.pricingLink}>
+                        Access Pricing Options
+                      </AppText>
                     </Pressable>
                   </View>
                 )}
                 {/* {plan === i.name && ( */}
-                <View style={plan === i.name ? styles.checkBadgeActive : styles.checkBadge}>
-                  <CheckIcon color="white" weight="bold" size={16} />
+                <View
+                  style={
+                    plan === i.name
+                      ? styles.checkBadgeActive
+                      : styles.checkBadge
+                  }
+                >
+                  <CheckIcon color='white' weight='bold' size={16} />
                 </View>
                 {/* )} */}
               </View>
@@ -116,7 +144,7 @@ const Services = () => {
               // }
               if (['Free', 'Promote'].includes(plan)) {
                 if (!user) {
-                    addToast({
+                  addToast({
                     heading: 'Plan Selection',
                     message: 'To select this plan, you must sign in first',
                     type: 'success',
@@ -137,7 +165,8 @@ const Services = () => {
                 }
                 router.push('/start-membership');
               }
-            }}>
+            }}
+          >
             <AppText style={styles.selectBtnText}>Select {plan} Plan</AppText>
           </Pressable>
         </View>
@@ -204,7 +233,7 @@ const styles = StyleSheet.create({
   pkgColorCircle: {
     width: 16,
     height: 16,
-    borderRadius: '100%'
+    borderRadius: '100%',
   },
   planName: {
     fontFamily: 'LufgaSemiBold',

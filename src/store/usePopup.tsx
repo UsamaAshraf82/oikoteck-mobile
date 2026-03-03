@@ -28,7 +28,16 @@ type Actions = {
 const usePopup = create<State & Actions>((set) => ({
   state: new Map(),
 
-  confirmPopup: ({ label, message, notice, style, onConfirm, onDiscard, confirm, discard }) => {
+  confirmPopup: ({
+    label,
+    message,
+    notice,
+    style,
+    onConfirm,
+    onDiscard,
+    confirm,
+    discard,
+  }) => {
     const i = uid();
     const Popup = () => (
       <Modal
@@ -53,10 +62,11 @@ const usePopup = create<State & Actions>((set) => ({
         hardwareAccelerated
         avoidKeyboard={false}
         // style={{ justifyContent: 'flex-end', margin: 0 }}
-        propagateSwipe>
+        propagateSwipe
+      >
         <View style={[styles.container, style]}>
           <View style={styles.warningWrapper}>
-            <WarningIcon color="#dd2c2c" weight="fill" size={32} />
+            <WarningIcon color='#dd2c2c' weight='fill' size={32} />
           </View>
           {typeof label === 'string' ? (
             <AppText style={styles.labelText}>{label}</AppText>
@@ -93,7 +103,8 @@ const usePopup = create<State & Actions>((set) => ({
                   return { state: map };
                 });
               }}
-              style={[styles.button, styles.discardButton, discard?.style]}>
+              style={[styles.button, styles.discardButton, discard?.style]}
+            >
               <AppText style={[styles.buttonText, discard?.textStyle]}>
                 {discard?.text ?? 'Cancel'}
               </AppText>
@@ -107,8 +118,15 @@ const usePopup = create<State & Actions>((set) => ({
                   return { state: map };
                 });
               }}
-              style={[styles.button, styles.confirmButton, confirm?.style]}>
-              <AppText style={[styles.buttonText, styles.confirmText, confirm?.textStyle]}>
+              style={[styles.button, styles.confirmButton, confirm?.style]}
+            >
+              <AppText
+                style={[
+                  styles.buttonText,
+                  styles.confirmText,
+                  confirm?.textStyle,
+                ]}
+              >
                 {confirm?.text ?? 'Confirm'}
               </AppText>
             </Pressable>

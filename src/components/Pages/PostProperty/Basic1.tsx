@@ -13,20 +13,18 @@ import PressableView from '~/components/HOC/PressableView';
 import { useToast } from '~/store/useToast';
 import { property_category } from '~/utils/property';
 
-type Props = { data: Partial<Basic1Values>; onSubmit: (data: Basic1Values) => void };
+type Props = {
+  data: Partial<Basic1Values>;
+  onSubmit: (data: Basic1Values) => void;
+};
 
 export default function Basic1({ data, onSubmit }: Props) {
   const { addToast } = useToast();
-  const {
-    control,
-    setValue,
-    reset,
-    handleSubmit,
-    watch,
-  } = useForm<Basic1Values>({
-    resolver: zodResolver(Basic1Schema),
-    defaultValues: data,
-  });
+  const { control, setValue, reset, handleSubmit, watch } =
+    useForm<Basic1Values>({
+      resolver: zodResolver(Basic1Schema),
+      defaultValues: data,
+    });
 
   useEffect(() => {
     reset(data);
@@ -61,9 +59,10 @@ export default function Basic1({ data, onSubmit }: Props) {
         <KeyboardAwareScrollView
           bottomOffset={50}
           contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
+          keyboardShouldPersistTaps='handled'
           showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}>
+          showsHorizontalScrollIndicator={false}
+        >
           <View>
             <AppText style={styles.sectionLabel}>Listing Type</AppText>
             <Grid gap={8} cols={2}>
@@ -74,17 +73,20 @@ export default function Basic1({ data, onSubmit }: Props) {
                 style={[
                   styles.listingTypeBtn,
                   currentListingFor === 'Rental' && styles.listingTypeBtnActive,
-                ]}>
+                ]}
+              >
                 <View style={styles.listingTypeContent}>
                   <AppText
                     style={[
                       styles.listingTypeText,
-                      currentListingFor === 'Rental' && styles.listingTypeTextActive,
-                    ]}>
+                      currentListingFor === 'Rental' &&
+                        styles.listingTypeTextActive,
+                    ]}
+                  >
                     Rental
                   </AppText>
                   {currentListingFor === 'Rental' && (
-                    <CheckCircleIcon weight="fill" color="#82065e" />
+                    <CheckCircleIcon weight='fill' color='#82065e' />
                   )}
                 </View>
               </PressableView>
@@ -95,17 +97,20 @@ export default function Basic1({ data, onSubmit }: Props) {
                 style={[
                   styles.listingTypeBtn,
                   currentListingFor === 'Sale' && styles.listingTypeBtnActive,
-                ]}>
+                ]}
+              >
                 <View style={styles.listingTypeContent}>
                   <AppText
                     style={[
                       styles.listingTypeText,
-                      currentListingFor === 'Sale' && styles.listingTypeTextActive,
-                    ]}>
+                      currentListingFor === 'Sale' &&
+                        styles.listingTypeTextActive,
+                    ]}
+                  >
                     Sale
                   </AppText>
                   {currentListingFor === 'Sale' && (
-                    <CheckCircleIcon weight="fill" color="#82065e" />
+                    <CheckCircleIcon weight='fill' color='#82065e' />
                   )}
                 </View>
               </PressableView>
@@ -114,65 +119,92 @@ export default function Basic1({ data, onSubmit }: Props) {
 
           <ControlledTextInput
             control={control}
-            name="title"
-            label="Listing Title"
-            placeholder="Write listing title..."
+            name='title'
+            label='Listing Title'
+            placeholder='Write listing title...'
           />
           <ControlledTextInput
             control={control}
-            name="description"
-            label="Description"
-            placeholder="Write listing description..."
+            name='description'
+            label='Description'
+            placeholder='Write listing description...'
             multiline
             numberOfLines={5}
             style={styles.descriptionInput}
           />
           <Select
-            options={Basic1Schema.shape.property_type.options.map((i: string) => ({
-              label: i,
-              value: i,
-            }))}
+            options={Basic1Schema.shape.property_type.options.map(
+              (i: string) => ({
+                label: i,
+                value: i,
+              })
+            )}
             varient
-            label="Property Type"
-            value={{ label: watch('property_type'), value: watch('property_type') }}
-            placeholder="Select Property Type"
+            label='Property Type'
+            value={{
+              label: watch('property_type'),
+              value: watch('property_type'),
+            }}
+            placeholder='Select Property Type'
             onChange={(value) => {
-              setValue('property_type', value?.value as Basic1Values['property_type']);
-              setValue('property_category', undefined as any, { shouldValidate: true });
+              setValue(
+                'property_type',
+                value?.value as Basic1Values['property_type']
+              );
+              setValue('property_category', undefined as any, {
+                shouldValidate: true,
+              });
             }}
           />
           <Select
             varient
-            options={property_category(watch('property_type')).map((i: string | null) => ({
-              label: i || '',
-              value: i || '',
-            }))}
-            label="Property Category"
-            placeholder="Select Property Category"
-            value={{ label: watch('property_category'), value: watch('property_category') }}
+            options={property_category(watch('property_type')).map(
+              (i: string | null) => ({
+                label: i || '',
+                value: i || '',
+              })
+            )}
+            label='Property Category'
+            placeholder='Select Property Category'
+            value={{
+              label: watch('property_category'),
+              value: watch('property_category'),
+            }}
             onChange={(value) =>
-              setValue('property_category', value?.value as Basic1Values['property_category'])
+              setValue(
+                'property_category',
+                value?.value as Basic1Values['property_category']
+              )
             }
           />
           <Select
             varient
             options={Basic1Schema.shape.property_oriantation
               .unwrap()
-              .options.map((i: string | null) => ({ label: i || '', value: i || '' }))}
-            label="Property Oriantation"
-            placeholder="Select Property Oriantation"
+              .options.map((i: string | null) => ({
+                label: i || '',
+                value: i || '',
+              }))}
+            label='Property Oriantation'
+            placeholder='Select Property Oriantation'
             value={{
               label: watch('property_oriantation'),
               value: watch('property_oriantation') || null,
             }}
             onChange={(value) =>
-              setValue('property_oriantation', value?.value as Basic1Values['property_oriantation'])
+              setValue(
+                'property_oriantation',
+                value?.value as Basic1Values['property_oriantation']
+              )
             }
           />
         </KeyboardAwareScrollView>
       </View>
       <View style={styles.footer}>
-        <PressableView onPress={handleSubmit(onSubmitInternal, onError)} style={styles.continueBtn}>
+        <PressableView
+          onPress={handleSubmit(onSubmitInternal, onError)}
+          style={styles.continueBtn}
+        >
           <AppText style={styles.continueBtnText}>Continue</AppText>
         </PressableView>
       </View>

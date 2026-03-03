@@ -97,17 +97,16 @@ export default function Signup2Email() {
   const local = useLocalSearchParams<{ email: string; password: string }>();
   const router = useRouter();
   const { user, signup } = useUser();
-  const {
-    control,
-    setValue,
-    watch,
-    handleSubmit,
-  } = useForm<SignupTypes>({
+  const { control, setValue, watch, handleSubmit } = useForm<SignupTypes>({
     resolver: zodResolver(SignupSchema),
     defaultValues: {
       userType: 'regular',
       company_name: '',
-      country: { Code: flags[0].Code, Country: flags[0].Country, ISO: flags[0].ISO },
+      country: {
+        Code: flags[0].Code,
+        Country: flags[0].Country,
+        ISO: flags[0].ISO,
+      },
       terms: false,
       privacy: false,
       share_consent: false,
@@ -132,7 +131,11 @@ export default function Signup2Email() {
 
   const onSubmit = async (formData: SignupTypes) => {
     activity.startActivity();
-    await signup({ ...formData, email: local.email || '', password: local.password || '' });
+    await signup({
+      ...formData,
+      email: local.email || '',
+      password: local.password || '',
+    });
     activity.stopActivity();
     router.push('/rent');
   };
@@ -159,14 +162,15 @@ export default function Signup2Email() {
         onBackPress={() => {
           router.back();
         }}
-        title=""
+        title=''
       />
       <KeyboardAwareScrollView
         bottomOffset={50}
         contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
+        keyboardShouldPersistTaps='handled'
         showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}>
+        showsHorizontalScrollIndicator={false}
+      >
         <View style={styles.formWrapper}>
           <AppText style={styles.title}>Setup your profile ✍️</AppText>
           <AppText style={styles.subtext}>
@@ -181,7 +185,7 @@ export default function Signup2Email() {
                   {
                     label: 'Regular User',
                     value: 'regular',
-                    icon: <UserIcon color="#192234" size={30} />,
+                    icon: <UserIcon color='#192234' size={30} />,
                   },
                   {
                     label: 'Real Estate Agent',
@@ -191,17 +195,28 @@ export default function Signup2Email() {
                 ].map((item) => (
                   <TouchableWithoutFeedback
                     key={item.value}
-                    onPress={() => setValue('userType', item.value as 'agent' | 'regular')}>
+                    onPress={() =>
+                      setValue('userType', item.value as 'agent' | 'regular')
+                    }
+                  >
                     <View
                       style={[
                         styles.userTypeCard,
-                        selectedUserType === item.value && styles.userTypeCardActive,
-                      ]}>
+                        selectedUserType === item.value &&
+                          styles.userTypeCardActive,
+                      ]}
+                    >
                       {item.icon}
-                      <AppText style={styles.userTypeLabel}>{item.label}</AppText>
+                      <AppText style={styles.userTypeLabel}>
+                        {item.label}
+                      </AppText>
                       {selectedUserType === item.value && (
                         <View style={styles.checkIcon}>
-                          <CheckCircleIcon color="#82065e" size={22} weight="fill" />
+                          <CheckCircleIcon
+                            color='#82065e'
+                            size={22}
+                            weight='fill'
+                          />
                         </View>
                       )}
                     </View>
@@ -212,32 +227,32 @@ export default function Signup2Email() {
 
             <ControlledTextInput
               control={control}
-              name="firstName"
-              label="First Name"
-              autoComplete="name-given"
-              placeholder="Enter your first name"
+              name='firstName'
+              label='First Name'
+              autoComplete='name-given'
+              placeholder='Enter your first name'
             />
             <ControlledTextInput
               control={control}
-              name="lastName"
-              label="Last Name"
-              autoComplete="name-family"
-              placeholder="Enter your last name"
+              name='lastName'
+              label='Last Name'
+              autoComplete='name-family'
+              placeholder='Enter your last name'
             />
 
             {selectedUserType === 'agent' && (
               <>
                 <ControlledTextInput
                   control={control}
-                  name="company_name"
-                  label="Registered Company Name"
-                  placeholder="Registered company name"
+                  name='company_name'
+                  label='Registered Company Name'
+                  placeholder='Registered company name'
                 />
                 <ControlledTextInput
                   control={control}
-                  name="vat"
-                  label="VAT"
-                  placeholder="EL000000000"
+                  name='vat'
+                  label='VAT'
+                  placeholder='EL000000000'
                 />
               </>
             )}
@@ -255,9 +270,13 @@ export default function Signup2Email() {
                           <View style={styles.countryOption}>
                             <View style={styles.countryInfo}>
                               {i.flag}
-                              <AppText style={styles.countryName}>{i.Country}</AppText>
+                              <AppText style={styles.countryName}>
+                                {i.Country}
+                              </AppText>
                             </View>
-                            <AppText style={styles.countryCode}>+{i.Code}</AppText>
+                            <AppText style={styles.countryCode}>
+                              +{i.Code}
+                            </AppText>
                           </View>
                         ),
                         value: { Code: i.Code, Country: i.Country, ISO: i.ISO },
@@ -266,10 +285,15 @@ export default function Signup2Email() {
                       onPress: (value: any) =>
                         setValue(
                           'country',
-                          value.value as { Code: number; Country: string; ISO: string }
+                          value.value as {
+                            Code: number;
+                            Country: string;
+                            ISO: string;
+                          }
                         ),
                     });
-                  }}>
+                  }}
+                >
                   <View style={styles.countryPicker}>
                     <RenderFlagWithCode ISO={watch('country').ISO} />
                   </View>
@@ -278,10 +302,10 @@ export default function Signup2Email() {
               <View style={styles.phoneInputWrapper}>
                 <ControlledTextInput
                   control={control}
-                  name="phone"
-                  placeholder="Enter your phone number"
-                  textContentType="telephoneNumber"
-                  keyboardType="phone-pad"
+                  name='phone'
+                  placeholder='Enter your phone number'
+                  textContentType='telephoneNumber'
+                  keyboardType='phone-pad'
                 />
               </View>
             </View>
@@ -289,12 +313,12 @@ export default function Signup2Email() {
             <View style={styles.checkboxGroup}>
               <ControlledCheckBox
                 control={control}
-                name="terms"
+                name='terms'
                 alignTop
                 label={
                   <AppText style={styles.checkboxText}>
                     I confirm that I read and I agree with Oikoteck’s{' '}
-                    <Link href="/terms-conditions" style={styles.linkText}>
+                    <Link href='/terms-conditions' style={styles.linkText}>
                       Terms & Conditions
                     </Link>{' '}
                     *
@@ -303,16 +327,16 @@ export default function Signup2Email() {
               />
               <ControlledCheckBox
                 control={control}
-                name="privacy"
+                name='privacy'
                 alignTop
                 label={
                   <AppText style={styles.checkboxText}>
                     I confirm that I read and understood Oikoteck’s{' '}
-                    <Link href="/privacy-policy" style={styles.linkText}>
+                    <Link href='/privacy-policy' style={styles.linkText}>
                       Data Protection Notice
                     </Link>{' '}
                     and the{' '}
-                    <Link href="/cookie-policy" style={styles.linkText}>
+                    <Link href='/cookie-policy' style={styles.linkText}>
                       Cookies Policy
                     </Link>{' '}
                     *
@@ -322,11 +346,12 @@ export default function Signup2Email() {
               <ControlledCheckBox
                 control={control}
                 alignTop
-                name="share_consent"
+                name='share_consent'
                 label={
                   <AppText style={styles.checkboxText}>
-                    I consent to the sharing of my contact information and search preferences with
-                    real estate agents who offer listings which may align with my interests
+                    I consent to the sharing of my contact information and
+                    search preferences with real estate agents who offer
+                    listings which may align with my interests
                   </AppText>
                 }
               />
@@ -336,7 +361,10 @@ export default function Signup2Email() {
       </KeyboardAwareScrollView>
 
       <View style={styles.footer}>
-        <PressableView onPress={handleSubmit(onSubmit, onError)} style={styles.submitBtn}>
+        <PressableView
+          onPress={handleSubmit(onSubmit, onError)}
+          style={styles.submitBtn}
+        >
           <AppText style={styles.submitBtnText}>Sign up</AppText>
         </PressableView>
       </View>

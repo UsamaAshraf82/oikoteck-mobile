@@ -74,7 +74,9 @@ const MarketPlace = ({ listing_type, onListPress }: Props) => {
   const [isScrollEnabled, setIsScrollEnabled] = useState(false);
   const [districtModal, setDistrictModal] = useState(false);
   const [filtersModal, setFiltersModal] = useState(false);
-  const [sort, setSort] = useState<{ sort: string; sort_order: string } | null>(null);
+  const [sort, setSort] = useState<{ sort: string; sort_order: string } | null>(
+    null
+  );
 
   const [search, setSearch] = useState<filterType>({
     area_1: null,
@@ -209,21 +211,45 @@ const MarketPlace = ({ listing_type, onListPress }: Props) => {
       {
         filter: sortTitle,
         iconFirst: true,
-        icon: <SortAscendingIcon size={20} color="#192234" weight="bold" />,
+        icon: <SortAscendingIcon size={20} color='#192234' weight='bold' />,
         onPress: () => {
           openSelect({
             label: 'Sort by',
             hasXIcon: true,
             options: [
               { label: 'Most Recent', value: null },
-              { label: 'Price: High to Low', value: { sort: 'price', sort_order: 'des' } },
-              { label: 'Price: Low to High', value: { sort: 'price', sort_order: 'asc' } },
-              { label: 'Bedrooms: Less to More', value: { sort: 'bedrooms', sort_order: 'asc' } },
-              { label: 'Bedrooms: More to Less', value: { sort: 'bedrooms', sort_order: 'des' } },
-              { label: 'Bathrooms: Less to More', value: { sort: 'bathrooms', sort_order: 'asc' } },
-              { label: 'Bathrooms: More to Less', value: { sort: 'bathrooms', sort_order: 'des' } },
-              { label: 'Size: Small to Large', value: { sort: 'size', sort_order: 'asc' } },
-              { label: 'Size: Large to Small', value: { sort: 'size', sort_order: 'des' } },
+              {
+                label: 'Price: High to Low',
+                value: { sort: 'price', sort_order: 'des' },
+              },
+              {
+                label: 'Price: Low to High',
+                value: { sort: 'price', sort_order: 'asc' },
+              },
+              {
+                label: 'Bedrooms: Less to More',
+                value: { sort: 'bedrooms', sort_order: 'asc' },
+              },
+              {
+                label: 'Bedrooms: More to Less',
+                value: { sort: 'bedrooms', sort_order: 'des' },
+              },
+              {
+                label: 'Bathrooms: Less to More',
+                value: { sort: 'bathrooms', sort_order: 'asc' },
+              },
+              {
+                label: 'Bathrooms: More to Less',
+                value: { sort: 'bathrooms', sort_order: 'des' },
+              },
+              {
+                label: 'Size: Small to Large',
+                value: { sort: 'size', sort_order: 'asc' },
+              },
+              {
+                label: 'Size: Large to Small',
+                value: { sort: 'size', sort_order: 'des' },
+              },
             ],
             value: sort,
             onPress: (data: any) => {
@@ -235,7 +261,7 @@ const MarketPlace = ({ listing_type, onListPress }: Props) => {
       {
         filter: 'Filters',
         iconFirst: true,
-        icon: <FadersHorizontalIcon size={20} color="#192234" weight="bold" />,
+        icon: <FadersHorizontalIcon size={20} color='#192234' weight='bold' />,
         onPress: () => {
           setFiltersModal(true);
         },
@@ -245,28 +271,28 @@ const MarketPlace = ({ listing_type, onListPress }: Props) => {
     if (search.bedroom !== null) {
       filter.push({
         filter: 'Bedrooms: ' + search.bedroom + '+',
-        icon: <XIcon size={14} color="#82065e" weight="bold" />,
+        icon: <XIcon size={14} color='#82065e' weight='bold' />,
         onPress: () => changeSearch({ bedroom: null }),
       });
     }
     if (search.bathroom !== null) {
       filter.push({
         filter: 'Bathrooms: ' + search.bathroom + '+',
-        icon: <XIcon size={14} color="#82065e" weight="bold" />,
+        icon: <XIcon size={14} color='#82065e' weight='bold' />,
         onPress: () => changeSearch({ bathroom: null }),
       });
     }
     if (search.furnished !== null) {
       filter.push({
         filter: 'Furnished: ' + (search.furnished ? 'Yes' : 'No'),
-        icon: <XIcon size={14} color="#82065e" weight="bold" />,
+        icon: <XIcon size={14} color='#82065e' weight='bold' />,
         onPress: () => changeSearch({ furnished: null }),
       });
     }
     if (search.keywords !== null) {
       filter.push({
         filter: 'Keywords: ' + search.keywords,
-        icon: <XIcon size={14} color="#82065e" weight="bold" />,
+        icon: <XIcon size={14} color='#82065e' weight='bold' />,
         onPress: () => changeSearch({ keywords: null }),
       });
     }
@@ -275,23 +301,31 @@ const MarketPlace = ({ listing_type, onListPress }: Props) => {
       if (search.minDate !== null && search.maxDate !== null) {
         text =
           text +
-          DateTime.fromJSDate(search.minDate).toLocaleString(DateTime.DATE_SHORT) +
+          DateTime.fromJSDate(search.minDate).toLocaleString(
+            DateTime.DATE_SHORT
+          ) +
           ' - ' +
-          DateTime.fromJSDate(search.maxDate).toLocaleString(DateTime.DATE_SHORT);
+          DateTime.fromJSDate(search.maxDate).toLocaleString(
+            DateTime.DATE_SHORT
+          );
       } else if (search.minDate !== null) {
         text =
           text +
-          DateTime.fromJSDate(search.minDate).toLocaleString(DateTime.DATE_SHORT) +
+          DateTime.fromJSDate(search.minDate).toLocaleString(
+            DateTime.DATE_SHORT
+          ) +
           ' - Any Time';
       } else if (search.maxDate !== null) {
         text =
           text +
           'Any Time - ' +
-          DateTime.fromJSDate(search.maxDate).toLocaleString(DateTime.DATE_SHORT);
+          DateTime.fromJSDate(search.maxDate).toLocaleString(
+            DateTime.DATE_SHORT
+          );
       }
       filter.push({
         filter: text,
-        icon: <XIcon size={14} color="#82065e" weight="bold" />,
+        icon: <XIcon size={14} color='#82065e' weight='bold' />,
         onPress: () => changeSearch({ maxDate: null, minDate: null }),
       });
     }
@@ -306,7 +340,7 @@ const MarketPlace = ({ listing_type, onListPress }: Props) => {
       }
       filter.push({
         filter: text,
-        icon: <XIcon size={14} color="#82065e" weight="bold" />,
+        icon: <XIcon size={14} color='#82065e' weight='bold' />,
         onPress: () => changeSearch({ maxPrice: null, minPrice: null }),
       });
     }
@@ -321,21 +355,21 @@ const MarketPlace = ({ listing_type, onListPress }: Props) => {
       }
       filter.push({
         filter: text,
-        icon: <XIcon size={14} color="#82065e" weight="bold" />,
+        icon: <XIcon size={14} color='#82065e' weight='bold' />,
         onPress: () => changeSearch({ minSize: null, maxSize: null }),
       });
     }
     if (search.property_type !== null) {
       filter.push({
         filter: 'Property Type: ' + search.property_type,
-        icon: <XIcon size={14} color="#82065e" weight="bold" />,
+        icon: <XIcon size={14} color='#82065e' weight='bold' />,
         onPress: () => changeSearch({ property_type: null }),
       });
     }
     if (search.property_category !== null) {
       filter.push({
         filter: 'Property Category: ' + search.property_category,
-        icon: <XIcon size={14} color="#82065e" weight="bold" />,
+        icon: <XIcon size={14} color='#82065e' weight='bold' />,
         onPress: () => changeSearch({ property_category: null }),
       });
     }
@@ -353,21 +387,27 @@ const MarketPlace = ({ listing_type, onListPress }: Props) => {
 
   return (
     <View style={styles.container}>
-      <LinearGradient colors={['#fff', '#EEF1F7']} style={styles.headerGradient}>
+      <LinearGradient
+        colors={['#fff', '#EEF1F7']}
+        style={styles.headerGradient}
+      >
         <SearchView
           listing_type={listing_type}
           text={stringified_area}
           onPress={() => setDistrictModal(true)}
           onFilter={() => setFiltersModal(true)}
-          onClear={() => changeSearch({ district: null, area_1: null, area_2: null })}
+          onClear={() =>
+            changeSearch({ district: null, area_1: null, area_2: null })
+          }
         />
 
         <ScrollView
           horizontal
-          key="filter"
+          key='filter'
           style={styles.filterScroll}
           showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}>
+          showsHorizontalScrollIndicator={false}
+        >
           {filters.map((i, idx) => {
             if (i.filter === 'Sort' || i.filter === 'Filters') {
               const isFilter = i.filter === 'Filters';
@@ -378,14 +418,19 @@ const MarketPlace = ({ listing_type, onListPress }: Props) => {
               }
 
               return (
-                <TouchableWithoutFeedback key={i.filter + idx} onPress={i.onPress}>
+                <TouchableWithoutFeedback
+                  key={i.filter + idx}
+                  onPress={i.onPress}
+                >
                   <View style={styles.sortFilterBadge}>
                     {i.iconFirst && i.icon}
                     <AppText style={styles.sortFilterText}>{i.filter}</AppText>
                     {!i.iconFirst && i.icon}
                     {isFilter && displayFilterCount > 0 && (
                       <View style={styles.filterCount}>
-                        <AppText style={styles.filterCountText}>{displayFilterCount}</AppText>
+                        <AppText style={styles.filterCountText}>
+                          {displayFilterCount}
+                        </AppText>
                       </View>
                     )}
                   </View>
@@ -396,18 +441,27 @@ const MarketPlace = ({ listing_type, onListPress }: Props) => {
               return (
                 <View key={i.filter + idx} style={styles.activeFilterBadge}>
                   <TouchableWithoutFeedback onPress={i.onPress}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 0 }}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        gap: 0,
+                      }}
+                    >
                       {i.iconFirst && <View>{i.icon}</View>}
-                      <AppText style={styles.activeFilterText}>{i.filter}</AppText>
+                      <AppText style={styles.activeFilterText}>
+                        {i.filter}
+                      </AppText>
                     </View>
                   </TouchableWithoutFeedback>
 
                   <TouchableWithoutFeedback
                     onPress={() => {
                       setSort(null);
-                    }}>
+                    }}
+                  >
                     <View>
-                      <XIcon size={14} color="#82065e" weight="bold" />
+                      <XIcon size={14} color='#82065e' weight='bold' />
                     </View>
                   </TouchableWithoutFeedback>
                 </View>
@@ -444,7 +498,9 @@ const MarketPlace = ({ listing_type, onListPress }: Props) => {
             longitudeDelta: 0.15,
           }}
           onMapReady={async () => {
-            const boundaries = await (mapRef.current as any)?.getMapBoundaries();
+            const boundaries = await (
+              mapRef.current as any
+            )?.getMapBoundaries();
             if (boundaries) {
               changeSearch({
                 ne_lat: boundaries.northEast.latitude,
@@ -455,7 +511,9 @@ const MarketPlace = ({ listing_type, onListPress }: Props) => {
             }
           }}
           onRegionChangeComplete={async (region) => {
-            const boundaries = await (mapRef.current as any)?.getMapBoundaries();
+            const boundaries = await (
+              mapRef.current as any
+            )?.getMapBoundaries();
             if (boundaries) {
               changeSearch({
                 ne_lat: boundaries.northEast.latitude,
@@ -474,7 +532,8 @@ const MarketPlace = ({ listing_type, onListPress }: Props) => {
           onTouchEnd={() => {
             setIsScrollEnabled(false);
           }}
-          moveOnMarkerPress={false}>
+          moveOnMarkerPress={false}
+        >
           {data.results.map((i) => (
             <MapMarker
               key={`${i.objectId}-${selectedId === i.objectId}`}
@@ -486,39 +545,44 @@ const MarketPlace = ({ listing_type, onListPress }: Props) => {
         </MapView>
         <View style={styles.floatingButtons}>
           <Pressable style={styles.mapButton} onPress={onListPress}>
-            <ListNumbersIcon color="#fff" size={20} />
+            <ListNumbersIcon color='#fff' size={20} />
             <AppText style={styles.mapButtonText}>List</AppText>
           </Pressable>
         </View>
         <View style={styles.propertyListWrapper}>
-          {useMemo(() => (
-            <FlatList
-              ref={propertyListRef}
-              data={data.results}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              snapToInterval={cardWidth}
-              decelerationRate="fast"
-              keyExtractor={(item: Property_Type) => item.objectId}
-              renderItem={renderPropertyItem}
-              getItemLayout={(_, index) => ({
-                length: cardWidth,
-                offset: cardWidth * index,
-                index,
-              })}
-              onMomentumScrollEnd={(e) => {
-                const index = Math.round(e.nativeEvent.contentOffset.x / cardWidth);
-                const p = data.results[index];
-                if (p) {
-                  setSelectedId(p.objectId);
-                }
-              }}
-              initialNumToRender={5}
-              windowSize={5}
-              maxToRenderPerBatch={5}
-              removeClippedSubviews={true}
-            />
-          ), [data.results, renderPropertyItem, cardWidth])}
+          {useMemo(
+            () => (
+              <FlatList
+                ref={propertyListRef}
+                data={data.results}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                snapToInterval={cardWidth}
+                decelerationRate='fast'
+                keyExtractor={(item: Property_Type) => item.objectId}
+                renderItem={renderPropertyItem}
+                getItemLayout={(_, index) => ({
+                  length: cardWidth,
+                  offset: cardWidth * index,
+                  index,
+                })}
+                onMomentumScrollEnd={(e) => {
+                  const index = Math.round(
+                    e.nativeEvent.contentOffset.x / cardWidth
+                  );
+                  const p = data.results[index];
+                  if (p) {
+                    setSelectedId(p.objectId);
+                  }
+                }}
+                initialNumToRender={5}
+                windowSize={5}
+                maxToRenderPerBatch={5}
+                removeClippedSubviews={true}
+              />
+            ),
+            [data.results, renderPropertyItem, cardWidth]
+          )}
         </View>
       </View>
 
