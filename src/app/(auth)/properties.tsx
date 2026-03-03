@@ -581,7 +581,7 @@ const styles = StyleSheet.create({
   },
   tabTextActive: {
     color: '#000',
-    fontFamily: 'LufgaBold',
+    fontFamily: 'LufgaMedium',
   },
   content: {
     flex: 1,

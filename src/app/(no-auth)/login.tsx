@@ -30,7 +30,7 @@ const SignInSchema = z.object({
 type SignInValues = z.infer<typeof SignInSchema>;
 
 const displayNames: Record<keyof SignInValues, string> = {
-  email: 'Email address',
+  email: 'Invalid Email Address',
   password: 'Password',
 };
 

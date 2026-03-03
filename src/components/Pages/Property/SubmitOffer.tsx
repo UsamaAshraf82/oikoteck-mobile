@@ -27,6 +27,7 @@ import { useToast } from '~/store/useToast';
 import useUser from '~/store/useUser';
 import { Property_Type } from '~/type/property';
 import { deviceHeight } from '~/utils/global';
+import { thoasandseprator } from '~/utils/number';
 
 type SendOfferModalType = {
   onClose: () => void;
@@ -121,9 +122,9 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
   const displayNames: Record<keyof SendOfferValues, string> = {
     country: 'Country',
     email: 'Invalid Email Address',
-    firstName: 'First Name',
-    lastName: 'Last Name',
-    phone: 'Phone Number',
+    firstName: 'Invalid First Name',
+    lastName: 'Invalid Last Name',
+    phone: 'Invalid Phone Number',
     price: 'Unreasonable Offer',
     privacy: 'Privacy Policy Agreement',
     share_consent: 'Share Consent',
@@ -142,7 +143,6 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
       firstName: '',
       lastName: '',
       phone: '',
-      price: property.price,
       terms: false,
       privacy: false,
       share_consent: false,
@@ -259,7 +259,8 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
                 <TextInput
                   readOnly
                   label='Asking Price'
-                  value={property.price + ''}
+                  value={thoasandseprator(property.price) + ''}
+                  isPrice
                 />
                 <ControlledTextInput
                   control={control}
@@ -267,6 +268,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
                   label='Your Offer'
                   placeholder='Enter your offer'
                   keyboardType='number-pad'
+                  isPrice
                 />
               </Grid>
               <AppText style={styles.warningText}>
@@ -281,14 +283,12 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
                 <ControlledTextInput
                   control={control}
                   name='firstName'
-                  multiline={true}
                   label='First Name'
                   placeholder='Enter first name'
                 />
                 <ControlledTextInput
                   control={control}
                   name='lastName'
-                  multiline={true}
                   label='Last Name'
                   placeholder='Enter last name'
                 />
@@ -348,7 +348,6 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
               <ControlledTextInput
                 control={control}
                 name='email'
-                multiline={true}
                 label='Email Address'
                 placeholder='Enter email address'
               />
@@ -498,8 +497,9 @@ const styles = StyleSheet.create({
     marginBottom: -8,
   },
   phoneRow: {
-    flexDirection: 'row',
+   flexDirection: 'row',
     alignItems: 'center',
+    gap: 4,
   },
   countryPicker: {
     flex: 2,

@@ -12,6 +12,7 @@ import AppText from './AppText';
 type Props = TextBaseInput['props'] & {
   label?: string;
   getValue?: (text: string) => void;
+  isPrice?: boolean;
 };
 
 const TextInput = ({
@@ -19,6 +20,7 @@ const TextInput = ({
   style,
   secureTextEntry,
   getValue,
+  isPrice,
   ...props
 }: Props) => {
   const [secureTextEntryHack, setSecureTextEntryHack] =
@@ -29,13 +31,19 @@ const TextInput = ({
     <View style={styles.container}>
       {label && <AppText style={styles.label}>{label}</AppText>}
       <View style={styles.inputWrapper}>
+        {isPrice && <AppText style={styles.price}>€</AppText>}
         <TextBaseInput
           {...props}
           value={props.value ? props.value + '' : ''}
           placeholderTextColor='#6B7280'
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          style={[styles.input, isFocused && styles.inputFocused, style]}
+          style={[
+            styles.input,
+            isPrice && { paddingLeft: 30 },
+            isFocused && styles.inputFocused,
+            style,
+          ]}
           secureTextEntry={secureTextEntryHack}
           onChangeText={(text) => {
             getValue?.(text);
@@ -71,6 +79,18 @@ const styles = StyleSheet.create({
   inputWrapper: {
     position: 'relative',
     marginTop: 8,
+  },
+  price: {
+    position: 'absolute',
+    left: 14,
+    top: '50%',
+    marginTop: 1,
+    transform: [{ translateY: '-50%' }],
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontFamily: 'LufgaRegular',
+    fontSize: 15,
+    color: '#192234',
   },
   input: {
     borderRadius: 12,

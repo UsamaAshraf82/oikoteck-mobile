@@ -97,14 +97,14 @@ type Tour1Type = z.infer<typeof Tour1Schema>;
 
 const displayNames: Record<keyof Tour1Type, string> = {
   country: 'Country',
-  email: 'Email Address',
-  firstName: 'First Name',
-  lastName: 'Last Name',
+  email: 'Invalid Email Address',
+  firstName: 'Invalid First Name',
+  lastName: 'Invalid Last Name',
   message: 'Message',
-  phone: 'Phone Number',
-  tour_date: 'Visit Date',
-  tour_time: 'Visit Time',
-  tour_type: 'Tour Type',
+  phone: 'Invalid Phone Number',
+  tour_date: 'Invalid Visit Date',
+  tour_time: 'Invalid Visit Time',
+  tour_type: 'Invalid Tour Type',
 };
 
 type SendOfferModalType = {

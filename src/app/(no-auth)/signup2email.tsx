@@ -79,8 +79,8 @@ type SignupTypes = z.infer<typeof SignupSchema>;
 const displayNames: Record<keyof SignupTypes, string> = {
   company_name: 'Company Name',
   country: 'Country',
-  firstName: 'First Name',
-  lastName: 'Last Name',
+  firstName: 'Invalid First Name',
+  lastName: 'Invalid Last Name',
   phone: 'Phone',
   privacy: 'Privacy Policy Agreement',
   share_consent: 'Share Consent',

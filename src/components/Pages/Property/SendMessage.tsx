@@ -86,10 +86,10 @@ type SendMessageValues = z.infer<typeof SendMessageSchema>;
 const displayNames: Record<keyof SendMessageValues, string> = {
   country: 'Country',
   email: 'Invalid Email Address',
-  firstName: 'First Name',
-  lastName: 'Last Name',
+  firstName: 'Invalid First Name',
+  lastName: 'Invalid Last Name',
   message: 'Message',
-  phone: 'Phone Number',
+  phone: 'Invalid Phone Number',
 };
 
 type Props = {

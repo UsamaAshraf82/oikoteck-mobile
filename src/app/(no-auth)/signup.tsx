@@ -54,7 +54,7 @@ const SignupSchema = z
 type SignupTypes = z.infer<typeof SignupSchema>;
 
 const displayNames: Record<keyof SignupTypes, string> = {
-  email: 'Email address',
+  email: 'Invalid Email Address',
   password: 'Password',
   confirmPassword: 'Confirm password',
 };

@@ -10,11 +10,11 @@ import { useEffect, useState } from 'react';
 import { SubmitErrorHandler, useForm } from 'react-hook-form';
 import {
   Pressable,
-  ScrollView,
   StyleSheet,
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import z from 'zod';
 import AppText from '~/components/Elements/AppText';
 import { flags, RenderFlagWithCode } from '~/components/Elements/Flags';
@@ -32,14 +32,16 @@ const EditUser = () => {
   return (
     <View style={styles.container}>
       <TopHeader onBackPress={() => router.back()} title='Edit Profile' />
-      <ScrollView
+      <KeyboardAwareScrollView
+        bottomOffset={50}
         contentContainerStyle={styles.formWrapper}
+        keyboardShouldPersistTaps='handled'
         showsVerticalScrollIndicator={false}
       >
         <NameInput />
         <NumberInput />
         <EmailInput />
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </View>
   );
 };
@@ -56,8 +58,8 @@ const NameInputSchema = z.object({
 type NameInputTypes = z.infer<typeof NameInputSchema>;
 
 const NameDisplayNames: Record<keyof NameInputTypes, string> = {
-  firstName: 'First Name',
-  lastName: 'Last Name',
+  firstName: 'Invalid First Name',
+  lastName: 'Invalid Last Name',
 };
 
 const NameInput = () => {
@@ -488,10 +490,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   formWrapper: {
-    flex: 1,
+    flexGrow: 1,
     gap: 12,
     paddingHorizontal: 16,
     paddingTop: 8,
+    paddingBottom: 32,
   },
   inputRow: {
     position: 'relative',

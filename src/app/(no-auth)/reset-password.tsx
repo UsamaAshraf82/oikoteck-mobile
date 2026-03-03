@@ -26,7 +26,7 @@ const ForgetPasswordSchema = z.object({
 type ForgetPasswordValues = z.infer<typeof ForgetPasswordSchema>;
 
 const displayNames: Record<keyof ForgetPasswordValues, string> = {
-  email: 'Email address',
+  email: 'Invalid Email Address'
 };
 
 export default function Login() {

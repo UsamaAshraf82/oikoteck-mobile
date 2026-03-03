@@ -69,6 +69,7 @@ const Favorites = () => {
     });
 
   const properties = data?.pages.flatMap((page) => page.property) || [];
+  const totalCount = data?.pages[0]?.count || 0;
 
   return (
     <View style={styles.container}>
@@ -133,10 +134,8 @@ const Favorites = () => {
         </View>
         <View>
           <AppText style={styles.subTitle}>
-            {data?.pages[0]?.count || 0} favorite{' '}
-            {data?.pages[0]?.count === 1 || data?.pages[0]?.count === 0
-              ? 'listing'
-              : 'listings'}
+            {totalCount} favorite{' '}
+            {totalCount === 1 || totalCount === 0 ? 'listing' : 'listings'}
           </AppText>
         </View>
         <View style={styles.listContainer}>
