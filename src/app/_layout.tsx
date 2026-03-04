@@ -82,9 +82,13 @@ function RootLayout() {
   useEffect(() => {
     const initialize = async () => {
       try {
+        console.log('Initializing app...');
         await ParseInit();
+        console.log('Parse Initizted...');
         await refresh();
+        console.log('Refreshed...');
         await SplashScreen.hideAsync();
+        console.log('SplashScreen hidden...');
         setReady(true);
       } catch (e) {
         console.error(e);
@@ -95,6 +99,8 @@ function RootLayout() {
     //   SplashScreen.hideAsync();
     // }
   }, []);
+
+  console.log('Ready: ', ready);
 
   return (
     <Sentry.ErrorBoundary
@@ -211,4 +217,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Sentry.wrap(RootLayout);
+const AppRoot = Sentry.wrap(RootLayout);
+export default AppRoot;

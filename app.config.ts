@@ -121,8 +121,10 @@ const appConfig: ExpoConfig = {
     [
       '@react-native-google-signin/google-signin',
       {
-        iosClientId: '249425615765-c3hb68cqlo6fcjd82bft3uqeq8t857bh.apps.googleusercontent.com',
-        iosUrlScheme: 'com.googleusercontent.apps.249425615765-c3hb68cqlo6fcjd82bft3uqeq8t857bh',
+        iosClientId:
+          '249425615765-c3hb68cqlo6fcjd82bft3uqeq8t857bh.apps.googleusercontent.com',
+        iosUrlScheme:
+          'com.googleusercontent.apps.249425615765-c3hb68cqlo6fcjd82bft3uqeq8t857bh',
       },
     ],
     ['expo-apple-authentication'],
@@ -134,8 +136,13 @@ const appConfig: ExpoConfig = {
         organization: 'oikoteck',
       },
     ],
-
-    // ['@stripe/stripe-react-native'],
+    // [
+    //   '@stripe/stripe-react-native',
+    //   {
+    //     merchantIdentifier: 'merchant.com.oikoteck',
+    //   },
+    // ],
+    ['react-native-maps'],
   ],
 
   experiments: {

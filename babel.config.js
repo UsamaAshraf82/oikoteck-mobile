@@ -4,7 +4,8 @@ module.exports = function (api) {
     presets: ['babel-preset-expo'],
     plugins: [
       '@babel/plugin-transform-class-static-block',
-       'react-native-worklets/plugin',
+      // '@sentry/react-native/babel',
+      'react-native-worklets/plugin',
     ],
   };
 };
