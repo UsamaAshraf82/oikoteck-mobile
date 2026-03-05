@@ -31,6 +31,9 @@ const appConfig: ExpoConfig = {
     usesAppleSignIn: true,
     supportsTablet: true,
     bundleIdentifier: 'com.oikoteck.app',
+    // entitlements: {
+    //   'com.apple.developer.in-app-payments': ['merchant.com.oikoteck'],
+    // },
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
       NSCameraUsageDescription:

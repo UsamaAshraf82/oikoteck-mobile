@@ -28,27 +28,15 @@ import * as Sentry from '@sentry/react-native';
 
 Sentry.init({
   dsn: 'https://f38cbcdf56bafebea8623bea0bf541c9@o4510437482233856.ingest.us.sentry.io/4510945850687488',
-
-  // Adds more context data to events (IP address, cookies, user, etc.)
-  // For more information, visit: https://docs.sentry.io/platforms/react-native/data-management/data-collected/
   sendDefaultPii: true,
-
-  // Enable Logs
-  // enableLogs: true,
-
-  // Configure Session Replay
   replaysSessionSampleRate: 0.1,
   replaysOnErrorSampleRate: 1,
   integrations: [
     Sentry.mobileReplayIntegration(),
     Sentry.feedbackIntegration(),
   ],
-
-  // uncomment the line below to enable Spotlight (https://spotlightjs.com)
-  // spotlight: __DEV__,
 });
 
-// SystemUI.setBackgroundColorAsync('#fff');
 SplashScreen.preventAutoHideAsync();
 GoogleSignin.configure({
   webClientId:
@@ -77,8 +65,6 @@ function RootLayout() {
 
   const { refresh } = useUser();
 
-  // const router = useRouter();
-
   useEffect(() => {
     const initialize = async () => {
       try {
@@ -87,18 +73,26 @@ function RootLayout() {
         console.log('Parse Initizted...');
         await refresh();
         console.log('Refreshed...');
-        await SplashScreen.hideAsync();
-        console.log('SplashScreen hidden...');
-        setReady(true);
       } catch (e) {
-        console.error(e);
+        console.error('Initialization error:', e);
+      } finally {
+        setReady(true);
       }
     };
     initialize();
-    // if(user){
-    //   SplashScreen.hideAsync();
-    // }
   }, []);
+
+  useEffect(() => {
+    if (ready && (fontsLoaded || fontError)) {
+      SplashScreen.hideAsync()
+        .then(() => {
+          console.log('SplashScreen hidden...');
+        })
+        .catch((e) => {
+          console.error('Error hiding splash screen:', e);
+        });
+    }
+  }, [ready, fontsLoaded, fontError]);
 
   console.log('Ready: ', ready);
 
