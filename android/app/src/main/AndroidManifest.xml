@@ -33,6 +33,7 @@
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="oikoteck"/>
         <data android:scheme="oikoteck-dev"/>
+        <data android:scheme="exp+oikoteck-dev"/>
       </intent-filter>
       <intent-filter data-generated="true">
         <action android:name="android.intent.action.android.intent.action.VIEW"/>

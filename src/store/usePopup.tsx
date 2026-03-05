@@ -42,23 +42,10 @@ const usePopup = create<State & Actions>((set) => ({
     const Popup = () => (
       <Modal
         isVisible={true}
-        // onBackdropPress={() => {
-        //   onDiscard?.();
-        //   set((state) => {
-        //     const map = state.state;
-        //     map.delete(i);
-        //     return { state: map };
-        //   });
-        // }}
-        // onSwipeComplete={() => {
-        //   onDiscard?.();
-        //   set((state) => {
-        //     const map = state.state;
-        //     map.delete(i);
-        //     return { state: map };
-        //   });
-        // }}
-        // swipeDirection="down"
+        useNativeDriver
+        useNativeDriverForBackdrop
+        backdropTransitionOutTiming={0}
+        hideModalContentWhileAnimating
         hardwareAccelerated
         avoidKeyboard={false}
         // style={{ justifyContent: 'flex-end', margin: 0 }}

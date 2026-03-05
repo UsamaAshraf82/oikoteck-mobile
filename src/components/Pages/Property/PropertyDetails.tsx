@@ -3,42 +3,42 @@ import { useRouter } from 'expo-router';
 import { DateTime } from 'luxon';
 import Parse from 'parse/react-native';
 import {
-  ArrowLeftIcon,
-  CalendarIcon,
-  ChatCircleIcon,
-  CouchIcon,
-  FileTextIcon,
-  GlobeHemisphereWestIcon,
-  HouseLineIcon,
-  MapPinIcon,
-  ShareFatIcon,
-  SquaresFourIcon,
-  StairsIcon,
+    ArrowLeftIcon,
+    CalendarIcon,
+    ChatCircleIcon,
+    CouchIcon,
+    FileTextIcon,
+    GlobeHemisphereWestIcon,
+    HouseLineIcon,
+    MapPinIcon,
+    ShareFatIcon,
+    SquaresFourIcon,
+    StairsIcon,
 } from 'phosphor-react-native';
 import { useMemo, useRef, useState } from 'react';
 import {
-  ColorValue,
-  Modal,
-  Platform,
-  Pressable,
-  ScrollView,
-  Share,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  View,
+    ColorValue,
+    Modal,
+    Platform,
+    Pressable,
+    ScrollView,
+    Share,
+    StyleSheet,
+    TouchableWithoutFeedback,
+    View,
 } from 'react-native';
 import {
-  Gesture,
-  GestureDetector,
-  GestureHandlerRootView,
+    Gesture,
+    GestureDetector,
+    GestureHandlerRootView,
 } from 'react-native-gesture-handler';
 import MapView, { Circle, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import Animated, {
-  SharedValue,
-  useAnimatedStyle,
-  useSharedValue,
-  withDecay,
-  withSpring,
+    SharedValue,
+    useAnimatedStyle,
+    useSharedValue,
+    withDecay,
+    withSpring,
 } from 'react-native-reanimated';
 import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -166,6 +166,7 @@ export default function PropertyDetails({
         <SubmitOffer
           property={property}
           onClose={() => setSubmitOfferVisible(false)}
+          visible={SubmitOfferVisible}
         />
       )}
       {contactOwnerVisible && (

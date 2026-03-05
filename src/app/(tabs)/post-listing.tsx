@@ -5,10 +5,14 @@ import { XIcon } from 'phosphor-react-native';
 import { Pressable, StyleSheet, View } from 'react-native';
 import AppText from '~/components/Elements/AppText';
 import PressableView from '~/components/HOC/PressableView';
+import { useToast } from '~/store/useToast';
+import useUser from '~/store/useUser';
 const Image = ExpoImage as any;
 
 const PostListing = () => {
   const router = useRouter();
+  const { addToast } = useToast();
+  const { user } = useUser();
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -53,7 +57,19 @@ const PostListing = () => {
 
       <View style={styles.footer}>
         <PressableView
-          onPress={() => router.push('/property/new')}
+          onPress={() => {
+            console.log(11);
+            if (!user) {
+              addToast({
+                heading: 'Unregistered User',
+                message: 'You can only post a listing if you sign up',
+                type: 'success',
+              });
+              router.push('/login');
+              return;
+            }
+            router.push('/property/new');
+          }}
           style={styles.submitBtn}
         >
           <AppText style={styles.submitBtnText}>Post my listing</AppText>

@@ -1,11 +1,11 @@
 import { CaretDownIcon, XIcon } from 'phosphor-react-native';
 import { useEffect, useState } from 'react';
 import {
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  TouchableNativeFeedback,
-  View,
+    ScrollView,
+    StyleSheet,
+    TextInput,
+    TouchableNativeFeedback,
+    View,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import AppText from '~/components/Elements/AppText';
@@ -70,6 +70,10 @@ const FilterModal = ({
       onBackdropPress={onClose}
       onSwipeComplete={onClose}
       swipeDirection='down'
+      useNativeDriver
+      useNativeDriverForBackdrop
+      backdropTransitionOutTiming={0}
+      hideModalContentWhileAnimating
       hardwareAccelerated
       coverScreen={false}
       avoidKeyboard={false}

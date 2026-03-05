@@ -1,12 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import Parse from 'parse/react-native';
 import { XIcon } from 'phosphor-react-native';
+import { useEffect, useState } from 'react';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import {
-  StyleSheet,
-  TouchableNativeFeedback,
-  TouchableWithoutFeedback,
-  View,
+    StyleSheet,
+    TouchableNativeFeedback,
+    TouchableWithoutFeedback,
+    View,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Modal from 'react-native-modal';
@@ -95,13 +96,28 @@ const displayNames: Record<keyof SendMessageValues, string> = {
 type Props = {
   onClose: () => void;
   property: Property_Type;
+  visible: boolean;
 };
 
-const SendMessage = ({ onClose, property }: Props) => {
+const SendMessage = ({ onClose, property, visible }: Props) => {
   const { user } = useUser();
   const { addToast } = useToast();
   const { openSelect } = useSelect();
   const { startActivity, stopActivity } = useActivityIndicator();
+
+  const [localProperty, setLocalProperty] = useState<Property_Type | null>(
+    visible ? property : null
+  );
+
+  useEffect(() => {
+    if (visible) {
+      setLocalProperty(property);
+    }
+  }, [visible, property]);
+
+  if (!localProperty && !visible) return null;
+
+  const activeProperty = localProperty || property;
 
   const { control, handleSubmit, watch, setValue } = useForm<SendMessageValues>(
     {
@@ -128,15 +144,15 @@ const SendMessage = ({ onClose, property }: Props) => {
       myNewObject.set('Property', {
         __type: 'Pointer',
         className: 'Property',
-        objectId: property.objectId,
+        objectId: activeProperty.objectId,
       });
       if (user) {
         myNewObject.set('User', user);
       }
-      myNewObject.set('owner', property.owner);
+      myNewObject.set('owner', activeProperty.owner);
       myNewObject.set('first_name', data.firstName);
       myNewObject.set('last_name', data.lastName);
-      myNewObject.set('listing_type', property.listing_for);
+      myNewObject.set('listing_type', activeProperty.listing_for);
       if (data.phone) {
         myNewObject.set('phone', data.country.Code + ' ' + data.phone);
       }
@@ -154,7 +170,7 @@ const SendMessage = ({ onClose, property }: Props) => {
         method: 'POST',
         body: JSON.stringify({
           email: 'message_owner',
-          id: property.objectId,
+          id: activeProperty.objectId,
           sender: data.firstName + ' ' + data.lastName,
           message: data.message,
           email_address: data.email.toLowerCase(),
@@ -189,9 +205,14 @@ const SendMessage = ({ onClose, property }: Props) => {
 
   return (
     <Modal
-      isVisible={true}
+      isVisible={visible}
       onBackdropPress={onClose}
       onSwipeComplete={onClose}
+      useNativeDriver
+      useNativeDriverForBackdrop
+      backdropTransitionOutTiming={0}
+      hideModalContentWhileAnimating
+      onModalHide={() => setLocalProperty(null)}
       coverScreen={false}
       hardwareAccelerated
       avoidKeyboard={false}

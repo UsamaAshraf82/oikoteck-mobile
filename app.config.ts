@@ -2,6 +2,8 @@ import { ExpoConfig } from 'expo/config';
 import 'tsx/cjs';
 const IS_DEV = process.env.EXPO_PUBLIC_APP_VARIANT?.trim() == 'development';
 
+console.log(process.env.GOOGLE_MAPS_API_KEY);
+
 const configBoth = {
   prod: {
     name: 'OikoTeck',
@@ -107,7 +109,7 @@ const appConfig: ExpoConfig = {
       'expo-splash-screen',
       {
         image: './assets/adaptive-text-icon.png',
-        imageWidth: 200,
+        imageWidth: 300,
         // resizeMode: 'contain',
         backgroundColor: '#ffffff',
       },

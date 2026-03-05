@@ -5,15 +5,15 @@ import * as Linking from 'expo-linking';
 import { Link } from 'expo-router';
 import Parse from 'parse/react-native';
 import {
-  ChatTeardropIcon,
-  EnvelopeIcon,
-  HouseLineIcon,
-  PhoneCallIcon,
-  UserIcon,
-  WhatsappLogoIcon,
-  XIcon,
+    ChatTeardropIcon,
+    EnvelopeIcon,
+    HouseLineIcon,
+    PhoneCallIcon,
+    UserIcon,
+    WhatsappLogoIcon,
+    XIcon,
 } from 'phosphor-react-native';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SubmitErrorHandler, useForm } from 'react-hook-form';
 import { StyleSheet, TouchableNativeFeedback, View } from 'react-native';
 import Modal from 'react-native-modal';
@@ -58,7 +58,19 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
   const [email, setEmail] = useState(false);
   const [message, setMessage] = useState(false);
   const [request_tour, setrequest_tour] = useState(false);
-  const owner = normalizeOwner(property.owner);
+
+  const [localProperty, setLocalProperty] = useState<Property_Type | null>(
+    visible ? property : null
+  );
+
+  useEffect(() => {
+    if (visible) {
+      setLocalProperty(property);
+    }
+  }, [visible, property]);
+
+  const activeProperty = localProperty || property;
+  const owner = normalizeOwner(activeProperty.owner);
   const { addToast } = useToast();
 
   const openWhatsApp = async () => {
@@ -107,6 +119,11 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
         onBackdropPress={onClose}
         onSwipeComplete={onClose}
         swipeDirection='down'
+        useNativeDriver
+        useNativeDriverForBackdrop
+        backdropTransitionOutTiming={0}
+        hideModalContentWhileAnimating
+        onModalHide={() => setLocalProperty(null)}
         coverScreen={false}
         hardwareAccelerated
         avoidKeyboard={false}
@@ -294,12 +311,17 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
         />
       )}
       {message && (
-        <SendMessage onClose={() => setMessage(false)} property={property} />
+        <SendMessage
+          onClose={() => setMessage(false)}
+          property={property}
+          visible={message}
+        />
       )}
       {request_tour && (
         <RequestTour
           onClose={() => setrequest_tour(false)}
           property={property}
+          visible={request_tour}
         />
       )}
     </>
@@ -329,6 +351,10 @@ const PhoneNumberModal = ({
       isVisible={visible}
       onBackdropPress={onClose}
       onSwipeComplete={onClose}
+      useNativeDriver
+      useNativeDriverForBackdrop
+      backdropTransitionOutTiming={0}
+      hideModalContentWhileAnimating
       coverScreen={false}
       hardwareAccelerated
       avoidKeyboard={false}
@@ -394,6 +420,10 @@ const EmailModal = ({
       isVisible={visible}
       onBackdropPress={onClose}
       onSwipeComplete={onClose}
+      useNativeDriver
+      useNativeDriverForBackdrop
+      backdropTransitionOutTiming={0}
+      hideModalContentWhileAnimating
       coverScreen={false}
       hardwareAccelerated
       avoidKeyboard={false}

@@ -21,6 +21,30 @@ import { emailsAddress } from '~/global';
 import useActivityIndicator from '~/store/useActivityIndicator';
 import { useToast } from '~/store/useToast';
 
+// const default_data = {
+//   basic: {
+//     listing_for: 'Rental',
+//     property_type: 'Residential',
+//   },
+//   basic2: {
+//     property_type: 'Residential',
+//     furnished: false,
+//     bedrooms: 1,
+//     bathrooms: 1,
+//     floor: 1,
+//     special_feature: [],
+//   },
+//   basic3: {
+//     payment_frequency: 1,
+//     deposit: 1,
+//     level_of_finish: 3,
+//     move_in_date: new Date().toISOString(),
+//   },
+//   gallery: { files: [], agent_icon: false },
+//   location: { exact_location: false },
+//   payment: {},
+// };
+
 export default function PostProperty() {
   const [tab, setTab] = useState(0);
   const router = useRouter();
@@ -38,16 +62,33 @@ export default function PostProperty() {
     basic: {
       listing_for: 'Rental',
       property_type: 'Residential',
+      property_category: 'Apartment',
+      property_oriantation: 'North-Facing',
+      description: 'Description',
+      title: 'Title',
     },
     basic2: {
       property_type: 'Residential',
       furnished: false,
       bedrooms: 1,
       bathrooms: 1,
-      floor: 0,
-      special_feature: [],
+      floor: 1,
+      construction_year:2000,
+      energy_class:'A',
+      heating:'Autonomous Heating',
+      level_of_finish:3,
+      plot_size:1000,
+      property_category:'Apartment',
+      heating_expense:100,
+      special_feature: ['Parking Spot'],
+      size:100,
+
     },
     basic3: {
+      contact_method :'Both',
+      listing_for:'Rental',
+      price:5000,
+      reference_number:'123456789',
       payment_frequency: 1,
       deposit: 1,
       level_of_finish: 3,
@@ -172,8 +213,9 @@ export default function PostProperty() {
     case 0:
       return (
         <View style={styles.container}>
-          {renderHeader(() => router.back())}
+          {/* {renderHeader(() => router.back())} */}
           <Basic1
+            onBack={() => router.back()}
             data={data.basic}
             onSubmit={(val) => {
               setData((i) => ({ ...i, basic: val }));
@@ -185,8 +227,11 @@ export default function PostProperty() {
     case 1:
       return (
         <View style={styles.container}>
-          {renderHeader(() => setTab(0))}
           <Basic2
+            onBack={(val) => {
+              setData((i) => ({ ...i, basic2: val }));
+              setTab(0);
+            }}
             data={data.basic2}
             extra_data={{
               property_type: data.basic.property_type!,
@@ -202,8 +247,12 @@ export default function PostProperty() {
     case 2:
       return (
         <View style={styles.container}>
-          {renderHeader(() => setTab(1))}
+          {/* {renderHeader(() => setTab(1))} */}
           <Basic3
+            onBack={(val) => {
+              setData((i) => ({ ...i, basic3: val }));
+              setTab(1);
+            }}
             data={data.basic3}
             extra_data={{
               listing_for: data.basic.listing_for!,

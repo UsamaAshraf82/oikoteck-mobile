@@ -32,7 +32,7 @@ const Select = ({
       <View style={styles.relative}>
         <TouchableWithoutFeedback
           onPress={() => {
-            onPress?.();
+            // onPress?.();
 
             if (options) {
               if (varient) {
@@ -40,16 +40,7 @@ const Select = ({
                   label: title || label || 'Select',
                   options: options,
                   value: value?.value,
-
                   onPress: (value: Option | null) => onChange?.(value),
-                  // Note: These classNames will need translation in the Sheet/Select component
-                  className: {
-                    label: { wrapper: 'justify-start mb-4', text: 'text-2xl' },
-                    option_label: {
-                      wrapper: 'py-4',
-                      text: 'text-[15px]  font-normal',
-                    },
-                  },
                   hasXIcon: true,
                 });
               } else {
@@ -57,7 +48,6 @@ const Select = ({
                   label: title || label || 'Select',
                   options: options,
                   value: value?.value,
-
                   onPress: (value: Option | null) => onChange?.(value),
                 });
               }
@@ -87,8 +77,8 @@ const styles = StyleSheet.create({
   },
   label: {
     marginBottom: 8,
-    fontFamily: 'LufgaMedium',
-    fontSize: 13,
+    // fontFamily: 'LufgaMedium',
+    fontSize: 14,
     color: '#192234',
   },
   relative: {

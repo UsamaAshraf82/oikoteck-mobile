@@ -3,11 +3,11 @@ import { StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import ReactNativeModal from 'react-native-modal';
 import Animated, {
-  runOnJS,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-  withTiming,
+    runOnJS,
+    useAnimatedStyle,
+    useSharedValue,
+    withSpring,
+    withTiming,
 } from 'react-native-reanimated';
 import { useToast } from '~/store/useToast';
 import { deviceWidth } from '~/utils/global';
@@ -78,6 +78,10 @@ export const ToastContainer = () => {
   return (
     <ReactNativeModal
       isVisible={true}
+      useNativeDriver
+      useNativeDriverForBackdrop
+      backdropTransitionOutTiming={0}
+      hideModalContentWhileAnimating
       animationIn='fadeInDown'
       animationOut='fadeOutUp'
       backdropOpacity={0}

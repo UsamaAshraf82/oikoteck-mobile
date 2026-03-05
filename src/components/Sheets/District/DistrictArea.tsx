@@ -4,13 +4,13 @@ import Parse from 'parse/react-native';
 import { GlobeHemisphereEastIcon, XIcon } from 'phosphor-react-native';
 import { useEffect, useRef, useState } from 'react';
 import {
-  ActivityIndicator,
-  Platform,
-  StyleSheet,
-  TextInput,
-  TouchableNativeFeedback,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    Platform,
+    StyleSheet,
+    TextInput,
+    TouchableNativeFeedback,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import AppText from '~/components/Elements/AppText';
@@ -78,6 +78,10 @@ const DistrictArea = ({ visible, onClose, value = '', onPress }: Props) => {
       onBackdropPress={onClose}
       onSwipeComplete={onClose}
       swipeDirection='down'
+      useNativeDriver
+      useNativeDriverForBackdrop
+      backdropTransitionOutTiming={0}
+      hideModalContentWhileAnimating
       hardwareAccelerated
       coverScreen={false}
       style={styles.modal}

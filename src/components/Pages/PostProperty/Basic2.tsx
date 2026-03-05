@@ -1,13 +1,16 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'expo-router';
 import {
+  ArrowLeftIcon,
   CheckCircleIcon,
   InfoIcon,
   MinusIcon,
   PlusIcon,
+  XIcon,
 } from 'phosphor-react-native';
 import { useEffect } from 'react';
-import { SubmitErrorHandler, useForm } from 'react-hook-form';
-import { StyleSheet, View } from 'react-native';
+import { SubmitErrorHandler, useForm, useWatch } from 'react-hook-form';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import z from 'zod';
 import AppText from '~/components/Elements/AppText';
@@ -28,12 +31,15 @@ type Props = {
     property_type: Basic1Values['property_type'];
     property_category: Basic1Values['property_category'];
   };
+
+  onBack: (data: Basic2Values) => void;
 };
 
-export default function Basic2({ data, extra_data, onSubmit }: Props) {
+export default function Basic2({ data, extra_data, onSubmit,onBack }: Props) {
   const { addToast } = useToast();
   const { openModal } = useModal();
-  const { control, setValue, handleSubmit, watch, getValues, reset } =
+  const router = useRouter();
+  const { control, setValue, handleSubmit, getValues, reset } =
     useForm<Basic2Values>({
       resolver: zodResolver(Basic2Schema) as any,
       defaultValues: { ...data, ...extra_data },
@@ -61,331 +67,396 @@ export default function Basic2({ data, extra_data, onSubmit }: Props) {
     }
   };
 
-  const bedrooms = watch('bedrooms');
-  const bathrooms = watch('bathrooms');
-  const floor = watch('floor') || 0;
-  const furnished = watch('furnished');
-  const propertyCategory = watch('property_category');
-  const propertyType = watch('property_type');
-  const currentSpecialFeatures = watch('special_feature');
+  const bedrooms = useWatch({ control, name: 'bedrooms' });
+  const bathrooms = useWatch({ control, name: 'bathrooms' });
+  const floor = useWatch({ control, name: 'floor' }) || 0;
+  const furnished = useWatch({ control, name: 'furnished' });
+  const propertyCategory = useWatch({ control, name: 'property_category' });
+  const propertyType = useWatch({ control, name: 'property_type' });
+  const heating = useWatch({ control, name: 'heating' });
+  const leveloffinish = useWatch({ control, name: 'level_of_finish' });
+  const energy_class = useWatch({ control, name: 'energy_class' });
+  const specialfeature = useWatch({ control, name: 'special_feature' });
 
   return (
-    <View style={styles.container}>
-      <View style={styles.mainContent}>
-        <AppText style={styles.title}>Property details 🏠</AppText>
-        <AppText style={styles.subtitle}>
-          Tell us more about your property in details
-        </AppText>
-
-        <KeyboardAwareScrollView
-          bottomOffset={50}
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps='handled'
-          showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}
+    <>
+      <View style={styles.header}>
+        <Pressable
+          hitSlop={20}
+          onPress={() => {
+            onBack(getValues());
+          }}
         >
-          {/* Bedrooms */}
-          <View style={styles.counterRow}>
-            <AppText style={styles.counterLabel}>No. of Bedrooms</AppText>
-            <View style={styles.counterControls}>
-              <PressableView
-                style={styles.counterBtn}
-                onPress={() => setValue('bedrooms', bedrooms - 1)}
-              >
-                <MinusIcon size={14} color='#192234' />
-              </PressableView>
-              <AppText style={styles.counterValue}>{bedrooms}</AppText>
-              <PressableView
-                style={styles.counterBtn}
-                onPress={() => setValue('bedrooms', bedrooms + 1)}
-              >
-                <PlusIcon size={14} color='#192234' />
-              </PressableView>
-            </View>
-          </View>
+          <ArrowLeftIcon color='#192234' size={24} />
+        </Pressable>
+        <AppText style={styles.headerTitle}>Post a listing</AppText>
+        <Pressable hitSlop={20} onPress={() => router.back()}>
+          <XIcon color='#192234' size={24} />
+        </Pressable>
+      </View>
+      <View style={styles.container}>
+        <View style={styles.mainContent}>
+          <AppText style={styles.title}>Property details 🏠</AppText>
+          <AppText style={styles.subtitle}>
+            Tell us more about your property in details
+          </AppText>
 
-          {/* Bathrooms */}
-          <View style={styles.counterRow}>
-            <AppText style={styles.counterLabel}>No. of Bathrooms</AppText>
-            <View style={styles.counterControls}>
-              <PressableView
-                style={styles.counterBtn}
-                onPress={() => setValue('bathrooms', bathrooms - 1)}
-              >
-                <MinusIcon size={14} color='#192234' />
-              </PressableView>
-              <AppText style={styles.counterValue}>{bathrooms}</AppText>
-              <PressableView
-                style={styles.counterBtn}
-                onPress={() => setValue('bathrooms', bathrooms + 1)}
-              >
-                <PlusIcon size={14} color='#192234' />
-              </PressableView>
-            </View>
-          </View>
-
-          {/* Floor */}
-          <View style={styles.counterRow}>
-            <AppText style={styles.counterLabel}>Floor</AppText>
-            <View style={styles.counterControls}>
-              <PressableView
-                style={styles.counterBtn}
-                onPress={() => setValue('floor', floor - 1)}
-              >
-                <MinusIcon size={14} color='#192234' />
-              </PressableView>
-              <AppText style={styles.counterValue}>{floor}</AppText>
-              <PressableView
-                style={styles.counterBtn}
-                onPress={() => setValue('floor', floor + 1)}
-              >
-                <PlusIcon size={14} color='#192234' />
-              </PressableView>
-            </View>
-          </View>
-
-          <ControlledTextInput
-            control={control}
-            name='size'
-            keyboardType='number-pad'
-            label={
-              propertyType === 'Residential' ? 'Home Size, m²' : 'Size, m²'
-            }
-          />
-
-          {['Detached House', 'Villa'].includes(propertyCategory) && (
-            <ControlledTextInput
-              control={control}
-              name='plot_size'
-              keyboardType='number-pad'
-              label='Plot Size, m²'
-            />
-          )}
-
-          {/* Furnished */}
-          <View style={styles.radioGroup}>
-            <AppText style={styles.radioGroupLabel}>Furnished</AppText>
-            <Grid gap={8} cols={2}>
-              <PressableView
-                onPress={() => setValue('furnished', true)}
-                style={[
-                  styles.radioBtn,
-                  furnished === true && styles.radioBtnActive,
-                ]}
-              >
-                <View style={styles.radioBtnContent}>
-                  <AppText
-                    style={[
-                      styles.radioBtnText,
-                      furnished === true && styles.radioBtnTextActive,
-                    ]}
-                  >
-                    Yes
-                  </AppText>
-                  {furnished === true && (
-                    <CheckCircleIcon weight='fill' color='#82065e' />
-                  )}
-                </View>
-              </PressableView>
-              <PressableView
-                onPress={() => setValue('furnished', false)}
-                style={[
-                  styles.radioBtn,
-                  furnished === false && styles.radioBtnActive,
-                ]}
-              >
-                <View style={styles.radioBtnContent}>
-                  <AppText
-                    style={[
-                      styles.radioBtnText,
-                      furnished === false && styles.radioBtnTextActive,
-                    ]}
-                  >
-                    No
-                  </AppText>
-                  {furnished === false && (
-                    <CheckCircleIcon weight='fill' color='#82065e' />
-                  )}
-                </View>
-              </PressableView>
-            </Grid>
-          </View>
-
-          <Select
-            varient
-            options={[1, 2, 3, 4, 5].map((i) => ({
-              label: level_of_finish(i),
-              value: i,
-            }))}
-            label='Level of Finish'
-            value={{
-              label: level_of_finish(watch('level_of_finish')),
-              value: watch('level_of_finish') || null,
-            }}
-            placeholder='Select Level of Finish'
-            onChange={(value) => {
-              setValue(
-                'level_of_finish',
-                value?.value as Basic2Values['level_of_finish']
-              );
-            }}
-          />
-
-          <PressableView
-            onPress={() => {
-              openModal({
-                modal: (
-                  <View style={styles.modalContent}>
-                    <AppText style={styles.modalInfoText}>
-                      OikoTeck will not display level of finish to users in the
-                      marketplace
-                    </AppText>
-                    <View style={styles.modalSteps}>
-                      <AppText style={styles.modalStepTitle}>
-                        Below are some level of finish examples:
-                      </AppText>
-                      <AppText style={styles.finishLevelTitle}>
-                        Poor end
-                      </AppText>
-                      <AppText style={styles.finishLevelDesc}>
-                        Laminate countertops, vinyl flooring, basic fixtures,
-                        thin paint, basic appliances.
-                      </AppText>
-                      <AppText style={styles.finishLevelTitle}>Low end</AppText>
-                      <AppText style={styles.finishLevelDesc}>
-                        Basic tile, laminate wood flooring, standard stainless
-                        steel appliances, mid-range cabinetry.
-                      </AppText>
-                      <AppText style={styles.finishLevelTitle}>
-                        Medium end
-                      </AppText>
-                      <AppText style={styles.finishLevelDesc}>
-                        Granite countertops, hardwood flooring, quality
-                        fixtures, upgraded appliances, solid wood cabinetry.
-                      </AppText>
-                      <AppText style={styles.finishLevelTitle}>
-                        High end
-                      </AppText>
-                      <AppText style={styles.finishLevelDesc}>
-                        Marble countertops, custom-designed cabinetry, high-end
-                        appliances, designer tile, solid wood flooring, unique
-                        lighting fixtures.
-                      </AppText>
-                      <AppText style={styles.finishLevelTitle}>
-                        Luxury end
-                      </AppText>
-                      <AppText style={styles.finishLevelDesc}>
-                        Rare stone countertops, bespoke cabinetry,
-                        top-of-the-line appliances, handcrafted elements,
-                        integrated smart home technology, designer fixtures
-                      </AppText>
-                    </View>
-                  </View>
-                ),
-                onClose: () => {},
-              });
-            }}
-            style={styles.infoBanner}
+          <KeyboardAwareScrollView
+            bottomOffset={50}
+            contentContainerStyle={styles.scrollContent}
+            keyboardShouldPersistTaps='handled'
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
           >
-            <View style={styles.infoBannerContent}>
-              <InfoIcon size={18} color='#192234' />
-              <AppText style={styles.infoBannerText}>
-                OikoTeck will not display level of finish to users in the
-                marketplace
-              </AppText>
-            </View>
-          </PressableView>
-
-          <ControlledTextInput
-            control={control}
-            name='construction_year'
-            placeholder='Select Construction Year'
-            label='Construction Year'
-            keyboardType='decimal-pad'
-          />
-
-          <Select
-            varient
-            options={Basic2Schema.shape.heating
-              .unwrap()
-              .options.map((i: string) => ({ label: i, value: i }))}
-            label='Heating System'
-            value={{ label: watch('heating'), value: watch('heating') || null }}
-            placeholder='Select Heating System'
-            onChange={(value) => {
-              setValue('heating', value?.value as Basic2Values['heating']);
-            }}
-          />
-
-          <ControlledTextInput
-            control={control}
-            name='heating_expense'
-            label='Monthly Heating Expenses'
-            placeholder='Select monthly expenses'
-            keyboardType='number-pad'
-          />
-
-          <Select
-            varient
-            options={Basic2Schema.shape.energy_class
-              .unwrap()
-              .options.map((i: string) => ({ label: i, value: i }))}
-            label='Energy Class'
-            value={{
-              label: watch('energy_class'),
-              value: watch('energy_class') || null,
-            }}
-            placeholder='Select Energy Class'
-            onChange={(value) => {
-              setValue(
-                'energy_class',
-                value?.value as Basic2Values['energy_class']
-              );
-            }}
-          />
-
-          <View>
-            <AppText style={styles.specialFeaturesLabel}>
-              Special Features
-            </AppText>
-            <Grid gap={8} cols={1}>
-              {special_feature(propertyType).map((i: string) => (
-                <Checkbox
-                  labelStyle={styles.checkboxLabel}
-                  key={i}
-                  label={i}
-                  labelLast
-                  value={currentSpecialFeatures.includes(i)}
-                  getValue={() => {
-                    const special = getValues('special_feature');
-                    if (special.includes(i)) {
-                      setValue(
-                        'special_feature',
-                        special.filter((p: string) => p !== i)
-                      );
-                    } else {
-                      setValue('special_feature', [...special, i]);
+            {/* Bedrooms */}
+            <View style={styles.counterRow}>
+              <AppText style={styles.counterLabel}>No. of Bedrooms</AppText>
+              <View style={styles.counterControls}>
+                <PressableView
+                  style={styles.counterBtn}
+                  onPress={() => {
+                    const val = bedrooms - 1;
+                    if (val >= 0) {
+                      setValue('bedrooms', val);
                     }
                   }}
-                />
-              ))}
-            </Grid>
-          </View>
-        </KeyboardAwareScrollView>
+                >
+                  <MinusIcon size={14} color='#192234' />
+                </PressableView>
+                <AppText style={styles.counterValue}>{bedrooms}</AppText>
+                <PressableView
+                  style={styles.counterBtn}
+                  onPress={() => {
+                    const val = bedrooms + 1;
+                    if (val <= 10) {
+                      setValue('bedrooms', val);
+                    }
+                  }}
+                >
+                  <PlusIcon size={14} color='#192234' />
+                </PressableView>
+              </View>
+            </View>
+
+            {/* Bathrooms */}
+            <View style={styles.counterRow}>
+              <AppText style={styles.counterLabel}>No. of Bathrooms</AppText>
+              <View style={styles.counterControls}>
+                <PressableView
+                  style={styles.counterBtn}
+                  onPress={() => {
+                    const val = bathrooms - 1;
+                    if (val >= 0) {
+                      setValue('bathrooms', val);
+                    }
+                  }}
+                >
+                  <MinusIcon size={14} color='#192234' />
+                </PressableView>
+                <AppText style={styles.counterValue}>{bathrooms}</AppText>
+                <PressableView
+                  style={styles.counterBtn}
+                  onPress={() => {
+                    const val = bathrooms + 1;
+                    if (val <= 10) {
+                      setValue('bathrooms', val);
+                    }
+                  }}
+                >
+                  <PlusIcon size={14} color='#192234' />
+                </PressableView>
+              </View>
+            </View>
+
+            {/* Floor */}
+            <View style={styles.counterRow}>
+              <AppText style={styles.counterLabel}>Floor</AppText>
+              <View style={styles.counterControls}>
+                <PressableView
+                  style={styles.counterBtn}
+                  onPress={() => {
+                    const val = floor - 1;
+                    if (val >= 0) {
+                      setValue('floor', val);
+                    }
+                  }}
+                >
+                  <MinusIcon size={14} color='#192234' />
+                </PressableView>
+                <AppText style={styles.counterValue}>{floor}</AppText>
+                <PressableView
+                  style={styles.counterBtn}
+                  onPress={() => {
+                    const val = floor + 1;
+                    if (val <= 10) {
+                      setValue('floor', val);
+                    }
+                  }}
+                >
+                  <PlusIcon size={14} color='#192234' />
+                </PressableView>
+              </View>
+            </View>
+
+            <ControlledTextInput
+              control={control}
+              name='size'
+              keyboardType='number-pad'
+              label={
+                propertyType === 'Residential' ? 'Home Size, m²' : 'Size, m²'
+              }
+            />
+
+            {['Detached House', 'Villa'].includes(propertyCategory) && (
+              <ControlledTextInput
+                control={control}
+                name='plot_size'
+                keyboardType='number-pad'
+                label='Plot Size, m²'
+              />
+            )}
+
+            {/* Furnished */}
+            <View style={styles.radioGroup}>
+              <AppText style={styles.radioGroupLabel}>Furnished</AppText>
+              <Grid gap={8} cols={2}>
+                <PressableView
+                  onPress={() => setValue('furnished', true)}
+                  style={[
+                    styles.radioBtn,
+                    furnished === true && styles.radioBtnActive,
+                  ]}
+                >
+                  <View style={styles.radioBtnContent}>
+                    <AppText
+                      style={[
+                        styles.radioBtnText,
+                        furnished === true && styles.radioBtnTextActive,
+                      ]}
+                    >
+                      Yes
+                    </AppText>
+                    {furnished === true && (
+                      <CheckCircleIcon weight='fill' color='#82065e' />
+                    )}
+                  </View>
+                </PressableView>
+                <PressableView
+                  onPress={() => setValue('furnished', false)}
+                  style={[
+                    styles.radioBtn,
+                    furnished === false && styles.radioBtnActive,
+                  ]}
+                >
+                  <View style={styles.radioBtnContent}>
+                    <AppText
+                      style={[
+                        styles.radioBtnText,
+                        furnished === false && styles.radioBtnTextActive,
+                      ]}
+                    >
+                      No
+                    </AppText>
+                    {furnished === false && (
+                      <CheckCircleIcon weight='fill' color='#82065e' />
+                    )}
+                  </View>
+                </PressableView>
+              </Grid>
+            </View>
+
+            <Select
+              varient
+              options={[1, 2, 3, 4, 5].map((i) => ({
+                label: level_of_finish(i),
+                value: i,
+              }))}
+              label='Level of Finish'
+              value={{
+                label: level_of_finish(leveloffinish),
+                value: leveloffinish || null,
+              }}
+              placeholder='Select Level of Finish'
+              onChange={(value) => {
+                setValue(
+                  'level_of_finish',
+                  value?.value as Basic2Values['level_of_finish']
+                );
+              }}
+            />
+
+            <PressableView
+              onPress={() => {
+                openModal({
+                  modal: (
+                    <View style={styles.modalContent}>
+                      <AppText style={styles.modalInfoText}>
+                        OikoTeck will not display level of finish to users in
+                        the marketplace
+                      </AppText>
+                      <View style={styles.modalSteps}>
+                        <AppText style={styles.modalStepTitle}>
+                          Below are some level of finish examples:
+                        </AppText>
+                        <AppText style={styles.finishLevelTitle}>
+                          Poor end
+                        </AppText>
+                        <AppText style={styles.finishLevelDesc}>
+                          Laminate countertops, vinyl flooring, basic fixtures,
+                          thin paint, basic appliances.
+                        </AppText>
+                        <AppText style={styles.finishLevelTitle}>
+                          Low end
+                        </AppText>
+                        <AppText style={styles.finishLevelDesc}>
+                          Basic tile, laminate wood flooring, standard stainless
+                          steel appliances, mid-range cabinetry.
+                        </AppText>
+                        <AppText style={styles.finishLevelTitle}>
+                          Medium end
+                        </AppText>
+                        <AppText style={styles.finishLevelDesc}>
+                          Granite countertops, hardwood flooring, quality
+                          fixtures, upgraded appliances, solid wood cabinetry.
+                        </AppText>
+                        <AppText style={styles.finishLevelTitle}>
+                          High end
+                        </AppText>
+                        <AppText style={styles.finishLevelDesc}>
+                          Marble countertops, custom-designed cabinetry,
+                          high-end appliances, designer tile, solid wood
+                          flooring, unique lighting fixtures.
+                        </AppText>
+                        <AppText style={styles.finishLevelTitle}>
+                          Luxury end
+                        </AppText>
+                        <AppText style={styles.finishLevelDesc}>
+                          Rare stone countertops, bespoke cabinetry,
+                          top-of-the-line appliances, handcrafted elements,
+                          integrated smart home technology, designer fixtures
+                        </AppText>
+                      </View>
+                    </View>
+                  ),
+                  onClose: () => {},
+                });
+              }}
+              style={styles.infoBanner}
+            >
+              <View style={styles.infoBannerContent}>
+                <InfoIcon size={18} color='#192234' />
+                <AppText style={styles.infoBannerText}>
+                  OikoTeck will not display level of finish to users in the
+                  marketplace
+                </AppText>
+              </View>
+            </PressableView>
+
+            <ControlledTextInput
+              control={control}
+              name='construction_year'
+              placeholder='Select Construction Year'
+              label='Construction Year'
+              keyboardType='decimal-pad'
+            />
+
+            <Select
+              varient
+              options={Basic2Schema.shape.heating
+                .unwrap()
+                .options.map((i: string) => ({ label: i, value: i }))}
+              label='Heating System'
+              value={{ label: heating, value: heating || null }}
+              placeholder='Select Heating System'
+              onChange={(value) => {
+                setValue('heating', value?.value as Basic2Values['heating']);
+              }}
+            />
+
+            <ControlledTextInput
+              control={control}
+              name='heating_expense'
+              label='Monthly Heating Expenses'
+              placeholder='Select monthly expenses'
+              keyboardType='number-pad'
+              isPrice
+            />
+
+            <Select
+              varient
+              options={Basic2Schema.shape.energy_class
+                .unwrap()
+                .options.map((i: string) => ({ label: i, value: i }))}
+              label='Energy Class'
+              value={{
+                label: energy_class,
+                value: energy_class || null,
+              }}
+              placeholder='Select Energy Class'
+              onChange={(value) => {
+                setValue(
+                  'energy_class',
+                  value?.value as Basic2Values['energy_class']
+                );
+              }}
+            />
+
+            <View>
+              <AppText style={styles.specialFeaturesLabel}>
+                Special Features
+              </AppText>
+              <Grid gap={8} cols={1}>
+                {special_feature(propertyType).map((i: string) => (
+                  <Checkbox
+                    labelStyle={styles.checkboxLabel}
+                    key={i}
+                    label={i}
+                    labelLast
+                    value={specialfeature.includes(i)}
+                    getValue={() => {
+                      if (specialfeature.includes(i)) {
+                        setValue(
+                          'special_feature',
+                          specialfeature.filter((p: string) => p !== i)
+                        );
+                      } else {
+                        setValue('special_feature', [...specialfeature, i]);
+                      }
+                    }}
+                  />
+                ))}
+              </Grid>
+            </View>
+          </KeyboardAwareScrollView>
+        </View>
+        <View style={styles.footer}>
+          <PressableView
+            onPress={handleSubmit(onSubmitInternal, onError)}
+            style={styles.continueBtn}
+          >
+            <AppText style={styles.continueBtnText}>Continue</AppText>
+          </PressableView>
+        </View>
       </View>
-      <View style={styles.footer}>
-        <PressableView
-          onPress={handleSubmit(onSubmitInternal, onError)}
-          style={styles.continueBtn}
-        >
-          <AppText style={styles.continueBtnText}>Continue</AppText>
-        </PressableView>
-      </View>
-    </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
+  header: {
+    height: 60,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+  },
+  headerTitle: {
+    fontFamily: 'LufgaMedium',
+    fontSize: 18,
+    color: '#192234',
+  },
   container: {
     flex: 1,
     backgroundColor: 'white',
@@ -419,8 +490,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   counterLabel: {
-    fontFamily: 'LufgaMedium',
-    fontSize: 13,
+    // fontFamily: 'LufgaMedium',
+    fontSize: 14,
     color: '#192234',
   },
   counterControls: {
@@ -438,7 +509,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   counterValue: {
-    minWidth: 40,
+    minWidth: 45,
     textAlign: 'center',
     fontFamily: 'LufgaSemiBold',
     fontSize: 20,
@@ -449,8 +520,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   radioGroupLabel: {
-    fontFamily: 'LufgaMedium',
-    fontSize: 13,
+    // fontFamily: 'LufgaMedium',
+    fontSize: 14,
     color: '#192234',
   },
   radioBtn: {
@@ -648,7 +719,7 @@ export const Basic2Schema = z
     construction_year: z.coerce
       .number()
       .min(1900, 'Construction Year must be larger or equal to 1900')
-      .max(2050, 'Construction Year must be smaller or equal to 2050')
+      // .max(2050, 'Construction Year must be smaller or equal to 2050')
       .optional()
       .or(z.literal('')),
     level_of_finish: z
@@ -656,7 +727,7 @@ export const Basic2Schema = z
         message: 'Level of Finish is Required.',
       })
       .optional(),
-    reference_number: z.string({}).optional(),
+    // reference_number: z.string({}).optional(),
   })
   .superRefine((data: any, ctx: z.RefinementCtx) => {
     if (data.property_type !== 'Land') {
@@ -685,7 +756,7 @@ const displayNames: Record<keyof Basic2Values, string> = {
   furnished: 'Furnished',
   construction_year: 'Construction Year',
   level_of_finish: 'Level of Finish',
-  reference_number: 'Reference Number',
+  // reference_number: 'Reference Number',
   property_category: 'Property Category',
   property_type: 'Property Type',
 };

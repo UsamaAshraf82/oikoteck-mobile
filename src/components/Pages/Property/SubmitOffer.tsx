@@ -2,12 +2,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link } from 'expo-router';
 import Parse from 'parse/react-native';
 import { XIcon } from 'phosphor-react-native';
+import { useEffect, useState } from 'react';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import {
-  StyleSheet,
-  TouchableNativeFeedback,
-  TouchableWithoutFeedback,
-  View,
+    StyleSheet,
+    TouchableNativeFeedback,
+    TouchableWithoutFeedback,
+    View,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Modal from 'react-native-modal';
@@ -16,7 +17,7 @@ import AppText from '~/components/Elements/AppText';
 import { ControlledCheckBox } from '~/components/Elements/Checkbox';
 import { flags, RenderFlagWithCode } from '~/components/Elements/Flags';
 import TextInput, {
-  ControlledTextInput,
+    ControlledTextInput,
 } from '~/components/Elements/TextInput';
 import Grid from '~/components/HOC/Grid';
 import PressableView from '~/components/HOC/PressableView';
@@ -32,15 +33,32 @@ import { thoasandseprator } from '~/utils/number';
 type SendOfferModalType = {
   onClose: () => void;
   property: Property_Type;
+  visible: boolean;
 };
 
-const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
+const SubmitOffer = ({ onClose, property, visible }: SendOfferModalType) => {
   const { user } = useUser();
   const { addToast } = useToast();
   const { openSelect } = useSelect();
   const { startActivity, stopActivity } = useActivityIndicator();
 
-  const p20 = property.price * 0.8;
+  const [localProperty, setLocalProperty] = useState<Property_Type | null>(
+    visible ? property : null
+  );
+
+  useEffect(() => {
+    if (visible) {
+      setLocalProperty(property);
+    }
+  }, [visible, property]);
+
+  if (!localProperty && !visible) return null;
+
+  const activeProperty = localProperty || property;
+  const p20 = activeProperty.price * 0.8;
+
+  // ... rest of the logic using activeProperty instead of property
+
 
   const SendOfferSchema = z
     .object({
@@ -156,16 +174,16 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
       myNewObject.set('Property', {
         __type: 'Pointer',
         className: 'Property',
-        objectId: property.objectId,
+        objectId: activeProperty.objectId,
       });
       if (user) {
         myNewObject.set('User', user);
       }
-      myNewObject.set('owner', property.owner);
+      myNewObject.set('owner', activeProperty.owner);
       myNewObject.set('first_name', data.firstName);
       myNewObject.set('last_name', data.lastName);
-      myNewObject.set('listing_type', property.listing_for);
-      myNewObject.set('actual_price', property.price);
+      myNewObject.set('listing_type', activeProperty.listing_for);
+      myNewObject.set('actual_price', activeProperty.price);
       if (data.phone) {
         myNewObject.set('phone', data.country.Code + ' ' + data.phone);
       }
@@ -183,7 +201,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
         method: 'POST',
         body: JSON.stringify({
           email: 'offer_request',
-          id: property.objectId,
+          id: activeProperty.objectId,
           sender: data.firstName + ' ' + data.lastName,
           bid: data.price,
           email_address: data.email.toLowerCase(),
@@ -218,9 +236,14 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
 
   return (
     <Modal
-      isVisible={true}
+      isVisible={visible}
       onBackdropPress={onClose}
       onSwipeComplete={onClose}
+      useNativeDriver
+      useNativeDriverForBackdrop
+      backdropTransitionOutTiming={0}
+      hideModalContentWhileAnimating
+      onModalHide={() => setLocalProperty(null)}
       coverScreen={false}
       hardwareAccelerated
       avoidKeyboard={false}
@@ -259,7 +282,7 @@ const SubmitOffer = ({ onClose, property }: SendOfferModalType) => {
                 <TextInput
                   readOnly
                   label='Asking Price'
-                  value={thoasandseprator(property.price) + ''}
+                  value={thoasandseprator(activeProperty.price) + ''}
                   isPrice
                 />
                 <ControlledTextInput

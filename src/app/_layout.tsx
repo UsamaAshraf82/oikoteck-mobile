@@ -116,7 +116,8 @@ function RootLayout() {
         </View>
       )}
     >
-      <StripeProvider publishableKey='pk_test_51PSK7VP5GmAB6WhMTNNCySQpZwOVzUV3T7DJA6W25VrCnxom0KAJ3osQyZR6qXb2GZtO6oP8m33SI4pIoeV913Pf00RBNgWjCl'>
+      <StripeProvider
+      publishableKey='pk_test_51PSK7VP5GmAB6WhMTNNCySQpZwOVzUV3T7DJA6W25VrCnxom0KAJ3osQyZR6qXb2GZtO6oP8m33SI4pIoeV913Pf00RBNgWjCl'>
         <Provider>
           <Screens fontsLoaded={fontsLoaded} ready={ready} />
           <ModalContainer />

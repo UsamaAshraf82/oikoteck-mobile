@@ -4,11 +4,11 @@ import Parse from 'parse/react-native';
 import { XIcon } from 'phosphor-react-native';
 import { useEffect, useMemo, useState } from 'react';
 import {
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  View,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    TouchableWithoutFeedback,
+    View,
 } from 'react-native';
 import ReactNativeModal from 'react-native-modal';
 import AppText from '~/components/Elements/AppText';
@@ -18,9 +18,9 @@ import PressableView from '~/components/HOC/PressableView';
 import { DISCOUNT, TAX } from '~/global/global';
 import { plans } from '~/global/plan';
 import {
-  goldpricetable,
-  platpricetable,
-  prmotepricetable,
+    goldpricetable,
+    platpricetable,
+    prmotepricetable,
 } from '~/global/plan_price';
 import useActivityIndicator from '~/store/useActivityIndicator';
 import { useToast } from '~/store/useToast';
@@ -79,6 +79,10 @@ const StartMembership = () => {
         isVisible={modal}
         onBackdropPress={() => setModal(false)}
         onSwipeComplete={() => setModal(false)}
+        useNativeDriver
+        useNativeDriverForBackdrop
+        backdropTransitionOutTiming={0}
+        hideModalContentWhileAnimating
         style={styles.modalFull}
         avoidKeyboard={false}
       >

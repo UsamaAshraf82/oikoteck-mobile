@@ -1,7 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'expo-router';
+import { ArrowLeftIcon, XIcon } from 'phosphor-react-native';
 import { useEffect } from 'react';
 import { SubmitErrorHandler, useForm } from 'react-hook-form';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import z from 'zod';
 import AppText from '~/components/Elements/AppText';
@@ -18,11 +20,14 @@ type Props = {
   extra_data: {
     listing_for: Basic1Values['listing_for'];
   };
+
+  onBack: (data: Basic3Values) => void;
 };
 
-export default function Basic3({ data, extra_data, onSubmit }: Props) {
+export default function Basic3({ data, extra_data, onSubmit, onBack }: Props) {
   const { addToast } = useToast();
-  const { control, setValue, handleSubmit, watch, reset } =
+  const router = useRouter();
+  const { control, setValue, handleSubmit, watch, reset, getValues } =
     useForm<Basic3Values>({
       resolver: zodResolver(Basic3Schema) as any,
       defaultValues: { ...data, ...extra_data },
@@ -53,119 +58,150 @@ export default function Basic3({ data, extra_data, onSubmit }: Props) {
   const listingFor = watch('listing_for');
 
   return (
-    <View style={styles.container}>
-      <View style={styles.mainContent}>
-        <AppText style={styles.title}>
-          Property details 🏠{' '}
-          <AppText style={styles.titleSub}>(Cont..)</AppText>
-        </AppText>
-        <AppText style={styles.subtitle}>Add your pricing details</AppText>
-
-        <KeyboardAwareScrollView
-          bottomOffset={50}
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps='handled'
-          showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}
+    <>
+      <View style={styles.header}>
+        <Pressable
+          hitSlop={20}
+          onPress={() => {
+            onBack(getValues());
+          }}
         >
-          <ControlledTextInput
-            control={control}
-            name='price'
-            placeholder='Amount'
-            keyboardType='number-pad'
-            label={listingFor === 'Rental' ? 'Rent/Month' : 'Price'}
-          />
-          {listingFor === 'Rental' && (
-            <Select
-              varient
-              options={[
-                1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
-                19, 20, 21, 22, 23, 24,
-              ].map((i: number) => ({ label: i + ' month', value: i }))}
-              label='Security Deposit (Months)'
-              value={{
-                label: watch('deposit') || null,
-                value: watch('deposit') || null,
-              }}
-              placeholder='Choose Options'
-              onChange={(value) => {
-                setValue('deposit', value?.value as Basic3Values['deposit']);
-              }}
+          <ArrowLeftIcon color='#192234' size={24} />
+        </Pressable>
+        <AppText style={styles.headerTitle}>Post a listing</AppText>
+        <Pressable hitSlop={20} onPress={() => router.back()}>
+          <XIcon color='#192234' size={24} />
+        </Pressable>
+      </View>
+      <View style={styles.container}>
+        <View style={styles.mainContent}>
+          <AppText style={styles.title}>
+            Property details 🏠{' '}
+            <AppText style={styles.titleSub}>(Cont..)</AppText>
+          </AppText>
+          <AppText style={styles.subtitle}>Add your pricing details</AppText>
+
+          <KeyboardAwareScrollView
+            bottomOffset={50}
+            contentContainerStyle={styles.scrollContent}
+            keyboardShouldPersistTaps='handled'
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
+          >
+            <ControlledTextInput
+              control={control}
+              name='price'
+              placeholder='Enter Amount'
+              keyboardType='number-pad'
+              label={listingFor === 'Rental' ? 'Rent/Month' : 'Price'}
+              isPrice
             />
-          )}
-          {listingFor === 'Rental' && (
+            {listingFor === 'Rental' && (
+              <Select
+                varient
+                options={[
+                  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+                  19, 20, 21, 22, 23, 24,
+                ].map((i: number) => ({ label: i + ' month', value: i }))}
+                label='Security Deposit (Months)'
+                value={{
+                  label: watch('deposit') || null,
+                  value: watch('deposit') || null,
+                }}
+                placeholder='Choose Options'
+                onChange={(value) => {
+                  setValue('deposit', value?.value as Basic3Values['deposit']);
+                }}
+              />
+            )}
+            {listingFor === 'Rental' && (
+              <Select
+                varient
+                options={[
+                  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+                  19, 20, 21, 22, 23, 24,
+                ].map((i: number) => ({ label: i + ' month', value: i }))}
+                label='Payment Frequency (Months)'
+                value={{
+                  label: watch('payment_frequency'),
+                  value: watch('payment_frequency') || null,
+                }}
+                placeholder='Select frequency'
+                onChange={(value) => {
+                  setValue(
+                    'payment_frequency',
+                    value?.value as Basic3Values['payment_frequency']
+                  );
+                }}
+              />
+            )}
+
+            <DatePicker
+              label={listingFor === 'Rental' ? 'Move in Date' : 'Sale Date'}
+              value={watch('move_in_date')}
+              onChange={(date: Date) =>
+                setValue('move_in_date', date.toISOString())
+              }
+              withForm
+            />
+
             <Select
               varient
-              options={[
-                1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
-                19, 20, 21, 22, 23, 24,
-              ].map((i: number) => ({ label: i + ' month', value: i }))}
-              label='Payment Frequency (Months)'
+              options={Basic3Schema.shape.contact_method.options.map(
+                (i: string) => ({
+                  label: i,
+                  value: i,
+                })
+              )}
+              label='Displayed Contact Method'
               value={{
-                label: watch('payment_frequency'),
-                value: watch('payment_frequency') || null,
+                label: watch('contact_method'),
+                value: watch('contact_method') || null,
               }}
-              placeholder='Select frequency'
+              placeholder='Select Contact Method'
               onChange={(value) => {
                 setValue(
-                  'payment_frequency',
-                  value?.value as Basic3Values['payment_frequency']
+                  'contact_method',
+                  value?.value as Basic3Values['contact_method']
                 );
               }}
             />
-          )}
-
-          <DatePicker
-            label={listingFor === 'Rental' ? 'Move in Date' : 'Sale Date'}
-            value={watch('move_in_date')}
-            onChange={(date: Date) =>
-              setValue('move_in_date', date.toISOString())
-            }
-            withForm
-          />
-
-          <Select
-            varient
-            options={Basic3Schema.shape.contact_method.options.map(
-              (i: string) => ({
-                label: i,
-                value: i,
-              })
-            )}
-            label='Displayed Contact Method'
-            value={{
-              label: watch('contact_method'),
-              value: watch('contact_method') || null,
-            }}
-            placeholder='Select Contact Method'
-            onChange={(value) => {
-              setValue(
-                'contact_method',
-                value?.value as Basic3Values['contact_method']
-              );
-            }}
-          />
-          <ControlledTextInput
-            control={control}
-            name='reference_number'
-            label='Reference Number'
-            placeholder='Enter Reference Number'
-          />
-        </KeyboardAwareScrollView>
+            <ControlledTextInput
+              control={control}
+              name='reference_number'
+              label='Reference Number'
+              placeholder='Enter Reference Number'
+            />
+          </KeyboardAwareScrollView>
+        </View>
+        <View style={styles.footer}>
+          <PressableView
+            onPress={handleSubmit(onSubmitInternal, onError)}
+            style={styles.continueBtn}
+          >
+            <AppText style={styles.continueBtnText}>Continue</AppText>
+          </PressableView>
+        </View>
       </View>
-      <View style={styles.footer}>
-        <PressableView
-          onPress={handleSubmit(onSubmitInternal, onError)}
-          style={styles.continueBtn}
-        >
-          <AppText style={styles.continueBtnText}>Continue</AppText>
-        </PressableView>
-      </View>
-    </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
+  header: {
+    height: 60,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+  },
+  headerTitle: {
+    fontFamily: 'LufgaMedium',
+    fontSize: 18,
+    color: '#192234',
+  },
   container: {
     flex: 1,
     backgroundColor: 'white',
