@@ -6,7 +6,7 @@ import * as AppleAuthentication from 'expo-apple-authentication';
 import { Image as ExpoImage } from 'expo-image';
 import { useRouter } from 'expo-router';
 import Parse from 'parse/react-native';
-import { Alert, Platform, StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import {
   AccessToken,
   AuthenticationToken,
@@ -174,6 +174,7 @@ const SocialSignin = () => {
 
   const handleAppleLogin = async () => {
     startActivity();
+
     try {
       const credential = await AppleAuthentication.signInAsync({
         requestedScopes: [
@@ -182,60 +183,48 @@ const SocialSignin = () => {
         ],
       });
 
-      if (credential) {
-        const user = await Parse.User.logInWith('apple', {
-          authData: {
-            id: credential.user,
-            token: credential.identityToken,
-          },
+      if (!credential.identityToken) {
+        throw new Error('Missing Apple identity token');
+      }
+
+      const user = await Parse.User.logInWith('apple', {
+        authData: {
+          id: credential.user,
+          id_token: credential.identityToken,
+        },
+      });
+
+      const email =
+        credential.email?.toLowerCase() ||
+        (user.get('email') as string)?.toLowerCase() ||
+        '';
+
+      const firstName =
+        credential.fullName?.givenName ||
+        (user.get('first_name') as string) ||
+        '';
+
+      const lastName =
+        credential.fullName?.familyName ||
+        (user.get('last_name') as string) ||
+        '';
+
+      if (!user.get('phone') || !email || !firstName || !lastName) {
+        router.push({
+          pathname: '/signup2social',
+          params: { email, firstName, lastName },
         });
-
-        if (
-          !user.id ||
-          !user.get('first_name') ||
-          !user.get('last_name') ||
-          !user.get('email') ||
-          !user.get('phone')
-        ) {
-          // Apple only provides email and name on the FIRST successful login for a given app.
-          // We must fallback to Parse User attributes if they were synchronized.
-          const email =
-            credential.email?.toLowerCase() ||
-            (user.get('email') as string)?.toLowerCase() ||
-            '';
-          const firstName =
-            credential.fullName?.givenName ||
-            (user.get('first_name') as string) ||
-            '';
-          const lastName =
-            credential.fullName?.familyName ||
-            (user.get('last_name') as string) ||
-            '';
-
-          router.push({
-            pathname: '/signup2social',
-            params: {
-              email,
-              firstName,
-              lastName,
-            },
-          });
-        } else {
-          setUser(user as Parse.User<User_Type>);
-        }
+      } else {
+        setUser(user as Parse.User<User_Type>);
       }
     } catch (e: any) {
-      if (e.code === 'ERR_CANCELED') {
-        // handle cancel
-      } else {
-        console.error('Apple Sign-in error:', e);
-        Alert.alert(
-          'Apple Login Error',
-          e.message || 'An unknown error occurred'
-        );
+      Sentry.captureException(e);
+      if (e.code !== 'ERR_CANCELED') {
+        console.error('Apple login error:', e);
       }
+    } finally {
+      stopActivity();
     }
-    stopActivity();
   };
 
   return (
