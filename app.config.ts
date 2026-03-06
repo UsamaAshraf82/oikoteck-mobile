@@ -3,8 +3,6 @@ import 'tsx/cjs';
 import withGoogleMapsIosAppDelegate from './plugins/withGoogleMapsIosAppDelegate';
 const IS_DEV = process.env.EXPO_PUBLIC_APP_VARIANT?.trim() == 'development';
 
-console.log(process.env.GOOGLE_MAPS_API_KEY);
-
 const configBoth = {
   prod: {
     name: 'OikoTeck',
@@ -148,6 +146,7 @@ const appConfig: ExpoConfig = {
     //     merchantIdentifier: 'merchant.com.oikoteck',
     //   },
     // ],
+    ["expo-image"],
     [
       'react-native-maps',
       {
@@ -165,7 +164,5 @@ const appConfig: ExpoConfig = {
     tsconfigPaths: true,
   },
 };
-
-console.log(appConfig.android);
 
 export default appConfig;
