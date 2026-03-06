@@ -5,10 +5,10 @@ import { XIcon } from 'phosphor-react-native';
 import { useEffect, useState } from 'react';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import {
-    StyleSheet,
-    TouchableNativeFeedback,
-    TouchableWithoutFeedback,
-    View,
+  StyleSheet,
+  TouchableNativeFeedback,
+  TouchableWithoutFeedback,
+  View,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Modal from 'react-native-modal';
@@ -17,7 +17,7 @@ import AppText from '~/components/Elements/AppText';
 import { ControlledCheckBox } from '~/components/Elements/Checkbox';
 import { flags, RenderFlagWithCode } from '~/components/Elements/Flags';
 import TextInput, {
-    ControlledTextInput,
+  ControlledTextInput,
 } from '~/components/Elements/TextInput';
 import Grid from '~/components/HOC/Grid';
 import PressableView from '~/components/HOC/PressableView';
@@ -489,7 +489,7 @@ const styles = StyleSheet.create({
   priceSection: {
     marginTop: 4,
     flexDirection: 'column',
-    gap: 8,
+    gap: 20,
   },
   checkboxSection: {
     marginBottom: 32,
@@ -504,7 +504,7 @@ const styles = StyleSheet.create({
   },
   contactSection: {
     flexDirection: 'column',
-    gap: 8,
+    gap: 24,
   },
   contactHeading: {
     marginBottom: 12,
@@ -516,7 +516,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     color: '#192234',
-    marginBottom: -8,
+    marginBottom: -24,
   },
   phoneRow: {
    flexDirection: 'row',

@@ -127,8 +127,8 @@ const styles = StyleSheet.create({
   },
   label: {
     marginBottom: 8,
-    fontFamily: 'LufgaMedium',
-    fontSize: 13,
+    // fontFamily: 'LufgaMedium',
+    fontSize: 14,
     color: '#192234',
   },
   relative: {

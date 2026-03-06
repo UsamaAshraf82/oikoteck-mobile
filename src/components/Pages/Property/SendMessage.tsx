@@ -4,10 +4,10 @@ import { XIcon } from 'phosphor-react-native';
 import { useEffect, useState } from 'react';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import {
-    StyleSheet,
-    TouchableNativeFeedback,
-    TouchableWithoutFeedback,
-    View,
+  StyleSheet,
+  TouchableNativeFeedback,
+  TouchableWithoutFeedback,
+  View,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Modal from 'react-native-modal';
@@ -387,7 +387,7 @@ const styles = StyleSheet.create({
   },
   formSection: {
     flexDirection: 'column',
-    gap: 8,
+    gap: 20,
   },
   textArea: {
     height: 208, // h-52
