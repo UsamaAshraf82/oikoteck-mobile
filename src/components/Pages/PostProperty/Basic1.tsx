@@ -348,7 +348,7 @@ export const Basic1Schema = z.object({
     .max(50, { message: 'Title cannot exceed 50 characters.' }),
   description: z
     .string({ message: 'Description must be between 300 and 2000 characters.' })
-    .min(1, {
+    .min(300, {
       message: 'Description must be between 300 and 2000 characters.',
     })
     .max(2000, {

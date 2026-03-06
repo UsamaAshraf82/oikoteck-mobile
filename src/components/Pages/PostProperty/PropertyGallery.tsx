@@ -2,8 +2,14 @@ import { CompleteMultipartUploadCommandOutput } from '@aws-sdk/client-s3';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
-import { Link } from 'expo-router';
-import { ImagesIcon, ImageSquareIcon, TrashIcon } from 'phosphor-react-native';
+import { Link, useRouter } from 'expo-router';
+import {
+  ArrowLeftIcon,
+  ImagesIcon,
+  ImageSquareIcon,
+  TrashIcon,
+  XIcon,
+} from 'phosphor-react-native';
 import { useEffect } from 'react';
 import {
   SubmitErrorHandler,
@@ -13,6 +19,7 @@ import {
 } from 'react-hook-form';
 import {
   ActivityIndicator,
+  Pressable,
   ScrollView,
   StyleSheet,
   TouchableHighlight,
@@ -35,10 +42,18 @@ type Props = {
   extra_data: {
     listing_for: Basic1Values['listing_for'];
   };
+
+  onBack: (data: PropertyGalleryTypes) => void;
 };
 
-export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
+export default function PropertyGallery({
+  data,
+  extra_data,
+  onSubmit,
+  onBack,
+}: Props) {
   const { addToast } = useToast();
+  const router = useRouter();
   const { control, setValue, getValues, handleSubmit } =
     useForm<PropertyGalleryTypes>({
       resolver: zodResolver(PropertyGallerySchema) as any,
@@ -72,6 +87,9 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
     control,
     name: 'files',
   }) as PropertyGalleryTypes['files'];
+
+  const isUploading = watchedFiles?.some((f) => f.isUploading);
+  console.log(watchedFiles);
 
   useEffect(() => {
     if (!watchedFiles) return;
@@ -118,164 +136,203 @@ export default function PropertyGallery({ data, extra_data, onSubmit }: Props) {
     const file = watchedFiles?.[index] || item;
 
     return (
-      <View style={styles.gridItem}>
-        <View style={styles.imageContainer}>
-          {file.isUploading ? (
-            <>
-              <Image
-                source={file.temp}
-                contentFit='contain'
-                style={styles.image}
-              />
-              <View style={styles.uploadOverlay}>
-                <ActivityIndicator size='large' color='#82065e' />
-              </View>
-            </>
-          ) : (
-            <>
-              <AWSImage
-                src={file.url!}
-                placeholderContentFit='contain'
-                contentFit='contain'
-                style={styles.image}
-              />
-              <TouchableHighlight
-                onPress={() => remove(index)}
-                style={styles.deleteBtn}
-              >
-                <View>
-                  <TrashIcon size={15} color='white' />
+      <>
+        <View style={styles.gridItem}>
+          <View style={styles.imageContainer}>
+            {file.isUploading ? (
+              <>
+                <Image
+                  source={file.temp}
+                  contentFit='contain'
+                  style={styles.image}
+                />
+                <View style={styles.uploadOverlay}>
+                  <ActivityIndicator size='large' color='#82065e' />
                 </View>
-              </TouchableHighlight>
-            </>
-          )}
+              </>
+            ) : (
+              <>
+                <AWSImage
+                  src={file.url!}
+                  placeholderContentFit='contain'
+                  contentFit='contain'
+                  style={styles.image}
+                />
+                <TouchableHighlight
+                  onPress={() => remove(index)}
+                  style={styles.deleteBtn}
+                >
+                  <View>
+                    <TrashIcon size={15} color='white' />
+                  </View>
+                </TouchableHighlight>
+              </>
+            )}
+          </View>
         </View>
-      </View>
+      </>
     );
   };
 
   return (
-    <View style={styles.container}>
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        <View>
-          <AppText style={styles.title}>Property Gallery 📸</AppText>
-          <AppText style={styles.subtitle}>
-            Upload pictures of your property
-          </AppText>
-
-          <View style={styles.overlayOption}>
-            <AppText style={styles.overlayText}>
-              Do you want to overlay your company logo on all pictures for this
-              listing? You can upload the logo in{' '}
-              <Link href='/settings' style={styles.settingsLink}>
-                settings
-              </Link>
+    <>
+      <View style={styles.header}>
+        <Pressable
+          hitSlop={20}
+          onPress={() => {
+            onBack(getValues());
+          }}
+        >
+          <ArrowLeftIcon color='#192234' size={24} />
+        </Pressable>
+        <AppText style={styles.headerTitle}>Post a listing</AppText>
+        <Pressable hitSlop={20} onPress={() => router.back()}>
+          <XIcon color='#192234' size={24} />
+        </Pressable>
+      </View>
+      <View style={styles.container}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          <View>
+            <AppText style={styles.title}>Property Gallery 📸</AppText>
+            <AppText style={styles.subtitle}>
+              Upload pictures of your property
             </AppText>
-            <ControlledCheckBox
-              name='agent_icon'
-              control={control}
-              label='Add Overlay Logo'
-            />
+
+            <View style={styles.overlayOption}>
+              <AppText style={styles.overlayText}>
+                Do you want to overlay your company logo on all pictures for
+                this listing? You can upload the logo in{' '}
+                <Link href='/settings' style={styles.settingsLink}>
+                  settings
+                </Link>
+              </AppText>
+              <ControlledCheckBox
+                name='agent_icon'
+                control={control}
+                label='Add Overlay Logo'
+              />
+            </View>
+
+            <PressableView
+              onPress={async () => {
+                try {
+                  const result = await ImagePicker.launchImageLibraryAsync({
+                    mediaTypes: ['images'],
+                    allowsMultipleSelection: true,
+                    quality: 1,
+                    orderedSelection: true,
+                  });
+
+                  if (!result.canceled) {
+                    const currentFilesCount = getValues('files').length;
+                    const newAssets = result.assets.map((img) => ({
+                      isUploading: true,
+                      temp: img.uri,
+                    }));
+
+                    append(newAssets);
+
+                    result.assets.forEach(async (asset, i) => {
+                      try {
+                        const image = await resizeImage(asset, 3000);
+                        const indexToUpdate = currentFilesCount + i;
+
+                        const uploadPromise = uploadFile({
+                          file: image.base64!,
+                          name: 'image',
+                        });
+
+                        setValue(`files.${indexToUpdate}.file`, uploadPromise, {
+                          shouldValidate: true,
+                        });
+                        setValue(`files.${indexToUpdate}.temp`, image.uri);
+                      } catch (err) {
+                        console.error('Error processing image:', err);
+                      }
+                    });
+                  }
+                } catch (e) {
+                  // console.error(e);
+                }
+              }}
+              style={styles.uploadBtn}
+            >
+              <View style={styles.uploadBtnContent}>
+                <AppText style={styles.uploadBtnText}>Upload Images</AppText>
+                <ImageSquareIcon color='#192234' />
+              </View>
+            </PressableView>
+
+            <AppText style={styles.imagesLabel}>
+              Images ({fields.length})
+            </AppText>
+            <AppText style={styles.imagesSubtitle}>
+              You can change the priority of the images displayed in the
+              marketplace by sliding the images to reshuffle their rank
+            </AppText>
+
+            {fields.length === 0 && (
+              <View style={styles.emptyState}>
+                <ImagesIcon size={100} weight='light' color='#ACACB9' />
+                <AppText style={styles.emptyStateText}>
+                  No Images at the moment...
+                </AppText>
+              </View>
+            )}
           </View>
 
-          <PressableView
-            onPress={async () => {
-              try {
-                const result = await ImagePicker.launchImageLibraryAsync({
-                  mediaTypes: ['images'],
-                  allowsMultipleSelection: true,
-                  quality: 1,
-                  orderedSelection: true,
-                });
-
-                if (!result.canceled) {
-                  const currentFilesCount = getValues('files').length;
-                  const newAssets = result.assets.map((img) => ({
-                    isUploading: true,
-                    temp: img.uri,
-                  }));
-
-                  append(newAssets);
-
-                  result.assets.forEach(async (asset, i) => {
-                    try {
-                      const image = await resizeImage(asset, 3000);
-                      const indexToUpdate = currentFilesCount + i;
-
-                      const uploadPromise = uploadFile({
-                        file: image.base64!,
-                        name: 'image',
-                      });
-
-                      setValue(`files.${indexToUpdate}.file`, uploadPromise, {
-                        shouldValidate: true,
-                      });
-                      setValue(`files.${indexToUpdate}.temp`, image.uri);
-                    } catch (err) {
-                      console.error('Error processing image:', err);
-                    }
-                  });
-                }
-              } catch (e) {
-                // console.error(e);
-              }
+          <Sortable.Grid
+            data={fields}
+            renderItem={renderItem}
+            columns={2}
+            onDragEnd={({
+              data: sortedData,
+            }: {
+              data: PropertyGalleryTypes['files'];
+            }) => {
+              replace(sortedData);
             }}
-            style={styles.uploadBtn}
+            // @ts-ignore
+            keyExtractor={(item: { id: string }) => item.id}
+          />
+        </ScrollView>
+
+        <View style={styles.footer}>
+          <PressableView
+            onPress={handleSubmit(onSubmitInternal, onError)}
+            style={styles.continueBtn}
+            disabled={isUploading}
           >
-            <View style={styles.uploadBtnContent}>
-              <AppText style={styles.uploadBtnText}>Upload Images</AppText>
-              <ImageSquareIcon color='#192234' />
-            </View>
+            {isUploading ? (
+              <ActivityIndicator color='white' />
+            ) : (
+              <AppText style={styles.continueBtnText}>Continue</AppText>
+            )}
           </PressableView>
-
-          <AppText style={styles.imagesLabel}>Images ({fields.length})</AppText>
-          <AppText style={styles.imagesSubtitle}>
-            You can change the priority of the images displayed in the
-            marketplace by sliding the images to reshuffle their rank
-          </AppText>
-
-          {fields.length === 0 && (
-            <View style={styles.emptyState}>
-              <ImagesIcon size={100} weight='light' color='#ACACB9' />
-              <AppText style={styles.emptyStateText}>
-                No Images at the moment...
-              </AppText>
-            </View>
-          )}
         </View>
-
-        <Sortable.Grid
-          data={fields}
-          renderItem={renderItem}
-          columns={2}
-          onDragEnd={({
-            data: sortedData,
-          }: {
-            data: PropertyGalleryTypes['files'];
-          }) => {
-            replace(sortedData);
-          }}
-          // @ts-ignore
-          keyExtractor={(item: { id: string }) => item.id}
-        />
-      </ScrollView>
-
-      <View style={styles.footer}>
-        <PressableView
-          onPress={handleSubmit(onSubmitInternal, onError)}
-          style={styles.continueBtn}
-        >
-          <AppText style={styles.continueBtnText}>Continue</AppText>
-        </PressableView>
       </View>
-    </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
+  header: {
+    height: 60,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+  },
+  headerTitle: {
+    fontFamily: 'LufgaMedium',
+    fontSize: 18,
+    color: '#192234',
+  },
   container: {
     flex: 1,
     backgroundColor: 'white',

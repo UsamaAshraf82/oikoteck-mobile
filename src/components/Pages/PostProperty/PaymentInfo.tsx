@@ -1,6 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { SubmitErrorHandler, useForm } from 'react-hook-form';
-import { StyleSheet, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import { ArrowLeftIcon, XIcon } from 'phosphor-react-native';
+import { SubmitErrorHandler, useForm, useWatch } from 'react-hook-form';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { z } from 'zod';
 import AppText from '~/components/Elements/AppText';
@@ -14,15 +16,18 @@ import { useToast } from '~/store/useToast';
 type Props = {
   data: Partial<PaymentInfoTypes>;
   onSubmit: (data: PaymentInfoTypes) => void;
+  onBack: (data: PaymentInfoTypes) => void;
 };
 
-export default function PaymentInfo({ data, onSubmit }: Props) {
+export default function PaymentInfo({ data, onSubmit, onBack }: Props) {
   const { addToast } = useToast();
+  const router = useRouter();
 
-  const { control, setValue, handleSubmit, watch } = useForm<PaymentInfoTypes>({
-    resolver: zodResolver(PaymentInfoSchema) as any,
-    defaultValues: data,
-  });
+  const { control, setValue, handleSubmit, getValues } =
+    useForm<PaymentInfoTypes>({
+      resolver: zodResolver(PaymentInfoSchema) as any,
+      defaultValues: data,
+    });
 
   const onSubmitInternal = async (formData: PaymentInfoTypes) => {
     onSubmit(formData);
@@ -42,66 +47,96 @@ export default function PaymentInfo({ data, onSubmit }: Props) {
     }
   };
 
-  const selectedPlan = watch('plan');
+  const selectedPlan = useWatch({ control, name: 'plan' });
 
   return (
-    <View style={styles.container}>
-      <View style={styles.mainContent}>
-        <AppText style={styles.title}>Payments</AppText>
-        <AppText style={styles.subtitle}>
-          Select your option plan and setup payments
-        </AppText>
-        <KeyboardAwareScrollView
-          bottomOffset={50}
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps='handled'
-          showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}
+    <>
+      <View style={styles.header}>
+        <Pressable
+          hitSlop={20}
+          onPress={() => {
+            onBack(getValues());
+          }}
         >
-          <AppText style={styles.sectionTitle}>OikoTeck Service Plan</AppText>
-          <AppText style={styles.sectionSubtitle}>
-            Click on a service name to view more details
+          <ArrowLeftIcon color='#192234' size={24} />
+        </Pressable>
+        <AppText style={styles.headerTitle}>Post a listing</AppText>
+        <Pressable hitSlop={20} onPress={() => router.back()}>
+          <XIcon color='#192234' size={24} />
+        </Pressable>
+      </View>
+      <View style={styles.container}>
+        <View style={styles.mainContent}>
+          <AppText style={styles.title}>Payments</AppText>
+          <AppText style={styles.subtitle}>
+            Select your option plan and setup payments
           </AppText>
-          <Checkbox
-            labelLast
-            label='Free'
-            labelStyle={styles.checkboxLabel}
-            getValue={() => setValue('plan', 'Free')}
-            value={selectedPlan === 'Free'}
-          />
-          <Checkbox
-            labelLast
-            label='Promote '
-            labelStyle={styles.checkboxLabel}
-            getValue={() => setValue('plan', 'Promote')}
-            value={selectedPlan === 'Promote'}
-          />
-          {selectedPlan === 'Promote' && (
-            <>
-              <ControlledTextInput
-                control={control}
-                name='promo'
-                label='Promo Code'
-                placeholder='Promo Code'
-              />
-              <TextInput label='One-Time Payment' value='30 €' readOnly />
-            </>
-          )}
-        </KeyboardAwareScrollView>
+          <KeyboardAwareScrollView
+            bottomOffset={50}
+            contentContainerStyle={styles.scrollContent}
+            keyboardShouldPersistTaps='handled'
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
+          >
+            <AppText style={styles.sectionTitle}>OikoTeck Service Plan</AppText>
+            <AppText style={styles.sectionSubtitle}>
+              Click on a service name to view more details
+            </AppText>
+            <Checkbox
+              labelLast
+              label='Free'
+              labelStyle={styles.checkboxLabel}
+              getValue={() => setValue('plan', 'Free')}
+              value={selectedPlan === 'Free'}
+            />
+            <Checkbox
+              labelLast
+              label='Promote '
+              labelStyle={styles.checkboxLabel}
+              getValue={() => setValue('plan', 'Promote')}
+              value={selectedPlan === 'Promote'}
+            />
+            {selectedPlan === 'Promote' && (
+              <>
+                <ControlledTextInput
+                  control={control}
+                  name='promo'
+                  label='Promo Code'
+                  placeholder='Promo Code'
+                />
+                <TextInput label='One-Time Payment' value='30 €' readOnly />
+              </>
+            )}
+          </KeyboardAwareScrollView>
+        </View>
+        <View style={styles.footer}>
+          <PressableView
+            onPress={handleSubmit(onSubmitInternal, onError)}
+            style={styles.continueBtn}
+          >
+            <AppText style={styles.continueBtnText}>Continue</AppText>
+          </PressableView>
+        </View>
       </View>
-      <View style={styles.footer}>
-        <PressableView
-          onPress={handleSubmit(onSubmitInternal, onError)}
-          style={styles.continueBtn}
-        >
-          <AppText style={styles.continueBtnText}>Continue</AppText>
-        </PressableView>
-      </View>
-    </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
+  header: {
+    height: 60,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+  },
+  headerTitle: {
+    fontFamily: 'LufgaMedium',
+    fontSize: 18,
+    color: '#192234',
+  },
   container: {
     flex: 1,
     backgroundColor: 'white',

@@ -1,23 +1,24 @@
 import * as React from 'react';
 import { ReactNode } from 'react';
 import {
-  StyleProp,
-  StyleSheet,
-  TouchableNativeFeedback,
-  View,
-  ViewStyle,
+    StyleProp,
+    StyleSheet,
+    TouchableNativeFeedback,
+    View,
+    ViewStyle,
 } from 'react-native';
 
 type Props = {
   children: ReactNode;
   style?: StyleProp<ViewStyle>;
   onPress?: () => void;
+  disabled?: boolean;
 };
 
-const PressableView: React.FC<Props> = ({ children, style, onPress }) => {
+const PressableView: React.FC<Props> = ({ children, style, onPress, disabled }) => {
   return (
-    <View style={[styles.container, style]}>
-      <TouchableNativeFeedback onPress={onPress}>
+    <View style={[styles.container, style, disabled && { opacity: 0.5 }]}>
+      <TouchableNativeFeedback onPress={onPress} disabled={disabled}>
         <View style={styles.innerContainer}>{children}</View>
       </TouchableNativeFeedback>
     </View>

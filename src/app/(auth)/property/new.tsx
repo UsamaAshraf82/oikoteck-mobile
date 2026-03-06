@@ -73,28 +73,49 @@ export default function PostProperty() {
       bedrooms: 1,
       bathrooms: 1,
       floor: 1,
-      construction_year:2000,
-      energy_class:'A',
-      heating:'Autonomous Heating',
-      level_of_finish:3,
-      plot_size:1000,
-      property_category:'Apartment',
-      heating_expense:100,
+      construction_year: 2000,
+      energy_class: 'A',
+      heating: 'Autonomous Heating',
+      level_of_finish: 3,
+      plot_size: 1000,
+      property_category: 'Apartment',
+      heating_expense: 100,
       special_feature: ['Parking Spot'],
-      size:100,
-
+      size: 100,
     },
     basic3: {
-      contact_method :'Both',
-      listing_for:'Rental',
-      price:5000,
-      reference_number:'123456789',
+      contact_method: 'Both',
+      listing_for: 'Rental',
+      price: 5000,
+      reference_number: '123456789',
       payment_frequency: 1,
       deposit: 1,
       level_of_finish: 3,
       move_in_date: new Date().toISOString(),
     },
-    gallery: { files: [], agent_icon: false },
+    gallery: {
+      files: [
+        {
+          file: undefined,
+          isUploading: false,
+          temp: 'file:///data/user/0/com.oikoteck.app/cache/ImageManipulator/e32f7281-ac89-491b-a769-0dcebe3fa0ea.webp',
+          url: 'image/ff65bff955c_1772777742977_',
+        },
+        {
+          file: undefined,
+          isUploading: false,
+          temp: 'file:///data/user/0/com.oikoteck.app/cache/ImageManipulator/f8a5c8d3-321c-498a-8148-4fb78fad5077.webp',
+          url: 'image/bff65bff955_1772777740024_',
+        },
+        {
+          file: undefined,
+          isUploading: false,
+          temp: 'file:///data/user/0/com.oikoteck.app/cache/ImageManipulator/9376142a-4369-4ac5-917f-c0969166fb7e.webp',
+          url: 'image/f65bff955c3_1772778162843_',
+        },
+      ],
+      agent_icon: false,
+    },
     location: { exact_location: false },
     payment: {},
   });
@@ -247,7 +268,6 @@ export default function PostProperty() {
     case 2:
       return (
         <View style={styles.container}>
-          {/* {renderHeader(() => setTab(1))} */}
           <Basic3
             onBack={(val) => {
               setData((i) => ({ ...i, basic3: val }));
@@ -267,8 +287,12 @@ export default function PostProperty() {
     case 3:
       return (
         <View style={styles.container}>
-          {renderHeader(() => setTab(2))}
+          {/* {renderHeader(() => setTab(2))} */}
           <PropertyGallery
+            onBack={(val) => {
+              setData((i) => ({ ...i, gallery: val }));
+              setTab(2);
+            }}
             data={data.gallery}
             extra_data={{
               listing_for: data.basic.listing_for!,
@@ -283,8 +307,12 @@ export default function PostProperty() {
     case 4:
       return (
         <View style={styles.container}>
-          {renderHeader(() => setTab(3))}
+          {/* {renderHeader(() => setTab(3))} */}
           <LocationInfo
+            onBack={(val) => {
+              setData((i) => ({ ...i, location: val }));
+              setTab(3);
+            }}
             data={data.location}
             onSubmit={(val) => {
               setData((i) => ({ ...i, location: val }));
@@ -296,6 +324,10 @@ export default function PostProperty() {
     case 5:
       return (
         <PaymentInfo
+          onBack={(val) => {
+            setData((i) => ({ ...i, payment: val }));
+            setTab(4);
+          }}
           data={data.payment}
           onSubmit={(val) => {
             setData((i) => ({ ...i, payment: val }));
@@ -308,6 +340,9 @@ export default function PostProperty() {
         <PostListingS
           extraData={{
             plan: data.payment.plan!,
+          }}
+          onBack={() => {
+            setTab(5);
           }}
           onSubmit={() => {
             onSubmit();

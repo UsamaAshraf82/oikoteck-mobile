@@ -1,6 +1,9 @@
 import { useStripe } from '@stripe/stripe-react-native';
+import { useRouter } from 'expo-router';
 import Parse from 'parse/react-native';
-import { StyleSheet, View } from 'react-native';
+import { ArrowLeftIcon, XLogoIcon } from 'phosphor-react-native';
+import { useMemo } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import WebView from 'react-native-webview';
 import AppText from '~/components/Elements/AppText';
@@ -11,11 +14,12 @@ import { PaymentInfoTypes } from './PaymentInfo';
 type Props = {
   extraData: { plan: PaymentInfoTypes['plan'] };
   onSubmit: () => void;
+  onBack: () => void;
 };
 
-export default function PostListingS({ extraData, onSubmit }: Props) {
+export default function PostListingS({ extraData, onSubmit, onBack }: Props) {
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
-
+  const router = useRouter();
   const handlePress = async () => {
     if (extraData.plan === 'Free') {
       onSubmit();
@@ -41,43 +45,91 @@ export default function PostListingS({ extraData, onSubmit }: Props) {
     }
   };
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.mainContent}>
-        <AppText style={styles.title}>Publish Listing</AppText>
-        <AppText style={styles.subtitle}>
-          Confirm your details and publish your listing
-        </AppText>
+  const url = useMemo(() => {
+    switch (extraData.plan) {
+      case 'Free':
+        return 'https://oikoteck.com/mobile/service-plan-terms/free';
+      case 'Promote':
+        return 'https://oikoteck.com/mobile/service-plan-terms/promote';
 
-        <KeyboardAwareScrollView
-          bottomOffset={50}
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps='handled'
-          showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}
+      default:
+        return 'https://oikoteck.com/mobile/service-plan-terms/free';
+    }
+  }, [extraData.plan]);
+
+  return (
+    <>
+      <View style={styles.header}>
+        <Pressable
+          hitSlop={20}
+          onPress={() => {
+            onBack();
+          }}
         >
-          <AppText style={styles.sectionTitle}>Service Plan Terms</AppText>
-          <View style={styles.webviewContainer}>
-            <WebView />
-          </View>
-          <Checkbox
-            label='I, Walid Smith, understand and agree to the “Service Plan Terms” above associated with this purchase, the Terms and Conditions, and the Privacy Policy.'
-            labelStyle={styles.checkboxLabel}
-          />
-        </KeyboardAwareScrollView>
+          <ArrowLeftIcon color='#192234' size={24} />
+        </Pressable>
+        <AppText style={styles.headerTitle}>Post a listing</AppText>
+        <Pressable hitSlop={20} onPress={() => router.back()}>
+          <XLogoIcon color='#192234' size={24} />
+        </Pressable>
       </View>
-      <View style={styles.footer}>
-        <PressableView onPress={handlePress} style={styles.continueBtn}>
-          <AppText style={styles.continueBtnText}>
-            {extraData.plan === 'Free' ? 'Continue' : 'Pay Now'}
+      <View style={styles.container}>
+        <View style={styles.mainContent}>
+          <AppText style={styles.title}>Publish Listing</AppText>
+          <AppText style={styles.subtitle}>
+            Confirm your details and publish your listing
           </AppText>
-        </PressableView>
+
+          <KeyboardAwareScrollView
+            bottomOffset={50}
+            contentContainerStyle={styles.scrollContent}
+            keyboardShouldPersistTaps='handled'
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
+          >
+            <AppText style={styles.sectionTitle}>Service Plan Terms</AppText>
+            <View style={styles.webviewContainer}>
+              <WebView
+                source={{
+                  uri: url,
+                }}
+                cacheEnabled
+                decelerationRate={0.998}
+              />
+            </View>
+            <Checkbox
+              label='I, Walid Smith, understand and agree to the “Service Plan Terms” above associated with this purchase, the Terms and Conditions, and the Privacy Policy.'
+              labelStyle={styles.checkboxLabel}
+            />
+          </KeyboardAwareScrollView>
+        </View>
+        <View style={styles.footer}>
+          <PressableView onPress={handlePress} style={styles.continueBtn}>
+            <AppText style={styles.continueBtnText}>
+              {extraData.plan === 'Free' ? 'Continue' : 'Pay Now'}
+            </AppText>
+          </PressableView>
+        </View>
       </View>
-    </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
+  header: {
+    height: 60,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+  },
+  headerTitle: {
+    fontFamily: 'LufgaMedium',
+    fontSize: 18,
+    color: '#192234',
+  },
   container: {
     flex: 1,
     backgroundColor: 'white',
@@ -110,7 +162,7 @@ const styles = StyleSheet.create({
     color: '#192234',
   },
   webviewContainer: {
-    height: 300,
+    flex: 1,
     borderRadius: 8,
     overflow: 'hidden',
     backgroundColor: '#F3F4F6',

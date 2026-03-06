@@ -270,8 +270,8 @@ const NumberInput = () => {
         {isEditing && (
           <>
             <AppText style={styles.labelBelow}>New Phone Number</AppText>
-            <View style={styles.phoneInputRow}>
-              <View style={styles.countryPicker}>
+            <View style={styles.phoneRow}>
+              <View style={styles.countryPickerWrapper}>
                 <TouchableWithoutFeedback
                   onPress={() => {
                     openSelect({
@@ -280,11 +280,15 @@ const NumberInput = () => {
                       options: flags.map((i) => ({
                         label: (
                           <View style={styles.countryOption}>
-                            <View style={styles.countryOptionLeft}>
+                            <View style={styles.countryInfo}>
                               {i.flag}
-                              <AppText>{i.Country}</AppText>
+                              <AppText style={styles.countryName}>
+                                {i.Country}
+                              </AppText>
                             </View>
-                            <AppText>+{i.Code}</AppText>
+                            <AppText style={styles.countryCode}>
+                              +{i.Code}
+                            </AppText>
                           </View>
                         ),
                         value: { Code: i.Code, Country: i.Country, ISO: i.ISO },
@@ -302,16 +306,16 @@ const NumberInput = () => {
                     });
                   }}
                 >
-                  <View style={styles.flagBox}>
+                  <View style={styles.countryPicker}>
                     <RenderFlagWithCode ISO={watch('country').ISO} />
                   </View>
                 </TouchableWithoutFeedback>
               </View>
-              <View style={styles.phoneInputBox}>
+              <View style={styles.phoneInputWrapper}>
                 <ControlledTextInput
                   control={control}
                   name='phone'
-                  placeholder='Enter your Phone Number'
+                  placeholder='Enter your phone number'
                   textContentType='telephoneNumber'
                   keyboardType='phone-pad'
                 />
@@ -489,6 +493,23 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
+  phoneRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  countryPickerWrapper: {
+    width: '38%',
+  },
+  countryPicker: {
+    marginTop: 8,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#C6CAD2',
+    backgroundColor: 'white',
+    paddingHorizontal: 8,
+    paddingVertical: 13,
+  },
   formWrapper: {
     flexGrow: 1,
     gap: 12,
@@ -543,8 +564,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 2,
   },
-  countryPicker: {
-    flex: 2,
+
+  countryInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  countryName: {
+    fontFamily: 'LufgaRegular',
+    fontSize: 14,
+    color: '#192234',
+  },
+  countryCode: {
+    fontFamily: 'LufgaMedium',
+    fontSize: 14,
+    color: '#575775',
+  },
+  phoneInputWrapper: {
+    flex: 1,
   },
   phoneInputBox: {
     flex: 3,
@@ -567,7 +604,7 @@ const styles = StyleSheet.create({
     borderColor: '#C6CAD2',
     backgroundColor: 'white',
     paddingHorizontal: 8,
-    paddingVertical: 1,
+    paddingVertical: 13,
   },
   actionButtons: {
     marginTop: 8,

@@ -4,10 +4,10 @@ import { XIcon } from 'phosphor-react-native';
 import { useEffect, useState } from 'react';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import {
-    StyleSheet,
-    TouchableNativeFeedback,
-    TouchableWithoutFeedback,
-    View,
+  StyleSheet,
+  TouchableNativeFeedback,
+  TouchableWithoutFeedback,
+  View,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Modal from 'react-native-modal';
@@ -489,7 +489,7 @@ const styles = StyleSheet.create({
   },
   flagBox: {
     marginTop: 8,
-    borderRadius: 12,
+    borderRadius: 8,
     borderWidth: 1,
     borderColor: '#C6CAD2',
     backgroundColor: 'white',

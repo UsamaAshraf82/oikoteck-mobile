@@ -499,12 +499,12 @@ const styles = StyleSheet.create({
   },
   countryPicker: {
     marginTop: 8,
-    borderRadius: 16,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: '#C6CAD2',
     backgroundColor: 'white',
     paddingHorizontal: 8,
-    paddingVertical: 12,
+    paddingVertical: 13,
   },
   phoneInputWrapper: {
     flex: 1,

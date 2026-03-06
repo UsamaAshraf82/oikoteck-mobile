@@ -32,7 +32,7 @@ const Select = ({
       <View style={styles.relative}>
         <TouchableWithoutFeedback
           onPress={() => {
-            // onPress?.();
+            onPress?.();
 
             if (options) {
               if (varient) {
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderRadius: 16,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: '#C6CAD2',
     backgroundColor: 'white',

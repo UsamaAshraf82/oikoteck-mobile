@@ -1,5 +1,6 @@
 import { ExpoConfig } from 'expo/config';
 import 'tsx/cjs';
+import withGoogleMapsIosAppDelegate from './plugins/withGoogleMapsIosAppDelegate';
 const IS_DEV = process.env.EXPO_PUBLIC_APP_VARIANT?.trim() == 'development';
 
 console.log(process.env.GOOGLE_MAPS_API_KEY);
@@ -147,12 +148,24 @@ const appConfig: ExpoConfig = {
     //     merchantIdentifier: 'merchant.com.oikoteck',
     //   },
     // ],
-    ['react-native-maps'],
+    [
+      'react-native-maps',
+      {
+        androidGoogleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
+         "iosGoogleMapsApiKey":  process.env.GOOGLE_MAPS_API_KEY,
+      },
+    ],
+    [
+      withGoogleMapsIosAppDelegate as any,
+      { apiKey: process.env.GOOGLE_MAPS_API_KEY },
+    ],
   ],
 
   experiments: {
     tsconfigPaths: true,
   },
 };
+
+console.log(appConfig.android);
 
 export default appConfig;

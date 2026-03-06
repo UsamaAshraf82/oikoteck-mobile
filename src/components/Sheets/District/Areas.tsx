@@ -4,13 +4,13 @@ import Parse from 'parse/react-native';
 import { GlobeHemisphereEastIcon, XIcon } from 'phosphor-react-native';
 import { useEffect, useState } from 'react';
 import {
-    ActivityIndicator,
-    Platform,
-    StyleSheet,
-    TextInput,
-    TouchableNativeFeedback,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Platform,
+  StyleSheet,
+  TextInput,
+  TouchableNativeFeedback,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import AppText from '~/components/Elements/AppText';
@@ -41,6 +41,7 @@ const Area = ({ visible, onClose, district, value = '', onPress }: Props) => {
       queryKey: ['areas', district || '', text],
       queryFn: async ({ pageParam = 0 }) => {
         try {
+
           const res = (await Parse.Cloud.run('areas', {
             input: text,
             district: district,
