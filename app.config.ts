@@ -32,6 +32,9 @@ const appConfig: ExpoConfig = {
     usesAppleSignIn: true,
     supportsTablet: true,
     bundleIdentifier: 'com.oikoteck.app',
+    appleTeamId: 'NCF3Q9455Q',
+    associatedDomains: ['www.oikoteck.com'],
+
     // entitlements: {
     //   'com.apple.developer.in-app-payments': ['merchant.com.oikoteck'],
     // },
@@ -146,12 +149,12 @@ const appConfig: ExpoConfig = {
     //     merchantIdentifier: 'merchant.com.oikoteck',
     //   },
     // ],
-    ["expo-image"],
+    ['expo-image'],
     [
       'react-native-maps',
       {
         androidGoogleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
-         "iosGoogleMapsApiKey":  process.env.GOOGLE_MAPS_API_KEY,
+        iosGoogleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
       },
     ],
     [

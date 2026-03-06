@@ -19,12 +19,20 @@ type Props = {
   onSubmit: (data: Basic3Values) => void;
   extra_data: {
     listing_for: Basic1Values['listing_for'];
+    label?: string;
   };
 
   onBack: (data: Basic3Values) => void;
+  label?: string;
 };
 
-export default function Basic3({ data, extra_data, onSubmit, onBack }: Props) {
+export default function Basic3({
+  data,
+  extra_data,
+  onSubmit,
+  onBack,
+  label = 'Post a listing',
+}: Props) {
   const { addToast } = useToast();
   const router = useRouter();
   const { control, setValue, handleSubmit, watch, reset, getValues } =
@@ -68,7 +76,7 @@ export default function Basic3({ data, extra_data, onSubmit, onBack }: Props) {
         >
           <ArrowLeftIcon color='#192234' size={24} />
         </Pressable>
-        <AppText style={styles.headerTitle}>Post a listing</AppText>
+        <AppText style={styles.headerTitle}>{label}</AppText>
         <Pressable hitSlop={20} onPress={() => router.back()}>
           <XIcon color='#192234' size={24} />
         </Pressable>

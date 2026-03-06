@@ -15,9 +15,15 @@ type Props = {
   extraData: { plan: PaymentInfoTypes['plan'] };
   onSubmit: () => void;
   onBack: () => void;
+  label?: string;
 };
 
-export default function PostListingS({ extraData, onSubmit, onBack }: Props) {
+export default function PostListingS({
+  extraData,
+  onSubmit,
+  onBack,
+  label = 'Post a listing',
+}: Props) {
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const router = useRouter();
   const handlePress = async () => {
@@ -68,7 +74,7 @@ export default function PostListingS({ extraData, onSubmit, onBack }: Props) {
         >
           <ArrowLeftIcon color='#192234' size={24} />
         </Pressable>
-        <AppText style={styles.headerTitle}>Post a listing</AppText>
+        <AppText style={styles.headerTitle}>{label}</AppText>
         <Pressable hitSlop={20} onPress={() => router.back()}>
           <XLogoIcon color='#192234' size={24} />
         </Pressable>

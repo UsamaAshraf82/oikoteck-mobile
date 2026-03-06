@@ -21,30 +21,6 @@ import { emailsAddress } from '~/global';
 import useActivityIndicator from '~/store/useActivityIndicator';
 import { useToast } from '~/store/useToast';
 
-// const default_data = {
-//   basic: {
-//     listing_for: 'Rental',
-//     property_type: 'Residential',
-//   },
-//   basic2: {
-//     property_type: 'Residential',
-//     furnished: false,
-//     bedrooms: 1,
-//     bathrooms: 1,
-//     floor: 1,
-//     special_feature: [],
-//   },
-//   basic3: {
-//     payment_frequency: 1,
-//     deposit: 1,
-//     level_of_finish: 3,
-//     move_in_date: new Date().toISOString(),
-//   },
-//   gallery: { files: [], agent_icon: false },
-//   location: { exact_location: false },
-//   payment: {},
-// };
-
 export default function PostProperty() {
   const [tab, setTab] = useState(0);
   const router = useRouter();
@@ -324,6 +300,7 @@ export default function PostProperty() {
     case 5:
       return (
         <PaymentInfo
+
           onBack={(val) => {
             setData((i) => ({ ...i, payment: val }));
             setTab(4);

@@ -1,11 +1,7 @@
 import apple from '@/assets/svg/apple.svg';
 import facebook from '@/assets/svg/facebook.svg';
 import google from '@/assets/svg/google.svg';
-import {
-  GoogleSignin,
-  isErrorWithCode,
-  statusCodes,
-} from '@react-native-google-signin/google-signin';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { Image as ExpoImage } from 'expo-image';
 import { useRouter } from 'expo-router';
@@ -17,6 +13,8 @@ import {
   LoginManager,
   Profile,
 } from 'react-native-fbsdk-next';
+
+import * as Sentry from '@sentry/react-native';
 import AppText from '~/components/Elements/AppText';
 import PressableView from '~/components/HOC/PressableView';
 import useActivityIndicator from '~/store/useActivityIndicator';
@@ -30,184 +28,148 @@ const SocialSignin = () => {
   const { startActivity, stopActivity } = useActivityIndicator();
 
   const startGoogleFlow = async () => {
+    startActivity();
+
     try {
       if (Platform.OS === 'android') {
-        startActivity();
         await GoogleSignin.hasPlayServices();
       }
       const response = await GoogleSignin.signIn();
 
-      const data = response.data;
+      if (!response.data?.idToken) {
+        throw new Error('Missing Google idToken');
+      }
 
-      if (data && data.idToken) {
-        if (Platform.OS === 'ios') {
-          startActivity();
-        }
-        const user = await Parse.User.logInWith('google', {
-          authData: {
-            id: data.user.id,
-            id_token: data.idToken,
+      const { user, idToken } = response.data;
+
+      const parseUser = await Parse.User.logInWith('google', {
+        authData: {
+          id: user.id,
+          id_token: idToken,
+        },
+      });
+
+      if (
+        !parseUser.existed() ||
+        !parseUser.get('first_name') ||
+        !parseUser.get('last_name') ||
+        !parseUser.get('email') ||
+        !parseUser.get('phone')
+      ) {
+        router.push({
+          pathname: '/signup2social',
+          params: {
+            email: user.email?.toLowerCase() || '',
+            firstName: user.givenName || '',
+            lastName: user.familyName || '',
           },
         });
 
-        if (
-          !user.existed() ||
-          !user.attributes.first_name ||
-          !user.attributes.last_name ||
-          !user.attributes.email ||
-          !user.attributes.phone
-        ) {
-          router.push({
-            pathname: '/signup2social',
-            params: {
-              email: data.user.email?.toLowerCase() || '',
-              firstName: data.user.givenName || '',
-              lastName: data.user.familyName || '',
-            },
-          });
-        } else {
-          setUser(user as Parse.User<User_Type>);
-        }
+        return;
       }
-    } catch (error) {
-      if (isErrorWithCode(error)) {
-        switch (error.code) {
-          case statusCodes.IN_PROGRESS:
-            break;
-          case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-            Alert.alert('Play services not available');
-            break;
-          case statusCodes.SIGN_IN_CANCELLED:
-            break;
-          default:
-            console.error('Google Sign-in error:', error);
-            break;
-        }
-      } else {
-        console.error('Google Sign-in error:', error);
-      }
+
+      setUser(parseUser as Parse.User<User_Type>);
+    } catch (error: any) {
+      console.error('Google auth failed:', error);
+      Sentry.captureException(error);
+    } finally {
+      stopActivity();
     }
-    stopActivity();
   };
 
   const handleFacebookLogin = async () => {
     startActivity();
+
     try {
       if (Platform.OS === 'ios') {
         LoginManager.setLoginBehavior('native_with_fallback');
       }
+
       const result = await LoginManager.logInWithPermissions([
         'public_profile',
         'email',
       ]);
 
-      if (result.isCancelled) {
-        stopActivity();
-        return;
-      }
+      if (result.isCancelled) return;
 
-      // Re-load profile to ensure we have the freshest data after login result
-      await Profile.getCurrentProfile();
+      const accessToken = await AccessToken.getCurrentAccessToken();
+      const profile = await Profile.getCurrentProfile();
 
-      let data: AccessToken | null = null;
-      let authenticationToken: any = null;
-      let profile: Profile | null = null;
+      let authenticationToken: AuthenticationToken | null = null;
 
       if (Platform.OS === 'ios') {
-        data = await AccessToken.getCurrentAccessToken();
         authenticationToken =
           await AuthenticationToken.getAuthenticationTokenIOS();
-        profile = await Profile.getCurrentProfile();
-      } else {
-        data = await AccessToken.getCurrentAccessToken();
-        profile = await Profile.getCurrentProfile();
       }
 
-      if (!data && !authenticationToken) {
-        Alert.alert(
-          'Facebook Error',
-          'Something went wrong obtaining access token'
-        );
-        stopActivity();
-        return;
+      if (!accessToken && !authenticationToken) {
+        throw new Error('Facebook token missing');
       }
 
       const authData: any = {
-        id: data?.userID || profile?.userID,
+        id: accessToken?.userID || profile?.userID,
       };
 
-      if (data) {
-        authData.access_token = data.accessToken.toString();
+      if (accessToken) {
+        authData.access_token = accessToken.accessToken.toString();
       }
 
-      // Providing the id_token is necessary for Parse Server to validate Limited Logins on iOS
-      if (Platform.OS === 'ios' && authenticationToken) {
+      if (authenticationToken) {
         authData.id_token = authenticationToken.authenticationToken;
       }
 
-      const user = await Parse.User.logInWith('facebook', {
-        authData,
-      });
+      const user = await Parse.User.logInWith('facebook', { authData });
 
-      if (
-        !user.id ||
-        !user.get('first_name') ||
-        !user.get('last_name') ||
-        !user.get('email') ||
-        !user.get('phone')
-      ) {
-        let email = '';
-        let firstName = '';
-        let lastName = '';
-
-        if (data) {
-          // Standard login: Fetch via Graph API
-          try {
-            const response = await fetch(
-              `https://graph.facebook.com/me?fields=id,first_name,last_name,email&access_token=${data.accessToken.toString()}`
-            );
-            const fb_user = await response.json();
-            email = fb_user.email?.toLowerCase() || '';
-            firstName = fb_user.first_name || '';
-            lastName = fb_user.last_name || '';
-          } catch (e) {
-            console.error('Error fetching Graph API profile:', e);
-          }
-        }
-
-        // Fallback or Limited Login: Use Profile object
-        if (!email && profile) {
-          email = profile.email?.toLowerCase() || '';
-          firstName = firstName || profile.firstName || '';
-          lastName = lastName || profile.lastName || '';
-        }
-
-        // Final Fallback: Parse User attributes (if server managed to fetch them)
-        if (!email) {
-          email = (user.get('email') as string)?.toLowerCase() || '';
-          firstName = firstName || (user.get('first_name') as string) || '';
-          lastName = lastName || (user.get('last_name') as string) || '';
-        }
-
-        router.push({
-          pathname: '/signup2social',
-          params: {
-            email,
-            firstName,
-            lastName,
-          },
-        });
-      } else {
-        setUser(user as Parse.User<User_Type>);
-      }
-    } catch (error: any) {
+      await handleProfileCompletion(user, accessToken, profile);
+    } catch (error) {
       console.error('Facebook login error:', error);
-      Alert.alert(
-        'Facebook Login Error',
-        error.message || 'An unknown error occurred'
-      );
+      Sentry.captureException(error);
+    } finally {
+      stopActivity();
     }
-    stopActivity();
+  };
+
+  const handleProfileCompletion = async (
+    user: Parse.User,
+    accessToken: AccessToken | null,
+    profile: Profile | null
+  ) => {
+    if (
+      user.get('first_name') &&
+      user.get('last_name') &&
+      user.get('email') &&
+      user.get('phone')
+    ) {
+      setUser(user as Parse.User<User_Type>);
+      return;
+    }
+
+    let email = '';
+    let firstName = '';
+    let lastName = '';
+
+    if (accessToken) {
+      const res = await fetch(
+        `https://graph.facebook.com/me?fields=id,first_name,last_name,email&access_token=${accessToken.accessToken}`
+      );
+
+      const fb = await res.json();
+
+      email = fb.email?.toLowerCase() || '';
+      firstName = fb.first_name || '';
+      lastName = fb.last_name || '';
+    }
+
+    if (!email && profile) {
+      email = profile.email?.toLowerCase() || '';
+      firstName = firstName || profile.firstName || '';
+      lastName = lastName || profile.lastName || '';
+    }
+
+    router.push({
+      pathname: '/signup2social',
+      params: { email, firstName, lastName },
+    });
   };
 
   const handleAppleLogin = async () => {

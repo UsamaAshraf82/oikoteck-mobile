@@ -44,6 +44,7 @@ type Props = {
   };
 
   onBack: (data: PropertyGalleryTypes) => void;
+  label?: string;
 };
 
 export default function PropertyGallery({
@@ -51,6 +52,7 @@ export default function PropertyGallery({
   extra_data,
   onSubmit,
   onBack,
+  label = 'Post a listing',
 }: Props) {
   const { addToast } = useToast();
   const router = useRouter();

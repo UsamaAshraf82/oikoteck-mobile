@@ -95,7 +95,7 @@ export default function Index() {
             property.property_category as Basic2Values['property_category'],
           property_type:
             property.property_type as Basic1Values['property_type'],
-          reference_number: property.reference_number,
+
           size: property.size,
           special_feature: property.special_feature,
         },
@@ -248,6 +248,8 @@ export default function Index() {
     case 0:
       return (
         <Basic1
+          label='Edit Listing'
+          onBack={() => router.back()}
           data={data.basic}
           onSubmit={(data) => {
             setData((i) => ({ ...i, basic: data }));
@@ -258,6 +260,11 @@ export default function Index() {
     case 1:
       return (
         <Basic2
+          label='Edit Listing'
+          onBack={(val) => {
+            setData((i) => ({ ...i, basic2: val }));
+            setTab(0);
+          }}
           data={data.basic2}
           extra_data={{
             property_type: data.basic.property_type!,
@@ -272,6 +279,11 @@ export default function Index() {
     case 2:
       return (
         <Basic3
+        label='Edit Listing'
+          onBack={(val) => {
+            setData((i) => ({ ...i, basic3: val }));
+            setTab(1);
+          }}
           data={data.basic3}
           extra_data={{
             listing_for: data.basic.listing_for!,
@@ -285,6 +297,11 @@ export default function Index() {
     case 3:
       return (
         <PropertyGallery
+        label='Edit Listing'
+          onBack={(val) => {
+            setData((i) => ({ ...i, gallery: val }));
+            setTab(2);
+          }}
           data={data.gallery}
           extra_data={{
             listing_for: data.basic.listing_for!,
@@ -298,10 +315,12 @@ export default function Index() {
     case 4:
       return (
         <LocationInfo
+        label='Edit Listing'
+          onBack={(val) => {
+            setData((i) => ({ ...i, location: val }));
+            setTab(3);
+          }}
           data={data.location}
-          // extra_data={{
-          //   listing_for: data.basic.listing_for!,
-          // }}
           onSubmit={(data) => {
             setData((i) => ({ ...i, location: data }));
             onSubmit();

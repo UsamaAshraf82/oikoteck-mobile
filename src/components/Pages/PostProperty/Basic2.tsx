@@ -33,9 +33,16 @@ type Props = {
   };
 
   onBack: (data: Basic2Values) => void;
+  label?: string;
 };
 
-export default function Basic2({ data, extra_data, onSubmit,onBack }: Props) {
+export default function Basic2({
+  data,
+  extra_data,
+  onSubmit,
+  onBack,
+  label = 'Post a listing',
+}: Props) {
   const { addToast } = useToast();
   const { openModal } = useModal();
   const router = useRouter();
@@ -89,7 +96,7 @@ export default function Basic2({ data, extra_data, onSubmit,onBack }: Props) {
         >
           <ArrowLeftIcon color='#192234' size={24} />
         </Pressable>
-        <AppText style={styles.headerTitle}>Post a listing</AppText>
+        <AppText style={styles.headerTitle}>{label}</AppText>
         <Pressable hitSlop={20} onPress={() => router.back()}>
           <XIcon color='#192234' size={24} />
         </Pressable>
