@@ -6,6 +6,7 @@ import * as AppleAuthentication from 'expo-apple-authentication';
 import { Image as ExpoImage } from 'expo-image';
 import { useRouter } from 'expo-router';
 import Parse from 'parse/react-native';
+import { useRef } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import {
   AccessToken,
@@ -20,23 +21,37 @@ import PressableView from '~/components/HOC/PressableView';
 import useActivityIndicator from '~/store/useActivityIndicator';
 import useUser from '~/store/useUser';
 import { User_Type } from '~/type/user';
+import { parseLog } from '~/utils/parseLog';
 const Image = ExpoImage as any;
 
 const SocialSignin = () => {
   const { setUser } = useUser();
   const router = useRouter();
   const { startActivity, stopActivity } = useActivityIndicator();
+  const isSigningInRef = useRef(false);
 
   const startGoogleFlow = async () => {
+    if (isSigningInRef.current) return;
+    isSigningInRef.current = true;
     startActivity();
 
     try {
+      await parseLog('google_login:start', { platform: Platform.OS });
+
       if (Platform.OS === 'android') {
         await GoogleSignin.hasPlayServices();
       }
+
       const response = await GoogleSignin.signIn();
 
-      if (!response.data?.idToken) {
+      await parseLog('google_login:response', {
+        hasData: !!response.data,
+        hasIdToken: !!response.data?.idToken,
+        userId: response.data?.user?.id ?? null,
+        userEmail: response.data?.user?.email ?? null,
+      });
+
+      if (!response.data || !response.data.idToken) {
         throw new Error('Missing Google idToken');
       }
 
@@ -47,6 +62,15 @@ const SocialSignin = () => {
           id: user.id,
           id_token: idToken,
         },
+      });
+
+      await parseLog('google_login:parse_success', {
+        parseUserId: parseUser.id,
+        existed: parseUser.existed(),
+        hasFirstName: !!parseUser.get('first_name'),
+        hasLastName: !!parseUser.get('last_name'),
+        hasEmail: !!parseUser.get('email'),
+        hasPhone: !!parseUser.get('phone'),
       });
 
       if (
@@ -70,45 +94,81 @@ const SocialSignin = () => {
 
       setUser(parseUser as Parse.User<User_Type>);
     } catch (error: any) {
+      await parseLog('google_login:error', {
+        message: error?.message ?? String(error),
+        code: error?.code ?? null,
+        stack: error?.stack?.slice(0, 500) ?? null,
+      });
       console.error('Google auth failed:', error);
       Sentry.captureException(error);
     } finally {
       stopActivity();
+      isSigningInRef.current = false;
     }
   };
 
   const handleFacebookLogin = async () => {
+    if (isSigningInRef.current) return;
+    isSigningInRef.current = true;
     startActivity();
 
     try {
+      // Use 'browser' on iOS to force the standard OAuth flow and avoid
+      // Facebook Limited Login (which does not provide an AccessToken and
+      // is incompatible with the standard Parse Facebook auth adapter).
       if (Platform.OS === 'ios') {
-        LoginManager.setLoginBehavior('native_with_fallback');
+        LoginManager.setLoginBehavior('browser');
       }
+
+      await parseLog('fb_login:start', { loginBehavior: Platform.OS === 'ios' ? 'browser' : 'default' });
 
       const result = await LoginManager.logInWithPermissions([
         'public_profile',
         'email',
       ]);
 
-      if (result.isCancelled) return;
+      await parseLog('fb_login:result', {
+        isCancelled: result.isCancelled,
+        grantedPermissions: result.grantedPermissions,
+        declinedPermissions: result.declinedPermissions,
+      });
+
+      if (result.isCancelled) {
+        return;
+      }
 
       const accessToken = await AccessToken.getCurrentAccessToken();
       const profile = await Profile.getCurrentProfile();
 
+      // On iOS with standard OAuth, AuthenticationToken (Limited Login OIDC
+      // token) will be null — that is expected and fine.
       let authenticationToken: AuthenticationToken | null = null;
-
       if (Platform.OS === 'ios') {
         authenticationToken =
           await AuthenticationToken.getAuthenticationTokenIOS();
       }
 
+      await parseLog('fb_login:tokens', {
+        hasAccessToken: !!accessToken,
+        accessTokenUserID: accessToken?.userID ?? null,
+        accessTokenExpires: accessToken?.expirationTime ?? null,
+        hasProfile: !!profile,
+        profileUserID: profile?.userID ?? null,
+        hasAuthenticationToken: !!authenticationToken,
+        authenticationTokenNonce: authenticationToken?.nonce ?? null,
+      });
+
       if (!accessToken && !authenticationToken) {
         throw new Error('Facebook token missing');
       }
 
-      const authData: any = {
-        id: accessToken?.userID || profile?.userID,
-      };
+      const userId = accessToken?.userID || profile?.userID;
+
+      if (!userId) {
+        throw new Error('Facebook user ID could not be determined');
+      }
+
+      const authData: any = { id: userId };
 
       if (accessToken) {
         authData.access_token = accessToken.accessToken.toString();
@@ -116,16 +176,39 @@ const SocialSignin = () => {
 
       if (authenticationToken) {
         authData.id_token = authenticationToken.authenticationToken;
+        authData.nonce = authenticationToken.nonce;
       }
+
+      await parseLog('fb_login:authData', {
+        id: authData.id,
+        hasAccessToken: !!authData.access_token,
+        hasIdToken: !!authData.id_token,
+        hasNonce: !!authData.nonce,
+      });
 
       const user = await Parse.User.logInWith('facebook', { authData });
 
+      await parseLog('fb_login:parse_success', {
+        parseUserId: user.id,
+        existed: user.existed(),
+        hasFirstName: !!user.get('first_name'),
+        hasLastName: !!user.get('last_name'),
+        hasEmail: !!user.get('email'),
+        hasPhone: !!user.get('phone'),
+      });
+
       await handleProfileCompletion(user, accessToken, profile);
-    } catch (error) {
+    } catch (error: any) {
+      await parseLog('fb_login:error', {
+        message: error?.message ?? String(error),
+        code: error?.code ?? null,
+        stack: error?.stack?.slice(0, 500) ?? null,
+      });
       console.error('Facebook login error:', error);
       Sentry.captureException(error);
     } finally {
       stopActivity();
+      isSigningInRef.current = false;
     }
   };
 
@@ -173,14 +256,28 @@ const SocialSignin = () => {
   };
 
   const handleAppleLogin = async () => {
+    if (isSigningInRef.current) return;
+    isSigningInRef.current = true;
     startActivity();
 
     try {
+      await parseLog('apple_login:start', { platform: Platform.OS });
+
       const credential = await AppleAuthentication.signInAsync({
         requestedScopes: [
           AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
           AppleAuthentication.AppleAuthenticationScope.EMAIL,
         ],
+      });
+
+      await parseLog('apple_login:credential', {
+        hasIdentityToken: !!credential.identityToken,
+        hasEmail: !!credential.email,
+        hasGivenName: !!credential.fullName?.givenName,
+        hasFamilyName: !!credential.fullName?.familyName,
+        userId: credential.user ?? null,
+        // authorizationCode is short-lived, just log presence
+        hasAuthCode: !!credential.authorizationCode,
       });
 
       if (!credential.identityToken) {
@@ -209,6 +306,20 @@ const SocialSignin = () => {
         (user.get('last_name') as string) ||
         '';
 
+      await parseLog('apple_login:parse_success', {
+        parseUserId: user.id,
+        existed: user.existed(),
+        resolvedEmail: email,
+        resolvedFirstName: firstName,
+        resolvedLastName: lastName,
+        hasPhone: !!user.get('phone'),
+      });
+
+      // Stop the activity indicator BEFORE navigating to avoid
+      // iOS crash from modal + navigation transition conflict
+      stopActivity();
+      isSigningInRef.current = false;
+
       if (!user.get('phone') || !email || !firstName || !lastName) {
         router.push({
           pathname: '/signup2social',
@@ -218,12 +329,20 @@ const SocialSignin = () => {
         setUser(user as Parse.User<User_Type>);
       }
     } catch (e: any) {
-      Sentry.captureException(e);
-      if (e.code !== 'ERR_CANCELED') {
+      if (e.code === 'ERR_CANCELED') {
+        await parseLog('apple_login:cancelled', {});
+        // User cancelled — silent, no Sentry
+      } else {
+        await parseLog('apple_login:error', {
+          message: e?.message ?? String(e),
+          code: e?.code ?? null,
+          stack: e?.stack?.slice(0, 500) ?? null,
+        });
         console.error('Apple login error:', e);
+        Sentry.captureException(e);
       }
-    } finally {
       stopActivity();
+      isSigningInRef.current = false;
     }
   };
 

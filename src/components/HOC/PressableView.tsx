@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { ReactNode } from 'react';
 import {
-    StyleProp,
-    StyleSheet,
-    TouchableNativeFeedback,
-    View,
-    ViewStyle,
+  StyleProp,
+  StyleSheet,
+  TouchableNativeFeedback,
+  View,
+  ViewStyle,
 } from 'react-native';
 
 type Props = {
