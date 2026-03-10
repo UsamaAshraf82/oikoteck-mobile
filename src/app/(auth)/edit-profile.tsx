@@ -398,8 +398,8 @@ const EmailInput = () => {
         user?.attributes.username.toLowerCase().trim() !==
         data.email.toLowerCase().trim()
       ) {
-        user.set('username', data.email.toLowerCase().trim());
-        user.set('email', data.email.toLowerCase().trim());
+        user.setUsername(data.email.toLowerCase().trim());
+        user.setEmail(data.email.toLowerCase().trim());
         await user.save();
         const response = await fetch(emailsAddress, {
           method: 'POST',

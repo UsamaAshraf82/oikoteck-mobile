@@ -352,24 +352,24 @@ const styles = StyleSheet.create({
 
 export const Basic1Schema = z.object({
   listing_for: z.enum(['Rental', 'Sale'], {
-    message: 'Listing For is Required.',
+    message: 'Listing Type is Required.',
   }),
 
   title: z
-    .string({ message: 'Title is required.' })
-    .min(1, { message: 'Title is required.' })
+    .string({ message: 'Listing title is missing.' })
+    .min(1, { message: 'Listing title is missing.' })
     .max(50, { message: 'Title cannot exceed 50 characters.' }),
   description: z
-    .string({ message: 'Description must be between 300 and 2000 characters.' })
-    // .min(300, {
-    //   message: 'Description must be between 300 and 2000 characters.',
-    // })
+    .string({ message: 'Description must be between 300 and 2,000 characters.' })
+    .min(300, {
+      message: 'Description must be between 300 and 2,000 characters.',
+    })
     .max(2000, {
-      message: 'Description must be between 300 and 2000 characters.',
+      message: 'Description must be between 300 and 2,000 characters.',
     }),
 
   property_type: z.enum(['Residential', 'Commercial', 'Land'], {
-    message: 'Property Type is Required.',
+    message: 'Property type is missing',
   }),
   property_category: z.enum(
     [
@@ -402,7 +402,7 @@ export const Basic1Schema = z.object({
       'Unincorporated Use',
     ],
     {
-      message: 'Property Category is Required.',
+      message: 'Property category is missing',
     }
   ),
   property_oriantation: z
@@ -413,10 +413,10 @@ export const Basic1Schema = z.object({
 export type Basic1Values = z.infer<typeof Basic1Schema>;
 
 const displayNames: Record<keyof Basic1Values, string> = {
-  description: 'Description',
-  title: 'Title',
-  property_type: 'Property Type',
-  property_category: 'Property Category',
-  property_oriantation: 'Property Orientation',
-  listing_for: 'Listing For',
+  description: 'Description Limit',
+  title: 'Missing Title',
+  property_type: 'Missing Type',
+  property_category: 'Missing Category',
+  property_oriantation: 'Missing Property Orientation',
+  listing_for: 'Missing Listing Type',
 };

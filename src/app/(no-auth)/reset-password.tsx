@@ -52,6 +52,7 @@ export default function Login() {
     });
     stopActivity();
     addToast({
+      type: 'success',
       heading: 'Password Reset',
       message:
         "Check your email to access password reset instructions. Emails won't be sent for unregistered users",

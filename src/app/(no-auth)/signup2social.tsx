@@ -27,6 +27,7 @@ const SignupSchema = z
   .object({
     firstName: z.string().min(1, { message: 'First Name is required.' }),
     lastName: z.string().min(1, { message: 'Last Name is required.' }),
+    email: z.string().min(1, { message: 'Email is required.' }),
     phone: z.string().min(1, { message: 'Phone Number is required.' }),
     country: z.object({
       ISO: z.string(),
@@ -84,6 +85,7 @@ const displayNames: Record<keyof SignupTypes, string> = {
   country: 'Country',
   firstName: 'Invalid First Name',
   lastName: 'Invalid Last Name',
+  email: 'Invalid Email Address',
   phone: 'Phone',
   privacy: 'Privacy Policy Agreement',
   share_consent: 'Share Consent',
@@ -118,17 +120,18 @@ export default function Signup2Social() {
       privacy: false,
       share_consent: false,
       firstName: local.firstName || '',
+      email: local.email || '',
       lastName: local.lastName || '',
       phone: '',
       vat: '',
     },
   });
 
-  useEffect(() => {
-    if (!local.email) {
-      router.replace('/signup');
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!local.email) {
+  //     router.replace('/signup');
+  //   }
+  // }, []);
 
   useEffect(() => {
     if (user) {
@@ -138,11 +141,27 @@ export default function Signup2Social() {
 
   const onSubmit = async (formData: SignupTypes) => {
     activity.startActivity();
+
+    const data_email = formData.email.toLowerCase().trim();
+    const Query = new Parse.Query('_User');
+    Query.equalTo('username', data_email);
+    const emailCount = await Query.count();
+
+    if (emailCount !== 0) {
+      addToast({
+        heading: 'Registered Account',
+        message: 'Account already exists, please click on log in.',
+        type: 'error',
+      });
+      activity.stopActivity();
+      return;
+    }
+
     const currentUser = Parse.User.current();
 
     if (currentUser) {
-      currentUser.set('username', local.email.toLowerCase());
-      currentUser.set('email', local.email.toLowerCase());
+      currentUser.set('username', data_email);
+      currentUser.set('email', data_email);
       currentUser.set('first_name', formData.firstName);
       currentUser.set('phone', formData.phone);
       currentUser.set('last_name', formData.lastName);
@@ -266,6 +285,13 @@ export default function Signup2Social() {
               </Grid>
             </View>
 
+            <ControlledTextInput
+              control={control}
+              name='lastName'
+              label='Last Name'
+              autoComplete='name-family'
+              placeholder='Enter your last name'
+            />
             <ControlledTextInput
               control={control}
               name='firstName'

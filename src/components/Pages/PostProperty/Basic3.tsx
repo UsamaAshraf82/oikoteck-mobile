@@ -288,13 +288,13 @@ export const Basic3Schema = z
     }),
 
     contact_method: z.enum(['Phone', 'Email', 'Both'], {
-      message: 'Contact Method is Required.',
+      message: 'Contact method is required.',
     }),
     move_in_date: z.string(),
 
     price: z.coerce
-      .number({ error: 'Price is Required.' })
-      .min(1, 'Price is Required.'),
+      .number({ error: 'Price is required.' })
+      .min(1, 'Price is required.'),
 
     deposit: z.number({
       message: 'Security Deposit (Months) is Required.',
@@ -333,9 +333,9 @@ export const Basic3Schema = z
 export type Basic3Values = z.infer<typeof Basic3Schema>;
 
 const displayNames: Record<keyof Basic3Values, string> = {
-  contact_method: 'Contact Method',
+  contact_method: 'Missing Contact Method',
   move_in_date: 'Move in Date',
-  price: 'Price',
+  price: 'Missing Price',
   deposit: 'Security Deposit (Months)',
   payment_frequency: 'Payment Frequency (Months)',
   level_of_finish: 'Level of Finish',

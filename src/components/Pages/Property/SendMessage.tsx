@@ -170,6 +170,7 @@ const SendMessage = ({ onClose, property, visible }: Props) => {
 
       await myNewObject.save();
       addToast({
+        type: 'success',
         heading: 'Message submission',
         message:
           'Your message is now sent. Listing owner will contact you soon',

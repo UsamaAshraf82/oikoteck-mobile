@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 999,
-    backgroundColor: '#82065e',
+    backgroundColor: '#192234',
   },
   submitBtnText: {
     fontFamily: 'LufgaBold',

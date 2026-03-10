@@ -210,6 +210,7 @@ const SubmitOffer = ({ onClose, property, visible }: SendOfferModalType) => {
         heading: 'Offer submission',
         message:
           'Your offer is now submitted. Listing owner will contact you soon',
+          type:'success'
       });
       await fetch(emailsAddress, {
         method: 'POST',

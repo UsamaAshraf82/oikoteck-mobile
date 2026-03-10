@@ -679,14 +679,14 @@ export const Basic2Schema = z
     ]),
     bedrooms: z
       .number({
-        message: 'Bedrooms is Required.',
+        message: 'Number of bedrooms are required.',
       })
-      .min(1, 'Bedrooms is Required.'),
+      .min(1, 'Number of bedrooms are required.'),
     bathrooms: z
       .number({
-        message: 'Bathrooms is Required.',
+        message: 'Number of bathrooms are required.',
       })
-      .min(1, 'Bathrooms is Required.'),
+      .min(1, 'Number of bathrooms are required.'),
     floor: z.number({}).optional(),
     special_feature: z
       .string()
@@ -736,7 +736,7 @@ export const Basic2Schema = z
       .or(z.literal('')),
     level_of_finish: z
       .number({
-        message: 'Level of Finish is Required.',
+        message: 'Level of finish is required.',
       })
       .optional(),
     // reference_number: z.string({}).optional(),
@@ -747,7 +747,7 @@ export const Basic2Schema = z
         ctx.addIssue({
           code: 'custom',
           path: ['level_of_finish'],
-          message: 'Level of Finish is Required.',
+          message: 'Level of finish is required.',
         });
       }
     }
@@ -756,10 +756,10 @@ export const Basic2Schema = z
 export type Basic2Values = z.infer<typeof Basic2Schema>;
 
 const displayNames: Record<keyof Basic2Values, string> = {
-  bathrooms: 'Bathrooms',
-  bedrooms: 'Bedrooms',
+  bathrooms: 'Missing Bedrooms',
+  bedrooms: 'Missing Bathrooms',
   floor: 'Floor',
-  special_feature: 'Special Features',
+  special_feature: 'Missing Special features',
   heating: 'Heating System',
   heating_expense: 'Monthly Heating Expenses',
   energy_class: 'Energy Class',
@@ -767,7 +767,7 @@ const displayNames: Record<keyof Basic2Values, string> = {
   plot_size: 'Plot Size',
   furnished: 'Furnished',
   construction_year: 'Construction Year',
-  level_of_finish: 'Level of Finish',
+  level_of_finish: 'Missing Finish',
   // reference_number: 'Reference Number',
   property_category: 'Property Category',
   property_type: 'Property Type',

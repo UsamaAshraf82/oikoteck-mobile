@@ -55,8 +55,8 @@ type SignupTypes = z.infer<typeof SignupSchema>;
 
 const displayNames: Record<keyof SignupTypes, string> = {
   email: 'Invalid Email Address',
-  password: 'Password',
-  confirmPassword: 'Confirm password',
+  password: 'Password Formatting',
+  confirmPassword: 'Passwords Mismatch',
 };
 
 export default function Signup() {

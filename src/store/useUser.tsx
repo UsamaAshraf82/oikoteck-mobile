@@ -64,7 +64,7 @@ const useUser = create<Store>()((set, get) => ({
     } catch (e) {
       useToast.getState().addToast({
         type: 'error',
-        heading: 'Authication Error',
+        heading: 'Validation Error',
         message: 'Invalid username/password.',
       });
     }
