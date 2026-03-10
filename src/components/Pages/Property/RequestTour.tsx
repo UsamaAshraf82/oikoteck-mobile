@@ -157,6 +157,7 @@ const RequestTour = ({ onClose, property, visible }: SendOfferModalType) => {
 
     try {
       const myNewObject = new Parse.Object('Tours');
+
       myNewObject.set('Property', {
         __type: 'Pointer',
         className: 'Property',
@@ -166,7 +167,16 @@ const RequestTour = ({ onClose, property, visible }: SendOfferModalType) => {
       if (user) {
         myNewObject.set('User', user);
       }
-      myNewObject.set('owner', activeProperty.owner);
+
+      if (activeProperty.owner instanceof Parse.User) {
+        myNewObject.set('owner', activeProperty.owner);
+      } else {
+        myNewObject.set('owner', {
+          __type: 'Pointer',
+          className: '_User',
+          objectId: activeProperty.owner.objectId,
+        });
+      }
       myNewObject.set('first_name', data.firstName);
       myNewObject.set('last_name', data.lastName);
       myNewObject.set('listing_type', activeProperty.listing_for);
@@ -174,17 +184,21 @@ const RequestTour = ({ onClose, property, visible }: SendOfferModalType) => {
       if (data.phone) {
         myNewObject.set('phone', data.country.Code + ' ' + data.phone);
       }
+
       myNewObject.set('tour_time', data.tour_time);
       myNewObject.set('tour_type', data.tour_type);
       myNewObject.set('tour_date', new Date(data.tour_date!));
       myNewObject.set('message', data.message);
+
       myNewObject.set('email', data.email.toLowerCase());
       myNewObject.set('price', activeProperty.price);
       myNewObject.set('read', false);
 
+      console.log(myNewObject);
       await myNewObject.save();
 
       addToast({
+        type: 'success',
         heading: 'Tour Request',
         message:
           'Your request to tour the property is now submitted. Listing owner will contact you soon',
@@ -203,6 +217,7 @@ const RequestTour = ({ onClose, property, visible }: SendOfferModalType) => {
       });
       onClose();
     } catch (e: any) {
+      console.log(e);
       addToast({
         type: 'error',
         heading: 'Error',
@@ -226,7 +241,6 @@ const RequestTour = ({ onClose, property, visible }: SendOfferModalType) => {
       }
     }
   };
-  const minDate = new Date();
 
   return (
     <Modal
@@ -259,15 +273,14 @@ const RequestTour = ({ onClose, property, visible }: SendOfferModalType) => {
             </View>
           </TouchableNativeFeedback>
         </View>
-
+        <AppText style={styles.headerSub}>
+          Send a tour request to the listing owner
+        </AppText>
         <KeyboardAwareScrollView
           bottomOffset={50}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
         >
-          <AppText style={styles.headerSub}>
-            Send a tour request to the listing owner
-          </AppText>
           <View style={styles.formSection}>
             <Select
               varient
@@ -294,11 +307,27 @@ const RequestTour = ({ onClose, property, visible }: SendOfferModalType) => {
             <DatePicker
               label='Select a preferred visit date'
               value={watch('tour_date')}
-              onChange={(date: Date) =>
-                setValue('tour_date', date.toISOString())
-              }
+              onChange={(date: Date) => {
+                date.setHours(23, 59, 59);
+                const currentDate = new Date();
+                currentDate.setHours(0, 0, 0);
+                if (date > currentDate) {
+                  setValue('tour_date', date.toISOString());
+                } else {
+                  addToast({
+                    type: 'error',
+                    heading: 'Invalid Tour Date',
+
+                    message: `Tour Date cannot be smaller than current Date`,
+                  });
+                }
+              }}
+              // onChange={(date: Date) =>
+              //   setValue('tour_date', date.toISOString())
+              // }
+
               withForm
-              minDate={minDate}
+              // minDate={minDate}
             />
 
             <Select
@@ -461,9 +490,10 @@ const styles = StyleSheet.create({
     color: '#192234',
   },
   label: {
-    marginBottom: -20,
-    // fontFamily: 'LufgaMedium',
+    fontFamily: 'LufgaMedium',
     fontSize: 14,
+    color: '#192234',
+    marginBottom: -20,
   },
   phoneRow: {
     flexDirection: 'row',
@@ -489,7 +519,7 @@ const styles = StyleSheet.create({
   },
   flagBox: {
     marginTop: 8,
-    borderRadius: 8,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: '#C6CAD2',
     backgroundColor: 'white',

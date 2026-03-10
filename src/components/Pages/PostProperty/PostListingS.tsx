@@ -1,32 +1,45 @@
 import { useStripe } from '@stripe/stripe-react-native';
 import { useRouter } from 'expo-router';
 import Parse from 'parse/react-native';
-import { ArrowLeftIcon, XLogoIcon } from 'phosphor-react-native';
-import { useMemo } from 'react';
+import { ArrowLeftIcon, XIcon } from 'phosphor-react-native';
+import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import WebView from 'react-native-webview';
 import AppText from '~/components/Elements/AppText';
 import Checkbox from '~/components/Elements/Checkbox';
 import PressableView from '~/components/HOC/PressableView';
+import { useToast } from '~/store/useToast';
 import { PaymentInfoTypes } from './PaymentInfo';
 
 type Props = {
   extraData: { plan: PaymentInfoTypes['plan'] };
   onSubmit: () => void;
   onBack: () => void;
+  onCancel: () => void;
   label?: string;
 };
 
 export default function PostListingS({
   extraData,
   onSubmit,
+  onCancel,
   onBack,
   label = 'Post a listing',
 }: Props) {
+  const [checked, setChecked] = useState(false);
+  const { addToast } = useToast();
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const router = useRouter();
   const handlePress = async () => {
+    if (!checked) {
+      addToast({
+        type: 'error',
+        heading: 'Terms Agreement',
+        message: 'You must agree with the service plan terms agreement',
+      });
+      return;
+    }
     if (extraData.plan === 'Free') {
       onSubmit();
     } else {
@@ -75,8 +88,8 @@ export default function PostListingS({
           <ArrowLeftIcon color='#192234' size={24} />
         </Pressable>
         <AppText style={styles.headerTitle}>{label}</AppText>
-        <Pressable hitSlop={20} onPress={() => router.back()}>
-          <XLogoIcon color='#192234' size={24} />
+        <Pressable hitSlop={20} onPress={() => onCancel()}>
+          <XIcon color='#192234' size={24} />
         </Pressable>
       </View>
       <View style={styles.container}>
@@ -104,8 +117,11 @@ export default function PostListingS({
               />
             </View>
             <Checkbox
+              alignTop
               label='I, Walid Smith, understand and agree to the “Service Plan Terms” above associated with this purchase, the Terms and Conditions, and the Privacy Policy.'
               labelStyle={styles.checkboxLabel}
+              value={checked}
+              getValue={(value) => setChecked(value)}
             />
           </KeyboardAwareScrollView>
         </View>
@@ -172,6 +188,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     overflow: 'hidden',
     backgroundColor: '#F3F4F6',
+    marginHorizontal: -15,
   },
   checkboxLabel: {
     fontFamily: 'LufgaRegular',

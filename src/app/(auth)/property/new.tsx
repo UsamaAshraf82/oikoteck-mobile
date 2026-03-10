@@ -1,9 +1,7 @@
 import { useRouter } from 'expo-router';
 import Parse from 'parse/react-native';
-import { ArrowLeftIcon, XIcon } from 'phosphor-react-native';
 import { useEffect, useState } from 'react';
-import { BackHandler, Pressable, StyleSheet, View } from 'react-native';
-import AppText from '~/components/Elements/AppText';
+import { BackHandler, StyleSheet, View } from 'react-native';
 import Basic1, { Basic1Values } from '~/components/Pages/PostProperty/Basic1';
 import Basic2, { Basic2Values } from '~/components/Pages/PostProperty/Basic2';
 import Basic3, { Basic3Values } from '~/components/Pages/PostProperty/Basic3';
@@ -37,62 +35,28 @@ export default function PostProperty() {
   }>({
     basic: {
       listing_for: 'Rental',
-      property_type: 'Residential',
-      property_category: 'Apartment',
-      property_oriantation: 'North-Facing',
-      description: 'Description',
-      title: 'Title',
     },
     basic2: {
-      property_type: 'Residential',
-      furnished: false,
-      bedrooms: 1,
-      bathrooms: 1,
-      floor: 1,
-      construction_year: 2000,
-      energy_class: 'A',
-      heating: 'Autonomous Heating',
-      level_of_finish: 3,
-      plot_size: 1000,
-      property_category: 'Apartment',
-      heating_expense: 100,
-      special_feature: ['Parking Spot'],
-      size: 100,
+      bedrooms: 0,
+      bathrooms: 0,
+      floor: 0,
+      special_feature: [],
     },
-    basic3: {
-      contact_method: 'Both',
-      listing_for: 'Rental',
-      price: 5000,
-      reference_number: '123456789',
-      payment_frequency: 1,
-      deposit: 1,
-      level_of_finish: 3,
-      move_in_date: new Date().toISOString(),
-    },
+    basic3: {},
     gallery: {
-      files: [
-        {
-          file: undefined,
-          isUploading: false,
-          temp: 'file:///data/user/0/com.oikoteck.app/cache/ImageManipulator/e32f7281-ac89-491b-a769-0dcebe3fa0ea.webp',
-          url: 'image/ff65bff955c_1772777742977_',
-        },
-        {
-          file: undefined,
-          isUploading: false,
-          temp: 'file:///data/user/0/com.oikoteck.app/cache/ImageManipulator/f8a5c8d3-321c-498a-8148-4fb78fad5077.webp',
-          url: 'image/bff65bff955_1772777740024_',
-        },
-        {
-          file: undefined,
-          isUploading: false,
-          temp: 'file:///data/user/0/com.oikoteck.app/cache/ImageManipulator/9376142a-4369-4ac5-917f-c0969166fb7e.webp',
-          url: 'image/f65bff955c3_1772778162843_',
-        },
-      ],
       agent_icon: false,
     },
-    location: { exact_location: false },
+    location: {
+      exact_location: false,
+      marker: {
+        lat: 37.9755,
+        lng: 23.735,
+      },
+      center: {
+        lat: 37.9755,
+        lng: 23.735,
+      },
+    },
     payment: {},
   });
 
@@ -194,24 +158,12 @@ export default function PostProperty() {
     }
   };
 
-  const renderHeader = (onBack: () => void) => (
-    <View style={styles.header}>
-      <Pressable hitSlop={20} onPress={onBack}>
-        <ArrowLeftIcon color='#192234' size={24} />
-      </Pressable>
-      <AppText style={styles.headerTitle}>Post a listing</AppText>
-      <Pressable hitSlop={20} onPress={() => router.back()}>
-        <XIcon color='#192234' size={24} />
-      </Pressable>
-    </View>
-  );
-
   switch (tab) {
     case 0:
       return (
         <View style={styles.container}>
-          {/* {renderHeader(() => router.back())} */}
           <Basic1
+            onCancel={() => router.back()}
             onBack={() => router.back()}
             data={data.basic}
             onSubmit={(val) => {
@@ -225,6 +177,7 @@ export default function PostProperty() {
       return (
         <View style={styles.container}>
           <Basic2
+            onCancel={() => router.back()}
             onBack={(val) => {
               setData((i) => ({ ...i, basic2: val }));
               setTab(0);
@@ -245,6 +198,7 @@ export default function PostProperty() {
       return (
         <View style={styles.container}>
           <Basic3
+            onCancel={() => router.back()}
             onBack={(val) => {
               setData((i) => ({ ...i, basic3: val }));
               setTab(1);
@@ -265,6 +219,7 @@ export default function PostProperty() {
         <View style={styles.container}>
           {/* {renderHeader(() => setTab(2))} */}
           <PropertyGallery
+            onCancel={() => router.back()}
             onBack={(val) => {
               setData((i) => ({ ...i, gallery: val }));
               setTab(2);
@@ -285,6 +240,7 @@ export default function PostProperty() {
         <View style={styles.container}>
           {/* {renderHeader(() => setTab(3))} */}
           <LocationInfo
+            onCancel={() => router.back()}
             onBack={(val) => {
               setData((i) => ({ ...i, location: val }));
               setTab(3);
@@ -300,7 +256,7 @@ export default function PostProperty() {
     case 5:
       return (
         <PaymentInfo
-
+          onCancel={() => router.back()}
           onBack={(val) => {
             setData((i) => ({ ...i, payment: val }));
             setTab(4);
@@ -315,6 +271,7 @@ export default function PostProperty() {
     case 6:
       return (
         <PostListingS
+          onCancel={() => router.back()}
           extraData={{
             plan: data.payment.plan!,
           }}

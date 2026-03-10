@@ -59,7 +59,6 @@ const SubmitOffer = ({ onClose, property, visible }: SendOfferModalType) => {
 
   // ... rest of the logic using activeProperty instead of property
 
-
   const SendOfferSchema = z
     .object({
       firstName: z.string(),
@@ -73,7 +72,7 @@ const SubmitOffer = ({ onClose, property, visible }: SendOfferModalType) => {
           .pipe(z.email('Must be a valid email address.')),
       ]),
       phone: z.string().optional(),
-      price: z.coerce.number(),
+      price: z.coerce.number().optional(),
       country: z.object({
         ISO: z.string(),
         Country: z.string(),
@@ -96,6 +95,13 @@ const SubmitOffer = ({ onClose, property, visible }: SendOfferModalType) => {
           code: 'custom',
           path: ['lastName'],
           message: 'Enter Last Name',
+        });
+      }
+      if (!data.price) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['price'],
+          message: `Your offer price is less than 20% (${p20.toFixed(0)}) of the asking price`,
         });
       }
       if (data.price < p20) {
@@ -179,7 +185,15 @@ const SubmitOffer = ({ onClose, property, visible }: SendOfferModalType) => {
       if (user) {
         myNewObject.set('User', user);
       }
-      myNewObject.set('owner', activeProperty.owner);
+      if (activeProperty.owner instanceof Parse.User) {
+        myNewObject.set('owner', activeProperty.owner);
+      } else {
+        myNewObject.set('owner', {
+          __type: 'Pointer',
+          className: '_User',
+          objectId: activeProperty.owner.objectId,
+        });
+      }
       myNewObject.set('first_name', data.firstName);
       myNewObject.set('last_name', data.lastName);
       myNewObject.set('listing_type', activeProperty.listing_for);
@@ -258,18 +272,16 @@ const SubmitOffer = ({ onClose, property, visible }: SendOfferModalType) => {
         ]}
       >
         <View style={styles.header}>
-          <View style={styles.headerTextCol}>
-            <AppText style={styles.headerTitle}>Submit Offer</AppText>
-            <AppText style={styles.headerSub}>
-              Submit an offer to the listing owner
-            </AppText>
-          </View>
+          <AppText style={styles.headerTitle}>Submit Offer</AppText>
           <TouchableNativeFeedback hitSlop={10} onPress={onClose}>
             <View style={styles.closeBtn}>
               <XIcon color='#192234' size={24} />
             </View>
           </TouchableNativeFeedback>
         </View>
+        <AppText style={styles.headerSub}>
+          Submit an offer to the listing owner
+        </AppText>
 
         <View style={{ maxHeight: deviceHeight * 0.8 }}>
           <KeyboardAwareScrollView
@@ -514,12 +526,13 @@ const styles = StyleSheet.create({
     color: '#192234',
   },
   label: {
+    fontFamily: 'LufgaMedium',
     fontSize: 14,
     color: '#192234',
     marginBottom: -24,
   },
   phoneRow: {
-   flexDirection: 'row',
+    flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
   },

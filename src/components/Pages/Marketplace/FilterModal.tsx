@@ -1,11 +1,11 @@
 import { CaretDownIcon, XIcon } from 'phosphor-react-native';
 import { useEffect, useState } from 'react';
 import {
-    ScrollView,
-    StyleSheet,
-    TextInput,
-    TouchableNativeFeedback,
-    View,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  TouchableNativeFeedback,
+  View,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import AppText from '~/components/Elements/AppText';
@@ -423,28 +423,6 @@ const FilterModal = ({
                   })}
                 </View>
               </View>
-
-              {/* Date Range */}
-              {/* <View style={styles.section}>
-                <AppText style={styles.sectionLabel}>Min. Move-in Date</AppText>
-                <View style={styles.dateWrapper}>
-                  <DatePicker
-                    style={styles.datePicker}
-                    value={filter.minDate}
-                    onChange={(date: Date | null) => changeSearch({ minDate: date })}
-                  />
-                </View>
-              </View>
-              <View style={styles.section}>
-                <AppText style={styles.sectionLabel}>Max. Move-in Date</AppText>
-                <View style={styles.dateWrapper}>
-                  <DatePicker
-                    style={styles.datePicker}
-                    value={filter.maxDate}
-                    onChange={(date: Date | null) => changeSearch({ maxDate: date })}
-                  />
-                </View>
-              </View> */}
 
               {/* Keywords */}
               <View style={styles.section}>

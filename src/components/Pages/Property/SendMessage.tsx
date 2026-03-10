@@ -149,7 +149,15 @@ const SendMessage = ({ onClose, property, visible }: Props) => {
       if (user) {
         myNewObject.set('User', user);
       }
-      myNewObject.set('owner', activeProperty.owner);
+      if (activeProperty.owner instanceof Parse.User) {
+        myNewObject.set('owner', activeProperty.owner);
+      } else {
+        myNewObject.set('owner', {
+          __type: 'Pointer',
+          className: '_User',
+          objectId: activeProperty.owner.objectId,
+        });
+      }
       myNewObject.set('first_name', data.firstName);
       myNewObject.set('last_name', data.lastName);
       myNewObject.set('listing_type', activeProperty.listing_for);
@@ -401,9 +409,10 @@ const styles = StyleSheet.create({
     color: '#192234',
   },
   label: {
+        fontFamily: 'LufgaMedium',
     fontSize: 14,
     color: '#192234',
-    marginBottom: -8,
+    marginBottom: -20,
   },
   phoneRow: {
     flexDirection: 'row',

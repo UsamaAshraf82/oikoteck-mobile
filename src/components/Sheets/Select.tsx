@@ -2,10 +2,10 @@ import { FlashList } from '@shopify/flash-list';
 import { CheckCircleIcon, XIcon } from 'phosphor-react-native';
 import * as React from 'react';
 import {
-    ScrollView,
-    StyleSheet,
-    TouchableNativeFeedback,
-    View,
+  ScrollView,
+  StyleSheet,
+  TouchableNativeFeedback,
+  View,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { isDeepEqual } from 'remeda';
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
   labelWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    // justifyContent: 'center',
     marginBottom: 16,
   },
   labelText: {

@@ -27,6 +27,12 @@ const TextInput = ({
     useState(secureTextEntry);
   const [isFocused, setIsFocused] = useState(false);
 
+  const formatPrice = (val: string | number | undefined) => {
+    if (val === undefined || val === null || val === '') return '';
+    const s = val.toString().replace(/,/g, '');
+    return s.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  };
+
   return (
     <View style={styles.container}>
       {label && <AppText style={styles.label}>{label}</AppText>}
@@ -34,7 +40,7 @@ const TextInput = ({
         {isPrice && <AppText style={styles.price}>€</AppText>}
         <TextBaseInput
           {...props}
-          value={props.value ? props.value + '' : ''}
+          value={isPrice ? formatPrice(props.value) : (props.value ? props.value + '' : '')}
           placeholderTextColor='#6B7280'
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
@@ -46,8 +52,9 @@ const TextInput = ({
           ]}
           secureTextEntry={secureTextEntryHack}
           onChangeText={(text) => {
-            getValue?.(text);
-            props.onChangeText?.(text);
+            const rawValue = isPrice ? text.replace(/,/g, '') : text;
+            getValue?.(rawValue);
+            props.onChangeText?.(rawValue);
           }}
         />
         {secureTextEntry && (
@@ -72,7 +79,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   label: {
-    // fontFamily: 'LufgaMedium',
+    fontFamily: 'LufgaMedium',
     fontSize: 14,
     color: '#192234',
   },
@@ -83,9 +90,11 @@ const styles = StyleSheet.create({
   price: {
     position: 'absolute',
     left: 14,
-    top: '50%',
-    marginTop: 1,
-    transform: [{ translateY: '-50%' }],
+    top: 0,
+    paddingBottom: 12,
+    paddingTop: 14,
+    height: '100%',
+    // transform: [{ translateY: '-50%' }],
     justifyContent: 'center',
     alignItems: 'center',
     fontFamily: 'LufgaRegular',

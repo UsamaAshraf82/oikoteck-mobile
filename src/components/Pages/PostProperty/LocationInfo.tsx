@@ -22,11 +22,17 @@ type Props = {
   data: Partial<LocationInfoTypes>;
   onSubmit: (data: LocationInfoTypes) => void;
 
-  onBack: (data: LocationInfoTypes) => void;  label?: string;
+  onBack: (data: LocationInfoTypes) => void;
+  onCancel: (data: LocationInfoTypes) => void;
+  label?: string;
 };
 
-export default function LocationInfo({ data, onSubmit, onBack,
-  label = 'Post a listing', }: Props) {
+export default function LocationInfo({
+  data,
+  onSubmit,
+  onBack,onCancel,
+  label = 'Post a listing',
+}: Props) {
   const { addToast } = useToast();
   const router = useRouter();
 
@@ -83,7 +89,7 @@ export default function LocationInfo({ data, onSubmit, onBack,
           <ArrowLeftIcon color='#192234' size={24} />
         </Pressable>
         <AppText style={styles.headerTitle}>{label}</AppText>
-        <Pressable hitSlop={20} onPress={() => router.back()}>
+        <Pressable hitSlop={20} onPress={() => onCancel(getValues())}>
           <XIcon color='#192234' size={24} />
         </Pressable>
       </View>
@@ -137,10 +143,9 @@ export default function LocationInfo({ data, onSubmit, onBack,
                 onPress={async () => {
                   if (!address) {
                     addToast({
-
                       heading: 'Address',
                       message: 'Please enter address',
-                      type:'error'
+                      type: 'error',
                     });
                     return;
                   }

@@ -5,13 +5,13 @@ import * as Linking from 'expo-linking';
 import { Link } from 'expo-router';
 import Parse from 'parse/react-native';
 import {
-    ChatTeardropIcon,
-    EnvelopeIcon,
-    HouseLineIcon,
-    PhoneCallIcon,
-    UserIcon,
-    WhatsappLogoIcon,
-    XIcon,
+  ChatTeardropIcon,
+  EnvelopeIcon,
+  HouseLineIcon,
+  PhoneCallIcon,
+  UserIcon,
+  WhatsappLogoIcon,
+  XIcon,
 } from 'phosphor-react-native';
 import { useEffect, useState } from 'react';
 import { SubmitErrorHandler, useForm } from 'react-hook-form';
@@ -75,7 +75,7 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
 
   const openWhatsApp = async () => {
     const url = `https://wa.me/${owner?.country_code}${owner?.phone}?text=${encodeURIComponent(
-      `Hi ${owner?.first_name} ${owner?.last_name}! I found this listing on OikoTeck  and would like to inquire about further information.`
+      `Hi ${owner?.first_name} ${owner?.last_name}! I found this listing on OikoTeck  https://www.oikoteck.com/property/${activeProperty.objectId} and would like to inquire about further information.`
     )}`;
     try {
       await Linking.openURL(url);

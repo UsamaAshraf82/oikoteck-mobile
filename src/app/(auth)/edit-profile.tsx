@@ -546,8 +546,10 @@ const styles = StyleSheet.create({
     color: '#192234',
   },
   inputLabel: {
+    fontFamily: 'LufgaMedium',
     fontSize: 14,
-    color: '#9191A1',
+    color: '#192234',
+    marginBottom: -8,
   },
   inputValue: {
     fontFamily: 'LufgaMedium',
@@ -555,8 +557,9 @@ const styles = StyleSheet.create({
     color: '#192234',
   },
   labelBelow: {
+    fontFamily: 'LufgaMedium',
     fontSize: 14,
-    color: '#9191A1',
+    color: '#192234',
     marginBottom: -8,
   },
   phoneInputRow: {

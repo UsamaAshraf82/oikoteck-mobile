@@ -49,7 +49,7 @@ const Checkbox: React.FC<Props> = ({
       {!labelLast && (
         <AppText style={[styles.labelTextLeft, labelStyle]}>{label}</AppText>
       )}
-      <Pressable onPress={() => handleChange(!isChecked)}>
+      <Pressable hitSlop={20} onPress={() => handleChange(!isChecked)}>
         <ExpoCheckbox
           value={isChecked}
           pointerEvents='none'

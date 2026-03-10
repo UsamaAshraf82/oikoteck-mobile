@@ -120,7 +120,9 @@ const SocialSignin = () => {
         LoginManager.setLoginBehavior('browser');
       }
 
-      await parseLog('fb_login:start', { loginBehavior: Platform.OS === 'ios' ? 'browser' : 'default' });
+      await parseLog('fb_login:start', {
+        loginBehavior: Platform.OS === 'ios' ? 'browser' : 'default',
+      });
 
       const result = await LoginManager.logInWithPermissions([
         'public_profile',
@@ -162,7 +164,7 @@ const SocialSignin = () => {
         throw new Error('Facebook token missing');
       }
 
-      const userId = accessToken?.userID || profile?.userID;
+      const userId = accessToken?.userID;
 
       if (!userId) {
         throw new Error('Facebook user ID could not be determined');
@@ -174,16 +176,16 @@ const SocialSignin = () => {
         authData.access_token = accessToken.accessToken.toString();
       }
 
-      if (authenticationToken) {
-        authData.id_token = authenticationToken.authenticationToken;
-        authData.nonce = authenticationToken.nonce;
-      }
+      // if (authenticationToken) {
+      //   authData.id_token = authenticationToken.authenticationToken;
+      //   authData.nonce = authenticationToken.nonce;
+      // }
 
       await parseLog('fb_login:authData', {
         id: authData.id,
         hasAccessToken: !!authData.access_token,
-        hasIdToken: !!authData.id_token,
-        hasNonce: !!authData.nonce,
+        // hasIdToken: !!authData.id_token,
+        // hasNonce: !!authData.nonce,
       });
 
       const user = await Parse.User.logInWith('facebook', { authData });

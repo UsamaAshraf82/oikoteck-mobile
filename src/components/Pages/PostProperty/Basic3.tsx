@@ -22,6 +22,8 @@ type Props = {
     label?: string;
   };
 
+  onCancel: (data: Basic3Values) => void;
+
   onBack: (data: Basic3Values) => void;
   label?: string;
 };
@@ -31,6 +33,7 @@ export default function Basic3({
   extra_data,
   onSubmit,
   onBack,
+  onCancel,
   label = 'Post a listing',
 }: Props) {
   const { addToast } = useToast();
@@ -77,7 +80,7 @@ export default function Basic3({
           <ArrowLeftIcon color='#192234' size={24} />
         </Pressable>
         <AppText style={styles.headerTitle}>{label}</AppText>
-        <Pressable hitSlop={20} onPress={() => router.back()}>
+        <Pressable hitSlop={20} onPress={() => onCancel(getValues())}>
           <XIcon color='#192234' size={24} />
         </Pressable>
       </View>
@@ -147,9 +150,23 @@ export default function Basic3({
             <DatePicker
               label={listingFor === 'Rental' ? 'Move in Date' : 'Sale Date'}
               value={watch('move_in_date')}
-              onChange={(date: Date) =>
-                setValue('move_in_date', date.toISOString())
-              }
+              onChange={(date: Date) => {
+                date.setHours(23, 59, 59);
+                const currentDate = new Date();
+                currentDate.setHours(0, 0, 0);
+                if (date > currentDate) {
+                  setValue('move_in_date', date.toISOString());
+                } else {
+                  addToast({
+                    type: 'error',
+                    heading:
+                      listingFor === 'Rental'
+                        ? 'Invalid Move in Date'
+                        : 'Invalid Sale Date',
+                    message: `${listingFor === 'Rental' ? 'Move in Date' : 'Sale Date'} cannot be smaller than current Date`,
+                  });
+                }
+              }}
               withForm
             />
 
@@ -225,9 +242,9 @@ const styles = StyleSheet.create({
     color: '#192234',
   },
   titleSub: {
-    fontFamily: 'LufgaRegular',
+    fontFamily: 'LufgaSemiBold',
     fontSize: 16,
-    color: '#192234',
+    color: '#b5b5b5',
   },
   subtitle: {
     fontFamily: 'LufgaRegular',

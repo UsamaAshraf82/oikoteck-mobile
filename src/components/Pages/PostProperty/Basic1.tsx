@@ -18,6 +18,7 @@ type Props = {
   data: Partial<Basic1Values>;
   onSubmit: (data: Basic1Values) => void;
   onBack: (data: Basic1Values) => void;
+  onCancel: (data: Basic1Values) => void;
   label?: string;
 };
 
@@ -25,6 +26,7 @@ export default function Basic1({
   data,
   onSubmit,
   onBack,
+  onCancel,
   label = 'Post a listing',
 }: Props) {
   const { addToast } = useToast();
@@ -71,7 +73,12 @@ export default function Basic1({
           <ArrowLeftIcon color='#192234' size={24} />
         </Pressable>
         <AppText style={styles.headerTitle}>{label}</AppText>
-        <Pressable hitSlop={20} onPress={() => router.back()}>
+        <Pressable
+          hitSlop={20}
+          onPress={() => {
+            onCancel(getValues());
+          }}
+        >
           <XIcon color='#192234' size={24} />
         </Pressable>
       </View>
@@ -354,9 +361,9 @@ export const Basic1Schema = z.object({
     .max(50, { message: 'Title cannot exceed 50 characters.' }),
   description: z
     .string({ message: 'Description must be between 300 and 2000 characters.' })
-    .min(300, {
-      message: 'Description must be between 300 and 2000 characters.',
-    })
+    // .min(300, {
+    //   message: 'Description must be between 300 and 2000 characters.',
+    // })
     .max(2000, {
       message: 'Description must be between 300 and 2000 characters.',
     }),

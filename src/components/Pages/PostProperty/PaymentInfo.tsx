@@ -16,11 +16,18 @@ import { useToast } from '~/store/useToast';
 type Props = {
   data: Partial<PaymentInfoTypes>;
   onSubmit: (data: PaymentInfoTypes) => void;
-  onBack: (data: PaymentInfoTypes) => void;  label?: string;
+  onCancel: (data: PaymentInfoTypes) => void;
+  onBack: (data: PaymentInfoTypes) => void;
+  label?: string;
 };
 
-export default function PaymentInfo({ data, onSubmit, onBack ,
-  label = 'Post a listing',}: Props) {
+export default function PaymentInfo({
+  data,
+  onSubmit,
+  onBack,
+  onCancel,
+  label = 'Post a listing',
+}: Props) {
   const { addToast } = useToast();
   const router = useRouter();
 
@@ -62,7 +69,7 @@ export default function PaymentInfo({ data, onSubmit, onBack ,
           <ArrowLeftIcon color='#192234' size={24} />
         </Pressable>
         <AppText style={styles.headerTitle}>{label}</AppText>
-        <Pressable hitSlop={20} onPress={() => router.back()}>
+        <Pressable hitSlop={20} onPress={() => onCancel(getValues())}>
           <XIcon color='#192234' size={24} />
         </Pressable>
       </View>

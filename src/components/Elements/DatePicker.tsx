@@ -50,7 +50,8 @@ const DatePicker: React.FC<Props> = ({
   const handleChange = (_event: any, selectedDate?: Date) => {
     setVisible(false);
     if (selectedDate) {
-      setDate(selectedDate);
+      // if(value === null)
+      // setDate(selectedDate);
       onChange?.(selectedDate);
     }
   };
@@ -127,7 +128,7 @@ const styles = StyleSheet.create({
   },
   label: {
     marginBottom: 8,
-    // fontFamily: 'LufgaMedium',
+    fontFamily: 'LufgaMedium',
     fontSize: 14,
     color: '#192234',
   },
@@ -157,7 +158,8 @@ const styles = StyleSheet.create({
     color: '#192234',
   },
   placeholderText: {
-    color: '#9CA3AF',
+fontSize: 14,
+    color: '#6B7280',
   },
   flex1: {
     flex: 1,

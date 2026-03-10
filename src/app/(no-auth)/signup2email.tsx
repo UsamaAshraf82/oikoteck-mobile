@@ -444,8 +444,9 @@ const styles = StyleSheet.create({
     top: 8,
   },
   phoneLabel: {
+    fontFamily: 'LufgaMedium',
     fontSize: 14,
-    color: '#9191A1',
+    color: '#192234',
     marginBottom: -8,
   },
   phoneRow: {

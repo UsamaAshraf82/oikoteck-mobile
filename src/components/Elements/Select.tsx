@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
   },
   label: {
     marginBottom: 8,
-    // fontFamily: 'LufgaMedium',
+    fontFamily: 'LufgaMedium',
     fontSize: 14,
     color: '#192234',
   },

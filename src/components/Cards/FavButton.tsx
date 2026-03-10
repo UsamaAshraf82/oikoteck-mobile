@@ -13,6 +13,7 @@ type Props = {
   property: Property_Type;
   size?: number;
   color?: string;
+  onNonUserClick?:()=>void
 };
 
 const FavButton = ({ size = 26, color = '#fff', ...props }: Props) => {
@@ -45,6 +46,7 @@ const FavButton = ({ size = 26, color = '#fff', ...props }: Props) => {
     <TouchableWithoutFeedback
       onPress={async () => {
         if (!user?.id) {
+          props.onNonUserClick?.()
           router.push('/login');
           return;
         }

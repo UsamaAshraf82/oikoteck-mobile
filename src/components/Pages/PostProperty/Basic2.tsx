@@ -33,6 +33,7 @@ type Props = {
   };
 
   onBack: (data: Basic2Values) => void;
+  onCancel: (data: Basic2Values) => void;
   label?: string;
 };
 
@@ -40,7 +41,7 @@ export default function Basic2({
   data,
   extra_data,
   onSubmit,
-  onBack,
+  onBack,  onCancel,
   label = 'Post a listing',
 }: Props) {
   const { addToast } = useToast();
@@ -97,7 +98,7 @@ export default function Basic2({
           <ArrowLeftIcon color='#192234' size={24} />
         </Pressable>
         <AppText style={styles.headerTitle}>{label}</AppText>
-        <Pressable hitSlop={20} onPress={() => router.back()}>
+        <Pressable hitSlop={20} onPress={() => onCancel(getValues())}>
           <XIcon color='#192234' size={24} />
         </Pressable>
       </View>
@@ -209,6 +210,9 @@ export default function Basic2({
               control={control}
               name='size'
               keyboardType='number-pad'
+              placeholder={
+                propertyType === 'Residential' ? 'Enter Home Size' : 'Enter Size'
+              }
               label={
                 propertyType === 'Residential' ? 'Home Size, m²' : 'Size, m²'
               }
@@ -218,6 +222,7 @@ export default function Basic2({
               <ControlledTextInput
                 control={control}
                 name='plot_size'
+                placeholder={'Enter Plot Size'}
                 keyboardType='number-pad'
                 label='Plot Size, m²'
               />

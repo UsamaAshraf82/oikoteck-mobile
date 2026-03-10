@@ -42,7 +42,7 @@ type Props = {
   extra_data: {
     listing_for: Basic1Values['listing_for'];
   };
-
+  onCancel: (data: PropertyGalleryTypes) => void;
   onBack: (data: PropertyGalleryTypes) => void;
   label?: string;
 };
@@ -51,7 +51,7 @@ export default function PropertyGallery({
   data,
   extra_data,
   onSubmit,
-  onBack,
+  onBack,onCancel,
   label = 'Post a listing',
 }: Props) {
   const { addToast } = useToast();
@@ -69,6 +69,7 @@ export default function PropertyGallery({
 
   const onSubmitInternal = async (formData: PropertyGalleryTypes) => {
     onSubmit(formData);
+
   };
 
   const onError: SubmitErrorHandler<PropertyGalleryTypes> = (errors) => {
@@ -187,8 +188,8 @@ export default function PropertyGallery({
         >
           <ArrowLeftIcon color='#192234' size={24} />
         </Pressable>
-        <AppText style={styles.headerTitle}>Post a listing</AppText>
-        <Pressable hitSlop={20} onPress={() => router.back()}>
+        <AppText style={styles.headerTitle}>{label}</AppText>
+        <Pressable hitSlop={20} onPress={() => onCancel(getValues())}>
           <XIcon color='#192234' size={24} />
         </Pressable>
       </View>

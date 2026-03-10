@@ -485,6 +485,7 @@ const styles = StyleSheet.create({
     top: 8,
   },
   phoneLabel: {
+    fontFamily: 'LufgaMedium',
     fontSize: 14,
     color: '#192234',
     marginBottom: -8,
