@@ -28,6 +28,12 @@ const appConfig: ExpoConfig = {
   icon: config.icon,
   scheme: config.scheme,
   userInterfaceStyle: 'light',
+  updates: {
+    url: 'https://u.expo.dev/1c02d2e9-7768-43d5-8269-5fd1753bd6eb',
+  },
+  runtimeVersion: {
+    policy: 'appVersion',
+  },
   ios: {
     usesAppleSignIn: true,
     supportsTablet: true,
@@ -35,9 +41,9 @@ const appConfig: ExpoConfig = {
     appleTeamId: 'NCF3Q9455Q',
     associatedDomains: ['www.oikoteck.com'],
 
-    // entitlements: {
-    //   'com.apple.developer.in-app-payments': ['merchant.com.oikoteck'],
-    // },
+    entitlements: {
+      'com.apple.developer.applesignin': ['Default'],
+    },
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
       NSCameraUsageDescription:
@@ -139,7 +145,7 @@ const appConfig: ExpoConfig = {
           'com.googleusercontent.apps.249425615765-c3hb68cqlo6fcjd82bft3uqeq8t857bh',
       },
     ],
-    ['expo-apple-authentication'],
+    // ['expo-apple-authentication'],
     [
       '@sentry/react-native/expo',
       {

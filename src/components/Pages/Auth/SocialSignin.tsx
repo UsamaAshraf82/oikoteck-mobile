@@ -2,7 +2,10 @@ import apple from '@/assets/svg/apple.svg';
 import facebook from '@/assets/svg/facebook.svg';
 import google from '@/assets/svg/google.svg';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import * as AppleAuthentication from 'expo-apple-authentication';
+import {
+  appleAuth,
+  AppleRequestResponse,
+} from '@invertase/react-native-apple-authentication';
 import { Image as ExpoImage } from 'expo-image';
 import { useRouter } from 'expo-router';
 import Parse from 'parse/react-native';
@@ -116,9 +119,9 @@ const SocialSignin = () => {
       // Use 'browser' on iOS to force the standard OAuth flow and avoid
       // Facebook Limited Login (which does not provide an AccessToken and
       // is incompatible with the standard Parse Facebook auth adapter).
-      if (Platform.OS === 'ios') {
-        LoginManager.setLoginBehavior('browser');
-      }
+      // if (Platform.OS === 'ios') {
+      //   LoginManager.setLoginBehavior('browser');
+      // }
 
       await parseLog('fb_login:start', {
         loginBehavior: Platform.OS === 'ios' ? 'browser' : 'default',
@@ -170,22 +173,33 @@ const SocialSignin = () => {
         throw new Error('Facebook user ID could not be determined');
       }
 
-      const authData: any = { id: userId };
+      const authData: any = {
+        id: userId,
+        app_id: '511062105081745',
+      };
 
       if (accessToken) {
         authData.access_token = accessToken.accessToken.toString();
       }
 
-      // if (authenticationToken) {
-      //   authData.id_token = authenticationToken.authenticationToken;
-      //   authData.nonce = authenticationToken.nonce;
-      // }
+      if (authenticationToken) {
+        authData.id_token = authenticationToken.authenticationToken;
+        authData.nonce = authenticationToken.nonce;
+      }
+
+      if (accessToken) {
+        authData.expiration_date = new Date(
+          accessToken.expirationTime
+        ).toISOString();
+      }
 
       await parseLog('fb_login:authData', {
         id: authData.id,
+        app_id: authData.app_id,
         hasAccessToken: !!authData.access_token,
-        // hasIdToken: !!authData.id_token,
-        // hasNonce: !!authData.nonce,
+        hasIdToken: !!authData.id_token,
+        hasNonce: !!authData.nonce,
+        hasExpirationDate: !!authData.expiration_date,
       });
 
       const user = await Parse.User.logInWith('facebook', { authData });
@@ -265,46 +279,54 @@ const SocialSignin = () => {
     try {
       await parseLog('apple_login:start', { platform: Platform.OS });
 
-      const credential = await AppleAuthentication.signInAsync({
-        requestedScopes: [
-          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-          AppleAuthentication.AppleAuthenticationScope.EMAIL,
-        ],
+      // @invertase style request
+      const appleAuthRequestResponse = await appleAuth.performRequest({
+        requestedOperation: appleAuth.Operation.LOGIN,
+        requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
       });
+
+      // Get credential state
+      const credentialState = await appleAuth.getCredentialStateForUser(
+        appleAuthRequestResponse.user
+      );
 
       await parseLog('apple_login:credential', {
-        hasIdentityToken: !!credential.identityToken,
-        hasEmail: !!credential.email,
-        hasGivenName: !!credential.fullName?.givenName,
-        hasFamilyName: !!credential.fullName?.familyName,
-        userId: credential.user ?? null,
-        // authorizationCode is short-lived, just log presence
-        hasAuthCode: !!credential.authorizationCode,
+        hasIdentityToken: !!appleAuthRequestResponse.identityToken,
+        hasEmail: !!appleAuthRequestResponse.email,
+        hasGivenName: !!appleAuthRequestResponse.fullName?.givenName,
+        hasFamilyName: !!appleAuthRequestResponse.fullName?.familyName,
+        userId: appleAuthRequestResponse.user ?? null,
+        credentialState,
       });
 
-      if (!credential.identityToken) {
+      if (!appleAuthRequestResponse.identityToken) {
         throw new Error('Missing Apple identity token');
+      }
+
+      if (credentialState !== appleAuth.State.AUTHORIZED) {
+        throw new Error('Apple login was not authorized');
       }
 
       const user = await Parse.User.logInWith('apple', {
         authData: {
-          id: credential.user,
-          id_token: credential.identityToken,
+          id: appleAuthRequestResponse.user,
+          id_token: appleAuthRequestResponse.identityToken,
+          client_id: 'com.oikoteck.app',
         },
       });
 
       const email =
-        credential.email?.toLowerCase() ||
+        appleAuthRequestResponse.email?.toLowerCase() ||
         (user.get('email') as string)?.toLowerCase() ||
         '';
 
       const firstName =
-        credential.fullName?.givenName ||
+        appleAuthRequestResponse.fullName?.givenName ||
         (user.get('first_name') as string) ||
         '';
 
       const lastName =
-        credential.fullName?.familyName ||
+        appleAuthRequestResponse.fullName?.familyName ||
         (user.get('last_name') as string) ||
         '';
 
@@ -314,11 +336,8 @@ const SocialSignin = () => {
         resolvedEmail: email,
         resolvedFirstName: firstName,
         resolvedLastName: lastName,
-        hasPhone: !!user.get('phone'),
       });
 
-      // Stop the activity indicator BEFORE navigating to avoid
-      // iOS crash from modal + navigation transition conflict
       stopActivity();
       isSigningInRef.current = false;
 
@@ -331,14 +350,12 @@ const SocialSignin = () => {
         setUser(user as Parse.User<User_Type>);
       }
     } catch (e: any) {
-      if (e.code === 'ERR_CANCELED') {
+      if (e.code === appleAuth.Error.CANCELED) {
         await parseLog('apple_login:cancelled', {});
-        // User cancelled — silent, no Sentry
       } else {
         await parseLog('apple_login:error', {
           message: e?.message ?? String(e),
           code: e?.code ?? null,
-          stack: e?.stack?.slice(0, 500) ?? null,
         });
         console.error('Apple login error:', e);
         Sentry.captureException(e);

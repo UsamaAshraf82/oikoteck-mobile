@@ -26,7 +26,7 @@ const uploadFile = async (file: { file: string; name: string }) => {
   const blob = base64ToUint8Array(file.file); //'image/webp');
 
   const params: PutObjectCommandInput = {
-    Bucket: 'oikoteck1',
+    Bucket: 'oikoteck',
     Key: 'image/' + uid() + '_' + Date.now() + '_', //+ slug(file.name),
     Body: blob,
     ContentType: 'image/webp',
