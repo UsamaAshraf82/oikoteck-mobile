@@ -57,6 +57,7 @@ const PropertyCard = memo(
                   pagingEnabled={true}
                   snapEnabled={true}
                   width={wide * shrink}
+                  windowSize={2}
                   style={styles.fullWidth}
                   onProgressChange={(_: any, absoluteProgress: number) => {
                     progress.value = absoluteProgress;
@@ -73,7 +74,7 @@ const PropertyCard = memo(
                           placeholderContentFit='cover'
                           style={{ width: wide * shrink, height: '100%' }}
                           src={item}
-                          size='800x800'
+                          size='600x600'
                         />
                         {property.agent_icon && owner.logo && (
                           <View style={styles.agentLogoWrapper}>
@@ -81,8 +82,7 @@ const PropertyCard = memo(
                               contentFit='cover'
                               placeholderContentFit='cover'
                               src={owner.logo}
-                              size='300x300'
-                              debug
+                              size='200x200'
                               style={{ width: 70, height: 70, opacity: 0.7 }}
                             />
                           </View>

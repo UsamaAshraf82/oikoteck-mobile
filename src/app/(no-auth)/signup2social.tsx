@@ -287,10 +287,11 @@ export default function Signup2Social() {
 
             <ControlledTextInput
               control={control}
-              name='lastName'
-              label='Last Name'
-              autoComplete='name-family'
-              placeholder='Enter your last name'
+              name='email'
+              label='Email Address'
+              autoComplete='email'
+              keyboardType='email-address'
+              placeholder='Enter your email address'
             />
             <ControlledTextInput
               control={control}

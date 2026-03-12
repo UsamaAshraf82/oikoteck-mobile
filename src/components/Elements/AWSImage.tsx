@@ -17,9 +17,15 @@ export default function AWSImage({
   debug,
   ...props
 }: Props) {
-
-
   const { src: transformed, lazy } = cloudfront(src, size);
 
-  return <Image {...props} source={transformed} placeholder={lazy} />;
+  return (
+    <Image
+      {...props}
+      source={transformed}
+      placeholder={lazy}
+      cachePolicy='memory-disk'
+      transition={200}
+    />
+  );
 }

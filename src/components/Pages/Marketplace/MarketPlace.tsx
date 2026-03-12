@@ -1,4 +1,3 @@
-import { FlashList, FlashListRef } from '@shopify/flash-list';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { LinearGradient } from 'expo-linear-gradient';
 import { DateTime } from 'luxon';
@@ -14,6 +13,7 @@ import * as React from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
+  FlatList,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -42,7 +42,7 @@ type Props = {
   onMapPress: () => void;
 };
 
-const limit = 40;
+const limit = 10;
 const topbarHeight = 150;
 
 const district_images = [
@@ -70,7 +70,7 @@ const MarketPlace = ({ listing_type, onMapPress }: Props) => {
   const { openSelect } = useSelect();
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [showTopCities, setShowTopCities] = useState(true);
-  const listRef = useRef<FlashListRef<any>>(null);
+  const listRef = useRef<FlatList>(null);
 
   const [districtModal, setDistrictModal] = useState(false);
   const [filtersModal, setFiltersModal] = useState(false);
@@ -537,7 +537,7 @@ const MarketPlace = ({ listing_type, onMapPress }: Props) => {
       </LinearGradient>
 
       <View style={styles.listContainer}>
-        <FlashList
+        <FlatList
           ref={listRef}
           data={properties}
           decelerationRate='normal'
@@ -546,9 +546,10 @@ const MarketPlace = ({ listing_type, onMapPress }: Props) => {
             setShowTopCities(showTopCities ? y < 200 : y < 20);
             setShowScrollTop(y > 2500);
           }}
+          scrollEventThrottle={16}
+
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
-          // estimatedItemSize={(deviceWidth - 32) / 1.2 + 14}
           keyExtractor={(item: any) => item.objectId}
           renderItem={({ item }: { item: any }) => {
             if (isProperty(item)) {

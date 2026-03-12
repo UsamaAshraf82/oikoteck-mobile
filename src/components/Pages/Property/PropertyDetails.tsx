@@ -188,6 +188,7 @@ export default function PropertyDetails({
                 width={deviceWidth}
                 height={deviceHeight}
                 defaultIndex={startIndex}
+                windowSize={2}
                 onProgressChange={(_: any, absoluteProgress: number) => {
                   progress2.value = absoluteProgress;
                 }}
@@ -362,6 +363,7 @@ export default function PropertyDetails({
               pagingEnabled={true}
               snapEnabled={true}
               width={deviceWidth}
+              windowSize={2}
               style={styles.fullSize}
               onProgressChange={(_: any, absoluteProgress: number) => {
                 progress.value = absoluteProgress;
@@ -687,6 +689,7 @@ function ZoomableImage({ src }: { src: string }) {
         contentFit='contain'
         placeholderContentFit='contain'
         src={src}
+        size='1200x1200'
         style={[styles.fullSize, animatedStyle]}
       />
     </GestureDetector>

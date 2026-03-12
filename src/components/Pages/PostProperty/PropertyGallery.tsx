@@ -231,31 +231,37 @@ export default function PropertyGallery({
 
                   if (!result.canceled) {
                     const currentFilesCount = getValues('files').length;
-                    const newAssets = result.assets.map((img) => ({
-                      isUploading: true,
-                      temp: img.uri,
-                    }));
 
-                    append(newAssets);
-
-                    result.assets.forEach(async (asset, i) => {
+                    // Process each asset to get a safe thumbnail immediately
+                    for (let i = 0; i < result.assets.length; i++) {
+                      const asset = result.assets[i];
                       try {
-                        const image = await resizeImage(asset, 3000);
+                        // Create a small version for the UI immediately
+                        const thumbnail = await resizeImage(asset, 800);
+                        
+                        const newAsset = {
+                          isUploading: true,
+                          temp: thumbnail.uri,
+                        };
+                        append(newAsset);
+
+                        // Then start the full size upload
                         const indexToUpdate = currentFilesCount + i;
+                        const fullSizeImage = await resizeImage(asset, 2400); // 3000 -> 2400 to be safer
 
                         const uploadPromise = uploadFile({
-                          file: image.base64!,
+                          file: fullSizeImage.base64!,
                           name: 'image',
                         });
 
                         setValue(`files.${indexToUpdate}.file`, uploadPromise, {
                           shouldValidate: true,
                         });
-                        setValue(`files.${indexToUpdate}.temp`, image.uri);
+                        setValue(`files.${indexToUpdate}.temp`, fullSizeImage.uri);
                       } catch (err) {
                         console.error('Error processing image:', err);
                       }
-                    });
+                    }
                   }
                 } catch (e) {
                   // console.error(e);

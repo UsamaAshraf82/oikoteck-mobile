@@ -367,7 +367,7 @@ const PropertyCard = ({
           onPress={() => router.push(`/property/${property.objectId}`)}
         >
           <View style={styles.imageWrapper}>
-            <AWSImage src={property.images[0]} style={styles.image} />
+            <AWSImage src={property.images[0]} style={styles.image} size='300x300' />
             {['dashboard', 'change_plan'].includes(type) && (
               <View style={[styles.statusBadge, statusStyle]}>
                 <AppText style={styles.badgeTextSmall}>

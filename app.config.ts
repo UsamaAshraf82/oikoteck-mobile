@@ -31,9 +31,7 @@ const appConfig: ExpoConfig = {
   updates: {
     url: 'https://u.expo.dev/1c02d2e9-7768-43d5-8269-5fd1753bd6eb',
   },
-  runtimeVersion: {
-    policy: 'appVersion',
-  },
+  runtimeVersion: "1.0.0",
   ios: {
     usesAppleSignIn: true,
     supportsTablet: true,
@@ -117,7 +115,7 @@ const appConfig: ExpoConfig = {
       'expo-splash-screen',
       {
         image: './assets/adaptive-text-icon.png',
-        imageWidth: 300,
+        imageWidth: 150,
         // resizeMode: 'contain',
         backgroundColor: '#ffffff',
       },
