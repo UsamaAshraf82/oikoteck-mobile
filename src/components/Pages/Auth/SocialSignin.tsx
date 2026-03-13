@@ -1,11 +1,8 @@
 import apple from '@/assets/svg/apple.svg';
 import facebook from '@/assets/svg/facebook.svg';
 import google from '@/assets/svg/google.svg';
+import { appleAuth } from '@invertase/react-native-apple-authentication';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import {
-  appleAuth,
-  AppleRequestResponse,
-} from '@invertase/react-native-apple-authentication';
 import { Image as ExpoImage } from 'expo-image';
 import { useRouter } from 'expo-router';
 import Parse from 'parse/react-native';
@@ -116,12 +113,10 @@ const SocialSignin = () => {
     startActivity();
 
     try {
-      // Use 'browser' on iOS to force the standard OAuth flow and avoid
-      // Facebook Limited Login (which does not provide an AccessToken and
-      // is incompatible with the standard Parse Facebook auth adapter).
-      // if (Platform.OS === 'ios') {
-      //   LoginManager.setLoginBehavior('browser');
-      // }
+      // Force browser login on iOS to avoid Limited Login
+      if (Platform.OS === 'ios') {
+        LoginManager.setLoginBehavior('browser');
+      }
 
       await parseLog('fb_login:start', {
         loginBehavior: Platform.OS === 'ios' ? 'browser' : 'default',
@@ -138,15 +133,13 @@ const SocialSignin = () => {
         declinedPermissions: result.declinedPermissions,
       });
 
-      if (result.isCancelled) {
-        return;
-      }
+      if (result.isCancelled) return;
 
+      // Fetch tokens and profile
       const accessToken = await AccessToken.getCurrentAccessToken();
       const profile = await Profile.getCurrentProfile();
 
-      // On iOS with standard OAuth, AuthenticationToken (Limited Login OIDC
-      // token) will be null — that is expected and fine.
+      // iOS may provide AuthenticationToken (OIDC) if using browser login
       let authenticationToken: AuthenticationToken | null = null;
       if (Platform.OS === 'ios') {
         authenticationToken =
@@ -168,40 +161,32 @@ const SocialSignin = () => {
       }
 
       const userId = accessToken?.userID;
-
       if (!userId) {
         throw new Error('Facebook user ID could not be determined');
       }
 
-      const authData: any = {
+      // Prepare authData for Parse
+      const authData = {
         id: userId,
-        app_id: '511062105081745',
+        app_id: '511062105081745', // Facebook App ID
+        accessToken: accessToken.accessToken.toString(),
       };
 
-      if (accessToken) {
-        authData.access_token = accessToken.accessToken.toString();
-      }
+      // if (accessToken) {
+      //   authData.access_token = accessToken.accessToken.toString();
+      //   authData.expiration_date = new Date(
+      //     accessToken.expirationTime
+      //   ).toISOString();
+      // }
 
-      if (authenticationToken) {
-        authData.id_token = authenticationToken.authenticationToken;
-        authData.nonce = authenticationToken.nonce;
-      }
+      // if (authenticationToken) {
+      //   authData.id_token = authenticationToken.authenticationToken;
+      //   authData.nonce = authenticationToken.nonce;
+      // }
 
-      if (accessToken) {
-        authData.expiration_date = new Date(
-          accessToken.expirationTime
-        ).toISOString();
-      }
+      await parseLog('fb_login:authData', authData);
 
-      await parseLog('fb_login:authData', {
-        id: authData.id,
-        app_id: authData.app_id,
-        hasAccessToken: !!authData.access_token,
-        hasIdToken: !!authData.id_token,
-        hasNonce: !!authData.nonce,
-        hasExpirationDate: !!authData.expiration_date,
-      });
-
+      // Log in with Parse / Back4App
       const user = await Parse.User.logInWith('facebook', { authData });
 
       await parseLog('fb_login:parse_success', {
@@ -310,8 +295,7 @@ const SocialSignin = () => {
       const user = await Parse.User.logInWith('apple', {
         authData: {
           id: appleAuthRequestResponse.user,
-          id_token: appleAuthRequestResponse.identityToken,
-          client_id: 'com.oikoteck.app',
+          token: appleAuthRequestResponse.identityToken,
         },
       });
 

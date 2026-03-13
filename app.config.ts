@@ -31,7 +31,6 @@ const appConfig: ExpoConfig = {
   updates: {
     url: 'https://u.expo.dev/1c02d2e9-7768-43d5-8269-5fd1753bd6eb',
   },
-  runtimeVersion: "1.0.0",
   ios: {
     usesAppleSignIn: true,
     supportsTablet: true,
@@ -43,6 +42,13 @@ const appConfig: ExpoConfig = {
       'com.apple.developer.applesignin': ['Default'],
     },
     infoPlist: {
+      CFBundleURLTypes: [
+        {
+          CFBundleURLSchemes: ['fb511062105081745'],
+        },
+      ],
+      FacebookAppID: '511062105081745',
+      FacebookDisplayName: 'Oikoteck',
       ITSAppUsesNonExemptEncryption: false,
       NSCameraUsageDescription:
         'This app uses the camera to allow users to take and upload property photos.',
@@ -59,6 +65,7 @@ const appConfig: ExpoConfig = {
         'fbshareextension',
       ],
     },
+
     config: {
       googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
     },
