@@ -1,5 +1,6 @@
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { PortalHost } from '@rn-primitives/portal';
+import * as Sentry from '@sentry/react-native';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import { useFonts } from 'expo-font';
 import { Slot, Stack } from 'expo-router';
@@ -23,8 +24,6 @@ import { ToastContainer } from '~/components/ToastContainer';
 import useActivityIndicator from '~/store/useActivityIndicator';
 import useUser from '~/store/useUser';
 import { ParseInit } from '~/utils/Parse';
-
-import * as Sentry from '@sentry/react-native';
 
 Sentry.init({
   dsn: 'https://f38cbcdf56bafebea8623bea0bf541c9@o4510437482233856.ingest.us.sentry.io/4510945850687488',
@@ -51,6 +50,7 @@ Settings.initializeSDK();
 
 function RootLayout() {
   const [ready, setReady] = useState(false);
+  // useAppUpdates();
 
   const [fontsLoaded, fontError] = useFonts({
     LufgaThin: require('@/lufga/LufgaThin.ttf'),

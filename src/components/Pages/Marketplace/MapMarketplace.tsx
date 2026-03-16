@@ -9,7 +9,7 @@ import {
   XIcon,
 } from 'phosphor-react-native';
 import * as React from 'react';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   FlatList,
   Pressable,
@@ -32,6 +32,10 @@ import { SearchView } from './SearchView';
 type Props = {
   listing_type: 'Rental' | 'Sale';
   onListPress: () => void;
+  search: filterType;
+  changeSearch: (filter: Partial<filterType>) => void;
+  sort: { sort: string; sort_order: string } | null;
+  setSort: (data: sortType | null) => void;
 };
 
 type sortType = {
@@ -63,7 +67,14 @@ const MapMarker = React.memo(
   }
 );
 
-const MarketPlace = ({ listing_type, onListPress }: Props) => {
+const MarketPlace = ({
+  listing_type,
+  onListPress,
+  search,
+  changeSearch,
+  sort,
+  setSort,
+}: Props) => {
   const { openSelect } = useSelect();
   const mapRef = useRef<MapView>(null);
   const propertyListRef = useRef<FlatList>(null);
@@ -71,34 +82,8 @@ const MarketPlace = ({ listing_type, onListPress }: Props) => {
   const cardWidth = deviceWidth * 0.86;
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [isScrollEnabled, setIsScrollEnabled] = useState(false);
   const [districtModal, setDistrictModal] = useState(false);
   const [filtersModal, setFiltersModal] = useState(false);
-  const [sort, setSort] = useState<{ sort: string; sort_order: string } | null>(
-    null
-  );
-
-  const [search, setSearch] = useState<filterType>({
-    area_1: null,
-    area_2: null,
-    district: null,
-    minPrice: null,
-    maxPrice: null,
-    minSize: null,
-    maxSize: null,
-    minDate: null,
-    maxDate: null,
-    bedroom: null,
-    furnished: null,
-    bathroom: null,
-    keywords: null,
-    property_type: null,
-    property_category: null,
-    ne_lat: null,
-    ne_lng: null,
-    sw_lat: null,
-    sw_lng: null,
-  });
 
   const { data } = useQuery({
     queryKey: ['map-properties', listing_type, { ...search, ...sort }],
@@ -146,9 +131,21 @@ const MarketPlace = ({ listing_type, onListPress }: Props) => {
     },
   });
 
-  const changeSearch = (filter: Partial<filterType>) => {
-    setSearch((i) => ({ ...i, ...filter }));
-  };
+  useEffect(() => {
+    if (data.results.length > 0) {
+      if (selectedId) {
+        const index = data.results.findIndex((p) => p.objectId === selectedId);
+        if (index !== -1) {
+          propertyListRef.current?.scrollToIndex({
+            index,
+            animated: true,
+          });
+        }
+      } else {
+        propertyListRef.current?.scrollToOffset({ offset: 0, animated: true });
+      }
+    }
+  }, [data.results, selectedId]);
 
   const renderPropertyItem = useCallback(
     ({ item }: { item: Property_Type }) => (
@@ -162,12 +159,25 @@ const MarketPlace = ({ listing_type, onListPress }: Props) => {
   const handleMarkerPress = useCallback(
     (id: string) => {
       setSelectedId(id);
-      const index = data.results.findIndex((p) => p.objectId === id);
-      if (index !== -1) {
-        propertyListRef.current?.scrollToIndex({ index, animated: true });
-      }
+      changeSearch({
+        area_1: null,
+        area_2: null,
+        district: null,
+        minPrice: null,
+        maxPrice: null,
+        minSize: null,
+        maxSize: null,
+        minDate: null,
+        maxDate: null,
+        bedroom: null,
+        furnished: null,
+        bathroom: null,
+        keywords: null,
+        property_type: null,
+        property_category: null,
+      });
     },
-    [data.results]
+    [changeSearch]
   );
 
   const stringified_area = useMemo(
@@ -179,6 +189,25 @@ const MarketPlace = ({ listing_type, onListPress }: Props) => {
       }),
     [search.district, search.area_1, search.area_2]
   );
+
+  useEffect(() => {
+    if (stringified_area && mapRef.current) {
+      Parse.Cloud.run('geo-code', { address: stringified_area }).then((res) => {
+        if (res?.geometry?.viewport) {
+          const { northeast, southwest } = res.geometry.viewport;
+          mapRef.current?.animateToRegion(
+            {
+              latitude: (northeast.lat + southwest.lat) / 2,
+              longitude: (northeast.lng + southwest.lng) / 2,
+              latitudeDelta: Math.abs(northeast.lat - southwest.lat) * 1.1,
+              longitudeDelta: Math.abs(northeast.lng - southwest.lng) * 1.1,
+            },
+            1000
+          );
+        }
+      });
+    }
+  }, [stringified_area]);
 
   const sortTitle = useMemo(() => {
     if (!sort?.sort) return 'Sort';
@@ -502,10 +531,12 @@ const MarketPlace = ({ listing_type, onListPress }: Props) => {
               mapRef.current as any
             )?.getMapBoundaries();
             if (boundaries) {
+              const latDelta =
+                boundaries.northEast.latitude - boundaries.southWest.latitude;
               changeSearch({
                 ne_lat: boundaries.northEast.latitude,
                 ne_lng: boundaries.northEast.longitude,
-                sw_lat: boundaries.southWest.latitude,
+                sw_lat: boundaries.southWest.latitude + latDelta * 0.4,
                 sw_lng: boundaries.southWest.longitude,
               });
             }
@@ -515,10 +546,12 @@ const MarketPlace = ({ listing_type, onListPress }: Props) => {
               mapRef.current as any
             )?.getMapBoundaries();
             if (boundaries) {
+              const latDelta =
+                boundaries.northEast.latitude - boundaries.southWest.latitude;
               changeSearch({
                 ne_lat: boundaries.northEast.latitude,
                 ne_lng: boundaries.northEast.longitude,
-                sw_lat: boundaries.southWest.latitude,
+                sw_lat: boundaries.southWest.latitude + latDelta * 0.4,
                 sw_lng: boundaries.southWest.longitude,
               });
             }
@@ -532,7 +565,7 @@ const MarketPlace = ({ listing_type, onListPress }: Props) => {
           // onTouchEnd={() => {
           //   setIsScrollEnabled(false);
           // }}
-          moveOnMarkerPress={false}
+          // moveOnMarkerPress={false}
         >
           {data.results.map((i) => (
             <MapMarker
@@ -789,7 +822,7 @@ const styles = StyleSheet.create({
   },
   propertyListWrapper: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 0,
     left: 0,
     right: 0,
   },

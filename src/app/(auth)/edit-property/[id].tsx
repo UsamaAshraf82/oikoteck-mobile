@@ -248,6 +248,7 @@ export default function Index() {
     case 0:
       return (
         <Basic1
+          onCancel={() => router.back()}
           label='Edit Listing'
           onBack={() => router.back()}
           data={data.basic}
@@ -260,6 +261,7 @@ export default function Index() {
     case 1:
       return (
         <Basic2
+          onCancel={() => router.back()}
           label='Edit Listing'
           onBack={(val) => {
             setData((i) => ({ ...i, basic2: val }));
@@ -279,7 +281,8 @@ export default function Index() {
     case 2:
       return (
         <Basic3
-        label='Edit Listing'
+          onCancel={() => router.back()}
+          label='Edit Listing'
           onBack={(val) => {
             setData((i) => ({ ...i, basic3: val }));
             setTab(1);
@@ -297,7 +300,8 @@ export default function Index() {
     case 3:
       return (
         <PropertyGallery
-        label='Edit Listing'
+          onCancel={() => router.back()}
+          label='Edit Listing'
           onBack={(val) => {
             setData((i) => ({ ...i, gallery: val }));
             setTab(2);
@@ -315,7 +319,8 @@ export default function Index() {
     case 4:
       return (
         <LocationInfo
-        label='Edit Listing'
+          onCancel={() => router.back()}
+          label='Edit Listing'
           onBack={(val) => {
             setData((i) => ({ ...i, location: val }));
             setTab(3);

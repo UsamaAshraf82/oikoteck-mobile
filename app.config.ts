@@ -30,7 +30,10 @@ const appConfig: ExpoConfig = {
   userInterfaceStyle: 'light',
   updates: {
     url: 'https://u.expo.dev/1c02d2e9-7768-43d5-8269-5fd1753bd6eb',
+    fallbackToCacheTimeout: 0,
+    checkAutomatically: 'ON_LOAD',
   },
+  runtimeVersion: "1.0.0",
   ios: {
     usesAppleSignIn: true,
     supportsTablet: true,

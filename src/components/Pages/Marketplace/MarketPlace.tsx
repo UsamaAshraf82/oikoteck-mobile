@@ -40,6 +40,10 @@ import { HomeTopBar } from './TopBar';
 type Props = {
   listing_type: 'Rental' | 'Sale';
   onMapPress: () => void;
+  search: filterType;
+  changeSearch: (filter: Partial<filterType>) => void;
+  sort: { sort: string; sort_order: string } | null;
+  setSort: (data: sortType | null) => void;
 };
 
 const limit = 10;
@@ -66,7 +70,14 @@ type sortType = {
 type HeadingItem = { objectId: string; type: 'heading' };
 type ListItem = Property_Type | HeadingItem;
 
-const MarketPlace = ({ listing_type, onMapPress }: Props) => {
+const MarketPlace = ({
+  listing_type,
+  onMapPress,
+  search,
+  changeSearch,
+  sort,
+  setSort,
+}: Props) => {
   const { openSelect } = useSelect();
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [showTopCities, setShowTopCities] = useState(true);
@@ -74,27 +85,6 @@ const MarketPlace = ({ listing_type, onMapPress }: Props) => {
 
   const [districtModal, setDistrictModal] = useState(false);
   const [filtersModal, setFiltersModal] = useState(false);
-  const [sort, setSort] = useState<{ sort: string; sort_order: string } | null>(
-    null
-  );
-
-  const [search, setSearch] = useState<filterType>({
-    area_1: null,
-    area_2: null,
-    district: null,
-    minPrice: null,
-    maxPrice: null,
-    minSize: null,
-    maxSize: null,
-    minDate: null,
-    maxDate: null,
-    bedroom: null,
-    furnished: null,
-    bathroom: null,
-    keywords: null,
-    property_type: null,
-    property_category: null,
-  });
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
@@ -130,6 +120,7 @@ const MarketPlace = ({ listing_type, onMapPress }: Props) => {
       initialPageParam: 0,
     });
 
+
   const { data: similar } = useQuery({
     queryKey: [
       'similar-properties',
@@ -139,17 +130,15 @@ const MarketPlace = ({ listing_type, onMapPress }: Props) => {
         ...sort,
       },
     ],
-    enabled: data?.pages[data.pages.length - 1].hasmore === false,
+    enabled: !!data?.pages[data.pages.length - 1].hasmore === false,
     staleTime: 600000,
     queryFn: async () => {
       try {
         const pro = await Parse.Cloud.run('similar', {
           limit: limit * 5,
           search: {
-            search: {
-              ...search,
-              keywords: search.keywords ? search.keywords?.split(' ') : null,
-            },
+            ...search,
+            keywords: search.keywords ? search.keywords?.split(' ') : null,
           },
           sort_order: sort?.sort_order,
           sort: sort?.sort,
@@ -163,9 +152,7 @@ const MarketPlace = ({ listing_type, onMapPress }: Props) => {
     },
   });
 
-  const changeSearch = (filter: Partial<filterType>) => {
-    setSearch((i) => ({ ...i, ...filter }));
-  };
+
 
   const properties: ListItem[] = useMemo(() => {
     const main = data?.pages.flatMap((page) => page.results) ?? [];
@@ -191,8 +178,9 @@ const MarketPlace = ({ listing_type, onMapPress }: Props) => {
   );
 
   const hasFilters = useMemo(() => {
+    console.log(search)
     return Object.keys(search).some(
-      (i) => search[i as keyof filterType] !== null
+      (i) => search[i as keyof filterType] !== null && i !== 'ne_lat' && i !== 'ne_lng' && i !== 'sw_lat' && i !== 'sw_lng'
     );
   }, [search]);
 
@@ -445,10 +433,10 @@ const MarketPlace = ({ listing_type, onMapPress }: Props) => {
                         {i.filter}
                       </AppText>
                       {!i.iconFirst && i.icon}
-                      {isFilter && filters.length > 1 && (
+                      {isFilter && filters.length > 2 && (
                         <View style={styles.filterCount}>
                           <AppText style={styles.filterCountText}>
-                            {filters.length - 1}
+                            {filters.length - 2}
                           </AppText>
                         </View>
                       )}
@@ -547,7 +535,6 @@ const MarketPlace = ({ listing_type, onMapPress }: Props) => {
             setShowScrollTop(y > 2500);
           }}
           scrollEventThrottle={16}
-
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
           keyExtractor={(item: any) => item.objectId}

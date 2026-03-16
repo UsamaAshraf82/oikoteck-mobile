@@ -1,5 +1,4 @@
 import apple from '@/assets/svg/apple.svg';
-import facebook from '@/assets/svg/facebook.svg';
 import google from '@/assets/svg/google.svg';
 import { appleAuth } from '@invertase/react-native-apple-authentication';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
@@ -114,18 +113,19 @@ const SocialSignin = () => {
 
     try {
       // Force browser login on iOS to avoid Limited Login
-      if (Platform.OS === 'ios') {
-        LoginManager.setLoginBehavior('browser');
-      }
+      // LoginManager.logInWithPermissions(['public_profile', 'email']);
+      // if (Platform.OS === 'ios') {
+      //   LoginManager.setLoginBehavior('browser');
+      // }
 
       await parseLog('fb_login:start', {
         loginBehavior: Platform.OS === 'ios' ? 'browser' : 'default',
       });
 
-      const result = await LoginManager.logInWithPermissions([
-        'public_profile',
-        'email',
-      ]);
+      const result = await LoginManager.logInWithPermissions(
+        ['public_profile', 'email'],
+        'enabled'
+      );
 
       await parseLog('fb_login:result', {
         isCancelled: result.isCancelled,
@@ -326,6 +326,10 @@ const SocialSignin = () => {
       isSigningInRef.current = false;
 
       if (!user.get('phone') || !email || !firstName || !lastName) {
+        if (email) user.set('email', email);
+        if (firstName) user.set('first_name', firstName);
+        if (lastName) user.set('last_name', lastName);
+        await user.save();
         router.push({
           pathname: '/signup2social',
           params: { email, firstName, lastName },
@@ -358,12 +362,12 @@ const SocialSignin = () => {
         </View>
       </PressableView>
 
-      <PressableView onPress={handleFacebookLogin} style={styles.socialBtn}>
+      {/* <PressableView onPress={handleFacebookLogin} style={styles.socialBtn}>
         <View style={styles.btnContent}>
           <Image source={facebook} style={styles.icon} />
           <AppText style={styles.btnText}>Continue with Facebook</AppText>
         </View>
-      </PressableView>
+      </PressableView> */}
 
       {Platform.OS === 'ios' && (
         <PressableView onPress={handleAppleLogin} style={styles.socialBtn}>
