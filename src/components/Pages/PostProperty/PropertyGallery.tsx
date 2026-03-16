@@ -92,7 +92,7 @@ export default function PropertyGallery({
   }) as PropertyGalleryTypes['files'];
 
   const isUploading = watchedFiles?.some((f) => f.isUploading);
-  console.log(watchedFiles);
+
 
   useEffect(() => {
     if (!watchedFiles) return;
@@ -238,7 +238,7 @@ export default function PropertyGallery({
                       try {
                         // Create a small version for the UI immediately
                         const thumbnail = await resizeImage(asset, 800);
-                        
+
                         const newAsset = {
                           isUploading: true,
                           temp: thumbnail.uri,

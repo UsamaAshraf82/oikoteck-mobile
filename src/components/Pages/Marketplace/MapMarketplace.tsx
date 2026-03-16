@@ -51,7 +51,7 @@ const MapMarker = React.memo(
   }: {
     item: Property_Type;
     selected: boolean;
-    onMarkerPress: (id: string) => void;
+    onMarkerPress: (item: Property_Type) => void;
   }) => {
     return (
       <Marker
@@ -61,7 +61,7 @@ const MapMarker = React.memo(
         }}
         zIndex={selected ? 1 : 0}
         pinColor={selected ? '#192234' : '#82005f'}
-        onPress={() => onMarkerPress(item.objectId)}
+        onPress={() => onMarkerPress(item)}
       />
     );
   }
@@ -81,6 +81,7 @@ const MarketPlace = ({
 
   const cardWidth = deviceWidth * 0.86;
 
+  const [firstListing, setFirstListing] = useState<Property_Type | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [districtModal, setDistrictModal] = useState(false);
   const [filtersModal, setFiltersModal] = useState(false);
@@ -131,22 +132,6 @@ const MarketPlace = ({
     },
   });
 
-  useEffect(() => {
-    if (data.results.length > 0) {
-      if (selectedId) {
-        const index = data.results.findIndex((p) => p.objectId === selectedId);
-        if (index !== -1) {
-          propertyListRef.current?.scrollToIndex({
-            index,
-            animated: true,
-          });
-        }
-      } else {
-        propertyListRef.current?.scrollToOffset({ offset: 0, animated: true });
-      }
-    }
-  }, [data.results, selectedId]);
-
   const renderPropertyItem = useCallback(
     ({ item }: { item: Property_Type }) => (
       <View style={{ width: cardWidth }}>
@@ -157,25 +142,9 @@ const MarketPlace = ({
   );
 
   const handleMarkerPress = useCallback(
-    (id: string) => {
-      setSelectedId(id);
-      changeSearch({
-        area_1: null,
-        area_2: null,
-        district: null,
-        minPrice: null,
-        maxPrice: null,
-        minSize: null,
-        maxSize: null,
-        minDate: null,
-        maxDate: null,
-        bedroom: null,
-        furnished: null,
-        bathroom: null,
-        keywords: null,
-        property_type: null,
-        property_category: null,
-      });
+    (item: Property_Type) => {
+      setSelectedId(item.objectId);
+      setFirstListing(item);
     },
     [changeSearch]
   );
@@ -406,14 +375,6 @@ const MarketPlace = ({
     return filter;
   }, [sort, search]);
 
-  // const topHeight = useSharedValue(topbarHeight);
-
-  // useEffect(() => {
-  //   topHeight.value = withTiming(showTopCities ? topbarHeight : 0, {
-  //     duration: 250,
-  //   });
-  // }, [showTopCities]);
-
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -519,6 +480,7 @@ const MarketPlace = ({
         <MapView
           ref={mapRef as any}
           provider={PROVIDER_GOOGLE}
+          userInterfaceStyle='light'
           style={{ flex: 1 }}
           initialRegion={{
             latitude: 37.9755,
@@ -556,16 +518,7 @@ const MarketPlace = ({
               });
             }
           }}
-          // scrollEnabled={isScrollEnabled}
-          // onTouchStart={(e) => {
-          //   if (e.nativeEvent.touches.length > 1) {
-          //     setIsScrollEnabled(true);
-          //   }
-          // }}
-          // onTouchEnd={() => {
-          //   setIsScrollEnabled(false);
-          // }}
-          // moveOnMarkerPress={false}
+          moveOnMarkerPress={false}
         >
           {data.results.map((i) => (
             <MapMarker
@@ -583,39 +536,34 @@ const MarketPlace = ({
           </Pressable>
         </View>
         <View style={styles.propertyListWrapper}>
-          {useMemo(
-            () => (
-              <FlatList
-                ref={propertyListRef}
-                data={data.results}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                snapToInterval={cardWidth}
-                decelerationRate='fast'
-                keyExtractor={(item: Property_Type) => item.objectId}
-                renderItem={renderPropertyItem}
-                getItemLayout={(_, index) => ({
-                  length: cardWidth,
-                  offset: cardWidth * index,
-                  index,
-                })}
-                onMomentumScrollEnd={(e) => {
-                  const index = Math.round(
-                    e.nativeEvent.contentOffset.x / cardWidth
-                  );
-                  const p = data.results[index];
-                  if (p) {
-                    setSelectedId(p.objectId);
-                  }
-                }}
-                initialNumToRender={5}
-                windowSize={5}
-                maxToRenderPerBatch={5}
-                removeClippedSubviews={true}
-              />
-            ),
-            [data.results, renderPropertyItem, cardWidth]
-          )}
+          <FlatList
+            ref={propertyListRef}
+            data={firstListing ? [firstListing, ...data.results] : data.results}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            snapToInterval={cardWidth}
+            decelerationRate='fast'
+            keyExtractor={(item: Property_Type) => item.objectId}
+            renderItem={renderPropertyItem}
+            getItemLayout={(_, index) => ({
+              length: cardWidth,
+              offset: cardWidth * index,
+              index,
+            })}
+            onMomentumScrollEnd={(e) => {
+              const index = Math.round(
+                e.nativeEvent.contentOffset.x / cardWidth
+              );
+              const p = data.results[index];
+              if (p) {
+                setSelectedId(p.objectId);
+              }
+            }}
+            initialNumToRender={5}
+            windowSize={5}
+            maxToRenderPerBatch={5}
+            removeClippedSubviews={true}
+          />
         </View>
       </View>
 

@@ -4,7 +4,6 @@ export const cloudfront = (src?: string, resize: `${number}x${number}` | 'origin
 
   const URL = 'https://oikoteck.s3.eu-west-3.amazonaws.com/';
 
-  console.log(src)
 
   if (!src) {
     return { src: '', lazy: '' };

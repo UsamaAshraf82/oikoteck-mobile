@@ -161,7 +161,6 @@ export default function LocationInfo({
                       ', ' +
                       'Greece',
                   });
-                  console.log(result.geometry.location);
                   setValue('searched', true);
                   setValue('center', {
                     lat: result.geometry.location.lat,
@@ -191,6 +190,7 @@ export default function LocationInfo({
               <MapView
                 provider={PROVIDER_GOOGLE}
                 style={styles.map}
+                userInterfaceStyle='light'
                 region={{
                   latitude: center?.lat || 0,
                   longitude: center?.lng || 0,

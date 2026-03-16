@@ -69,13 +69,9 @@ function RootLayout() {
   useEffect(() => {
     const initialize = async () => {
       try {
-        console.log('Initializing app...');
         await ParseInit();
-        console.log('Parse Initizted...');
         await refresh();
-        console.log('Refreshed...');
-      } catch (e) {
-        console.error('Initialization error:', e);
+      } catch {
       } finally {
         setReady(true);
       }
@@ -85,17 +81,10 @@ function RootLayout() {
 
   useEffect(() => {
     if (ready && (fontsLoaded || fontError)) {
-      SplashScreen.hideAsync()
-        .then(() => {
-          console.log('SplashScreen hidden...');
-        })
-        .catch((e) => {
-          console.error('Error hiding splash screen:', e);
-        });
+      SplashScreen.hideAsync();
     }
   }, [ready, fontsLoaded, fontError]);
 
-  console.log('Ready: ', ready);
 
   return (
     <Sentry.ErrorBoundary
@@ -117,8 +106,7 @@ function RootLayout() {
         </View>
       )}
     >
-      <StripeProvider
-      publishableKey='pk_test_51PSK7VP5GmAB6WhMTNNCySQpZwOVzUV3T7DJA6W25VrCnxom0KAJ3osQyZR6qXb2GZtO6oP8m33SI4pIoeV913Pf00RBNgWjCl'>
+      <StripeProvider publishableKey='pk_test_51PSK7VP5GmAB6WhMTNNCySQpZwOVzUV3T7DJA6W25VrCnxom0KAJ3osQyZR6qXb2GZtO6oP8m33SI4pIoeV913Pf00RBNgWjCl'>
         <Provider>
           <Screens fontsLoaded={fontsLoaded} ready={ready} />
           <ModalContainer />

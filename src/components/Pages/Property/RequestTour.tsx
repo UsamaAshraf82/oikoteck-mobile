@@ -194,7 +194,6 @@ const RequestTour = ({ onClose, property, visible }: SendOfferModalType) => {
       myNewObject.set('price', activeProperty.price);
       myNewObject.set('read', false);
 
-      console.log(myNewObject);
       await myNewObject.save();
 
       addToast({
@@ -217,7 +216,6 @@ const RequestTour = ({ onClose, property, visible }: SendOfferModalType) => {
       });
       onClose();
     } catch (e: any) {
-      console.log(e);
       addToast({
         type: 'error',
         heading: 'Error',

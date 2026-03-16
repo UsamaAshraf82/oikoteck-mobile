@@ -568,6 +568,7 @@ export default function PropertyDetails({
               <View style={styles.mapContainer}>
                 <MapView
                   provider={PROVIDER_GOOGLE}
+                  userInterfaceStyle='light'
                   region={{
                     latitude: property.marker.latitude,
                     longitude: property.marker.longitude,

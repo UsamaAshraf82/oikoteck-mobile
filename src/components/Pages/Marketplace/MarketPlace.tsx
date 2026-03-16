@@ -120,7 +120,6 @@ const MarketPlace = ({
       initialPageParam: 0,
     });
 
-
   const { data: similar } = useQuery({
     queryKey: [
       'similar-properties',
@@ -133,13 +132,39 @@ const MarketPlace = ({
     enabled: !!data?.pages[data.pages.length - 1].hasmore === false,
     staleTime: 600000,
     queryFn: async () => {
+      const areas = stringify_area_district({
+        district: search.district,
+        area_2: search.area_2,
+        area_1: search.area_1,
+      });
+      let geocode = { lat: 37.9755, lng: 23.7257 };
+
+      if (areas) {
+        const result = await Parse.Cloud.run('geo-code', { address: areas });
+        geocode = result?.geometry?.location || geocode;
+      }
+
       try {
         const pro = await Parse.Cloud.run('similar', {
           limit: limit * 5,
           search: {
-            ...search,
+            district: search.district,
+            area_2: search.area_2,
+            area_1: search.area_1,
+            minPrice: search.minPrice,
+            maxPrice: search.maxPrice,
+            minSize: search.minSize,
+            maxSize: search.maxSize,
+            minDate: search.minDate,
+            maxDate: search.maxDate,
+            bedroom: search.bedroom,
+            furnished: search.furnished,
+            bathroom: search.bathroom,
             keywords: search.keywords ? search.keywords?.split(' ') : null,
+            property_type: search.property_type,
+            property_category: search.property_category,
           },
+          geocode: geocode,
           sort_order: sort?.sort_order,
           sort: sort?.sort,
           listing_type: listing_type,
@@ -152,11 +177,14 @@ const MarketPlace = ({
     },
   });
 
-
-
   const properties: ListItem[] = useMemo(() => {
     const main = data?.pages.flatMap((page) => page.results) ?? [];
     if (similar?.results?.length) {
+      if (main.length === 0)
+        return [
+          { objectId: 'similar-heading', type: 'heading' as const },
+          ...similar.results,
+        ];
       return [
         { objectId: 'main-heading', type: 'heading' as const },
         ...main,
@@ -178,9 +206,13 @@ const MarketPlace = ({
   );
 
   const hasFilters = useMemo(() => {
-    console.log(search)
     return Object.keys(search).some(
-      (i) => search[i as keyof filterType] !== null && i !== 'ne_lat' && i !== 'ne_lng' && i !== 'sw_lat' && i !== 'sw_lng'
+      (i) =>
+        search[i as keyof filterType] !== null &&
+        i !== 'ne_lat' &&
+        i !== 'ne_lng' &&
+        i !== 'sw_lat' &&
+        i !== 'sw_lng'
     );
   }, [search]);
 

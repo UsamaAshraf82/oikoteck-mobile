@@ -58,7 +58,6 @@ const PostListing = () => {
       <View style={styles.footer}>
         <PressableView
           onPress={() => {
-            console.log(11);
             if (!user) {
               addToast({
                 heading: 'Unregistered User',
