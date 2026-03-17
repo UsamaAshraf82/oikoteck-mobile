@@ -71,7 +71,7 @@ const MarketPlace = ({
   listing_type,
   onListPress,
   search,
-  changeSearch,
+  changeSearch: _changeSearch,
   sort,
   setSort,
 }: Props) => {
@@ -140,6 +140,11 @@ const MarketPlace = ({
     ),
     [cardWidth]
   );
+
+  const changeSearch = useCallback((filter: Partial<filterType>) => {
+    setFirstListing(null);
+    _changeSearch(filter);
+  }, []);
 
   const handleMarkerPress = useCallback(
     (item: Property_Type) => {
