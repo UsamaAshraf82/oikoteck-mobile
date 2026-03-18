@@ -33,10 +33,10 @@ const appConfig: ExpoConfig = {
     fallbackToCacheTimeout: 0,
     checkAutomatically: 'ON_LOAD',
   },
-  runtimeVersion: "1.0.0",
+  runtimeVersion: '1.0.0',
   ios: {
     usesAppleSignIn: true,
-    supportsTablet: true,
+    supportsTablet: false,
     bundleIdentifier: 'com.oikoteck.app',
     appleTeamId: 'NCF3Q9455Q',
     associatedDomains: ['www.oikoteck.com'],
@@ -76,6 +76,7 @@ const appConfig: ExpoConfig = {
   },
   android: {
     softwareKeyboardLayoutMode: 'pan',
+    versionCode: 4,
     package: 'com.oikoteck.app',
     adaptiveIcon: {
       foregroundImage: config.icon,
