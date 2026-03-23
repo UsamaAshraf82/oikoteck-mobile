@@ -131,20 +131,20 @@ const appConfig: ExpoConfig = {
         backgroundColor: '#ffffff',
       },
     ],
-    [
-      'react-native-fbsdk-next',
-      {
-        appID: '511062105081745',
-        clientToken: '1692dc2e9451677cc7cfb8097f498f0b',
-        displayName: 'Oikoteck',
-        scheme: 'fb511062105081745',
-        advertiserIDCollectionEnabled: false,
-        autoLogAppEventsEnabled: false,
-        isAutoInitEnabled: true,
-        iosUserTrackingPermission:
-          'This identifier will be used to deliver personalized ads to you.',
-      },
-    ],
+    // [
+    //   'react-native-fbsdk-next',
+    //   {
+    //     appID: '511062105081745',
+    //     clientToken: '1692dc2e9451677cc7cfb8097f498f0b',
+    //     displayName: 'Oikoteck',
+    //     scheme: 'fb511062105081745',
+    //     advertiserIDCollectionEnabled: false,
+    //     autoLogAppEventsEnabled: false,
+    //     isAutoInitEnabled: true,
+    //     iosUserTrackingPermission:
+    //       'This identifier will be used to deliver personalized ads to you.',
+    //   },
+    // ],
     [
       '@react-native-google-signin/google-signin',
       {

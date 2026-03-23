@@ -147,9 +147,9 @@ const useUser = create<Store>()((set, get) => ({
     }
   },
   logout: async () => {
-    await Parse.User.logOut();
     await AsyncStorage.removeItem('session_token');
     set(() => ({ user: null }));
+    await Parse.User.logOut();
   },
 }));
 

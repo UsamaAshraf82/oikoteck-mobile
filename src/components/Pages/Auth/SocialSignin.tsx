@@ -7,12 +7,12 @@ import { useRouter } from 'expo-router';
 import Parse from 'parse/react-native';
 import { useRef } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
-import {
-  AccessToken,
-  AuthenticationToken,
-  LoginManager,
-  Profile,
-} from 'react-native-fbsdk-next';
+// import {
+//   AccessToken,
+//   AuthenticationToken,
+//   LoginManager,
+//   Profile,
+// } from 'react-native-fbsdk-next';
 
 import * as Sentry from '@sentry/react-native';
 import AppText from '~/components/Elements/AppText';
@@ -106,155 +106,155 @@ const SocialSignin = () => {
     }
   };
 
-  const handleFacebookLogin = async () => {
-    if (isSigningInRef.current) return;
-    isSigningInRef.current = true;
-    startActivity();
+  // const handleFacebookLogin = async () => {
+  //   if (isSigningInRef.current) return;
+  //   isSigningInRef.current = true;
+  //   startActivity();
 
-    try {
-      // Force browser login on iOS to avoid Limited Login
-      // LoginManager.logInWithPermissions(['public_profile', 'email']);
-      // if (Platform.OS === 'ios') {
-      //   LoginManager.setLoginBehavior('browser');
-      // }
+  //   try {
+  //     // Force browser login on iOS to avoid Limited Login
+  //     // LoginManager.logInWithPermissions(['public_profile', 'email']);
+  //     // if (Platform.OS === 'ios') {
+  //     //   LoginManager.setLoginBehavior('browser');
+  //     // }
 
-      await parseLog('fb_login:start', {
-        loginBehavior: Platform.OS === 'ios' ? 'browser' : 'default',
-      });
+  //     await parseLog('fb_login:start', {
+  //       loginBehavior: Platform.OS === 'ios' ? 'browser' : 'default',
+  //     });
 
-      const result = await LoginManager.logInWithPermissions(
-        ['public_profile', 'email'],
-        'enabled'
-      );
+  //     const result = await LoginManager.logInWithPermissions(
+  //       ['public_profile', 'email'],
+  //       'enabled'
+  //     );
 
-      await parseLog('fb_login:result', {
-        isCancelled: result.isCancelled,
-        grantedPermissions: result.grantedPermissions,
-        declinedPermissions: result.declinedPermissions,
-      });
+  //     await parseLog('fb_login:result', {
+  //       isCancelled: result.isCancelled,
+  //       grantedPermissions: result.grantedPermissions,
+  //       declinedPermissions: result.declinedPermissions,
+  //     });
 
-      if (result.isCancelled) return;
+  //     if (result.isCancelled) return;
 
-      // Fetch tokens and profile
-      const accessToken = await AccessToken.getCurrentAccessToken();
-      const profile = await Profile.getCurrentProfile();
+  //     // Fetch tokens and profile
+  //     const accessToken = await AccessToken.getCurrentAccessToken();
+  //     const profile = await Profile.getCurrentProfile();
 
-      // iOS may provide AuthenticationToken (OIDC) if using browser login
-      let authenticationToken: AuthenticationToken | null = null;
-      if (Platform.OS === 'ios') {
-        authenticationToken =
-          await AuthenticationToken.getAuthenticationTokenIOS();
-      }
+  //     // iOS may provide AuthenticationToken (OIDC) if using browser login
+  //     let authenticationToken: AuthenticationToken | null = null;
+  //     if (Platform.OS === 'ios') {
+  //       authenticationToken =
+  //         await AuthenticationToken.getAuthenticationTokenIOS();
+  //     }
 
-      await parseLog('fb_login:tokens', {
-        hasAccessToken: !!accessToken,
-        accessTokenUserID: accessToken?.userID ?? null,
-        accessTokenExpires: accessToken?.expirationTime ?? null,
-        hasProfile: !!profile,
-        profileUserID: profile?.userID ?? null,
-        hasAuthenticationToken: !!authenticationToken,
-        authenticationTokenNonce: authenticationToken?.nonce ?? null,
-      });
+  //     await parseLog('fb_login:tokens', {
+  //       hasAccessToken: !!accessToken,
+  //       accessTokenUserID: accessToken?.userID ?? null,
+  //       accessTokenExpires: accessToken?.expirationTime ?? null,
+  //       hasProfile: !!profile,
+  //       profileUserID: profile?.userID ?? null,
+  //       hasAuthenticationToken: !!authenticationToken,
+  //       authenticationTokenNonce: authenticationToken?.nonce ?? null,
+  //     });
 
-      if (!accessToken && !authenticationToken) {
-        throw new Error('Facebook token missing');
-      }
+  //     if (!accessToken && !authenticationToken) {
+  //       throw new Error('Facebook token missing');
+  //     }
 
-      const userId = accessToken?.userID;
-      if (!userId) {
-        throw new Error('Facebook user ID could not be determined');
-      }
+  //     const userId = accessToken?.userID;
+  //     if (!userId) {
+  //       throw new Error('Facebook user ID could not be determined');
+  //     }
 
-      // Prepare authData for Parse
-      const authData = {
-        id: userId,
-        app_id: '511062105081745', // Facebook App ID
-        accessToken: accessToken.accessToken.toString(),
-      };
+  //     // Prepare authData for Parse
+  //     const authData = {
+  //       id: userId,
+  //       app_id: '511062105081745', // Facebook App ID
+  //       accessToken: accessToken.accessToken.toString(),
+  //     };
 
-      // if (accessToken) {
-      //   authData.access_token = accessToken.accessToken.toString();
-      //   authData.expiration_date = new Date(
-      //     accessToken.expirationTime
-      //   ).toISOString();
-      // }
+  //     // if (accessToken) {
+  //     //   authData.access_token = accessToken.accessToken.toString();
+  //     //   authData.expiration_date = new Date(
+  //     //     accessToken.expirationTime
+  //     //   ).toISOString();
+  //     // }
 
-      // if (authenticationToken) {
-      //   authData.id_token = authenticationToken.authenticationToken;
-      //   authData.nonce = authenticationToken.nonce;
-      // }
+  //     // if (authenticationToken) {
+  //     //   authData.id_token = authenticationToken.authenticationToken;
+  //     //   authData.nonce = authenticationToken.nonce;
+  //     // }
 
-      await parseLog('fb_login:authData', authData);
+  //     await parseLog('fb_login:authData', authData);
 
-      // Log in with Parse / Back4App
-      const user = await Parse.User.logInWith('facebook', { authData });
+  //     // Log in with Parse / Back4App
+  //     const user = await Parse.User.logInWith('facebook', { authData });
 
-      await parseLog('fb_login:parse_success', {
-        parseUserId: user.id,
-        existed: user.existed(),
-        hasFirstName: !!user.get('first_name'),
-        hasLastName: !!user.get('last_name'),
-        hasEmail: !!user.get('email'),
-        hasPhone: !!user.get('phone'),
-      });
+  //     await parseLog('fb_login:parse_success', {
+  //       parseUserId: user.id,
+  //       existed: user.existed(),
+  //       hasFirstName: !!user.get('first_name'),
+  //       hasLastName: !!user.get('last_name'),
+  //       hasEmail: !!user.get('email'),
+  //       hasPhone: !!user.get('phone'),
+  //     });
 
-      await handleProfileCompletion(user, accessToken, profile);
-    } catch (error: any) {
-      await parseLog('fb_login:error', {
-        message: error?.message ?? String(error),
-        code: error?.code ?? null,
-        stack: error?.stack?.slice(0, 500) ?? null,
-      });
-      console.error('Facebook login error:', error);
-      Sentry.captureException(error);
-    } finally {
-      stopActivity();
-      isSigningInRef.current = false;
-    }
-  };
+  //     await handleProfileCompletion(user, accessToken, profile);
+  //   } catch (error: any) {
+  //     await parseLog('fb_login:error', {
+  //       message: error?.message ?? String(error),
+  //       code: error?.code ?? null,
+  //       stack: error?.stack?.slice(0, 500) ?? null,
+  //     });
+  //     console.error('Facebook login error:', error);
+  //     Sentry.captureException(error);
+  //   } finally {
+  //     stopActivity();
+  //     isSigningInRef.current = false;
+  //   }
+  // };
 
-  const handleProfileCompletion = async (
-    user: Parse.User,
-    accessToken: AccessToken | null,
-    profile: Profile | null
-  ) => {
-    if (
-      user.get('first_name') &&
-      user.get('last_name') &&
-      user.get('email') &&
-      user.get('phone')
-    ) {
-      setUser(user as Parse.User<User_Type>);
-      return;
-    }
+  // const handleProfileCompletion = async (
+  //   user: Parse.User,
+  //   accessToken: AccessToken | null,
+  //   profile: Profile | null
+  // ) => {
+  //   if (
+  //     user.get('first_name') &&
+  //     user.get('last_name') &&
+  //     user.get('email') &&
+  //     user.get('phone')
+  //   ) {
+  //     setUser(user as Parse.User<User_Type>);
+  //     return;
+  //   }
 
-    let email = '';
-    let firstName = '';
-    let lastName = '';
+  //   let email = '';
+  //   let firstName = '';
+  //   let lastName = '';
 
-    if (accessToken) {
-      const res = await fetch(
-        `https://graph.facebook.com/me?fields=id,first_name,last_name,email&access_token=${accessToken.accessToken}`
-      );
+  //   if (accessToken) {
+  //     const res = await fetch(
+  //       `https://graph.facebook.com/me?fields=id,first_name,last_name,email&access_token=${accessToken.accessToken}`
+  //     );
 
-      const fb = await res.json();
+  //     const fb = await res.json();
 
-      email = fb.email?.toLowerCase() || '';
-      firstName = fb.first_name || '';
-      lastName = fb.last_name || '';
-    }
+  //     email = fb.email?.toLowerCase() || '';
+  //     firstName = fb.first_name || '';
+  //     lastName = fb.last_name || '';
+  //   }
 
-    if (!email && profile) {
-      email = profile.email?.toLowerCase() || '';
-      firstName = firstName || profile.firstName || '';
-      lastName = lastName || profile.lastName || '';
-    }
+  //   if (!email && profile) {
+  //     email = profile.email?.toLowerCase() || '';
+  //     firstName = firstName || profile.firstName || '';
+  //     lastName = lastName || profile.lastName || '';
+  //   }
 
-    router.push({
-      pathname: '/signup2social',
-      params: { email, firstName, lastName },
-    });
-  };
+  //   router.push({
+  //     pathname: '/signup2social',
+  //     params: { email, firstName, lastName },
+  //   });
+  // };
 
   const handleAppleLogin = async () => {
     if (isSigningInRef.current) return;

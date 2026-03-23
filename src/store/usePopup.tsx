@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   button: {
-    flex: 1,
+    // width: '100%',
     borderRadius: 999,
     borderWidth: 1,
     paddingVertical: 12,
@@ -196,6 +196,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'LufgaBold',
     fontSize: 16,
+    // lineHeight: 20,
     color: '#192234',
   },
   confirmText: {

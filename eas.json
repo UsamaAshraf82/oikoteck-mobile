@@ -26,7 +26,12 @@
   },
   "submit": {
     "production": {
-
+      "ios": {
+        "ascAppId": "6738630038",
+        "appleId": "usamaashraf28@gmail.com",
+        "appleTeamId": "NCF3Q9455Q",
+        "sku": "com.oikoteck.app"
+      }
     }
   }
 }

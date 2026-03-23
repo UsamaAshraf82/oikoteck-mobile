@@ -13,7 +13,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { Settings } from 'react-native-fbsdk-next';
+// import { Settings } from 'react-native-fbsdk-next';
 import AppText from '~/components/Elements/AppText';
 import Provider from '~/components/Provider';
 import Menu from '~/components/Sheets/Menu';
@@ -46,7 +46,7 @@ GoogleSignin.configure({
   forceCodeForRefreshToken: true,
   scopes: ['profile', 'email'],
 });
-Settings.initializeSDK();
+// Settings.initializeSDK();
 
 function RootLayout() {
   const [ready, setReady] = useState(false);

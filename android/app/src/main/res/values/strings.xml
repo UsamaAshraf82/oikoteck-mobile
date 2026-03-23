@@ -1,5 +1,5 @@
 <resources>
-  <string name="app_name">OikoTeck</string>
+  <string name="app_name">OikoTeck Dev</string>
   <string name="expo_system_ui_user_interface_style" translatable="false">light</string>
   <string name="facebook_app_id">511062105081745</string>
   <string name="facebook_client_token">1692dc2e9451677cc7cfb8097f498f0b</string>

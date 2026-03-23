@@ -16,6 +16,7 @@ import {
   QuestionIcon,
   ShieldWarningIcon,
   SignOutIcon,
+  TrashSimpleIcon,
   UserCircleIcon,
   UserIcon,
   WarehouseIcon,
@@ -28,6 +29,7 @@ import {
 } from 'react-native';
 import AppText from '~/components/Elements/AppText';
 import Grid from '~/components/HOC/Grid';
+import usePopup from '~/store/usePopup';
 import useUser from '~/store/useUser';
 const Image = ExpoImage as any;
 
@@ -40,6 +42,7 @@ const PropertyQuery = (listing_for: 'Sale' | 'Rental', user: Parse.User) => {
 
 const Account = () => {
   const { user, logout } = useUser();
+  const { confirmPopup } = usePopup();
 
   const { data } = useQuery({
     enabled: !!user?.id,
@@ -250,11 +253,59 @@ const Account = () => {
             ))}
           </View>
           {user && (
-            <View>
+            <View style={[styles.menuGroups, { gap: 0 }]}>
               <TouchableWithoutFeedback onPress={() => logout()}>
-                <View style={styles.logoutBtn}>
+                <View
+                  style={[
+                    styles.menuItem,
+                    styles.menuItemFirst,
+                    {
+                      borderColor: '#DC262680',
+                      borderLeftColor: '#DC2626',
+                      borderTopColor: '#DC2626',
+                      borderRightColor: '#DC2626',
+                    },
+                  ]}
+                >
                   <SignOutIcon color='#DC2626' />
                   <AppText style={styles.logoutBtnText}>Logout</AppText>
+                  <CaretRightIcon color='#DC2626' size={20} />
+                </View>
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback
+                onPress={() =>
+                  confirmPopup({
+                    label: 'Delete Account',
+                    message: 'Are you sure you want to delete your account?',
+                    onConfirm: async () => {
+                      const user = await Parse.Cloud.run('delete-user');
+                      logout()
+                    },
+                    confirm: {
+                      text: 'Yes, Delete Account',
+                      // color:'#DC2626'
+                    },
+                    discard: {
+                      text: 'Cancel',
+                      // color:'#75758A'
+                    },
+                  })
+                }
+              >
+                <View
+                  style={[
+                    styles.menuItem,
+                    styles.menuItemLast,
+                    {
+                      borderBottomColor: '#DC262680',
+                      borderLeftColor: '#DC2626',
+                      borderTopColor: '#DC2626',
+                      borderRightColor: '#DC2626',
+                    },
+                  ]}
+                >
+                  <TrashSimpleIcon color='#DC2626' />
+                  <AppText style={styles.logoutBtnText}>Delete Account</AppText>
                   <CaretRightIcon color='#DC2626' size={20} />
                 </View>
               </TouchableWithoutFeedback>
