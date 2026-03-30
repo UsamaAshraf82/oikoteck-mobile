@@ -36,7 +36,7 @@ const appConfig: ExpoConfig = {
   runtimeVersion: '1.0.0',
   ios: {
     usesAppleSignIn: true,
-    supportsTablet: false,
+    supportsTablet: true,
     bundleIdentifier: 'com.oikoteck.app',
     appleTeamId: 'NCF3Q9455Q',
     associatedDomains: ['www.oikoteck.com'],
@@ -122,6 +122,7 @@ const appConfig: ExpoConfig = {
   },
   plugins: [
     'expo-router',
+    'expo-iap',
     [
       'expo-splash-screen',
       {
@@ -163,12 +164,9 @@ const appConfig: ExpoConfig = {
         organization: 'oikoteck',
       },
     ],
-    // [
-    //   '@stripe/stripe-react-native',
-    //   {
-    //     merchantIdentifier: 'merchant.com.oikoteck',
-    //   },
-    // ],
+    ...((process.env.EAS_BUILD_PLATFORM ?? process.env.EXPO_OS) !== 'ios'
+      ? ['@stripe/stripe-react-native']
+      : []),
     ['expo-image'],
     [
       'react-native-maps',

@@ -19,6 +19,7 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   View,
+  useWindowDimensions,
 } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -68,7 +69,8 @@ type sortType = {
 };
 
 type HeadingItem = { objectId: string; type: 'heading' };
-type ListItem = Property_Type | HeadingItem;
+type CardRowItem = { objectId: string; type: 'row'; items: Property_Type[] };
+type ListItem = Property_Type | HeadingItem | CardRowItem;
 
 const MarketPlace = ({
   listing_type,
@@ -79,6 +81,10 @@ const MarketPlace = ({
   setSort,
 }: Props) => {
   const { openSelect } = useSelect();
+  const { width } = useWindowDimensions();
+  const isTablet = width >= 768;
+  // On tablet: (width - 16 left card1 - 16 left card2 - 16 right row padding) / 2
+  const cardWidth = isTablet ? (width - 48) / 2 : width - 32;
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [showTopCities, setShowTopCities] = useState(true);
   const listRef = useRef<FlatList>(null);
@@ -194,6 +200,31 @@ const MarketPlace = ({
     }
     return [{ objectId: 'main-heading', type: 'heading' as const }, ...main];
   }, [data, similar]);
+
+  // On tablet, group property cards into rows of 2 so headings always span
+  // the full width naturally (numColumns stays 1).
+  const displayItems = useMemo((): ListItem[] => {
+    if (!isTablet) return properties;
+    const result: ListItem[] = [];
+    let batch: Property_Type[] = [];
+    const flushBatch = () => {
+      for (let i = 0; i < batch.length; i += 2) {
+        const pair = batch.slice(i, i + 2);
+        result.push({ objectId: `row-${pair[0].objectId}`, type: 'row', items: pair });
+      }
+      batch = [];
+    };
+    for (const item of properties) {
+      if (isProperty(item)) {
+        batch.push(item);
+      } else {
+        flushBatch();
+        result.push(item);
+      }
+    }
+    flushBatch();
+    return result;
+  }, [properties, isTablet]);
 
   const stringified_area = useMemo(
     () =>
@@ -559,7 +590,8 @@ const MarketPlace = ({
       <View style={styles.listContainer}>
         <FlatList
           ref={listRef}
-          data={properties}
+          data={displayItems}
+          key={String(isTablet)}
           decelerationRate='normal'
           onScroll={(e: any) => {
             const y = e.nativeEvent.contentOffset.y;
@@ -571,8 +603,17 @@ const MarketPlace = ({
           showsHorizontalScrollIndicator={false}
           keyExtractor={(item: any) => item.objectId}
           renderItem={({ item }: { item: any }) => {
+            if (item.type === 'row') {
+              return (
+                <View style={{ flexDirection: 'row', paddingRight: 16 }}>
+                  {item.items.map((p: Property_Type) => (
+                    <PropertyCard key={p.objectId} property={p} cardWidth={cardWidth} />
+                  ))}
+                </View>
+              );
+            }
             if (isProperty(item)) {
-              return <PropertyCard property={item} />;
+              return <PropertyCard property={item} cardWidth={cardWidth} />;
             }
             const isMain = item.objectId === 'main-heading';
             return (

@@ -21,6 +21,8 @@ export const cloudfront = (src?: string, resize: `${number}x${number}` | 'origin
     };
   }
 
+  console.log(src.startsWith('https://images.unsplash.com'),src)
+
   if (src.startsWith('https://images.unsplash.com')) {
     return {
       src: `${src}?q=80&w=600`,

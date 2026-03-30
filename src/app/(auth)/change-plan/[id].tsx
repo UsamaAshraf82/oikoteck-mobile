@@ -1,10 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useStripe } from '@stripe/stripe-react-native';
 import { useQuery } from '@tanstack/react-query';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import Parse from 'parse/react-native';
 import { SubmitErrorHandler, useForm } from 'react-hook-form';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Platform, StyleSheet, View } from 'react-native';
+
+const useStripe: () => { initPaymentSheet: any; presentPaymentSheet: any } =
+  Platform.OS === 'android'
+    ? require('@stripe/stripe-react-native').useStripe
+    : () => ({ initPaymentSheet: null, presentPaymentSheet: null });
 import z from 'zod';
 import PropertyCard from '~/components/Cards/PropertyCardTable';
 import AppText from '~/components/Elements/AppText';

@@ -1,7 +1,7 @@
 import { useRouter } from 'expo-router';
 import Parse from 'parse/react-native';
 import { memo } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -10,7 +10,6 @@ import Carousel from 'react-native-reanimated-carousel';
 import { stringify_area_district } from '~/lib/stringify_district_area';
 import { Property_Type } from '~/type/property';
 import { User_Type } from '~/type/user';
-import { deviceWidth } from '~/utils/global';
 import { thoasandseprator } from '~/utils/number';
 import AppText from '../Elements/AppText';
 import AWSImage from '../Elements/AWSImage';
@@ -19,11 +18,18 @@ import BedIcon from '../SVG/Bed';
 import SizeIcon from '../SVG/Size';
 import FavButton from './FavButton';
 
-const wide = deviceWidth - 16 * 2;
-const height = wide / 1.2;
-
 const PropertyCard = memo(
-  ({ property, shrink = 1 }: { property: Property_Type; shrink?: number }) => {
+  ({
+    property,
+    shrink = 1,
+    cardWidth,
+  }: {
+    property: Property_Type;
+    shrink?: number;
+    cardWidth?: number;
+  }) => {
+    const { width: screenWidth } = useWindowDimensions();
+    const wide = (cardWidth ?? screenWidth - 32) * shrink;
     const progress = useSharedValue(0);
     const router = useRouter();
     let owner: User_Type;
@@ -44,8 +50,8 @@ const PropertyCard = memo(
             style={[
               styles.cardContainer,
               {
-                width: wide * shrink,
-                height: height * shrink,
+                width: wide,
+                height: wide / 1.2,
               },
             ]}
           >
@@ -56,7 +62,7 @@ const PropertyCard = memo(
                   loop={false}
                   pagingEnabled={true}
                   snapEnabled={true}
-                  width={wide * shrink}
+                  width={wide}
                   windowSize={2}
                   style={styles.fullWidth}
                   onProgressChange={(_: any, absoluteProgress: number) => {
@@ -72,7 +78,7 @@ const PropertyCard = memo(
                         <AWSImage
                           contentFit='cover'
                           placeholderContentFit='cover'
-                          style={{ width: wide * shrink, height: '100%' }}
+                          style={{ width: wide, height: '100%' }}
                           src={item}
                           size='600x600'
                         />

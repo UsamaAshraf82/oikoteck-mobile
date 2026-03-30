@@ -1,7 +1,6 @@
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { PortalHost } from '@rn-primitives/portal';
 import * as Sentry from '@sentry/react-native';
-import { StripeProvider } from '@stripe/stripe-react-native';
 import { useFonts } from 'expo-font';
 import { Slot, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -9,10 +8,12 @@ import { useEffect, useState } from 'react';
 import {
   ActivityIndicator as ActivityIndicatorInternal,
   Modal,
+  Platform,
   Pressable,
   StyleSheet,
   View,
 } from 'react-native';
+
 // import { Settings } from 'react-native-fbsdk-next';
 import AppText from '~/components/Elements/AppText';
 import Provider from '~/components/Provider';
@@ -24,6 +25,11 @@ import { ToastContainer } from '~/components/ToastContainer';
 import useActivityIndicator from '~/store/useActivityIndicator';
 import useUser from '~/store/useUser';
 import { ParseInit } from '~/utils/Parse';
+
+const StripeProvider: React.ComponentType<{ publishableKey: string; children: React.ReactNode }> =
+  Platform.OS === 'android'
+    ? require('@stripe/stripe-react-native').StripeProvider
+    : ({ children }) => <>{children}</>;
 
 Sentry.init({
   dsn: 'https://f38cbcdf56bafebea8623bea0bf541c9@o4510437482233856.ingest.us.sentry.io/4510945850687488',

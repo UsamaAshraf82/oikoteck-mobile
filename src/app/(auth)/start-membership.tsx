@@ -1,15 +1,20 @@
-import { useStripe } from '@stripe/stripe-react-native';
 import { router } from 'expo-router';
 import Parse from 'parse/react-native';
 import { XIcon } from 'phosphor-react-native';
 import { useEffect, useMemo, useState } from 'react';
 import {
+    Platform,
     Pressable,
     ScrollView,
     StyleSheet,
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
+
+const useStripe: () => { initPaymentSheet: any; presentPaymentSheet: any } =
+  Platform.OS === 'android'
+    ? require('@stripe/stripe-react-native').useStripe
+    : () => ({ initPaymentSheet: null, presentPaymentSheet: null });
 import ReactNativeModal from 'react-native-modal';
 import AppText from '~/components/Elements/AppText';
 import TextInput from '~/components/Elements/TextInput';

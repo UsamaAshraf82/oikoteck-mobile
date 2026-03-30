@@ -1,9 +1,9 @@
-import { useStripe } from '@stripe/stripe-react-native';
 import { useRouter } from 'expo-router';
+import { ErrorCode, useIAP } from 'expo-iap';
 import Parse from 'parse/react-native';
 import { ArrowLeftIcon, XIcon } from 'phosphor-react-native';
-import { useMemo, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import WebView from 'react-native-webview';
 import AppText from '~/components/Elements/AppText';
@@ -11,6 +11,15 @@ import Checkbox from '~/components/Elements/Checkbox';
 import PressableView from '~/components/HOC/PressableView';
 import { useToast } from '~/store/useToast';
 import { PaymentInfoTypes } from './PaymentInfo';
+
+const useStripe: () => { initPaymentSheet: any; presentPaymentSheet: any } =
+  Platform.OS === 'android'
+    ? require('@stripe/stripe-react-native').useStripe
+    : () => ({ initPaymentSheet: null, presentPaymentSheet: null });
+
+const PLAN_SKUS: Partial<Record<PaymentInfoTypes['plan'], string>> = {
+  Promote: 'promote',
+};
 
 type Props = {
   extraData: { plan: PaymentInfoTypes['plan'] };
@@ -29,8 +38,38 @@ export default function PostListingS({
 }: Props) {
   const [checked, setChecked] = useState(false);
   const { addToast } = useToast();
-  const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const router = useRouter();
+  const { initPaymentSheet, presentPaymentSheet } = useStripe();
+
+  // Use a ref so the IAP callback always has the latest onSubmit
+  const onSubmitRef = useRef(onSubmit);
+  onSubmitRef.current = onSubmit;
+
+  const { connected, fetchProducts, requestPurchase, finishTransaction } = useIAP({
+    onPurchaseSuccess: async (purchase) => {
+      await finishTransaction({ purchase, isConsumable: true });
+      onSubmitRef.current();
+    },
+    onPurchaseError: (error) => {
+      if (error.code !== ErrorCode.UserCancelled) {
+        addToast({
+          type: 'error',
+          heading: 'Purchase Failed',
+          message: error.message,
+        });
+      }
+    },
+  });
+
+  useEffect(() => {
+    if (Platform.OS === 'ios' && connected && extraData.plan !== 'Free') {
+      const sku = PLAN_SKUS[extraData.plan];
+      if (sku) {
+        fetchProducts({ skus: [sku], type: 'in-app' });
+      }
+    }
+  }, [connected]);
+
   const handlePress = async () => {
     if (!checked) {
       addToast({
@@ -42,6 +81,15 @@ export default function PostListingS({
     }
     if (extraData.plan === 'Free') {
       onSubmit();
+    } else if (Platform.OS === 'ios') {
+      const sku = PLAN_SKUS[extraData.plan];
+      if (!sku) return;
+      requestPurchase({
+        request: {
+          apple: { sku },
+        },
+        type: 'in-app',
+      });
     } else {
       const res = await Parse.Cloud.run('stripe', { price: 30 });
       const { error } = await initPaymentSheet({
@@ -118,7 +166,7 @@ export default function PostListingS({
             </View>
             <Checkbox
               alignTop
-              label='I, Walid Smith, understand and agree to the “Service Plan Terms” above associated with this purchase, the Terms and Conditions, and the Privacy Policy.'
+              label='I, Walid Smith, understand and agree to the "Service Plan Terms" above associated with this purchase, the Terms and Conditions, and the Privacy Policy.'
               labelStyle={styles.checkboxLabel}
               value={checked}
               getValue={(value) => setChecked(value)}
