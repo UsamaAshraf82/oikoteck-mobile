@@ -1,8 +1,9 @@
 import { router } from 'expo-router';
 import Parse from 'parse/react-native';
-import { XIcon } from 'phosphor-react-native';
-import { useEffect, useMemo, useState } from 'react';
+import { ShoppingCartIcon, XIcon } from 'phosphor-react-native';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
+    ActivityIndicator,
     Platform,
     Pressable,
     ScrollView,
@@ -859,4 +860,280 @@ const styles = StyleSheet.create({
   },
 });
 
-export default StartMembership;
+// ─── iOS IAP ─────────────────────────────────────────────────────────────────
+
+const useIAP: (opts?: any) => any =
+  Platform.OS === 'ios'
+    ? require('expo-iap').useIAP
+    : () => ({
+        connected: false,
+        products: [],
+        fetchProducts: async () => {},
+        requestPurchase: async () => {},
+        finishTransaction: async () => {},
+      });
+
+const IAPErrorCode =
+  Platform.OS === 'ios' ? require('expo-iap').ErrorCode : {};
+
+const IAP_SKUS = [
+  'promote_plus_50',
+  'promote_plus_100',
+  'gold_50',
+  'gold_100',
+  'platinum_50',
+  'platinum_100',
+];
+
+const planColorMap = Object.fromEntries(plans.map((p) => [p.name, p.pkgColor]));
+
+const IAP_PRODUCT_META: Record<
+  string,
+  { plan: PlanTypes; points: number; pkgColor: string }
+> = {
+  promote_plus_50: { plan: 'Promote +', points: 50, pkgColor: planColorMap['Promote +'] },
+  promote_plus_100: { plan: 'Promote +', points: 100, pkgColor: planColorMap['Promote +'] },
+  gold_50: { plan: 'Gold', points: 50, pkgColor: planColorMap['Gold'] },
+  gold_100: { plan: 'Gold', points: 100, pkgColor: planColorMap['Gold'] },
+  platinum_50: { plan: 'Platinum', points: 50, pkgColor: planColorMap['Platinum'] },
+  platinum_100: { plan: 'Platinum', points: 100, pkgColor: planColorMap['Platinum'] },
+};
+
+const IAPMembership = () => {
+  const { addToast } = useToast();
+  const activity = useActivityIndicator();
+  const [purchasing, setPurchasing] = useState<string | null>(null);
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
+  const { connected, products, fetchProducts, requestPurchase, finishTransaction } =
+    useIAP({
+      onPurchaseSuccess: async (purchase: any) => {
+        activity.startActivity();
+        try {
+          const meta = IAP_PRODUCT_META[purchase.productId];
+          if (meta) {
+            const expiry = new Date();
+            expiry.setMonth(expiry.getMonth() + 3);
+
+            const Credits = new Parse.Object('Credits');
+            Credits.set('Bucket', meta.plan);
+            Credits.set('User', Parse.User.current());
+            Credits.set('total_credits', meta.points);
+            Credits.set('avail_credit', meta.points);
+            Credits.set('used_credits', 0);
+            Credits.set('Expiry', expiry);
+            await Credits.save();
+
+            await finishTransaction({ purchase, isConsumable: true });
+
+            addToast({
+              heading: 'Points Purchased',
+              message:
+                'Your points are fully reflected on your dashboard. You can now apply them toward any listings of your choice.',
+            });
+            router.push('/account');
+          } else {
+            // Unknown product ID — finish the transaction to avoid it getting stuck
+            await finishTransaction({ purchase, isConsumable: true });
+          }
+        } catch (e: any) {
+          addToast({
+            type: 'error',
+            heading: 'Purchase Error',
+            message: e.message || 'There was an issue processing your purchase.',
+          });
+        } finally {
+          activity.stopActivity();
+          if (isMountedRef.current) setPurchasing(null);
+        }
+      },
+      onPurchaseError: (error: any) => {
+        if (isMountedRef.current) setPurchasing(null);
+        if (error.code !== IAPErrorCode.UserCancelled) {
+          addToast({
+            type: 'error',
+            heading: 'Purchase Failed',
+            message: error.message || 'Purchase could not be completed.',
+          });
+        }
+      },
+    });
+
+  useEffect(() => {
+    if (connected) {
+      fetchProducts({ skus: IAP_SKUS, type: 'in-app' });
+    }
+  }, [connected, fetchProducts]);
+
+  const productMap = useMemo(
+    () => new Map((products as any[]).map((p: any) => [p.id, p])),
+    [products]
+  );
+
+  const handlePurchase = (sku: string) => {
+    setPurchasing(sku);
+    requestPurchase({ request: { apple: { sku } } });
+  };
+
+  return (
+    <View style={styles.container}>
+      <TopHeader title='Start Membership' onBackPress={() => router.back()} />
+
+      <View style={styles.header}>
+        <AppText style={styles.title}>
+          Create a plan that suits your needs!
+        </AppText>
+        <AppText style={styles.subTitle}>
+          Purchase points for any plan and apply them toward your listings.
+        </AppText>
+      </View>
+
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={iapStyles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {!connected ? (
+          <View style={iapStyles.loadingWrapper}>
+            <ActivityIndicator color='#82065e' />
+            <AppText style={iapStyles.loadingText}>
+              Connecting to App Store…
+            </AppText>
+          </View>
+        ) : (
+          IAP_SKUS.map((sku) => {
+            const meta = IAP_PRODUCT_META[sku];
+            const product = productMap.get(sku);
+            const isBuying = purchasing === sku;
+
+            return (
+              <Pressable
+                key={sku}
+                style={({ pressed }) => [
+                  iapStyles.productCard,
+                  pressed && iapStyles.productCardPressed,
+                ]}
+                onPress={() => handlePurchase(sku)}
+                disabled={purchasing !== null}
+              >
+                <View style={styles.planItemLeft}>
+                  <View
+                    style={[
+                      styles.colorDot,
+                      { backgroundColor: meta.pkgColor },
+                    ]}
+                  />
+                  <View>
+                    <AppText style={iapStyles.productPlan}>{meta.plan}</AppText>
+                    <AppText style={iapStyles.productPoints}>
+                      {meta.points} Points
+                    </AppText>
+                  </View>
+                </View>
+
+                <View style={iapStyles.productRight}>
+                  {isBuying ? (
+                    <ActivityIndicator color='#82065e' size='small' />
+                  ) : product ? (
+                    <View style={iapStyles.priceBtn}>
+                      <AppText style={iapStyles.priceBtnText}>
+                        {product.displayPrice}
+                      </AppText>
+                    </View>
+                  ) : (
+                    <ShoppingCartIcon color='#ACACB9' size={20} />
+                  )}
+                </View>
+              </Pressable>
+            );
+          })
+        )}
+
+        <AppText style={iapStyles.termsText}>
+          By purchasing, you agree to OikoTeck's Privacy Policy and Terms &
+          Conditions. Payments are processed through Apple.
+        </AppText>
+      </ScrollView>
+    </View>
+  );
+};
+
+const iapStyles = StyleSheet.create({
+  scrollContent: {
+    paddingHorizontal: 20,
+    paddingTop: 8,
+    paddingBottom: 32,
+    gap: 12,
+  },
+  loadingWrapper: {
+    flex: 1,
+    alignItems: 'center',
+    paddingTop: 60,
+    gap: 12,
+  },
+  loadingText: {
+    fontSize: 14,
+    color: '#9191A1',
+  },
+  productCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: 'white',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#E9E9EC',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+  },
+  productCardPressed: {
+    opacity: 0.7,
+  },
+  productPlan: {
+    fontFamily: 'LufgaSemiBold',
+    fontSize: 16,
+    color: '#192234',
+  },
+  productPoints: {
+    fontFamily: 'LufgaMedium',
+    fontSize: 13,
+    color: '#75758A',
+    marginTop: 2,
+  },
+  productRight: {
+    alignItems: 'flex-end',
+    minWidth: 64,
+  },
+  priceBtn: {
+    backgroundColor: '#82065e',
+    borderRadius: 999,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+  },
+  priceBtnText: {
+    fontFamily: 'LufgaSemiBold',
+    fontSize: 14,
+    color: 'white',
+  },
+  termsText: {
+    fontFamily: 'LufgaRegular',
+    fontSize: 10,
+    color: '#9191A1',
+    marginTop: 8,
+    lineHeight: 14,
+    textAlign: 'center',
+  },
+});
+
+export default Platform.OS === 'ios' ? IAPMembership : StartMembership;
