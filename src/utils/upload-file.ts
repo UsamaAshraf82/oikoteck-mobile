@@ -1,44 +1,62 @@
-import { PutObjectCommandInput, S3Client } from '@aws-sdk/client-s3';
-import { fromCognitoIdentityPool } from '@aws-sdk/credential-providers';
-import { Upload } from '@aws-sdk/lib-storage';
+import * as FileSystem from 'expo-file-system/legacy';
+import Parse from 'parse/react-native';
 import { uid } from 'uid';
 
-const REGION = 'eu-central-1';
-const s3 = new S3Client({
-  region: REGION,
-  credentials: fromCognitoIdentityPool({
-    clientConfig: { region: REGION },
-    identityPoolId: 'eu-central-1:ce5f2001-0b1e-467a-b017-83c0be7eb182',
-  }),
-});
-
-function base64ToUint8Array(base64: string): Uint8Array {
-  const binaryString = atob(base64);
-  const len = binaryString.length;
-  const bytes = new Uint8Array(len);
-  for (let i = 0; i < len; i++) {
-    bytes[i] = binaryString.charCodeAt(i);
-  }
-  return bytes;
-}
+const slugify = (str: string) =>
+  str
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
 
 const uploadFile = async (file: { file: string; name: string }) => {
-  const blob = base64ToUint8Array(file.file); //'image/webp');
+  const contentType = 'image/webp';
 
-  const params: PutObjectCommandInput = {
-    Bucket: 'oikoteck',
-    Key: 'image/' + uid() + '_' + Date.now() + '_', //+ slug(file.name),
-    Body: blob,
-    ContentType: 'image/webp',
-  };
+  const tempUri = FileSystem.cacheDirectory + uid() + '.webp';
 
-  const upload = new Upload({
-    client: s3,
-    params: params,
-  });
+  let returnedData: { Location: string; Key: string } | null = null;
 
-  const uploaded = await upload.done();
+  try {
+    await FileSystem.writeAsStringAsync(tempUri, file.file, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
 
-  return uploaded;
+    const key =
+      'image_2/' +
+      uid() +
+      '_' +
+      Date.now() +
+      '_' +
+      slugify(file.name) +
+      '.' +
+      contentType.split('/')[1];
+
+    const presignedUrl = await Parse.Cloud.run('get-presigned-url', {
+      key,
+      contentType,
+    });
+
+    const res = await FileSystem.uploadAsync(presignedUrl, tempUri, {
+      httpMethod: 'PUT',
+      headers: { 'Content-Type': contentType },
+    });
+
+    console.log(res);
+    if (res.status < 200 || res.status >= 300) {
+      console.error('S3 Upload Error', res.status, res.body);
+      throw new Error('Upload failed');
+    }
+
+    returnedData = {
+      Location: presignedUrl.split('?')[0],
+      Key: key,
+    };
+  } catch (error) {
+    console.error('Upload Error', error);
+    throw error;
+  } finally {
+    FileSystem.deleteAsync(tempUri, { idempotent: true });
+  }
+
+  return returnedData;
 };
 export default uploadFile;

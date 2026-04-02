@@ -1,7 +1,8 @@
 import { ExpoConfig } from 'expo/config';
 import 'tsx/cjs';
-import withGoogleMapsIosAppDelegate from './plugins/withGoogleMapsIosAppDelegate';
+import withGoogleMapsIosAppDelegate from './src/plugins/withGoogleMapsIosAppDelegate';
 const IS_DEV = process.env.EXPO_PUBLIC_APP_VARIANT?.trim() == 'development';
+const ENABLE_IAP = process.env.ENABLE_IAP === 'true';
 
 const configBoth = {
   prod: {
@@ -122,7 +123,7 @@ const appConfig: ExpoConfig = {
   },
   plugins: [
     'expo-router',
-    'expo-iap',
+    ...(ENABLE_IAP ? ['expo-iap'] : []),
     [
       'expo-splash-screen',
       {
@@ -164,9 +165,6 @@ const appConfig: ExpoConfig = {
         organization: 'oikoteck',
       },
     ],
-    ...((process.env.EAS_BUILD_PLATFORM ?? process.env.EXPO_OS) !== 'ios'
-      ? ['@stripe/stripe-react-native']
-      : []),
     ['expo-image'],
     [
       'react-native-maps',

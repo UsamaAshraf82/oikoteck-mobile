@@ -1,4 +1,3 @@
-import { CompleteMultipartUploadCommandOutput } from '@aws-sdk/client-s3';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
@@ -51,7 +50,8 @@ export default function PropertyGallery({
   data,
   extra_data,
   onSubmit,
-  onBack,onCancel,
+  onBack,
+  onCancel,
   label = 'Post a listing',
 }: Props) {
   const { addToast } = useToast();
@@ -69,7 +69,6 @@ export default function PropertyGallery({
 
   const onSubmitInternal = async (formData: PropertyGalleryTypes) => {
     onSubmit(formData);
-
   };
 
   const onError: SubmitErrorHandler<PropertyGalleryTypes> = (errors) => {
@@ -93,7 +92,6 @@ export default function PropertyGallery({
 
   const isUploading = watchedFiles?.some((f) => f.isUploading);
 
-
   useEffect(() => {
     if (!watchedFiles) return;
 
@@ -112,7 +110,7 @@ export default function PropertyGallery({
                   ? {
                       ...x,
                       isUploading: false,
-                      url: uploaded?.Key, // S3 returns { Location, Bucket, Key, ETag }
+                      url: uploaded?.Location, // S3 returns { Location, Bucket, Key, ETag }
                       file: undefined, // clear the promise once done
                     }
                   : x
@@ -177,6 +175,7 @@ export default function PropertyGallery({
     );
   };
 
+  console.log(watchedFiles);
   return (
     <>
       <View style={styles.header}>
@@ -257,7 +256,10 @@ export default function PropertyGallery({
                         setValue(`files.${indexToUpdate}.file`, uploadPromise, {
                           shouldValidate: true,
                         });
-                        setValue(`files.${indexToUpdate}.temp`, fullSizeImage.uri);
+                        setValue(
+                          `files.${indexToUpdate}.temp`,
+                          fullSizeImage.uri
+                        );
                       } catch (err) {
                         console.error('Error processing image:', err);
                       }
@@ -490,7 +492,12 @@ export const PropertyGallerySchema = z.object({
         temp: z.string().optional(), // local temp URI (expo-image-picker, etc.)
         isUploading: z.boolean().optional(),
         file: z
-          .custom<Promise<CompleteMultipartUploadCommandOutput>>()
+          .custom<
+            Promise<{
+              Location: any;
+              Key: string;
+            }>
+          >()
           .optional(),
       })
     )

@@ -3,19 +3,14 @@ import Parse from 'parse/react-native';
 import { ShoppingCartIcon, XIcon } from 'phosphor-react-native';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
-    ActivityIndicator,
-    Platform,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    TouchableWithoutFeedback,
-    View,
+  ActivityIndicator,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
 } from 'react-native';
-
-const useStripe: () => { initPaymentSheet: any; presentPaymentSheet: any } =
-  Platform.OS === 'android'
-    ? require('@stripe/stripe-react-native').useStripe
-    : () => ({ initPaymentSheet: null, presentPaymentSheet: null });
 import ReactNativeModal from 'react-native-modal';
 import AppText from '~/components/Elements/AppText';
 import TextInput from '~/components/Elements/TextInput';
@@ -24,14 +19,19 @@ import PressableView from '~/components/HOC/PressableView';
 import { DISCOUNT, TAX } from '~/global/global';
 import { plans } from '~/global/plan';
 import {
-    goldpricetable,
-    platpricetable,
-    prmotepricetable,
+  goldpricetable,
+  platpricetable,
+  prmotepricetable,
 } from '~/global/plan_price';
 import useActivityIndicator from '~/store/useActivityIndicator';
 import { useToast } from '~/store/useToast';
 import { deviceHeight } from '~/utils/global';
 import { thoasandseprator } from '~/utils/number';
+
+const useStripe: () => { initPaymentSheet: any; presentPaymentSheet: any } =
+  Platform.OS === 'android'
+    ? require('@stripe/stripe-react-native').useStripe
+    : () => ({ initPaymentSheet: null, presentPaymentSheet: null });
 
 type PlanTypes = 'Promote +' | 'Gold' | 'Platinum';
 

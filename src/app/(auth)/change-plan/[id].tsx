@@ -4,11 +4,6 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import Parse from 'parse/react-native';
 import { SubmitErrorHandler, useForm } from 'react-hook-form';
 import { ActivityIndicator, Platform, StyleSheet, View } from 'react-native';
-
-const useStripe: () => { initPaymentSheet: any; presentPaymentSheet: any } =
-  Platform.OS === 'android'
-    ? require('@stripe/stripe-react-native').useStripe
-    : () => ({ initPaymentSheet: null, presentPaymentSheet: null });
 import z from 'zod';
 import PropertyCard from '~/components/Cards/PropertyCardTable';
 import AppText from '~/components/Elements/AppText';
@@ -21,6 +16,11 @@ import PressableView from '~/components/HOC/PressableView';
 import useActivityIndicator from '~/store/useActivityIndicator';
 import { useToast } from '~/store/useToast';
 import { Property_Type } from '~/type/property';
+
+const useStripe: () => { initPaymentSheet: any; presentPaymentSheet: any } =
+  Platform.OS === 'android'
+    ? require('@stripe/stripe-react-native').useStripe
+    : () => ({ initPaymentSheet: null, presentPaymentSheet: null });
 
 const PaymentInfoSchema = z.object({
   plan: z.enum(['Free', 'Promote'], {
