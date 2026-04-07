@@ -1,5 +1,4 @@
 import { ErrorCode, useIAP } from 'expo-iap';
-import { useRouter } from 'expo-router';
 import Parse from 'parse/react-native';
 import { ArrowLeftIcon, XIcon } from 'phosphor-react-native';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -10,6 +9,7 @@ import AppText from '~/components/Elements/AppText';
 import Checkbox from '~/components/Elements/Checkbox';
 import PressableView from '~/components/HOC/PressableView';
 import { useToast } from '~/store/useToast';
+import useUser from '~/store/useUser';
 import { PaymentInfoTypes } from './PaymentInfo';
 
 const useStripe: () => { initPaymentSheet: any; presentPaymentSheet: any } =
@@ -38,7 +38,7 @@ export default function PostListingS({
 }: Props) {
   const [checked, setChecked] = useState(false);
   const { addToast } = useToast();
-  const router = useRouter();
+  const { user } = useUser();
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
 
   // Use a ref so the IAP callback always has the latest onSubmit
@@ -166,7 +166,7 @@ export default function PostListingS({
             </View>
             <Checkbox
               alignTop
-              label='I, Walid Smith, understand and agree to the "Service Plan Terms" above associated with this purchase, the Terms and Conditions, and the Privacy Policy.'
+              label={`I, ${user?.attributes.first_name} ${user?.attributes.last_name}, understand and agree to the "Service Plan Terms" above associated with this purchase, the Terms and Conditions, and the Privacy Policy.`}
               labelStyle={styles.checkboxLabel}
               value={checked}
               getValue={(value) => setChecked(value)}

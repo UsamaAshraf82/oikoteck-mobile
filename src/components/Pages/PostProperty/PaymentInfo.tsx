@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'expo-router';
 import { ArrowLeftIcon, XIcon } from 'phosphor-react-native';
 import { SubmitErrorHandler, useForm, useWatch } from 'react-hook-form';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { z } from 'zod';
 import AppText from '~/components/Elements/AppText';
@@ -104,7 +104,7 @@ export default function PaymentInfo({
               getValue={() => setValue('plan', 'Promote')}
               value={selectedPlan === 'Promote'}
             />
-            {selectedPlan === 'Promote' && (
+            {selectedPlan === 'Promote' && Platform.OS !== 'ios' && (
               <>
                 <ControlledTextInput
                   control={control}
