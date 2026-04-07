@@ -23,4 +23,5 @@ build-android/
 .env
 
 .env.local
+.env.production
 .env.sentry-build-plugin
