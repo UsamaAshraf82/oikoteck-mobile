@@ -28,7 +28,7 @@ const SignupSchema = z
     firstName: z.string().min(1, { message: 'First Name is required.' }),
     lastName: z.string().min(1, { message: 'Last Name is required.' }),
     email: z.string().min(1, { message: 'Email is required.' }),
-    phone: z.string().min(1, { message: 'Phone Number is required.' }),
+    phone: z.string().optional(),
     country: z.object({
       ISO: z.string(),
       Country: z.string(),
@@ -163,7 +163,7 @@ export default function Signup2Social() {
       currentUser.set('username', data_email);
       currentUser.set('email', data_email);
       currentUser.set('first_name', formData.firstName);
-      currentUser.set('phone', formData.phone);
+      currentUser.set('phone', formData.phone || '');
       currentUser.set('last_name', formData.lastName);
       currentUser.set('country_code', formData.country.Code);
       currentUser.set('country', formData.country.Country);
@@ -325,7 +325,7 @@ export default function Signup2Social() {
               </>
             )}
 
-            <AppText style={styles.phoneLabel}>Phone Number</AppText>
+            <AppText style={styles.phoneLabel}>Phone Number (Optional)</AppText>
             <View style={styles.phoneRow}>
               <View style={styles.countryPickerWrapper}>
                 <TouchableWithoutFeedback

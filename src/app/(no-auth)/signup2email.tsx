@@ -24,7 +24,7 @@ const SignupSchema = z
   .object({
     firstName: z.string().min(1, { message: 'First Name is required.' }),
     lastName: z.string().min(1, { message: 'Last Name is required.' }),
-    phone: z.string().min(1, { message: 'Phone Number is required.' }),
+    phone: z.string().optional(),
     country: z.object({
       ISO: z.string(),
       Country: z.string(),
@@ -133,6 +133,7 @@ export default function Signup2Email() {
     activity.startActivity();
     await signup({
       ...formData,
+      phone: formData.phone || '',
       email: local.email || '',
       password: local.password || '',
     });
@@ -257,7 +258,7 @@ export default function Signup2Email() {
               </>
             )}
 
-            <AppText style={styles.phoneLabel}>Phone Number</AppText>
+            <AppText style={styles.phoneLabel}>Phone Number (Optional)</AppText>
             <View style={styles.phoneRow}>
               <View style={styles.countryPickerWrapper}>
                 <TouchableWithoutFeedback
