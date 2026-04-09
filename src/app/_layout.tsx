@@ -2,9 +2,10 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { PortalHost } from '@rn-primitives/portal';
 import * as Sentry from '@sentry/react-native';
 import { useFonts } from 'expo-font';
-import { Slot, Stack } from 'expo-router';
+import { Slot, Stack, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
+import { logScreenView } from '~/utils/analytics';
 import {
   ActivityIndicator as ActivityIndicatorInternal,
   Modal,
@@ -136,6 +137,12 @@ const Screens = ({
   fontsLoaded: boolean;
 }) => {
   const { user } = useUser();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    logScreenView(pathname);
+  }, [pathname]);
+
   if (!ready) return <Slot />;
   if (!fontsLoaded) return <Slot />;
   return (

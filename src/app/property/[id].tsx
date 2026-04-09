@@ -1,8 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { useLocalSearchParams } from 'expo-router';
 import Parse from 'parse/react-native';
+import { useEffect } from 'react';
 import PropertyDetails from '~/components/Pages/Property/PropertyDetails';
 import { Property_Type } from '~/type/property';
+import { logPropertyView } from '~/utils/analytics';
+
 export default function Index() {
   const local: { id: string } = useLocalSearchParams();
 
@@ -20,6 +23,19 @@ export default function Index() {
       return property;
     },
   });
+
+  useEffect(() => {
+    if (property) {
+      logPropertyView({
+        id: local.id,
+        title: property.title,
+        listing_type: property.listing_for,
+        plan: property.plan,
+        price: property.price,
+      });
+    }
+  }, [property]);
+
   if (!property) {
     return null;
   }

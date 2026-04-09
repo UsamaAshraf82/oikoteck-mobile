@@ -123,6 +123,7 @@ const appConfig: ExpoConfig = {
   },
   plugins: [
     'expo-router',
+    '@react-native-firebase/app',
     ...(ENABLE_IAP ? ['expo-iap'] : []),
     [
       'expo-splash-screen',
