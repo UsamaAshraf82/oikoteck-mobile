@@ -188,6 +188,14 @@ const appConfig: ExpoConfig = {
       withGoogleMapsIosAppDelegate as any,
       { apiKey: process.env.GOOGLE_MAPS_API_KEY },
     ],
+    [
+      'expo-build-properties',
+      {
+        ios: {
+          useFrameworks: 'static',
+        },
+      },
+    ],
   ],
 
   experiments: {
