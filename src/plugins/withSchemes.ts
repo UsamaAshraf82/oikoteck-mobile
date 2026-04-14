@@ -20,6 +20,23 @@ const withAndroidQueries: ConfigPlugin = (config) => {
       },
     ];
 
+    const application = config.modResults.manifest.application?.[0];
+    if (application) {
+      application['meta-data'] = application['meta-data'] ?? [];
+      const metaData = application['meta-data'] as Array<{ $: Record<string, string> }>;
+      const alreadySet = metaData.some(
+        (m) => m.$['android:name'] === 'firebase_analytics_collection_enabled'
+      );
+      if (!alreadySet) {
+        metaData.push({
+          $: {
+            'android:name': 'firebase_analytics_collection_enabled',
+            'android:value': 'false',
+          },
+        });
+      }
+    }
+
     return config;
   });
 };

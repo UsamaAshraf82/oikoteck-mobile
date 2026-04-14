@@ -70,6 +70,7 @@ const appConfig: ExpoConfig = {
         'fbauth2',
         'fbshareextension',
       ],
+      FIREBASE_ANALYTICS_COLLECTION_ENABLED: false,
     },
 
     config: {
@@ -126,10 +127,6 @@ const appConfig: ExpoConfig = {
   plugins: [
     'expo-router',
     '@react-native-firebase/app',
-    [
-      '@react-native-firebase/analytics',
-      { analytics_auto_collection_enabled: false },
-    ],
     [
       'expo-tracking-transparency',
       {

@@ -40,7 +40,7 @@ export const record_insight = async ({
   InsightType: InsightType;
 }) => {
   const Parse = await ParseInit();
-  const User = useUser.getState().user?.objectId ?? '';
+  const User = useUser.getState().user?.id ?? '';
 
   Parse.Cloud.run('record-insight', { Property, User, InsightType }).catch(
     () => {}
