@@ -60,6 +60,8 @@ const appConfig: ExpoConfig = {
         'This app needs photo library access so users can select images from their gallery.',
       NSLocationWhenInUseUsageDescription:
         'This app uses your location to improve map and property accuracy.',
+      NSUserTrackingUsageDescription:
+        'This identifier will be used to improve your experience and gather analytics.',
       LSApplicationQueriesSchemes: [
         'whatsapp',
         'whatsapp-business',
@@ -124,6 +126,17 @@ const appConfig: ExpoConfig = {
   plugins: [
     'expo-router',
     '@react-native-firebase/app',
+    [
+      '@react-native-firebase/analytics',
+      { analytics_auto_collection_enabled: false },
+    ],
+    [
+      'expo-tracking-transparency',
+      {
+        userTrackingPermission:
+          'This identifier will be used to improve your experience and gather analytics.',
+      },
+    ],
     ...(ENABLE_IAP ? ['expo-iap'] : []),
     [
       'expo-splash-screen',

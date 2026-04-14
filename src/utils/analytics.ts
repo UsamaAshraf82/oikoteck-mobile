@@ -1,5 +1,11 @@
 import analytics from '@react-native-firebase/analytics';
 
+// ─── ATT / Collection Toggle ─────────────────────────────────────────────────
+
+export async function setAnalyticsCollectionEnabled(enabled: boolean) {
+  await analytics().setAnalyticsCollectionEnabled(enabled);
+}
+
 // ─── Auth Events ────────────────────────────────────────────────────────────
 
 export async function logLogin(method: 'email' | 'google' | 'apple') {

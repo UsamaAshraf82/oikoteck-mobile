@@ -4,8 +4,8 @@ import * as Sentry from '@sentry/react-native';
 import { useFonts } from 'expo-font';
 import { Slot, Stack, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
+import { requestTrackingPermissionsAsync } from 'expo-tracking-transparency';
 import { useEffect, useState } from 'react';
-import { logScreenView } from '~/utils/analytics';
 import {
   ActivityIndicator as ActivityIndicatorInternal,
   Modal,
@@ -14,6 +14,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import { logScreenView, setAnalyticsCollectionEnabled } from '~/utils/analytics';
 
 // import { Settings } from 'react-native-fbsdk-next';
 import AppText from '~/components/Elements/AppText';
@@ -78,6 +79,14 @@ function RootLayout() {
       try {
         await ParseInit();
         await refresh();
+
+        if (Platform.OS === 'ios') {
+          const { status } = await requestTrackingPermissionsAsync();
+          await setAnalyticsCollectionEnabled(status === 'granted');
+        }
+        if (Platform.OS === 'android') {
+          await setAnalyticsCollectionEnabled(true);
+        }
       } catch {
       } finally {
         setReady(true);
