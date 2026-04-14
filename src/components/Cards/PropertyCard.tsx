@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import Parse from 'parse/react-native';
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
 import { Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -11,12 +11,16 @@ import { stringify_area_district } from '~/lib/stringify_district_area';
 import { Property_Type } from '~/type/property';
 import { User_Type } from '~/type/user';
 import { thoasandseprator } from '~/utils/number';
+import { record_insight } from '~/utils/record_insight';
 import AppText from '../Elements/AppText';
 import AWSImage from '../Elements/AWSImage';
 import BathIcon from '../SVG/Bath';
 import BedIcon from '../SVG/Bed';
 import SizeIcon from '../SVG/Size';
 import FavButton from './FavButton';
+
+// Per-session deduplication — each property gets one Impression per app session
+const impressedIds = new Set<string>();
 
 const PropertyCard = memo(
   ({
@@ -32,6 +36,13 @@ const PropertyCard = memo(
     const wide = (cardWidth ?? screenWidth - 32) * shrink;
     const progress = useSharedValue(0);
     const router = useRouter();
+
+    useEffect(() => {
+      if (impressedIds.has(property.objectId)) return;
+      impressedIds.add(property.objectId);
+      record_insight({ Property: property.objectId, InsightType: 'Impression' });
+    }, []);
+
     let owner: User_Type;
     if (property.owner instanceof Parse.User) {
       // @ts-ignore
