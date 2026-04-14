@@ -24,7 +24,7 @@ const config = IS_DEV ? configBoth.dev : configBoth.prod;
 const appConfig: ExpoConfig = {
   name: config.name,
   slug: config.slug,
-  version: '1.0.0',
+  version: '1.0.1',
   orientation: 'portrait',
   icon: config.icon,
   scheme: config.scheme,
@@ -34,7 +34,7 @@ const appConfig: ExpoConfig = {
     fallbackToCacheTimeout: 0,
     checkAutomatically: 'ON_LOAD',
   },
-  runtimeVersion: '1.0.0',
+  runtimeVersion: '1.0.1',
   ios: {
     usesAppleSignIn: true,
     supportsTablet: true,
@@ -60,6 +60,8 @@ const appConfig: ExpoConfig = {
         'This app needs photo library access so users can select images from their gallery.',
       NSLocationWhenInUseUsageDescription:
         'This app uses your location to improve map and property accuracy.',
+      NSUserTrackingUsageDescription:
+        'This identifier will be used to improve your experience and gather analytics.',
       LSApplicationQueriesSchemes: [
         'whatsapp',
         'whatsapp-business',
@@ -68,6 +70,7 @@ const appConfig: ExpoConfig = {
         'fbauth2',
         'fbshareextension',
       ],
+      FIREBASE_ANALYTICS_COLLECTION_ENABLED: false,
     },
 
     config: {
@@ -123,6 +126,14 @@ const appConfig: ExpoConfig = {
   },
   plugins: [
     'expo-router',
+    '@react-native-firebase/app',
+    [
+      'expo-tracking-transparency',
+      {
+        userTrackingPermission:
+          'This identifier will be used to improve your experience and gather analytics.',
+      },
+    ],
     ...(ENABLE_IAP ? ['expo-iap'] : []),
     [
       'expo-splash-screen',

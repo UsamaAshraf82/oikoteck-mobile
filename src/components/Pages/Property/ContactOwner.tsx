@@ -25,6 +25,7 @@ import { useToast } from '~/store/useToast';
 import { Property_Type } from '~/type/property';
 import { User_Type } from '~/type/user';
 import { deviceHeight } from '~/utils/global';
+import { record_insight } from '~/utils/record_insight';
 import RequestTour from './RequestTour';
 import SendMessage from './SendMessage';
 
@@ -186,7 +187,13 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
                 </View>
                 <View style={styles.actionRow}>
                   <PressableView
-                    onPress={handleSubmit(() => setPhone(true), onError)}
+                    onPress={handleSubmit(() => {
+                      record_insight({
+                        Property: activeProperty.objectId,
+                        InsightType: 'Show_Phone_Number',
+                      });
+                      setPhone(true);
+                    }, onError)}
                     style={styles.smallBtn}
                   >
                     <View style={styles.smallBtnPadding}>
@@ -196,7 +203,13 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
                     </View>
                   </PressableView>
                   <PressableView
-                    onPress={handleSubmit(() => setEmail(true), onError)}
+                    onPress={handleSubmit(() => {
+                      record_insight({
+                        Property: activeProperty.objectId,
+                        InsightType: 'Show_Email_Address',
+                      });
+                      setEmail(true);
+                    }, onError)}
                     style={styles.smallBtn}
                   >
                     <View style={styles.smallBtnPadding}>
@@ -210,7 +223,13 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
             </View>
             <View style={styles.mainActions}>
               <PressableView
-                onPress={handleSubmit(openWhatsApp, onError)}
+                onPress={handleSubmit(() => {
+                  record_insight({
+                    Property: activeProperty.objectId,
+                    InsightType: 'Click_WhatsApp',
+                  });
+                  openWhatsApp();
+                }, onError)}
                 style={styles.whatsappBtn}
               >
                 <View style={styles.btnInner}>
@@ -221,7 +240,13 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
                 </View>
               </PressableView>
               <PressableView
-                onPress={handleSubmit(() => setMessage(true), onError)}
+                onPress={handleSubmit(() => {
+                  record_insight({
+                    Property: activeProperty.objectId,
+                    InsightType: 'Click_Send_Message',
+                  });
+                  setMessage(true);
+                }, onError)}
                 style={styles.messageBtn}
               >
                 <View style={styles.btnInner}>
@@ -230,7 +255,13 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
                 </View>
               </PressableView>
               <PressableView
-                onPress={handleSubmit(() => setrequest_tour(true), onError)}
+                onPress={handleSubmit(() => {
+                  record_insight({
+                    Property: activeProperty.objectId,
+                    InsightType: 'Click_Send_Tour',
+                  });
+                  setrequest_tour(true);
+                }, onError)}
                 style={styles.tourBtn}
               >
                 <View style={styles.btnInner}>
@@ -301,6 +332,7 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
           visible={phone}
           onClose={() => setPhone(false)}
           owner={owner}
+          propertyId={activeProperty.objectId}
         />
       )}
       {email && (
@@ -308,6 +340,7 @@ const ContactOwner = ({ property, onClose, visible }: Props) => {
           visible={email}
           onClose={() => setEmail(false)}
           owner={owner}
+          propertyId={activeProperty.objectId}
         />
       )}
       {message && (
@@ -341,10 +374,12 @@ const PhoneNumberModal = ({
   onClose,
   visible,
   owner,
+  propertyId,
 }: {
   owner: User_Type;
   onClose: () => void;
   visible: boolean;
+  propertyId: string;
 }) => {
   return (
     <Modal
@@ -388,9 +423,13 @@ const PhoneNumberModal = ({
           </View>
           <View style={styles.modalActions}>
             <PressableView
-              onPress={() =>
-                Linking.openURL(`tel:+${owner.country_code} ${owner.phone}`)
-              }
+              onPress={() => {
+                record_insight({
+                  Property: propertyId,
+                  InsightType: 'Click_Phone_Number',
+                });
+                Linking.openURL(`tel:+${owner.country_code} ${owner.phone}`);
+              }}
               style={styles.callNowBtn}
             >
               <View style={styles.btnInner}>
@@ -410,10 +449,12 @@ const EmailModal = ({
   onClose,
   visible,
   owner,
+  propertyId,
 }: {
   owner: User_Type;
   onClose: () => void;
   visible: boolean;
+  propertyId: string;
 }) => {
   return (
     <Modal
@@ -455,7 +496,13 @@ const EmailModal = ({
           </View>
           <View style={styles.modalActions}>
             <PressableView
-              onPress={() => Linking.openURL(`mailto:${owner.username}`)}
+              onPress={() => {
+                record_insight({
+                  Property: propertyId,
+                  InsightType: 'Click_Email_Address',
+                });
+                Linking.openURL(`mailto:${owner.username}`);
+              }}
               style={styles.emailNowBtn}
             >
               <View style={styles.btnInner}>

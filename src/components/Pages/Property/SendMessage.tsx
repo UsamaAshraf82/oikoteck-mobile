@@ -3,6 +3,7 @@ import Parse from 'parse/react-native';
 import { XIcon } from 'phosphor-react-native';
 import { useEffect, useState } from 'react';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
+import { record_insight } from '~/utils/record_insight';
 import {
   StyleSheet,
   TouchableNativeFeedback,
@@ -169,6 +170,10 @@ const SendMessage = ({ onClose, property, visible }: Props) => {
       myNewObject.set('read', false);
 
       await myNewObject.save();
+      record_insight({
+        Property: activeProperty.objectId,
+        InsightType: 'Submited_Message',
+      });
       addToast({
         type: 'success',
         heading: 'Message submission',

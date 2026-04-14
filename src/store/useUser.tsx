@@ -4,6 +4,7 @@ import Parse from 'parse/react-native';
 import { create } from 'zustand';
 import { emailsAddress } from '~/global';
 import { User_Type } from '~/type/user';
+import { logLogin, logLogout, logSignUp, setAnalyticsUser } from '~/utils/analytics';
 import { useToast } from './useToast';
 type Store = {
   user: Parse.User<User_Type> | null | undefined;
@@ -60,6 +61,8 @@ const useUser = create<Store>()((set, get) => ({
           user.attributes.sessionToken
         );
       }
+      await logLogin('email');
+      await setAnalyticsUser(user.id ?? null, user.attributes.user_type);
       set(() => ({ user: user }));
     } catch (e) {
       useToast.getState().addToast({
@@ -122,6 +125,7 @@ const useUser = create<Store>()((set, get) => ({
         );
       }
 
+      await logSignUp('email');
       await get().logout();
     } catch (e) {
       useToast.getState().addToast({
@@ -137,6 +141,7 @@ const useUser = create<Store>()((set, get) => ({
     if (session_id) {
       try {
         const user = (await Parse.User.me(session_id)) as Parse.User<User_Type>;
+        await setAnalyticsUser(user.id ?? null, user.attributes.user_type);
         set(() => ({ user: user }));
       } catch (e) {
         await AsyncStorage.removeItem('session_token');
@@ -147,6 +152,8 @@ const useUser = create<Store>()((set, get) => ({
     }
   },
   logout: async () => {
+    await logLogout();
+    await setAnalyticsUser(null);
     await AsyncStorage.removeItem('session_token');
     set(() => ({ user: null }));
     await Parse.User.logOut();

@@ -2,8 +2,9 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { PortalHost } from '@rn-primitives/portal';
 import * as Sentry from '@sentry/react-native';
 import { useFonts } from 'expo-font';
-import { Slot, Stack } from 'expo-router';
+import { Slot, Stack, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
+import { requestTrackingPermissionsAsync } from 'expo-tracking-transparency';
 import { useEffect, useState } from 'react';
 import {
   ActivityIndicator as ActivityIndicatorInternal,
@@ -13,6 +14,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import { logScreenView, setAnalyticsCollectionEnabled } from '~/utils/analytics';
 
 // import { Settings } from 'react-native-fbsdk-next';
 import AppText from '~/components/Elements/AppText';
@@ -77,6 +79,14 @@ function RootLayout() {
       try {
         await ParseInit();
         await refresh();
+
+        if (Platform.OS === 'ios') {
+          const { status } = await requestTrackingPermissionsAsync();
+          await setAnalyticsCollectionEnabled(status === 'granted');
+        }
+        if (Platform.OS === 'android') {
+          await setAnalyticsCollectionEnabled(true);
+        }
       } catch {
       } finally {
         setReady(true);
@@ -136,6 +146,12 @@ const Screens = ({
   fontsLoaded: boolean;
 }) => {
   const { user } = useUser();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    logScreenView(pathname);
+  }, [pathname]);
+
   if (!ready) return <Slot />;
   if (!fontsLoaded) return <Slot />;
   return (

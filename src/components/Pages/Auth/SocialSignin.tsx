@@ -20,6 +20,7 @@ import PressableView from '~/components/HOC/PressableView';
 import useActivityIndicator from '~/store/useActivityIndicator';
 import useUser from '~/store/useUser';
 import { User_Type } from '~/type/user';
+import { logLogin, logSignUp, setAnalyticsUser } from '~/utils/analytics';
 import { parseLog } from '~/utils/parseLog';
 const Image = ExpoImage as any;
 
@@ -79,6 +80,8 @@ const SocialSignin = () => {
         !parseUser.get('email') ||
         !parseUser.get('phone')
       ) {
+        await logSignUp('google');
+        await setAnalyticsUser(parseUser.id ?? null, parseUser.get('user_type'));
         router.push({
           pathname: '/signup2social',
           params: {
@@ -91,6 +94,8 @@ const SocialSignin = () => {
         return;
       }
 
+      await logLogin('google');
+      await setAnalyticsUser(parseUser.id ?? null, parseUser.get('user_type'));
       setUser(parseUser as Parse.User<User_Type>);
     } catch (error: any) {
       await parseLog('google_login:error', {
@@ -330,11 +335,15 @@ const SocialSignin = () => {
         if (firstName) user.set('first_name', firstName);
         if (lastName) user.set('last_name', lastName);
         await user.save();
+        await logSignUp('apple');
+        await setAnalyticsUser(user.id ?? null, user.get('user_type'));
         router.push({
           pathname: '/signup2social',
           params: { email, firstName, lastName },
         });
       } else {
+        await logLogin('apple');
+        await setAnalyticsUser(user.id ?? null, user.get('user_type'));
         setUser(user as Parse.User<User_Type>);
       }
     } catch (e: any) {

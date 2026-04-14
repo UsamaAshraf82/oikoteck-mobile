@@ -56,6 +56,7 @@ import { Property_Type } from '~/type/property';
 import { User_Type } from '~/type/user';
 import { deviceHeight, deviceWidth } from '~/utils/global';
 import { thoasandseprator } from '~/utils/number';
+import { record_insight } from '~/utils/record_insight';
 import ContactOwner from './ContactOwner';
 import SubmitOffer from './SubmitOffer';
 
@@ -236,9 +237,15 @@ export default function PropertyDetails({
               <View style={[styles.headerIconsLightbox, { top: topOffset }]}>
                 <TouchableWithoutFeedback
                   onPress={async () => {
-                    await Share.share({
+                    const result = await Share.share({
                       message: `Hi! I found this property. Enjoy reviewing its features on OikoTeck.\nhttps://www.oikoteck.com/property/${property.objectId}`,
                     });
+                    if (result.action === Share.sharedAction) {
+                      record_insight({
+                        Property: property.objectId,
+                        InsightType: 'Share',
+                      });
+                    }
                   }}
                 >
                   <ShareFatIcon color='#fff' weight='duotone' size={30} />
@@ -324,9 +331,15 @@ export default function PropertyDetails({
         >
           <TouchableWithoutFeedback
             onPress={async () => {
-              await Share.share({
+              const result = await Share.share({
                 message: `Hi! I found this property. Enjoy reviewing its features on OikoTeck.\nhttps://www.oikoteck.com/property/${property.objectId}`,
               });
+              if (result.action === Share.sharedAction) {
+                record_insight({
+                  Property: property.objectId,
+                  InsightType: 'Share',
+                });
+              }
             }}
           >
             <ShareFatIcon
@@ -614,6 +627,10 @@ export default function PropertyDetails({
         <Grid cols={2} gap={12}>
           <PressableView
             onPress={() => {
+              record_insight({
+                Property: property.objectId,
+                InsightType: 'Click_Submit_Offer',
+              });
               setSubmitOfferVisible(true);
             }}
             style={styles.offerButton}
@@ -625,6 +642,10 @@ export default function PropertyDetails({
           </PressableView>
           <PressableView
             onPress={() => {
+              record_insight({
+                Property: property.objectId,
+                InsightType: 'Interested',
+              });
               setContactOwnerVisible(true);
             }}
             style={styles.contactButton}
