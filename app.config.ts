@@ -182,7 +182,7 @@ const appConfig: ExpoConfig = {
         },
       },
     ],
-    withNonModularHeaders as any,
+    withNonModularHeaders as unknown as string,
   ],
 
   experiments: {

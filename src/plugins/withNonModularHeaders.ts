@@ -1,29 +1,39 @@
 import { ConfigPlugin, withDangerousMod } from '@expo/config-plugins';
-import { injectTaggedBlock, modifyPodfile } from './podfileUtils';
+import fs from 'fs';
+import path from 'path';
 
-/**
- * Required for React Native Firebase (RNFBApp) when useFrameworks: 'static' is set,
- * to fix: "include of non-modular header inside framework module 'RNFBApp.*'"
- */
+const BEGIN_TAG = '# @generated begin non-modular-headers';
+const END_TAG = '# @generated end non-modular-headers';
+
+const BLOCK = `
+${BEGIN_TAG}
+# Required for @react-native-firebase with useFrameworks: static.
+# Fixes: "include of non-modular header inside framework module 'RNFBApp.*'"
+$RNFirebaseAsStaticFramework = true
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |build_config|
+      build_config.build_settings['ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
+    end
+  end
+end
+${END_TAG}
+`;
+
 const withNonModularHeaders: ConfigPlugin = (config) => {
   return withDangerousMod(config, [
     'ios',
     (conf) => {
-      modifyPodfile(conf.modRequest.platformProjectRoot, (src) =>
-        injectTaggedBlock(src, {
-          tag: 'non-modular-headers',
-          newSrc: [
-            '  installer.pods_project.targets.each do |target|',
-            '    target.build_configurations.each do |config|',
-            "      config.build_settings['ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'",
-            '    end',
-            '  end',
-          ].join('\n'),
-          anchor: /post_install do \|installer\|/,
-          offset: 1,
-          comment: '#',
-        })
-      );
+      const podfilePath = path.join(conf.modRequest.platformProjectRoot, 'Podfile');
+      let contents = fs.readFileSync(podfilePath, 'utf8');
+
+      // Remove any previously generated block (idempotent)
+      const tagRegex = new RegExp(`\n?${BEGIN_TAG}[\\s\\S]*?${END_TAG}\n?`);
+      contents = contents.replace(tagRegex, '');
+
+      // Append as a separate post_install block — CocoaPods runs all post_install hooks
+      fs.writeFileSync(podfilePath, contents.trimEnd() + '\n' + BLOCK);
       return conf;
     },
   ]);
