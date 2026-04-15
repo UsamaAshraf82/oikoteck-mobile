@@ -3,8 +3,7 @@ import {
     mergeContents,
     removeContents,
 } from '@expo/config-plugins/build/utils/generateCode';
-import fs from 'fs';
-import path from 'path';
+import { injectTaggedBlock, modifyPodfile } from './podfileUtils';
 
 /**
  * Custom plugin to inject Google Maps API key into the new RN 0.83 / Expo 55
@@ -34,9 +33,8 @@ function addGoogleMapsInit(src: string, apiKey: string): string {
 }
 
 function addGoogleMapsPod(src: string): string {
-  return mergeContents({
+  return injectTaggedBlock(src, {
     tag: 'rn-maps-pod',
-    src,
     newSrc: [
       `  rn_maps_path ||= File.dirname(\`node --print "require.resolve('react-native-maps/package.json')"\`)`,
       `  pod 'react-native-maps/Google', :path => rn_maps_path`,
@@ -44,7 +42,7 @@ function addGoogleMapsPod(src: string): string {
     anchor: /use_expo_modules!/,
     offset: 1,
     comment: '#',
-  }).contents;
+  });
 }
 
 const withGoogleMapsIosAppDelegate: ConfigPlugin<{ apiKey?: string }> = (config, props) => {
@@ -75,20 +73,9 @@ const withGoogleMapsIosAppDelegate: ConfigPlugin<{ apiKey?: string }> = (config,
   config = withDangerousMod(config, [
     'ios',
     (conf) => {
-      const podfilePath = path.join(conf.modRequest.platformProjectRoot, 'Podfile');
-      let podfileContents = fs.readFileSync(podfilePath, 'utf8');
-
-      // Remove any previously generated block (idempotent)
-      podfileContents = removeContents({
-        tag: 'rn-maps-pod',
-        src: podfileContents,
-      }).contents;
-
       if (apiKey) {
-        podfileContents = addGoogleMapsPod(podfileContents);
+        modifyPodfile(conf.modRequest.platformProjectRoot, addGoogleMapsPod);
       }
-
-      fs.writeFileSync(podfilePath, podfileContents);
       return conf;
     },
   ]);

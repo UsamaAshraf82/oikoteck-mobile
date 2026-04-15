@@ -1,6 +1,7 @@
 import { ExpoConfig } from 'expo/config';
 import 'tsx/cjs';
 import withGoogleMapsIosAppDelegate from './src/plugins/withGoogleMapsIosAppDelegate';
+import withNonModularHeaders from './src/plugins/withNonModularHeaders';
 const IS_DEV = process.env.EXPO_PUBLIC_APP_VARIANT?.trim() == 'development';
 const ENABLE_IAP = process.env.ENABLE_IAP === 'true';
 
@@ -140,24 +141,10 @@ const appConfig: ExpoConfig = {
       {
         image: './assets/adaptive-text-icon.png',
         imageWidth: 150,
-        // resizeMode: 'contain',
         backgroundColor: '#ffffff',
       },
     ],
-    // [
-    //   'react-native-fbsdk-next',
-    //   {
-    //     appID: '511062105081745',
-    //     clientToken: '1692dc2e9451677cc7cfb8097f498f0b',
-    //     displayName: 'Oikoteck',
-    //     scheme: 'fb511062105081745',
-    //     advertiserIDCollectionEnabled: false,
-    //     autoLogAppEventsEnabled: false,
-    //     isAutoInitEnabled: true,
-    //     iosUserTrackingPermission:
-    //       'This identifier will be used to deliver personalized ads to you.',
-    //   },
-    // ],
+
     [
       '@react-native-google-signin/google-signin',
       {
@@ -167,7 +154,6 @@ const appConfig: ExpoConfig = {
           'com.googleusercontent.apps.249425615765-c3hb68cqlo6fcjd82bft3uqeq8t857bh',
       },
     ],
-    // ['expo-apple-authentication'],
     [
       '@sentry/react-native/expo',
       {
@@ -196,6 +182,7 @@ const appConfig: ExpoConfig = {
         },
       },
     ],
+    withNonModularHeaders as any,
   ],
 
   experiments: {
