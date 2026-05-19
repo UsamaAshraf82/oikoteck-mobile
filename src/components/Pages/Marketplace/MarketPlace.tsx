@@ -53,14 +53,14 @@ const topbarHeight = 150;
 const district_images = [
   { district: 'Athens', image: 'district/pic1.png', url: 'Athens - Center' },
   { district: 'Thessaloniki', image: 'district/pic5.png', url: 'Thessaloniki' },
-  { district: 'Cyclades', image: 'district/pic2.png', url: 'Cyclades Islands' },
+  { district: 'Cyclades', image: 'district/pic2.png', url: 'Cyclades' },
   { district: 'Piraeus', image: 'district/pic3.png', url: 'Piraeus' },
   {
     district: 'Ionian Islands',
     image: 'district/pic4.png',
-    url: 'Ioannina Prefecture',
+    url: 'Corfu Prefecture',
   },
-  { district: 'Crete', image: 'district/pic6.png', url: 'Crete' },
+  { district: 'Chania', image: 'district/pic6.png', url: 'Chania Prefecture' },
 ];
 
 type sortType = {
@@ -117,7 +117,7 @@ const MarketPlace = ({
             results: Property_Type[];
             hasmore: boolean;
           };
-        } catch {}
+        } catch { }
         return { count: 0, results: [], hasmore: false };
       },
       getNextPageParam: (lastPage, _, lastPageParam) => {
@@ -177,7 +177,7 @@ const MarketPlace = ({
         });
 
         return pro.properties as { count: number; results: Property_Type[] };
-      } catch {}
+      } catch { }
 
       return { count: 0, results: [] };
     },
@@ -275,65 +275,65 @@ const MarketPlace = ({
       icon: React.ReactNode;
       onPress: () => void;
     }[] = [
-      {
-        filter: sortTitle,
-        iconFirst: true,
-        icon: <SortAscendingIcon size={20} color='#192234' weight='bold' />,
-        onPress: () => {
-          openSelect({
-            label: 'Sort by',
-            hasXIcon: true,
-            options: [
-              { label: 'Most Recent', value: null },
-              {
-                label: 'Price: High to Low',
-                value: { sort: 'price', sort_order: 'des' },
+        {
+          filter: sortTitle,
+          iconFirst: true,
+          icon: <SortAscendingIcon size={20} color='#192234' weight='bold' />,
+          onPress: () => {
+            openSelect({
+              label: 'Sort by',
+              hasXIcon: true,
+              options: [
+                { label: 'Most Recent', value: null },
+                {
+                  label: 'Price: High to Low',
+                  value: { sort: 'price', sort_order: 'des' },
+                },
+                {
+                  label: 'Price: Low to High',
+                  value: { sort: 'price', sort_order: 'asc' },
+                },
+                {
+                  label: 'Bedrooms: Less to More',
+                  value: { sort: 'bedrooms', sort_order: 'asc' },
+                },
+                {
+                  label: 'Bedrooms: More to Less',
+                  value: { sort: 'bedrooms', sort_order: 'des' },
+                },
+                {
+                  label: 'Bathrooms: Less to More',
+                  value: { sort: 'bathrooms', sort_order: 'asc' },
+                },
+                {
+                  label: 'Bathrooms: More to Less',
+                  value: { sort: 'bathrooms', sort_order: 'des' },
+                },
+                {
+                  label: 'Size: Small to Large',
+                  value: { sort: 'size', sort_order: 'asc' },
+                },
+                {
+                  label: 'Size: Large to Small',
+                  value: { sort: 'size', sort_order: 'des' },
+                },
+              ],
+              value: sort,
+              onPress: (data: any) => {
+                setSort(data.value as sortType);
               },
-              {
-                label: 'Price: Low to High',
-                value: { sort: 'price', sort_order: 'asc' },
-              },
-              {
-                label: 'Bedrooms: Less to More',
-                value: { sort: 'bedrooms', sort_order: 'asc' },
-              },
-              {
-                label: 'Bedrooms: More to Less',
-                value: { sort: 'bedrooms', sort_order: 'des' },
-              },
-              {
-                label: 'Bathrooms: Less to More',
-                value: { sort: 'bathrooms', sort_order: 'asc' },
-              },
-              {
-                label: 'Bathrooms: More to Less',
-                value: { sort: 'bathrooms', sort_order: 'des' },
-              },
-              {
-                label: 'Size: Small to Large',
-                value: { sort: 'size', sort_order: 'asc' },
-              },
-              {
-                label: 'Size: Large to Small',
-                value: { sort: 'size', sort_order: 'des' },
-              },
-            ],
-            value: sort,
-            onPress: (data: any) => {
-              setSort(data.value as sortType);
-            },
-          });
+            });
+          },
         },
-      },
-      {
-        filter: 'Filters',
-        iconFirst: true,
-        icon: <FadersHorizontalIcon size={20} color='#192234' weight='bold' />,
-        onPress: () => {
-          setFiltersModal(true);
+        {
+          filter: 'Filters',
+          iconFirst: true,
+          icon: <FadersHorizontalIcon size={20} color='#192234' weight='bold' />,
+          onPress: () => {
+            setFiltersModal(true);
+          },
         },
-      },
-    ];
+      ];
 
     if (search.bedroom !== null) {
       filter.push({
