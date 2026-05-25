@@ -47,13 +47,6 @@ const appConfig: ExpoConfig = {
       'com.apple.developer.applesignin': ['Default'],
     },
     infoPlist: {
-      CFBundleURLTypes: [
-        {
-          CFBundleURLSchemes: ['fb511062105081745'],
-        },
-      ],
-      FacebookAppID: '511062105081745',
-      FacebookDisplayName: 'Oikoteck',
       ITSAppUsesNonExemptEncryption: false,
       NSCameraUsageDescription:
         'This app uses the camera to allow users to take and upload property photos.',
@@ -61,17 +54,7 @@ const appConfig: ExpoConfig = {
         'This app needs photo library access so users can select images from their gallery.',
       NSLocationWhenInUseUsageDescription:
         'This app uses your location to improve map and property accuracy.',
-      NSUserTrackingUsageDescription:
-        'This identifier will be used to improve your experience and gather analytics.',
-      LSApplicationQueriesSchemes: [
-        'whatsapp',
-        'whatsapp-business',
-        'fbapi',
-        'fb-messenger-share-api',
-        'fbauth2',
-        'fbshareextension',
-      ],
-      FIREBASE_ANALYTICS_COLLECTION_ENABLED: false,
+      LSApplicationQueriesSchemes: ['whatsapp', 'whatsapp-business'],
     },
 
     config: {
@@ -128,13 +111,6 @@ const appConfig: ExpoConfig = {
   plugins: [
     'expo-router',
     '@react-native-firebase/app',
-    [
-      'expo-tracking-transparency',
-      {
-        userTrackingPermission:
-          'This identifier will be used to improve your experience and gather analytics.',
-      },
-    ],
     ...(ENABLE_IAP ? ['expo-iap'] : []),
     [
       'expo-splash-screen',

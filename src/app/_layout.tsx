@@ -3,7 +3,6 @@ import { PortalHost } from '@rn-primitives/portal';
 import { useFonts } from 'expo-font';
 import { Slot, Stack, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { requestTrackingPermissionsAsync } from 'expo-tracking-transparency';
 import { useEffect, useState } from 'react';
 import {
   ActivityIndicator as ActivityIndicatorInternal,
@@ -68,13 +67,7 @@ function RootLayout() {
         await ParseInit();
         await refresh();
 
-        if (Platform.OS === 'ios') {
-          const { status } = await requestTrackingPermissionsAsync();
-          await setAnalyticsCollectionEnabled(status === 'granted');
-        }
-        if (Platform.OS === 'android') {
-          await setAnalyticsCollectionEnabled(true);
-        }
+        await setAnalyticsCollectionEnabled(true);
       } catch {
       } finally {
         setReady(true);

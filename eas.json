@@ -7,6 +7,7 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
+      "node": "24.15.0",
       "env": {
         "EXPO_PUBLIC_APP_VARIANT": "development"
       },
@@ -14,10 +15,12 @@
     },
     "preview": {
       "distribution": "internal",
+      "node": "24.15.0",
       "channel": "preview"
     },
     "production": {
       "autoIncrement": true,
+      "node": "24.15.0",
       "env": {
         "EXPO_PUBLIC_APP_VARIANT": "production"
       },
@@ -25,6 +28,7 @@
     },
     "production-android": {
       "extends": "production",
+      "node": "24.15.0",
       "env": {
         "ENABLE_IAP": "false"
       }
@@ -32,6 +36,7 @@
 
     "production-ios": {
       "extends": "production",
+      "node": "24.15.0",
       "env": {
         "ENABLE_IAP": "true"
       }
