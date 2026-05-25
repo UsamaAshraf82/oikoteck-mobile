@@ -154,14 +154,6 @@ const appConfig: ExpoConfig = {
           'com.googleusercontent.apps.249425615765-c3hb68cqlo6fcjd82bft3uqeq8t857bh',
       },
     ],
-    [
-      '@sentry/react-native/expo',
-      {
-        url: 'https://sentry.io/',
-        project: 'oikoteck-native',
-        organization: 'oikoteck',
-      },
-    ],
     ['expo-image'],
     [
       'react-native-maps',

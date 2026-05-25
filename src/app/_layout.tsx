@@ -1,6 +1,5 @@
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { PortalHost } from '@rn-primitives/portal';
-import * as Sentry from '@sentry/react-native';
 import { useFonts } from 'expo-font';
 import { Slot, Stack, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -32,17 +31,6 @@ const StripeProvider: React.ComponentType<{ publishableKey: string; children: Re
   Platform.OS === 'android'
     ? require('@stripe/stripe-react-native').StripeProvider
     : ({ children }) => <>{children}</>;
-
-Sentry.init({
-  dsn: 'https://f38cbcdf56bafebea8623bea0bf541c9@o4510437482233856.ingest.us.sentry.io/4510945850687488',
-  sendDefaultPii: true,
-  replaysSessionSampleRate: 0.1,
-  replaysOnErrorSampleRate: 1,
-  integrations: [
-    Sentry.mobileReplayIntegration(),
-    Sentry.feedbackIntegration(),
-  ],
-});
 
 SplashScreen.preventAutoHideAsync();
 GoogleSignin.configure({
@@ -103,25 +91,7 @@ function RootLayout() {
 
 
   return (
-    <Sentry.ErrorBoundary
-      fallback={({
-        error,
-        resetError,
-      }: {
-        error: any;
-        resetError: () => void;
-      }) => (
-        <View style={styles.errorContainer}>
-          <AppText style={styles.errorTitle}>
-            Oops! Something went wrong.
-          </AppText>
-          <AppText style={styles.errorMessage}>{error.message}</AppText>
-          <Pressable style={styles.resetButton} onPress={resetError}>
-            <AppText style={styles.resetButtonText}>Try Again</AppText>
-          </Pressable>
-        </View>
-      )}
-    >
+    <>
       <StripeProvider publishableKey={process.env.EXPO_PUBLIC_STRIPE_KEY!}>
         <Provider>
           <Screens fontsLoaded={fontsLoaded} ready={ready} />
@@ -134,7 +104,7 @@ function RootLayout() {
         </Provider>
       </StripeProvider>
       <PortalHost name='toast-host' />
-    </Sentry.ErrorBoundary>
+    </>
   );
 }
 
@@ -223,5 +193,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const AppRoot = Sentry.wrap(RootLayout);
-export default AppRoot;
+export default RootLayout;

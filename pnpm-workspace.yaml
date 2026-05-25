@@ -1,0 +1,8 @@
+nodeLinker: hoisted
+
+allowBuilds:
+  '@firebase/util': false
+  core-js-pure: false
+  esbuild: false
+  protobufjs: false
+  unrs-resolver: false

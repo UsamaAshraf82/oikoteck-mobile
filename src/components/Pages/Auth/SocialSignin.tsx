@@ -14,7 +14,6 @@ import { Platform, StyleSheet, View } from 'react-native';
 //   Profile,
 // } from 'react-native-fbsdk-next';
 
-import * as Sentry from '@sentry/react-native';
 import AppText from '~/components/Elements/AppText';
 import PressableView from '~/components/HOC/PressableView';
 import useActivityIndicator from '~/store/useActivityIndicator';
@@ -104,7 +103,6 @@ const SocialSignin = () => {
         stack: error?.stack?.slice(0, 500) ?? null,
       });
       console.error('Google auth failed:', error);
-      Sentry.captureException(error);
     } finally {
       stopActivity();
       isSigningInRef.current = false;
@@ -355,7 +353,6 @@ const SocialSignin = () => {
           code: e?.code ?? null,
         });
         console.error('Apple login error:', e);
-        Sentry.captureException(e);
       }
       stopActivity();
       isSigningInRef.current = false;
